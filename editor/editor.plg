@@ -1,0 +1,107 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: engine - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\zakla\AppData\Local\Temp\RSP10B2.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /I "../d3d9/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /Fp"Debug/engine.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"W:\neon86\engine\engine.cpp"
+"W:\neon86\engine\Logger.cpp"
+"W:\neon86\engine\Renderer.cpp"
+"W:\neon86\engine\Input.cpp"
+]
+Creating command line "cl.exe @C:\Users\zakla\AppData\Local\Temp\RSP10B2.tmp" 
+Creating temporary file "C:\Users\zakla\AppData\Local\Temp\RSP10B3.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /I "../d3d9/include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ENGINE_EXPORTS" /Fp"Debug/engine.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"W:\neon86\engine\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\zakla\AppData\Local\Temp\RSP10B3.tmp" 
+Creating temporary file "C:\Users\zakla\AppData\Local\Temp\RSP10B4.tmp" with contents
+[
+d3dx9.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:yes /pdb:"Debug/engine.pdb" /debug /machine:I386 /out:"Debug/engine.dll" /implib:"Debug/engine.lib" /pdbtype:sept /libpath:"../d3d9" 
+.\Debug\engine.obj
+.\Debug\Logger.obj
+.\Debug\Renderer.obj
+.\Debug\StdAfx.obj
+.\Debug\Input.obj
+]
+Creating command line "link.exe @C:\Users\zakla\AppData\Local\Temp\RSP10B4.tmp"
+<h3>Output Window</h3>
+Compiling...
+StdAfx.cpp
+Compiling...
+engine.cpp
+Logger.cpp
+Renderer.cpp
+Input.cpp
+Generating Code...
+Linking...
+   Creating library Debug/engine.lib and object Debug/engine.exp
+<h3>
+--------------------Configuration: editor - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Debug/editor.res" /d "_DEBUG" "W:\neon86\editor\editor.rc"" 
+Creating temporary file "C:\Users\zakla\AppData\Local\Temp\RSP12B9.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /I "../engine" /I "../d3d9/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/editor.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"W:\neon86\editor\ChildFrm.cpp"
+"W:\neon86\editor\CntrItem.cpp"
+"W:\neon86\editor\editor.cpp"
+"W:\neon86\editor\editorDoc.cpp"
+"W:\neon86\editor\editorView.cpp"
+"W:\neon86\editor\EngineViewport.cpp"
+"W:\neon86\editor\MainFrm.cpp"
+]
+Creating command line "cl.exe @C:\Users\zakla\AppData\Local\Temp\RSP12B9.tmp" 
+Creating temporary file "C:\Users\zakla\AppData\Local\Temp\RSP12BA.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /I "../engine" /I "../d3d9/include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/editor.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"W:\neon86\editor\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\zakla\AppData\Local\Temp\RSP12BA.tmp" 
+Creating temporary file "C:\Users\zakla\AppData\Local\Temp\RSP12BB.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/editor.pdb" /debug /machine:I386 /out:"Debug/editor.exe" /pdbtype:sept /libpath:"../d3d9" 
+.\Debug\ChildFrm.obj
+.\Debug\CntrItem.obj
+.\Debug\editor.obj
+.\Debug\editorDoc.obj
+.\Debug\editorView.obj
+.\Debug\EngineViewport.obj
+.\Debug\MainFrm.obj
+.\Debug\StdAfx.obj
+.\Debug\editor.res
+\neon86\engine\Debug\engine.lib
+]
+Creating command line "link.exe @C:\Users\zakla\AppData\Local\Temp\RSP12BB.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+ChildFrm.cpp
+CntrItem.cpp
+editor.cpp
+editorDoc.cpp
+editorView.cpp
+EngineViewport.cpp
+MainFrm.cpp
+Generating Code...
+Linking...
+Creating command line "bscmake.exe /nologo /o"Debug/editor.bsc"  .\Debug\StdAfx.sbr .\Debug\ChildFrm.sbr .\Debug\CntrItem.sbr .\Debug\editor.sbr .\Debug\editorDoc.sbr .\Debug\editorView.sbr .\Debug\EngineViewport.sbr .\Debug\MainFrm.sbr"
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+editor.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
