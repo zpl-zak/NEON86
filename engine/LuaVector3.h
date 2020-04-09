@@ -58,6 +58,47 @@ static INT vector3_cross(lua_State* L)
 	return 1;
 }
 
+static INT vector3_dot(lua_State* L)
+{
+	D3DXVECTOR3* vec = (D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR3);
+	D3DXVECTOR3* vecRHS = NULL;
+	D3DXMATRIX* matRHS = NULL;
+
+	if (!(vecRHS = (D3DXVECTOR3*)luaL_testudata(L, 2, L_VECTOR3)))
+	{
+		FLOAT num = D3DXVec3Dot(vec, vecRHS);
+		lua_pushnumber(L, num);
+		return 1;	
+	}
+
+	if (!(matRHS = (D3DXMATRIX*)luaL_testudata(L, 2, L_MATRIX)))
+	{
+		vector3_new(L);
+		D3DXVECTOR3* out = (D3DXVECTOR3*)luaL_checkudata(L, -2, L_VECTOR3);
+		D3DXVec3TransformCoord(out, vec, matRHS);
+		return 1;
+	}
+	
+	lua_pushnil(L);
+	return 1;
+}
+
+static INT vector3_get(lua_State* L)
+{
+	D3DXVECTOR3* vec = (D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR3);
+	FLOAT arr[3] = { vec->x, vec->y, vec->z };
+	
+	lua_newtable(L);
+	for (UINT i=0; i<3; i++)
+	{
+		lua_pushinteger(L, i+1);
+		lua_pushnumber(L, arr[i]);
+		lua_settable(L, -3);
+	}
+
+	return 1;
+}
+
 static VOID LuaVector_register(lua_State* L)
 {
 	lua_register(L, L_VECTOR3, vector3_new);
@@ -65,8 +106,10 @@ static VOID LuaVector_register(lua_State* L)
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
 	lua_pushcfunction(L, vector3_cross); lua_setfield(L, -2, "cross");
+	lua_pushcfunction(L, vector3_get); lua_setfield(L, -2, "get");
 
 	lua_pushcfunction(L, vector3_add); lua_setfield(L, -2, "__add");
 	lua_pushcfunction(L, vector3_sub); lua_setfield(L, -2, "__sub");
+	lua_pushcfunction(L, vector3_dot); lua_setfield(L, -2, "__mul");
 	lua_pop(L, 1);
 }

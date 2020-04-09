@@ -40,10 +40,41 @@ static INT vertex_new(lua_State* L)
 	return 1;
 }
 
+static INT vertex_get(lua_State* L)
+{
+	VERTEX* vert = (VERTEX*)luaL_checkudata(L, 1, L_VERTEX);
+	FLOAT arr[5] = { vert->x, vert->y, vert->z, vert->s, vert->t };
+	FLOAT col[4] = { vert->r, vert->g, vert->b, vert->a };
+
+	lua_newtable(L);
+	for (UINT i=0; i<5; i++)
+	{
+		lua_pushinteger(L, i+1);
+		lua_pushnumber(L, arr[i]);
+		lua_settable(L, -3);
+	}
+
+	lua_pushinteger(L, 6);
+	lua_newtable(L);
+
+	for (UINT i=0; i<4; i++)
+	{
+		lua_pushinteger(L, i+1);
+		lua_pushnumber(L, col[i]);
+		lua_settable(L, -3);
+	}
+	lua_settable(L, -3);
+
+	return 1;
+}
+
 static VOID LuaVertex_register(lua_State* L)
 {
 	lua_register(L, L_VERTEX, vertex_new);
 	luaL_newmetatable(L, L_VERTEX);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
+	
+	lua_pushcfunction(L, vertex_get); lua_setfield(L, -2, "get");
+	
 	lua_pop(L, 1);
 }

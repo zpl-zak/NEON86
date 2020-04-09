@@ -61,8 +61,12 @@ LUAF(Math, Color)
 	UINT r = (UINT)luaL_checknumber(L, 1);
 	UINT g = (UINT)luaL_checknumber(L, 2);
 	UINT b = (UINT)luaL_checknumber(L, 3);
+	UINT a = 0xFF;
+
+	if (lua_gettop(L) == 4)
+		a = (UINT)luaL_checknumber(L, 4);
 	
-	lua_pushnumber(L, D3DCOLOR_XRGB(r,g,b));
+	lua_pushnumber(L, D3DCOLOR_ARGB(a,r,g,b));
 	return 1;
 }
 ///<END

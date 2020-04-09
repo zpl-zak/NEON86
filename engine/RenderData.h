@@ -54,7 +54,12 @@ enum CLEARFLAG
 struct VERTEX
 {
 	float x, y, z; // D3DFVF_XYZ
-	DWORD color; // D3DFVF_DIFFUSE
+	union {
+		DWORD color; // D3DFVF_DIFFUSE
+		struct {
+			BYTE a, r, g, b;
+		};
+	};
 	float s, t; // D3DFVF_TEX1
 };
 
