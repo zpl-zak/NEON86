@@ -2,7 +2,6 @@
 #include "LuaBindings.h"
 #include "NeonEngine.h"
 
-#define LUA_COMPAT_MODULE
 #include <lua/lua.hpp>
 
 #include "LuaMatrix.h"

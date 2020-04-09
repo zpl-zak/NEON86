@@ -779,10 +779,6 @@
 				>
 			</File>
 			<File
-				RelativePath="NeonLib.h"
-				>
-			</File>
-			<File
 				RelativePath="RenderCommand.h"
 				>
 			</File>
