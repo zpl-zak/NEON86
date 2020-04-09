@@ -42,9 +42,9 @@ function _render()
 	
 	lookAt:bind(VIEW)
 	
-	for i=0, 25, 1
+	for i=0, 5, 1
 	do
-		for j=0, 25, 1
+		for j=0, 5, 1
 		do
 			w = (rot * Matrix():translate(i*2, 0, j*2))
 			cubeDraw(quad, w)

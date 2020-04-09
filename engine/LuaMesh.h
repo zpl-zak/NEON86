@@ -8,7 +8,7 @@
 
 static INT mesh_new(lua_State* L)
 {
-	*(MeshBuilder*)lua_newuserdata(L, sizeof(MeshBuilder)) = MeshBuilder();
+	*(CMeshBuilder*)lua_newuserdata(L, sizeof(CMeshBuilder)) = CMeshBuilder();
 
 	luaL_setmetatable(L, L_MESH);
 	return 1;
@@ -16,7 +16,7 @@ static INT mesh_new(lua_State* L)
 
 static INT mesh_addvertex(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 	VERTEX* vert = (VERTEX*)luaL_checkudata(L, 2, L_VERTEX);
 	mesh->AddVertex(*vert);
 
@@ -26,7 +26,7 @@ static INT mesh_addvertex(lua_State* L)
 
 static INT mesh_addindex(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 	SHORT index = (SHORT)luaL_checknumber(L, 2);
 	mesh->AddIndex(index);
 
@@ -36,7 +36,7 @@ static INT mesh_addindex(lua_State* L)
 
 static INT mesh_addtriangle(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 	SHORT i1 = (SHORT)luaL_checknumber(L, 2);
 	SHORT i2 = (SHORT)luaL_checknumber(L, 3);
 	SHORT i3 = (SHORT)luaL_checknumber(L, 4);
@@ -51,7 +51,7 @@ static INT mesh_addtriangle(lua_State* L)
 
 static INT mesh_settexture(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 	DWORD stage = (DWORD)luaL_checknumber(L, 2);
 	LPDIRECT3DTEXTURE9* tex = NULL;
 
@@ -66,7 +66,7 @@ static INT mesh_settexture(lua_State* L)
 
 static INT mesh_draw(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 	
 	mesh->Draw();
 
@@ -76,7 +76,7 @@ static INT mesh_draw(lua_State* L)
 
 static INT mesh_build(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 
 	mesh->Build();
 
@@ -86,9 +86,18 @@ static INT mesh_build(lua_State* L)
 
 static INT mesh_delete(lua_State* L)
 {
-	MeshBuilder* mesh = (MeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
 
 	mesh->Release();
+
+	return 0;
+}
+
+static INT mesh_clear(lua_State* L)
+{
+	CMeshBuilder* mesh = (CMeshBuilder*)luaL_checkudata(L, 1, L_MESH);
+
+	mesh->Clear();
 
 	return 0;
 }
@@ -105,6 +114,7 @@ static VOID LuaMesh_register(lua_State* L)
 	lua_pushcfunction(L, mesh_settexture); lua_setfield(L, -2, "setTexture");
 	lua_pushcfunction(L, mesh_draw); lua_setfield(L, -2, "draw");
 	lua_pushcfunction(L, mesh_build); lua_setfield(L, -2, "build");
+	lua_pushcfunction(L, mesh_clear); lua_setfield(L, -2, "clear");
 	lua_pushcfunction(L, mesh_delete) ; lua_setfield(L, -2, "__gc");
 
 	lua_pop(L, 1);

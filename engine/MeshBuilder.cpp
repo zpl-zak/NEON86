@@ -3,7 +3,7 @@
 #include "MeshBuilder.h"
 #include "NeonEngine.h"
 
-MeshBuilder::MeshBuilder(void)
+CMeshBuilder::CMeshBuilder(void)
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
 	ZeroMemory(mVerts, sizeof(mVerts));
@@ -12,31 +12,31 @@ MeshBuilder::MeshBuilder(void)
 	mIsDirty = FALSE;
 }
 
-VOID MeshBuilder::Release(void)
+VOID CMeshBuilder::Release(void)
 {
 	SAFE_RELEASE(mData.vertBuffer);
 	SAFE_RELEASE(mData.indexBuffer);
 }
 
-VOID MeshBuilder::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
+VOID CMeshBuilder::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
 {
 	mData.stage = stage;
 	mData.tex = tex;
 }
 
-VOID MeshBuilder::AddVertex(const VERTEX& vertex)
+VOID CMeshBuilder::AddVertex(const VERTEX& vertex)
 {
 	mIsDirty = TRUE;
 	mVerts[mData.vertCount++] = vertex;
 }
 
-VOID MeshBuilder::AddIndex(SHORT index)
+VOID CMeshBuilder::AddIndex(SHORT index)
 {
 	mIsDirty = TRUE;
 	mIndices[mData.indexCount++] = index;
 }
 
-VOID MeshBuilder::Draw(void)
+VOID CMeshBuilder::Draw(void)
 {
 	if (!mData.vertBuffer || mIsDirty)
 		Build();
@@ -50,7 +50,7 @@ VOID MeshBuilder::Draw(void)
 		RENDERER->PushTexture(mData.stage, NULL);
 }
 
-VOID MeshBuilder::Build(void)
+VOID CMeshBuilder::Build(void)
 {
 	LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 	VOID *vidMem = NULL;
@@ -85,5 +85,14 @@ VOID MeshBuilder::Build(void)
 	}
 
 	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
+	mIsDirty = FALSE;
+}
+
+VOID CMeshBuilder::Clear(void)
+{
+	Release();
+	mData.vertCount = mData.primCount = mData.indexCount = 0;
+	ZeroMemory(&mData, sizeof(RENDERDATA));
+	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
 	mIsDirty = FALSE;
 }
