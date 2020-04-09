@@ -9,6 +9,7 @@
 #include "LuaVector3.h"
 #include "LuaVertex.h"
 #include "LuaTexture.h"
+#include "LuaMesh.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage) 
@@ -65,59 +66,6 @@ LUAF(Rend, ClearScene)
 	if (lua_isnumber(L, 4))
 		flags = (UINT)luaL_checknumber(L, 4);
 	RENDERER->PushClear(D3DCOLOR_XRGB(r,g,b), flags);
-	return 0;
-}
-LUAF(Rend, DrawIndexedTriangle)
-{
-	VERTEX vertBuf[MAX_VERTS];
-	SHORT indexBuf[MAX_INDICES];
-	UINT vertCount=0, indexCount=0;
-
-	if (lua_gettop(L) != 2)
-		return 0;
-
-	if (lua_isnil(L, -1))
-		return 0;
-
-	if (lua_isnil(L, -2))
-		return 0;
-
-	lua_pushnil(L);
-	while (lua_next(L, 1))
-	{
-		indexBuf[indexCount++] = (SHORT)luaL_checknumber(L, -1);
-		lua_pop(L, 1);
-	}
-
-	lua_pushnil(L);
-	while (lua_next(L, 2))
-	{
-		vertBuf[vertCount++] = *(VERTEX*)luaL_checkudata(L, -1, L_VERTEX);
-		lua_pop(L, 1);
-	}
-
-	RENDERER->PushIndexedPolygon(PRIMITIVEKIND_TRIANGLELIST, indexCount/3, indexBuf, indexCount, vertBuf, vertCount);
-	return 0;
-}
-LUAF(Rend, DrawTriangle)
-{
-	VERTEX vertBuf[MAX_VERTS];
-	UINT vertCount=0;
-
-	if (lua_gettop(L) != 1)
-		return 0;
-
-	if (lua_isnil(L, -1))
-		return 0;
-
-	lua_pushnil(L);
-	while (lua_next(L, 1))
-	{
-		vertBuf[vertCount++] = *(VERTEX*)luaL_checkudata(L, -1, L_VERTEX);
-		lua_pop(L, 1);
-	}
-
-	RENDERER->PushPolygon(PRIMITIVEKIND_TRIANGLELIST, vertCount/3, vertBuf, vertCount);
 	return 0;
 }
 LUAF(Rend, CameraPerspective)
@@ -190,13 +138,11 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, CameraPerspective);
 	REGF(Rend, CameraOrthographic);
 
-	REGF(Rend, DrawIndexedTriangle);
-	REGF(Rend, DrawTriangle);
-
 	REGF(Rend, BindTexture);
 
 	LuaVertex_register(L);
 	LuaTexture_register(L);
+	LuaMesh_register(L);
 
 	// enums
 	{

@@ -50,5 +50,6 @@ extern FLOAT GetTime(void);
 #define L_VECTOR3 "Vector3"
 #define L_VERTEX "Vertex"
 #define L_TEXTURE "Texture"
+#define L_MESH "MeshBuilder"
 
 #define ENDF {0,0}

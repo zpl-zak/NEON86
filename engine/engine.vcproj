@@ -550,6 +550,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MeshBuilder.cpp"
+				>
+			</File>
+			<File
 				RelativePath="RenderCommand.cpp"
 				>
 				<FileConfiguration
@@ -751,6 +755,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LuaMesh.h"
+				>
+			</File>
+			<File
 				RelativePath=".\LuaTexture.h"
 				>
 			</File>
@@ -760,6 +768,10 @@
 			</File>
 			<File
 				RelativePath=".\LuaVertex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MeshBuilder.h"
 				>
 			</File>
 			<File

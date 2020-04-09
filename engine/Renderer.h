@@ -31,9 +31,7 @@ public:
 	VOID PushClear(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
 	VOID PushTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
 	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
-	VOID PushPolygon(UINT primitiveKind, UINT primCount, const VERTEX* verts, UINT vertCount);
-	VOID PushIndexedPolygon(UINT primitiveKind, UINT primCount, const SHORT* indices, UINT indexCount, const VERTEX* verts, UINT vertCount);
-	
+
 	/// Accessors
 	LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
 	RECT GetResolution() { return mLastRes; }

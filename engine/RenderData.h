@@ -68,16 +68,15 @@ struct RENDERDATA
 	union 
 	{
 		UINT flags;
-		UINT kind;
 		DWORD stage;
 	};
+	
+	UINT kind;
 
 	union
 	{
 		struct  
 		{
-			VERTEX verts[MAX_VERTS];
-			SHORT indices[MAX_INDICES];
 			UINT vertCount;
 			UINT indexCount;
 			UINT primCount;
@@ -87,4 +86,6 @@ struct RENDERDATA
 	};
 
 	LPDIRECT3DTEXTURE9 tex;
+	LPDIRECT3DVERTEXBUFFER9 vertBuffer;
+	LPDIRECT3DINDEXBUFFER9 indexBuffer;
 };

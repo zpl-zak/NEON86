@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "RenderQueue.h"
+#include "MeshBuilder.h"
 
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -179,47 +180,4 @@ VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)
 	d.matrix = mat;
 
 	PushCommand(RENDERKIND_MATRIX, d);
-}
-
-VOID CRenderer::PushPolygon(UINT kind, UINT primCount, const VERTEX* verts, UINT vertCount)
-{
-	if (!verts || vertCount > MAX_VERTS)
-	{
-		// todo: log
-		return;
-	}
-
-	if (vertCount == 0)
-		return;
-
-	RENDERDATA d;
-	d.kind = kind;
-	d.vertCount = vertCount;
-	d.primCount = primCount;
-	memcpy(d.verts, verts, vertCount * sizeof(VERTEX));
-
-	PushCommand(RENDERKIND_POLYGON, d);
-}
-
-
-VOID CRenderer::PushIndexedPolygon(UINT kind, UINT primCount, const SHORT* indices, UINT indexCount, const VERTEX* verts, UINT vertCount)
-{
-	if (!verts || vertCount > MAX_VERTS || !indices || indexCount > MAX_INDICES)
-	{
-		// todo: log
-		return;
-	}
-
-	if (vertCount == 0 || indexCount == 0 || primCount == 0)
-		return;
-
-	RENDERDATA d;
-	d.kind = kind;
-	d.vertCount = vertCount;
-	d.indexCount = indexCount;
-	d.primCount = primCount;
-	memcpy(d.verts, verts, vertCount * sizeof(VERTEX));
-	memcpy(d.indices, indices, indexCount * sizeof(SHORT));
-
-	PushCommand(RENDERKIND_POLYGON_INDEXED, d);
 }

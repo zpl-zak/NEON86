@@ -1,5 +1,5 @@
 spinner = 0.0
-cube = nil
+quad = nil
 rot = nil
 lookAt = nil
 whiteTex = nil
@@ -8,28 +8,26 @@ function _init()
 	CameraPerspective(45)
 	-- CameraOrthographic(5,5)
 	
-	cube = {
-		verts = {
-			-- x, y, z, u, v, color
-			Vertex( -1.0, 1.0, -1.0, 0, 0, Color(0, 0, 255)),
-			Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(0, 0, 255)),
-			Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(0, 0, 255)),
-			Vertex( 1.0, -1.0, -1.0, -1.0, -1.0, Color(0, 0, 255)),
-		},
-		
-		inds = {
-			0, 1, 2,
-			2, 1, 3,
-		},
-	}
+	whiteTex = Texture("mafiahub.bmp")
+	
+	quad = MeshBuilder()
+	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(0, 0, 255)))
+	quad:addVertex(Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(0, 0, 255)))
+	quad:addVertex(Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(0, 0, 255)))
+	quad:addVertex(Vertex( 1.0, -1.0, -1.0, -1.0, -1.0, Color(0, 0, 255)))
+	
+	quad:addTriangle(0,1,2)
+	quad:addTriangle(2,1,3)
+	
+	quad:setTexture(0, whiteTex)
+	
+	quad:build()
 	
 	lookAt = Matrix():lookAt(
-		Vector3(- 15, 5, 15),
-		Vector3(),
+		Vector3(10,15,-20),
+		Vector3(10,0,0),
 		Vector3(0,1,0)
 	)
-	
-	whiteTex = Texture("mafiahub.bmp")
 end
 
 function _destroy()
@@ -46,12 +44,12 @@ function _render()
 	
 	lookAt:bind(VIEW)
 	
-	for i=0, 10, 1
+	for i=0, 25, 1
 	do
-		for j=0, 10, 1
+		for j=0, 25, 1
 		do
-			w = (rot * Matrix():translate(5,4*(i%2)-2,j*(-4)))
-			cubeDraw(cube, w)
+			w = (rot * Matrix():translate(i*2, 0, j*2))
+			cubeDraw(quad, w)
 		end
 	end
 end
@@ -60,24 +58,22 @@ function euler(x,y,z)
 	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
 end
 
-function cubeDraw(cube, world)
-	BindTexture(0, whiteTex)
+function cubeDraw(quad, world)
 	m = (Matrix() * world):bind(WORLD)
-	DrawIndexedTriangle(cube.inds, cube.verts)
+	quad:draw()
 	
 	m = (Matrix():rotate(0,90,0) * world):bind(WORLD)
-	DrawIndexedTriangle(cube.inds, cube.verts)
+	quad:draw()
 	
 	m = (Matrix():rotate(0,-90,0) * world):bind(WORLD)
-	DrawIndexedTriangle(cube.inds, cube.verts)
+	quad:draw()
 	
 	m = (Matrix():rotate(0,180,0) * world):bind(WORLD)
-	DrawIndexedTriangle(cube.inds, cube.verts)
+	quad:draw()
 	
 	m = (Matrix():rotate(90,0,0) * world):bind(WORLD)
-	DrawIndexedTriangle(cube.inds, cube.verts)
+	quad:draw()
 	
 	m = (Matrix():rotate(-90,0,0) * world):bind(WORLD)
-	DrawIndexedTriangle(cube.inds, cube.verts)
-	BindTexture(0)
+	quad:draw()
 end

@@ -40,25 +40,27 @@ void CRenderCommand::ExecuteDraw(void)
 		}
 		break;
 	case RENDERKIND_POLYGON:
-		{
+		{	
 			dev->SetFVF(NEONFVF);
-			dev->DrawPrimitiveUP((D3DPRIMITIVETYPE)mData.kind, 
-								  mData.primCount,
-								  mData.verts,
-								  sizeof(VERTEX));
+			dev->SetStreamSource(0,
+								 mData.vertBuffer,
+								 0,
+								 sizeof(VERTEX));
+			dev->SetIndices(NULL);
+
+			dev->DrawPrimitive((D3DPRIMITIVETYPE)mData.kind, 0, mData.primCount);
 		}
 		break;
 	case RENDERKIND_POLYGON_INDEXED:
 		{
 			dev->SetFVF(NEONFVF);
-			dev->DrawIndexedPrimitiveUP((D3DPRIMITIVETYPE)mData.kind, 
-										0, 
-										mData.vertCount, 
-										mData.primCount, 
-										mData.indices, 
-										D3DFMT_INDEX16,
-										mData.verts,
-										sizeof(VERTEX));
+			dev->SetStreamSource(0,
+				mData.vertBuffer,
+				0,
+				sizeof(VERTEX));
+			dev->SetIndices(mData.indexBuffer);
+
+			dev->DrawIndexedPrimitive((D3DPRIMITIVETYPE)mData.kind, 0, 0, mData.vertCount, 0, mData.primCount);
 		}
 		break;
 	case RENDERKIND_SET_TEXTURE:
