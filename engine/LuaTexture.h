@@ -44,7 +44,7 @@ static INT texture_new(lua_State* L)
 
 static INT texture_delete(lua_State* L)
 {
-	LPDIRECT3DTEXTURE9 *tex = (LPDIRECT3DTEXTURE9*)lua_touserdata(L, 1);
+	LPDIRECT3DTEXTURE9 *tex = (LPDIRECT3DTEXTURE9*)luaL_checkudata(L, 1, L_TEXTURE);
 
 	if ((*(LPDIRECT3DTEXTURE9*)tex))
 		(*(LPDIRECT3DTEXTURE9*)tex)->Release();
