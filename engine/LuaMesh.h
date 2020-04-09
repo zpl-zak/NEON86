@@ -106,7 +106,7 @@ static VOID LuaMesh_register(lua_State* L)
 	lua_pushcfunction(L, mesh_settexture); lua_setfield(L, -2, "setTexture");
 	lua_pushcfunction(L, mesh_draw); lua_setfield(L, -2, "draw");
 	lua_pushcfunction(L, mesh_build); lua_setfield(L, -2, "build");
-	lua_pushcfunction(L, mesh_delete); lua_setfield(L, -2, "__gc");
+	lua_pushcfunction(L, mesh_delete) ; lua_setfield(L, -2, "__gc");
 
 	lua_pop(L, 1);
 }

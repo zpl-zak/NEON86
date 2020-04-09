@@ -41,16 +41,8 @@ VOID MeshBuilder::Draw(void)
 	if (mData.tex)
 		RENDERER->PushTexture(mData.stage, mData.tex);
 
-	if (mData.indexCount > 0)
-	{
-		mData.primCount = mData.indexCount/3;
-		RENDERER->PushCommand(RENDERKIND_POLYGON_INDEXED, mData);
-	}
-	else
-	{
-		mData.primCount = mData.vertCount/3;
-		RENDERER->PushCommand(RENDERKIND_POLYGON, mData);
-	}
+	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
+	RENDERER->PushCommand(RENDERKIND_POLYGON, mData);
 
 	if (mData.tex)
 		RENDERER->PushTexture(mData.stage, NULL);
