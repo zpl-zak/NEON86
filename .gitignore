@@ -19,3 +19,10 @@ node_modules/
 Debug/
 Release/
 /neon86.ncb
+*.dsp
+*.mak
+*.plg
+*.user
+*.dsw
+*.opt
+*.suo
