@@ -32,6 +32,7 @@ public:
 	VOID Render(void);
 	VOID Resize(RECT res);
 
+	inline void CheckVMErrors(INT);
 private:
 	UCHAR mPlayKind;
 	UCHAR *mMainScript;
@@ -40,5 +41,4 @@ private:
 	VOID InitVM(void);
 	VOID DestroyVM(void);
 	inline void PrintVMError();
-	inline void CheckVMErrors(INT);
 };

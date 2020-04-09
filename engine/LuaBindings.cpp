@@ -27,12 +27,31 @@ LUAF(Rend, SetFPS)
 
 	return 0;
 }
+LUAF(Rend, dofile)
+{
+	const char* scriptName = luaL_checkstring(L, 1);
+
+	FDATA fd = FILESYSTEM->GetResource(RESOURCEKIND_TEXT, (LPSTR)scriptName);
+
+	if (!fd.data)
+	{
+		MessageBoxA(NULL, "No dofile game script found!", "Resource error", MB_OK);
+		ENGINE->Shutdown();
+		return 0;
+	}
+
+	luaL_dostring(L,(char *)fd.data);
+	FILESYSTEM->FreeResource(fd.data);
+
+	return 0;
+}
 ///<END
 
 VOID CLuaBindings::BindBase(lua_State* L)
 {
 	REGF(Base, ShowMessage);
 	REGF(Rend, SetFPS);
+	REGF(Rend, dofile);
 }
 
 /// MATH METHODS

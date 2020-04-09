@@ -1,14 +1,18 @@
 spinner = 0.0
 quad = nil
 rot = nil
-lookAt = nil
-whiteTex = nil
+lookAt = Matrix():lookAt(
+	Vector3(10,15,-20),
+	Vector3(10,0,0),
+	Vector3(0,1,0)
+)
+whiteTex = Texture("mafiahub.bmp")
+
+dofile("another.lua")
 
 function _init()
 	CameraPerspective(45)
 	-- CameraOrthographic(5,5)
-	
-	whiteTex = Texture("mafiahub.bmp")
 	
 	quad = MeshBuilder()
 	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(0, 0, 255)))
@@ -22,12 +26,6 @@ function _init()
 	quad:setTexture(0, whiteTex)
 	
 	quad:build()
-	
-	lookAt = Matrix():lookAt(
-		Vector3(10,15,-20),
-		Vector3(10,0,0),
-		Vector3(0,1,0)
-	)
 end
 
 function _destroy()
@@ -52,28 +50,4 @@ function _render()
 			cubeDraw(quad, w)
 		end
 	end
-end
-
-function euler(x,y,z)
-	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
-end
-
-function cubeDraw(quad, world)
-	m = (Matrix() * world):bind(WORLD)
-	quad:draw()
-	
-	m = (Matrix():rotate(0,90,0) * world):bind(WORLD)
-	quad:draw()
-	
-	m = (Matrix():rotate(0,-90,0) * world):bind(WORLD)
-	quad:draw()
-	
-	m = (Matrix():rotate(0,180,0) * world):bind(WORLD)
-	quad:draw()
-	
-	m = (Matrix():rotate(90,0,0) * world):bind(WORLD)
-	quad:draw()
-	
-	m = (Matrix():rotate(-90,0,0) * world):bind(WORLD)
-	quad:draw()
 end

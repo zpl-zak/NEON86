@@ -138,16 +138,17 @@ VOID CLuaMachine::InitVM(void)
 
 	luaL_openlibs(mLuaVM);
 	
+	/// Bindings
+	CLuaBindings::BindBase(mLuaVM);
+	CLuaBindings::BindMath(mLuaVM);
+	CLuaBindings::BindRenderer(mLuaVM);
+
+	// Load script
 	result = luaL_loadstring(mLuaVM, (const char*)mMainScript);
 	CheckVMErrors(result);
 
 	result = lua_pcall(mLuaVM, 0, 0, 0);
 	CheckVMErrors(result);
-
-	/// Bindings
-	CLuaBindings::BindBase(mLuaVM);
-	CLuaBindings::BindMath(mLuaVM);
-	CLuaBindings::BindRenderer(mLuaVM);
 }
 
 VOID CLuaMachine::DestroyVM(void)
