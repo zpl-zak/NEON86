@@ -48,8 +48,11 @@ function _render()
 	
 	for i=0, 10, 1
 	do
-		w = (rot * Matrix():translate(5,4*(i%2)-2,i*(-4)))
-		cubeDraw(cube, w)
+		for j=0, 10, 1
+		do
+			w = (rot * Matrix():translate(5,4*(i%2)-2,j*(-4)))
+			cubeDraw(cube, w)
+		end
 	end
 end
 

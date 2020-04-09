@@ -36,15 +36,11 @@ public:
 	
 	/// Accessors
 	LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
-	LPDIRECT3DVERTEXBUFFER9 GetVertexBuffer() { return mBuffer; }
-	LPDIRECT3DINDEXBUFFER9 GetIndexBuffer() { return mIndexBuffer; }
 	RECT GetResolution() { return mLastRes; }
 
 protected:
 	LPDIRECT3D9 mDirect9;
 	LPDIRECT3DDEVICE9 mDevice;
-	LPDIRECT3DVERTEXBUFFER9 mBuffer;
-	LPDIRECT3DINDEXBUFFER9 mIndexBuffer;
 	D3DPRESENT_PARAMETERS mParams;
 	RECT mLastRes;
 	HWND mWindow;

@@ -19,8 +19,6 @@ CRenderer::CRenderer()
 	mRenderQueue = new CRenderQueue();
 	mDirect9 = NULL;
 	mDevice = NULL;
-	mBuffer = NULL;
-	mIndexBuffer = NULL;
 	mWindow = NULL;
 	mVsync = TRUE;
 	mCanAddCommands = FALSE;
@@ -66,20 +64,6 @@ LRESULT CRenderer::CreateDevice(HWND window)
 
 	if (!mDevice)
 		return res;
-
-	mDevice->CreateVertexBuffer(MAX_VERTS*sizeof(VERTEX),
-								D3DUSAGE_DYNAMIC,
-								NEONFVF,
-								D3DPOOL_DEFAULT,
-								&mBuffer,
-								NULL);
-
-	mDevice->CreateIndexBuffer(MAX_INDICES*sizeof(SHORT),
-							   D3DUSAGE_DYNAMIC,
-							   D3DFMT_INDEX16,
-							   D3DPOOL_DEFAULT,
-							   &mIndexBuffer,
-							   NULL);
 
 	mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
@@ -135,8 +119,6 @@ VOID CRenderer::AllowCommands(BOOL state)
 
 BOOL CRenderer::Release()
 {
-	SAFE_RELEASE(mBuffer);
-	SAFE_RELEASE(mIndexBuffer);
 	SAFE_RELEASE(mRenderQueue);
 	SAFE_RELEASE(mDevice);
 	SAFE_RELEASE(mDirect9);

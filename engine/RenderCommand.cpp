@@ -41,56 +41,24 @@ void CRenderCommand::ExecuteDraw(void)
 		break;
 	case RENDERKIND_POLYGON:
 		{
-			LPDIRECT3DVERTEXBUFFER9 buffer = RENDERER->GetVertexBuffer();
-			VOID* vidMem;
-
-			buffer->Lock(0,
-				mData.vertCount * sizeof(VERTEX),
-				(VOID**)&vidMem,
-				0);
-
-			memcpy(vidMem, mData.verts, mData.vertCount*sizeof(VERTEX));
-			buffer->Unlock();
 			dev->SetFVF(NEONFVF);
-			dev->SetStreamSource(0,
-								 buffer,
-								 0,
-								 sizeof(VERTEX));
-			dev->SetIndices(NULL);
-
-			dev->DrawPrimitive((D3DPRIMITIVETYPE)mData.kind, 0, mData.primCount);
+			dev->DrawPrimitiveUP((D3DPRIMITIVETYPE)mData.kind, 
+								  mData.primCount,
+								  mData.verts,
+								  sizeof(VERTEX));
 		}
 		break;
 	case RENDERKIND_POLYGON_INDEXED:
 		{
-			LPDIRECT3DVERTEXBUFFER9 buffer = RENDERER->GetVertexBuffer();
-			LPDIRECT3DINDEXBUFFER9 indexBuffer = RENDERER->GetIndexBuffer();
-			VOID* vidMem, *indexVidMem;
-
-			buffer->Lock(0,
-				mData.vertCount * sizeof(VERTEX),
-				(VOID**)&vidMem,
-				0);
-
-			memcpy(vidMem, mData.verts, mData.vertCount*sizeof(VERTEX));
-			buffer->Unlock();
-
-			indexBuffer->Lock(0,
-							  mData.indexCount * sizeof(SHORT),
-							  (VOID**)&indexVidMem,
-							  0);
-
-			memcpy(indexVidMem, mData.indices, mData.indexCount*sizeof(SHORT));
-			indexBuffer->Unlock();
-
 			dev->SetFVF(NEONFVF);
-			dev->SetStreamSource(0,
-				buffer,
-				0,
-				sizeof(VERTEX));
-			dev->SetIndices(indexBuffer);
-
-			dev->DrawIndexedPrimitive((D3DPRIMITIVETYPE)mData.kind, 0, 0, mData.vertCount, 0, mData.primCount);
+			dev->DrawIndexedPrimitiveUP((D3DPRIMITIVETYPE)mData.kind, 
+										0, 
+										mData.vertCount, 
+										mData.primCount, 
+										mData.indices, 
+										D3DFMT_INDEX16,
+										mData.verts,
+										sizeof(VERTEX));
 		}
 		break;
 	case RENDERKIND_SET_TEXTURE:
