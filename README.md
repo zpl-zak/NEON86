@@ -1,6 +1,6 @@
 # NEON 86
 
-A retro toy game engine written in VC++98. 
+A retro toy game engine written in **VC++98.** 
 
 ## Structure
 
