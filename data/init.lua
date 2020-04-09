@@ -34,7 +34,7 @@ end
 
 function _update(dt)
 	spinner = spinner + 1.5*dt
-	rot = euler(spinner*(180.0/math.pi), math.sin(spinner)*(180.0/math.pi), 0)
+	rot = euler(spinner, math.sin(spinner), 0)
 end
 
 function _render()

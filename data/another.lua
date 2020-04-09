@@ -6,18 +6,18 @@ function cubeDraw(quad, world)
 	m = (Matrix() * world):bind(WORLD)
 	quad:draw()
 	
-	m = (Matrix():rotate(0,90,0) * world):bind(WORLD)
+	m = (Matrix():rotate(0,math.rad(90),0) * world):bind(WORLD)
 	quad:draw()
 	
-	m = (Matrix():rotate(0,-90,0) * world):bind(WORLD)
+	m = (Matrix():rotate(0,math.rad(-90),0) * world):bind(WORLD)
 	quad:draw()
 	
-	m = (Matrix():rotate(0,180,0) * world):bind(WORLD)
+	m = (Matrix():rotate(0,math.rad(180),0) * world):bind(WORLD)
 	quad:draw()
 	
-	m = (Matrix():rotate(90,0,0) * world):bind(WORLD)
+	m = (Matrix():rotate(math.rad(90),0,0) * world):bind(WORLD)
 	quad:draw()
 	
-	m = (Matrix():rotate(-90,0,0) * world):bind(WORLD)
+	m = (Matrix():rotate(math.rad(-90),0,0) * world):bind(WORLD)
 	quad:draw()
 end

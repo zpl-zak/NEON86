@@ -31,9 +31,9 @@ static INT matrix_rotate(lua_State* L)
 	FLOAT x = (FLOAT)lua_tonumber(L, 2);
 	FLOAT y = (FLOAT)lua_tonumber(L, 3);
 	FLOAT z = (FLOAT)lua_tonumber(L, 4);
-	if (x) D3DXMatrixRotationX(mat, D3DXToRadian(x));
-	if (y) D3DXMatrixRotationY(mat, D3DXToRadian(y));
-	if (z) D3DXMatrixRotationZ(mat, D3DXToRadian(z));
+	if (x) D3DXMatrixRotationX(mat, x);
+	if (y) D3DXMatrixRotationY(mat, y);
+	if (z) D3DXMatrixRotationZ(mat, z);
 	
 	lua_pushvalue(L, 1);
 	return 1;
