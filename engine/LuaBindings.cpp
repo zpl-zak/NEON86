@@ -17,11 +17,20 @@ LUAF(Base, ShowMessage)
 	MessageBoxA(NULL, text, caption, MB_OK);
 	return 0;
 }
+LUAF(Rend, SetFPS)
+{
+	FLOAT fps = (FLOAT)luaL_checknumber(L, 1);
+
+	ENGINE->SetFPS(fps);
+
+	return 0;
+}
 ///<END
 
 VOID CLuaBindings::BindBase(lua_State* L)
 {
 	REGF(Base, ShowMessage);
+	REGF(Rend, SetFPS);
 }
 
 /// MATH METHODS
@@ -162,7 +171,6 @@ LUAF(Rend, CameraOrthographic)
 
 	return 0;
 }
-
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)

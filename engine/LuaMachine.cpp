@@ -134,12 +134,7 @@ VOID CLuaMachine::InitVM(void)
 	INT result;
 	mLuaVM = luaL_newstate();
 
-	luaopen_base(mLuaVM);
-	luaopen_math(mLuaVM);
-	luaopen_coroutine(mLuaVM);
-	luaopen_table(mLuaVM);
-	luaopen_string(mLuaVM);
-	luaopen_debug(mLuaVM);
+	luaL_openlibs(mLuaVM);
 	
 	result = luaL_loadstring(mLuaVM, (const char*)mMainScript);
 	CheckVMErrors(result);

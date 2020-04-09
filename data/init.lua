@@ -1,8 +1,11 @@
-rotY = 0.0
+spinner = 0.0
+cube = nil
 
 function _init()
 	CameraPerspective(45)
 	-- CameraOrthographic(5,5)
+	
+	cube = Cube()
 end
 
 function _destroy()
@@ -10,32 +13,44 @@ function _destroy()
 end
 
 function _update(dt)
-	rotY = rotY + 1.5*dt
+	spinner = spinner + 1.5*dt
 end
 
 function _render()
 	ClearScene(0, 40, 100)
 	
-	matRotateY = Matrix()
-	matRotateX = Matrix()
+	rot = euler(spinner, math.sin(spinner), 0)
 	
-	matRotateY:rotate(0, rotY, 0)
-	matRotateX:rotate(rotY, 0, 0)
+	Matrix():lookAt(
+		Vector3(0, 5, 20),
+		Vector3(),
+		Vector3(0,1,0)
+	):bind(VIEW)
 	
-	matRotate = matRotateY * matRotateX
-	matRotate:bind(WORLD)
+	for i=0, 10, 1
+	do
+		(rot * Matrix():translate(i%10,i%2-1,i*(-1))):bind(WORLD)
+		drawObjectIndexed(cube)
+	end
+end
+
+function drawObjectIndexed(obj)
+	DrawIndexedTriangle(obj.inds, obj.verts)
+end
+
+function euler(x,y,z)
+	rotX = Matrix()
+	rotY = Matrix()
+	rotZ = Matrix()
 	
-	eyePos = Vector3(0, 0, 10)
-	atPos = Vector3()
-	upPos = Vector3(0,1,0)
+	rotX:rotate(x,0,0)
+	rotY:rotate(0,y,0)
+	rotZ:rotate(0,0,z)
 	
-	matView = Matrix( )
-	matView:lookAt(eyePos, atPos, upPos)
-	matView:bind(VIEW)
+	rot = Matrix()
+	rot = rotZ * rotY * rotX
 	
-	cube = Cube()
-	
-	DrawIndexedTriangle(cube.inds, cube.verts)
+	return rot
 end
 
 function Cube()
