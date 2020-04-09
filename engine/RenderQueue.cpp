@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "RenderQueue.h"
+#include "engine.h"
 
 CRenderQueue::CRenderQueue(void)
 {
@@ -16,7 +17,11 @@ BOOL CRenderQueue::PushCommand(UINT kind, const RENDERDATA& data)
 		mCommands = (CRenderCommand*)realloc(mCommands, mCapacity*sizeof(CRenderCommand));
 
 		if (!mCommands)
-			return FALSE; // todo: OutOfMemory log error
+		{
+			MessageBoxA(NULL, "Can't push render command!", "Out of memory error", MB_OK);
+			ENGINE->Shutdown();
+			return FALSE;
+		}
 	}
 
 	mCommands[mCount++] = CRenderCommand(kind, data);
