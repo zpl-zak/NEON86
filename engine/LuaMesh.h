@@ -90,8 +90,7 @@ static INT mesh_delete(lua_State* L)
 
 	mesh->Release();
 
-	lua_pushvalue(L, 1);
-	return 1;
+	return 0;
 }
 
 static VOID LuaMesh_register(lua_State* L)
