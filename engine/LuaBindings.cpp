@@ -40,7 +40,8 @@ LUAF(Rend, dofile)
 		return 0;
 	}
 
-	luaL_dostring(L,(char *)fd.data);
+	INT res = luaL_dostring(L,(char *)fd.data);
+	VM->CheckVMErrors(res);
 	FILESYSTEM->FreeResource(fd.data);
 
 	return 0;
