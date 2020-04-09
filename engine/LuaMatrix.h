@@ -16,9 +16,9 @@ static INT matrix_new(lua_State* L)
 static INT matrix_translate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	FLOAT x = (FLOAT)lua_tonumber(L, 2);
-	FLOAT y = (FLOAT)lua_tonumber(L, 3);
-	FLOAT z = (FLOAT)lua_tonumber(L, 4);
+	FLOAT x = (FLOAT)luaL_checknumber(L, 2);
+	FLOAT y = (FLOAT)luaL_checknumber(L, 3);
+	FLOAT z = (FLOAT)luaL_checknumber(L, 4);
 	D3DXMatrixTranslation(mat, x, y, z);
 
 	lua_pushvalue(L, 1);
@@ -28,9 +28,9 @@ static INT matrix_translate(lua_State* L)
 static INT matrix_rotate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	FLOAT x = (FLOAT)lua_tonumber(L, 2);
-	FLOAT y = (FLOAT)lua_tonumber(L, 3);
-	FLOAT z = (FLOAT)lua_tonumber(L, 4);
+	FLOAT x = (FLOAT)luaL_checknumber(L, 2);
+	FLOAT y = (FLOAT)luaL_checknumber(L, 3);
+	FLOAT z = (FLOAT)luaL_checknumber(L, 4);
 	if (x) D3DXMatrixRotationX(mat, x);
 	if (y) D3DXMatrixRotationY(mat, y);
 	if (z) D3DXMatrixRotationZ(mat, z);
@@ -42,9 +42,9 @@ static INT matrix_rotate(lua_State* L)
 static INT matrix_scale(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	FLOAT x = (FLOAT)lua_tonumber(L, 2);
-	FLOAT y = (FLOAT)lua_tonumber(L, 3);
-	FLOAT z = (FLOAT)lua_tonumber(L, 4);
+	FLOAT x = (FLOAT)luaL_checknumber(L, 2);
+	FLOAT y = (FLOAT)luaL_checknumber(L, 3);
+	FLOAT z = (FLOAT)luaL_checknumber(L, 4);
 	D3DXMatrixScaling(mat, x, y, z);
 
 	lua_pushvalue(L, 1);
