@@ -743,6 +743,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\lua_macros.h"
+				>
+			</File>
+			<File
 				RelativePath=".\LuaBindings.h"
 				>
 			</File>
@@ -800,6 +804,10 @@
 			</File>
 			<File
 				RelativePath="system.h"
+				>
+			</File>
+			<File
+				RelativePath=".\zpl_macros.h"
 				>
 			</File>
 		</Filter>

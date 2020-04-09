@@ -55,7 +55,7 @@ void CRenderCommand::ExecuteDraw(void)
 		}
 		break;
 	case RENDERKIND_SET_TEXTURE:
-		dev->SetTextureStageState(mData.stage, D3DTSS_COLOROP, mData.tex ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
+		dev->SetTextureStageState(mData.stage, D3DTSS_COLOROP, mData.tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
 		dev->SetTexture(mData.stage, mData.tex);
 		break;
 	default:
