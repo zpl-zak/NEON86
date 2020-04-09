@@ -24,7 +24,7 @@ function _init()
 	}
 	
 	lookAt = Matrix():lookAt(
-		Vector3(0, 5, 20),
+		Vector3(- 15, 5, 15),
 		Vector3(),
 		Vector3(0,1,0)
 	)
@@ -46,19 +46,11 @@ function _render()
 	
 	lookAt:bind(VIEW)
 	
-	BindTexture(0, whiteTex)
-	
 	for i=0, 10, 1
 	do
-		w = (rot * Matrix():translate(i%10,i%2-2,i*(-2)))
+		w = (rot * Matrix():translate(5,4*(i%2)-2,i*(-4)))
 		cubeDraw(cube, w)
 	end
-	
-	BindTexture(0)
-end
-
-function drawObjectIndexed(obj)
-	DrawIndexedTriangle(obj.inds, obj.verts)
 end
 
 function euler(x,y,z)
@@ -66,6 +58,7 @@ function euler(x,y,z)
 end
 
 function cubeDraw(cube, world)
+	BindTexture(0, whiteTex)
 	m = (Matrix() * world):bind(WORLD)
 	DrawIndexedTriangle(cube.inds, cube.verts)
 	
@@ -83,4 +76,5 @@ function cubeDraw(cube, world)
 	
 	m = (Matrix():rotate(-90,0,0) * world):bind(WORLD)
 	DrawIndexedTriangle(cube.inds, cube.verts)
+	BindTexture(0)
 end
