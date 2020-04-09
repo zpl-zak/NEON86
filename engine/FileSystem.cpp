@@ -50,10 +50,12 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 	return ok;
 }
 
-VOID* CFileSystem::GetResource(UCHAR kind, LPSTR resName)
+FDATA CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 {
+	FDATA res={NULL, -1};
+
 	if (!mLoadDone)
-		return NULL;
+		return res;
 
 	switch (kind)
 	{
@@ -65,11 +67,12 @@ VOID* CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 		break;
 	default:
 		if (!resName)
-			return NULL;
+			return res;
 		break;
 	}
 
 	UCHAR* data = NULL;
+	UINT size = -1;
 
 	switch (mLoadKind)
 	{
@@ -82,7 +85,7 @@ VOID* CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 			fopen_s(&fp, path, "rb");
 
 			if (!fp)
-				return NULL;
+				return res;
 
 			fseek(fp, 0, SEEK_END);
 			DWORD fileSize = ftell(fp);
@@ -92,6 +95,8 @@ VOID* CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 			fread((UCHAR*)data, 1, fileSize, fp);
 			data[fileSize] = NULL;
 			fclose(fp);
+
+			size = fileSize;
 		}
 		break;
 	case LOADKIND_PAK:
@@ -99,7 +104,10 @@ VOID* CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 		break;
 	}
 
-	return (VOID*)data;
+	res.data = data;
+	res.size = size;
+
+	return res;
 }
 
 VOID CFileSystem::FreeResource(VOID* data)

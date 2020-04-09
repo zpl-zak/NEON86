@@ -5,13 +5,13 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 
-#define NEONFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 enum RENDERKIND
 {
 	RENDERKIND_CLEAR,
 	RENDERKIND_MATRIX,
 	RENDERKIND_POLYGON,
 	RENDERKIND_POLYGON_INDEXED,
+	RENDERKIND_SET_TEXTURE,
 };
 
 enum PRIMITIVEKIND {
@@ -51,10 +51,12 @@ enum CLEARFLAG
 	CLEARFLAG_STANDARD = (CLEARFLAG_COLOR|CLEARFLAG_DEPTH),
 };
 
+#define NEONFVF (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_DIFFUSE)
 struct VERTEX
 {
 	float x, y, z; // D3DFVF_XYZ
 	DWORD color; // D3DFVF_DIFFUSE
+	float s, t; // D3DFVF_TEX1
 };
 
 #define MAX_VERTS 128
@@ -67,6 +69,7 @@ struct RENDERDATA
 	{
 		UINT flags;
 		UINT kind;
+		DWORD stage;
 	};
 
 	union
@@ -82,4 +85,6 @@ struct RENDERDATA
 
 		D3DMATRIX matrix;
 	};
+
+	LPDIRECT3DTEXTURE9 tex;
 };

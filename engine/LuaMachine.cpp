@@ -27,14 +27,16 @@ VOID CLuaMachine::Play(void)
 	if (mPlayKind != PLAYKIND_STOPPED)
 		return;
 
-	mMainScript = (UCHAR*)FILESYSTEM->GetResource(RESOURCEKIND_SCRIPT);
+	FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_SCRIPT);
 
-	if (!mMainScript)
+	if (!f.data)
 	{
 		MessageBoxA(NULL, "No game script found!", "Resource error", MB_OK);
 		ENGINE->Shutdown();
 		return;
 	}
+
+	mMainScript = (UCHAR*)f.data;
 
 	InitVM();
 	mPlayKind = PLAYKIND_PLAYING;

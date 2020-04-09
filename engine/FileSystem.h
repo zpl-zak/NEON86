@@ -16,6 +16,12 @@ enum RESOURCEKIND
 	RESOURCEKIND_IMAGE,
 };
 
+struct FDATA
+{
+	VOID* data;
+	UINT size;
+};
+
 #define RESOURCE_META "meta.yaml"
 #define RESOURCE_SCRIPT "init.lua"
 
@@ -26,7 +32,7 @@ class ENGINE_API CFileSystem
 public:
 	CFileSystem(void);
 	BOOL LoadGame(LPSTR gamePath, UCHAR loadKind = LOADKIND_FOLDER);
-	VOID* GetResource(UCHAR kind, LPSTR resName=NULL);
+	FDATA GetResource(UCHAR kind, LPSTR resName=NULL);
 	VOID FreeResource(VOID* data);
 	VOID Release(void);
 

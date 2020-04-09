@@ -29,17 +29,18 @@ void CRenderCommand::ExecutePreDraw(void)
 
 void CRenderCommand::ExecuteDraw(void)
 {
+	LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
+
 	switch (mKind)
 	{		
 	case RENDERKIND_MATRIX:
 		{
-			RENDERER->GetDevice()->SetTransform((D3DTRANSFORMSTATETYPE)mData.kind,
+			dev->SetTransform((D3DTRANSFORMSTATETYPE)mData.kind,
 												&mData.matrix);
 		}
 		break;
 	case RENDERKIND_POLYGON:
 		{
-			LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 			LPDIRECT3DVERTEXBUFFER9 buffer = RENDERER->GetVertexBuffer();
 			VOID* vidMem;
 
@@ -62,7 +63,6 @@ void CRenderCommand::ExecuteDraw(void)
 		break;
 	case RENDERKIND_POLYGON_INDEXED:
 		{
-			LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 			LPDIRECT3DVERTEXBUFFER9 buffer = RENDERER->GetVertexBuffer();
 			LPDIRECT3DINDEXBUFFER9 indexBuffer = RENDERER->GetIndexBuffer();
 			VOID* vidMem, *indexVidMem;
@@ -92,6 +92,10 @@ void CRenderCommand::ExecuteDraw(void)
 
 			dev->DrawIndexedPrimitive((D3DPRIMITIVETYPE)mData.kind, 0, 0, mData.vertCount, 0, mData.primCount);
 		}
+		break;
+	case RENDERKIND_SET_TEXTURE:
+		dev->SetTextureStageState(mData.stage, D3DTSS_COLOROP, mData.tex ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
+		dev->SetTexture(mData.stage, mData.tex);
 		break;
 	default:
 		break;

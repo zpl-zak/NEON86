@@ -1,11 +1,35 @@
 spinner = 0.0
 cube = nil
+rot = nil
+lookAt = nil
+whiteTex = nil
 
 function _init()
 	CameraPerspective(45)
 	-- CameraOrthographic(5,5)
 	
-	cube = Cube()
+	cube = {
+		verts = {
+			-- x, y, z, u, v, color
+			Vertex( -1.0, 1.0, -1.0, 0, 0, Color(0, 0, 255)),
+			Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(0, 0, 255)),
+			Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(0, 0, 255)),
+			Vertex( 1.0, -1.0, -1.0, -1.0, -1.0, Color(0, 0, 255)),
+		},
+		
+		inds = {
+			0, 1, 2,
+			2, 1, 3,
+		},
+	}
+	
+	lookAt = Matrix():lookAt(
+		Vector3(0, 5, 20),
+		Vector3(),
+		Vector3(0,1,0)
+	)
+	
+	whiteTex = Texture("mafiahub.bmp")
 end
 
 function _destroy()
@@ -14,24 +38,23 @@ end
 
 function _update(dt)
 	spinner = spinner + 1.5*dt
+	rot = euler(spinner*(180.0/math.pi), math.sin(spinner)*(180.0/math.pi), 0)
 end
 
 function _render()
 	ClearScene(0, 40, 100)
 	
-	rot = euler(spinner, math.sin(spinner), 0)
+	lookAt:bind(VIEW)
 	
-	Matrix():lookAt(
-		Vector3(0, 5, 20),
-		Vector3(),
-		Vector3(0,1,0)
-	):bind(VIEW)
+	BindTexture(0, whiteTex)
 	
 	for i=0, 10, 1
 	do
-		(rot * Matrix():translate(i%10,i%2-1,i*(-1))):bind(WORLD)
-		drawObjectIndexed(cube)
+		w = (rot * Matrix():translate(i%10,i%2-2,i*(-2)))
+		cubeDraw(cube, w)
 	end
+	
+	BindTexture(0)
 end
 
 function drawObjectIndexed(obj)
@@ -39,46 +62,25 @@ function drawObjectIndexed(obj)
 end
 
 function euler(x,y,z)
-	rotX = Matrix()
-	rotY = Matrix()
-	rotZ = Matrix()
-	
-	rotX:rotate(x,0,0)
-	rotY:rotate(0,y,0)
-	rotZ:rotate(0,0,z)
-	
-	rot = Matrix()
-	rot = rotZ * rotY * rotX
-	
-	return rot
+	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
 end
 
-function Cube()
-	return {
-		verts = {
-			Vertex( -1.0, 1.0, -1.0, Color(0, 0, 255)),
-			Vertex( 1.0, 1.0, -1.0, Color(0, 0, 255)),
-			Vertex( -1.0, -1.0, -1.0, Color(0, 0, 255)),
-			Vertex( 1.0, -1.0, -1.0, Color(0, 255, 255)),
-			Vertex( -1.0, 1.0, 1.0, Color(0, 0, 255)),
-			Vertex( 1.0, 1.0, 1.0, Color(255, 0, 0)),
-			Vertex( -1.0, -1.0, 1.0, Color(0, 255, 0)),
-			Vertex( 1.0, -1.0, 1.0, Color(0, 255, 255)),
-		},
-		
-		inds = {
-			0, 1, 2,    -- side 1
-			2, 1, 3,
-			4, 0, 6,    -- side 2
-			6, 0, 2,
-			7, 5, 6,    -- side 3
-			6, 5, 4,
-			3, 1, 7,    -- side 4
-			7, 1, 5,
-			4, 5, 0,    -- side 5
-			0, 5, 1,
-			3, 7, 2,    -- side 6
-			2, 7, 6,
-		}
-	}
+function cubeDraw(cube, world)
+	m = (Matrix() * world):bind(WORLD)
+	DrawIndexedTriangle(cube.inds, cube.verts)
+	
+	m = (Matrix():rotate(0,90,0) * world):bind(WORLD)
+	DrawIndexedTriangle(cube.inds, cube.verts)
+	
+	m = (Matrix():rotate(0,-90,0) * world):bind(WORLD)
+	DrawIndexedTriangle(cube.inds, cube.verts)
+	
+	m = (Matrix():rotate(0,180,0) * world):bind(WORLD)
+	DrawIndexedTriangle(cube.inds, cube.verts)
+	
+	m = (Matrix():rotate(90,0,0) * world):bind(WORLD)
+	DrawIndexedTriangle(cube.inds, cube.verts)
+	
+	m = (Matrix():rotate(-90,0,0) * world):bind(WORLD)
+	DrawIndexedTriangle(cube.inds, cube.verts)
 end

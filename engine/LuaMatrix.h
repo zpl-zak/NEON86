@@ -31,9 +31,9 @@ static INT matrix_rotate(lua_State* L)
 	FLOAT x = (FLOAT)lua_tonumber(L, 2);
 	FLOAT y = (FLOAT)lua_tonumber(L, 3);
 	FLOAT z = (FLOAT)lua_tonumber(L, 4);
-	if (x) D3DXMatrixRotationX(mat, x);
-	if (y) D3DXMatrixRotationY(mat, y);
-	if (z) D3DXMatrixRotationZ(mat, z);
+	if (x) D3DXMatrixRotationX(mat, D3DXToRadian(x));
+	if (y) D3DXMatrixRotationY(mat, D3DXToRadian(y));
+	if (z) D3DXMatrixRotationZ(mat, D3DXToRadian(z));
 	
 	lua_pushvalue(L, 1);
 	return 1;
@@ -56,9 +56,10 @@ static INT matrix_mul(lua_State* L)
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	D3DXMATRIX* matRHS = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
-	matrix_new(L);
-	D3DXMATRIX* out = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+	D3DXMATRIX* out = (D3DXMATRIX*)lua_newuserdata(L, sizeof(D3DXMATRIX));
 	*out = *mat * *matRHS;
+
+	luaL_setmetatable(L, L_MATRIX);
 	return 1;
 }
 

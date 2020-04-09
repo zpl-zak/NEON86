@@ -84,6 +84,10 @@ LRESULT CRenderer::CreateDevice(HWND window)
 	mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
+	mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+	mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+	mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+
 	return res;
 }
 
@@ -175,6 +179,15 @@ VOID CRenderer::PushClear(D3DCOLOR color, UINT flags)
 	d.flags = flags;
 
 	PushCommand(RENDERKIND_CLEAR, d);
+}
+
+VOID CRenderer::PushTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
+{
+	RENDERDATA d;
+	d.stage = stage;
+	d.tex = tex;
+
+	PushCommand(RENDERKIND_SET_TEXTURE, d);
 }
 
 VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)

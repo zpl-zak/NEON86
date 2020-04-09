@@ -29,6 +29,7 @@ public:
 	/// Render commands
 	inline VOID PushCommand(UINT commandKind, const RENDERDATA& data);
 	VOID PushClear(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
+	VOID PushTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
 	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
 	VOID PushPolygon(UINT primitiveKind, UINT primCount, const VERTEX* verts, UINT vertCount);
 	VOID PushIndexedPolygon(UINT primitiveKind, UINT primCount, const SHORT* indices, UINT indexCount, const VERTEX* verts, UINT vertCount);

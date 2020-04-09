@@ -8,6 +8,7 @@
 #include "LuaMatrix.h"
 #include "LuaVector3.h"
 #include "LuaVertex.h"
+#include "LuaTexture.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage) 
@@ -49,7 +50,6 @@ VOID CLuaBindings::BindMath(lua_State* L)
 {
 	LuaMatrix_register(L);
 	LuaVector_register(L);
-	LuaVertex_register(L);
 
 	REGF(Math, Color);
 }
@@ -171,6 +171,17 @@ LUAF(Rend, CameraOrthographic)
 
 	return 0;
 }
+LUAF(Rend, BindTexture)
+{
+	DWORD stage = (DWORD)luaL_checknumber(L, 1);
+	LPDIRECT3DTEXTURE9* tex = NULL;
+
+	if (lua_gettop(L) == 2)
+		tex = (LPDIRECT3DTEXTURE9*)luaL_checkudata(L, 2, L_TEXTURE);
+
+	RENDERER->PushTexture(stage, tex ? *tex : NULL);
+	return 0;
+}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -182,13 +193,13 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, DrawIndexedTriangle);
 	REGF(Rend, DrawTriangle);
 
+	REGF(Rend, BindTexture);
+
+	LuaVertex_register(L);
+	LuaTexture_register(L);
+
 	// enums
 	{
-		REGE(RENDERKIND_CLEAR);
-		REGE(RENDERKIND_MATRIX);
-		REGE(RENDERKIND_POLYGON);
-		REGE(RENDERKIND_POLYGON_INDEXED);
-
 		REGE(PRIMITIVEKIND_POINTLIST);
 		REGE(PRIMITIVEKIND_LINELIST);
 		REGE(PRIMITIVEKIND_LINESTRIP);

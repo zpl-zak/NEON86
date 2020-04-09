@@ -751,6 +751,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LuaTexture.h"
+				>
+			</File>
+			<File
 				RelativePath=".\LuaVector3.h"
 				>
 			</File>
