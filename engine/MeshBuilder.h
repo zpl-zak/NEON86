@@ -20,4 +20,5 @@ private:
 
 	VERTEX mVerts[MAX_VERTS];
 	SHORT mIndices[MAX_INDICES];
+	BOOL mIsDirty;
 };

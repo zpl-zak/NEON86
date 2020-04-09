@@ -9,6 +9,7 @@ MeshBuilder::MeshBuilder(void)
 	ZeroMemory(mVerts, sizeof(mVerts));
 	ZeroMemory(mIndices, sizeof(mIndices));
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
+	mIsDirty = FALSE;
 }
 
 VOID MeshBuilder::Release(void)
@@ -25,23 +26,24 @@ VOID MeshBuilder::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
 
 VOID MeshBuilder::AddVertex(const VERTEX& vertex)
 {
+	mIsDirty = TRUE;
 	mVerts[mData.vertCount++] = vertex;
 }
 
 VOID MeshBuilder::AddIndex(SHORT index)
 {
+	mIsDirty = TRUE;
 	mIndices[mData.indexCount++] = index;
 }
 
 VOID MeshBuilder::Draw(void)
 {
-	if (!mData.vertBuffer)
+	if (!mData.vertBuffer || mIsDirty)
 		Build();
 
 	if (mData.tex)
 		RENDERER->PushTexture(mData.stage, mData.tex);
 
-	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
 	RENDERER->PushCommand(RENDERKIND_POLYGON, mData);
 
 	if (mData.tex)
@@ -53,6 +55,9 @@ VOID MeshBuilder::Build(void)
 	LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 	VOID *vidMem = NULL;
 	Release();
+
+	if (mData.vertCount == 0)
+		return;
 
 	dev->CreateVertexBuffer(mData.vertCount*sizeof(VERTEX),
 							0,
@@ -78,4 +83,7 @@ VOID MeshBuilder::Build(void)
 		memcpy(vidMem, mIndices, mData.indexCount*sizeof(SHORT));
 		mData.indexBuffer->Unlock();
 	}
+
+	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
+	mIsDirty = FALSE;
 }
