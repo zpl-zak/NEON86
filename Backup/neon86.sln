@@ -1,15 +1,22 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29905.134
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor", "editor\editor.vcxproj", "{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor", "editor\editor.vcproj", "{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19275CB8-C602-4BC9-AACC-73A25A183B5D} = {19275CB8-C602-4BC9-AACC-73A25A183B5D}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcxproj", "{19275CB8-C602-4BC9-AACC-73A25A183B5D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcproj", "{19275CB8-C602-4BC9-AACC-73A25A183B5D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6BD37C99-BAF9-49F4-A895-0054D44050D5} = {6BD37C99-BAF9-49F4-A895-0054D44050D5}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "player", "player\player.vcxproj", "{3E2BAB92-6971-4B86-B1B3-1C5612133E16}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "player", "player\player.vcproj", "{3E2BAB92-6971-4B86-B1B3-1C5612133E16}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19275CB8-C602-4BC9-AACC-73A25A183B5D} = {19275CB8-C602-4BC9-AACC-73A25A183B5D}
+	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "lua\lua.vcxproj", "{6BD37C99-BAF9-49F4-A895-0054D44050D5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua", "lua\lua.vcproj", "{6BD37C99-BAF9-49F4-A895-0054D44050D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,8 +59,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C2B302A4-9B6E-4F11-83D1-4BB9C1C0ECE4}
 	EndGlobalSection
 EndGlobal

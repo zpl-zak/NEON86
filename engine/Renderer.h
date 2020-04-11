@@ -35,6 +35,7 @@ public:
 	/// Accessors
 	LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
 	RECT GetResolution() { return mLastRes; }
+	D3DMATRIX GetDeviceMatrix(UINT kind);
 
 protected:
 	LPDIRECT3D9 mDirect9;

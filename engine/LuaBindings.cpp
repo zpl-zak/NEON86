@@ -9,6 +9,7 @@
 #include "LuaVertex.h"
 #include "LuaTexture.h"
 #include "LuaMesh.h"
+#include "LuaMeshGroup.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage) 
@@ -166,6 +167,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaVertex_register(L);
 	LuaTexture_register(L);
 	LuaMesh_register(L);
+	LuaMeshGroup_register(L);
 
 	// enums
 	{

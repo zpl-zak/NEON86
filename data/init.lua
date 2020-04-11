@@ -1,5 +1,6 @@
 spinner = 0.0
 quad = nil
+cube = nil
 rot = nil
 lookAt = Matrix():lookAt(
 	Vector3(10,15,-20),
@@ -14,7 +15,7 @@ function _init()
 	CameraPerspective(45)
 	-- CameraOrthographic(5,5)
 	
-	quad = MeshBuilder()
+	quad = Mesh()
 	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
 	quad:addVertex(Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(255, 255, 255)))
 	quad:addVertex(Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(255, 255, 255)))
@@ -26,6 +27,14 @@ function _init()
 	quad:setTexture(0, whiteTex)
 	
 	quad:build()
+
+	cube = MeshGroup()
+	cube:addMesh(quad, Matrix())
+	cube:addMesh(quad, Matrix():rotate(0,math.rad(90),0))
+	cube:addMesh(quad, Matrix():rotate(0,math.rad(-90),0))
+	cube:addMesh(quad, Matrix():rotate(0,math.rad(180),0))
+	cube:addMesh(quad, Matrix():rotate(math.rad(90),0,0))
+	cube:addMesh(quad, Matrix():rotate(math.rad(-90),0,0))
 end
 
 function _destroy()
@@ -42,12 +51,12 @@ function _render()
 	
 	lookAt:bind(VIEW)
 	
-	for i=0, 5, 1
+	for i=0, 55, 1
 	do
-		for j=0, 5, 1
+		for j=0, 55, 1
 		do
 			w = (rot * Matrix():translate(i*2, 0, j*2))
-			cubeDraw(quad, w)
+			cube:draw(w)
 		end
 	end
 end

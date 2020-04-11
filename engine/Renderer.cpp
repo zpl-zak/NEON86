@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "RenderQueue.h"
-#include "MeshBuilder.h"
+#include "Mesh.h"
 
 #include "StdAfx.h"
 
@@ -178,4 +178,12 @@ VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)
 	d.matrix = mat;
 
 	PushCommand(RENDERKIND_MATRIX, d);
+}
+
+D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
+{
+	D3DMATRIX mat;
+
+	mDevice->GetTransform((D3DTRANSFORMSTATETYPE)kind, &mat);
+	return mat;
 }

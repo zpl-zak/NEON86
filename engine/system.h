@@ -8,6 +8,7 @@
 
 #define SAFE_DELETE(memory) if(memory) { delete memory; memory = NULL; }
 #define SAFE_DELETE_ARRAY(memory) if(memory) { delete[] memory; memory = NULL; }
+#define SAFE_FREE(memory) if(memory) { free(memory); memory = NULL; }
 #define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = NULL; } }
 
 extern FLOAT GetTime(void);

@@ -44,7 +44,7 @@ static INT vertex_get(lua_State* L)
 {
 	VERTEX* vert = (VERTEX*)luaL_checkudata(L, 1, L_VERTEX);
 	FLOAT arr[5] = { vert->x, vert->y, vert->z, vert->s, vert->t };
-	FLOAT col[4] = { vert->r, vert->g, vert->b, vert->a };
+	FLOAT col[4] = { (FLOAT)vert->r, (FLOAT)vert->g, (FLOAT)vert->b, (FLOAT)vert->a };
 
 	lua_newtable(L);
 	for (UINT i=0; i<5; i++)

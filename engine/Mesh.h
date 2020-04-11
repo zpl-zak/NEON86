@@ -3,10 +3,10 @@
 #include "system.h"
 #include "RenderData.h"
 
-class CMeshBuilder
+class CMesh
 {
 public:
-	CMeshBuilder(void);
+	CMesh(void);
 
 	VOID Release(void);
 	VOID SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
