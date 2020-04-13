@@ -27,7 +27,7 @@ static INT mesh_addvertex(lua_State* L)
 static INT mesh_addindex(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
-	SHORT index = (SHORT)luaL_checknumber(L, 2);
+	SHORT index = (SHORT)luaL_checkinteger(L, 2);
 	mesh->AddIndex(index);
 
 	lua_pushvalue(L, 1);
@@ -37,9 +37,9 @@ static INT mesh_addindex(lua_State* L)
 static INT mesh_addtriangle(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
-	SHORT i1 = (SHORT)luaL_checknumber(L, 2);
-	SHORT i2 = (SHORT)luaL_checknumber(L, 3);
-	SHORT i3 = (SHORT)luaL_checknumber(L, 4);
+	SHORT i1 = (SHORT)luaL_checkinteger(L, 2);
+	SHORT i2 = (SHORT)luaL_checkinteger(L, 3);
+	SHORT i3 = (SHORT)luaL_checkinteger(L, 4);
 	
 	mesh->AddIndex(i1);
 	mesh->AddIndex(i2);
@@ -52,7 +52,7 @@ static INT mesh_addtriangle(lua_State* L)
 static INT mesh_settexture(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
-	DWORD stage = (DWORD)luaL_checknumber(L, 2);
+	DWORD stage = (DWORD)luaL_checkinteger(L, 2);
 	LPDIRECT3DTEXTURE9* tex = NULL;
 
 	if (lua_gettop(L) == 3)

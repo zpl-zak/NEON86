@@ -10,4 +10,5 @@ public:
 	static VOID BindBase(lua_State*);
 	static VOID BindMath(lua_State*);
 	static VOID BindRenderer(lua_State*);
+	static VOID BindInput(lua_State*);
 };

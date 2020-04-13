@@ -2,18 +2,53 @@ spinner = 0.0
 quad = nil
 cube = nil
 rot = nil
-lookAt = Matrix():lookAt(
-	Vector3(10,15,-20),
-	Vector3(10,0,0),
-	Vector3(0,1,0)
-)
+lookAt = nil
 whiteTex = Texture("mafiahub.bmp")
 
 dofile("another.lua")
 
+SPEED = 15.0
+SENSITIVITY = 0.15
+
+camera = {
+	pos = Vector3(0,0,0),
+	dir = Vector3(0.7,-0.3,0),
+	angle = {0,0},
+	mouse = {0,0}
+}
+
+function updateCamera(dt)
+	lookAt = Matrix():lookAt(
+		   camera.pos,
+		   camera.pos+camera.dir,
+		   Vector3(0,1,0)
+    )
+
+	lastMousePos = GetMouseXY()
+	
+	camera.dir = Vector3(
+		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
+		math.sin(camera.angle[2]),
+		math.cos(camera.angle[2]) * math.cos(camera.angle[1])
+	)
+
+	if not IsCursorVisible() then
+		camera.angle[1] = camera.angle[1] + (lastMousePos[1] - camera.mouse[1]) * dt * SENSITIVITY
+		camera.angle[2] = camera.angle[2] - (lastMousePos[2] - camera.mouse[2]) * dt * SENSITIVITY
+
+		local windowRes = GetResolution()
+		camera.mouse = {windowRes[1]/2.0, windowRes[2]/2.0}
+		SetMouseXY(camera.mouse[1], camera.mouse[2])
+	end
+end
+
+
 function _init()
 	CameraPerspective(45)
 	-- CameraOrthographic(5,5)
+	-- updateCamera(0)
+
+	ShowCursor(false)
 	
 	quad = Mesh()
 	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
@@ -44,6 +79,43 @@ end
 function _update(dt)
 	spinner = spinner + 1.5*dt
 	rot = euler(spinner, math.sin(spinner), 0)
+
+	-- F2
+	if GetKeyDown(0x71) then
+		ShowCursor(not IsCursorVisible())
+		camera.mouse = GetMouseXY()
+	end 
+
+	-- ESC
+	if GetKeyDown(0x1B) then
+		ExitGame()	
+	end
+
+	if GetKey(0x57) then
+		camera.pos = camera.pos + (camera.dir * dt * SPEED)
+	end
+
+	if GetKey(0x53) then
+		camera.pos = camera.pos - (camera.dir * dt * SPEED)
+	end
+
+	if GetKey(0x41) then
+		camera.pos = Vector3(
+				  camera.pos:x() - camera.dir:z() * dt * SPEED,
+				  camera.pos:y(),
+				  camera.pos:z() + camera.dir:x() * dt * SPEED
+        )
+	end
+
+	if GetKey(0x44) then
+		camera.pos = Vector3(
+				  camera.pos:x() + camera.dir:z() * dt * SPEED,
+				  camera.pos:y(),
+				  camera.pos:z() - camera.dir:x() * dt * SPEED
+        )
+	end
+
+	updateCamera(dt)
 end
 
 function _render()
@@ -51,9 +123,9 @@ function _render()
 	
 	lookAt:bind(VIEW)
 	
-	for i=0, 55, 1
+	for i=0, 15, 1
 	do
-		for j=0, 55, 1
+		for j=0, 15, 1
 		do
 			w = (rot * Matrix():translate(i*2, 0, j*2))
 			cube:draw(w)

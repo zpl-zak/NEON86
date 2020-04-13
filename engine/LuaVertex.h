@@ -49,7 +49,7 @@ static INT vertex_get(lua_State* L)
 	lua_newtable(L);
 	for (UINT i=0; i<5; i++)
 	{
-		lua_pushinteger(L, i+1);
+		lua_pushinteger(L, i+1ULL);
 		lua_pushnumber(L, arr[i]);
 		lua_settable(L, -3);
 	}
@@ -59,7 +59,7 @@ static INT vertex_get(lua_State* L)
 
 	for (UINT i=0; i<4; i++)
 	{
-		lua_pushinteger(L, i+1);
+		lua_pushinteger(L, i+1ULL);
 		lua_pushnumber(L, col[i]);
 		lua_settable(L, -3);
 	}

@@ -33,9 +33,10 @@ public:
 	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
 
 	/// Accessors
-	LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
-	RECT GetResolution() { return mLastRes; }
+	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
+	inline RECT GetResolution() { return mLastRes; }
 	D3DMATRIX GetDeviceMatrix(UINT kind);
+	inline HWND GetWindow() const { return mWindow; }
 
 protected:
 	LPDIRECT3D9 mDirect9;

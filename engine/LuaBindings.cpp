@@ -19,7 +19,12 @@ LUAF(Base, ShowMessage)
 	MessageBoxA(NULL, text, caption, MB_OK);
 	return 0;
 }
-LUAF(Rend, SetFPS)
+LUAF(Base, ExitGame)
+{
+	ENGINE->Shutdown();
+	return 0;
+}
+LUAF(Base, SetFPS)
 {
 	FLOAT fps = (FLOAT)luaL_checknumber(L, 1);
 
@@ -27,7 +32,7 @@ LUAF(Rend, SetFPS)
 
 	return 0;
 }
-LUAF(Rend, dofile)
+LUAF(Base, dofile)
 {
 	const char* scriptName = luaL_checkstring(L, 1);
 
@@ -46,13 +51,20 @@ LUAF(Rend, dofile)
 
 	return 0;
 }
+LUAF(Base, time)
+{
+	lua_pushnumber(L, GetTime());
+    return 1;
+}
 ///<END
 
 VOID CLuaBindings::BindBase(lua_State* L)
 {
 	REGF(Base, ShowMessage);
-	REGF(Rend, SetFPS);
-	REGF(Rend, dofile);
+	REGF(Base, ExitGame);
+	REGF(Base, SetFPS);
+	REGF(Base, dofile);
+	REGF(Base, time);
 }
 
 /// MATH METHODS
@@ -154,6 +166,23 @@ LUAF(Rend, BindTexture)
 	RENDERER->PushTexture(stage, tex ? *tex : NULL);
 	return 0;
 }
+LUAF(Rend, GetResolution)
+{
+    RECT res = RENDERER->GetResolution();
+    lua_newtable(L);
+
+    // x
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, res.right);
+    lua_settable(L, -3);
+
+    // y
+    lua_pushinteger(L, 2);
+    lua_pushnumber(L, res.bottom);
+    lua_settable(L, -3);
+
+    return 1;
+}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -161,6 +190,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearScene);
 	REGF(Rend, CameraPerspective);
 	REGF(Rend, CameraOrthographic);
+	REGF(Rend, GetResolution);
 
 	REGF(Rend, BindTexture);
 
@@ -201,4 +231,73 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 		lua_pushnumber(L, MATRIXKIND_PROJECTION); lua_setglobal(L, "PROJ");
 
 	}
+}
+
+/// INPUT METHODS
+LUAF(Input, IsCursorVisible)
+{
+    lua_pushboolean(L, INPUT->GetCursor());
+    return 1;
+}
+LUAF(Input, ShowCursor)
+{
+	BOOL state = (BOOL)lua_toboolean(L, 1);
+    INPUT->SetCursor(state);
+    return 0;
+}
+LUAF(Input, GetKey)
+{
+	CHAR code = (CHAR)luaL_checkinteger(L, 1);
+	lua_pushboolean(L, INPUT->GetKey(code));
+	return 1;
+}
+LUAF(Input, GetKeyDown)
+{
+    CHAR code = (CHAR)luaL_checkinteger(L, 1);
+    lua_pushboolean(L, INPUT->GetKeyDown(code));
+    return 1;
+}
+LUAF(Input, GetKeyUp)
+{
+    CHAR code = (CHAR)luaL_checkinteger(L, 1);
+    lua_pushboolean(L, INPUT->GetKeyUp(code));
+    return 1;
+}
+LUAF(Input, GetMouseXY)
+{
+	POINT pos = INPUT->GetMouseXY();
+	lua_newtable(L);
+
+	// x
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, pos.x);
+    lua_settable(L, -3);
+
+	// y
+    lua_pushinteger(L, 2);
+    lua_pushnumber(L, pos.y);
+    lua_settable(L, -3);
+
+    return 1;
+}
+LUAF(Input, SetMouseXY)
+{
+	SHORT x = (SHORT)luaL_checkinteger(L, 1);
+	SHORT y = (SHORT)luaL_checkinteger(L, 2);
+	INPUT->SetMouseXY(x, y);
+
+    return 0;
+}
+///<END
+
+VOID CLuaBindings::BindInput(lua_State* L)
+{
+	REGF(Input, GetKey);
+	REGF(Input, GetKeyDown);
+	REGF(Input, GetKeyUp);
+	REGF(Input, GetMouseXY);
+	REGF(Input, SetMouseXY);
+
+	REGF(Input, IsCursorVisible);
+	REGF(Input, ShowCursor);
 }

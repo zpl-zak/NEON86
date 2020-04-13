@@ -45,9 +45,6 @@
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="system.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
@@ -87,9 +84,6 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>Header Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Logger.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="zpl_macros.h">

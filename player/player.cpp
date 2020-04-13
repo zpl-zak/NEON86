@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 
+#include <windowsx.h>
+
 #include "NeonEngine.h"
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -16,9 +18,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,
  	HWND hWnd;
 	RECT rect;
 	rect.left = 300;
-	rect.top = 300;
-	rect.right = 800;
-	rect.bottom = 600;
+	rect.top = 100;
+	rect.right = 1024;
+	rect.bottom = 768;
 
 	if (!lpCmdLine)
 		lpCmdLine = "data";
@@ -97,20 +99,32 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     switch(message)
     {
 	case WM_SIZE:
-		{
-			RECT rect;
-			GetClientRect(hWnd, &rect);
-			rect.right -= rect.left;
-			rect.bottom -= rect.top;
+	{
+		RECT rect;
+		GetClientRect(hWnd, &rect);
+		rect.right -= rect.left;
+		rect.bottom -= rect.top;
 			
-			ENGINE->Resize(rect);
-		} break;
+		ENGINE->Resize(rect);
+	} break;
 
     case WM_DESTROY:
-        {
-            ENGINE->Shutdown();
-            return 0;
-        } break;
+    {
+        ENGINE->Shutdown();
+        return 0;
+    } break;
+
+	case WM_KEYDOWN:
+	{
+		INPUT->SetKey(wParam, TRUE);
+		INPUT->SetKeyDown(wParam, TRUE);
+	} break;
+
+	case WM_KEYUP:
+	{
+        INPUT->SetKey(wParam, FALSE);
+        INPUT->SetKeyUp(wParam, TRUE);
+	} break;
     }
 
     return DefWindowProc (hWnd, message, wParam, lParam);

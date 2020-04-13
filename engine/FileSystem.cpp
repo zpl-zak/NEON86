@@ -52,7 +52,7 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 
 FDATA CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 {
-	FDATA res={NULL, -1};
+	FDATA res={NULL, 0L};
 
 	if (!mLoadDone)
 		return res;
@@ -72,7 +72,7 @@ FDATA CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 	}
 
 	UCHAR* data = NULL;
-	UINT size = -1;
+	UINT size = 0L;
 
 	switch (mLoadKind)
 	{
@@ -115,7 +115,7 @@ VOID CFileSystem::FreeResource(VOID* data)
 	switch (mLoadKind)
 	{
 	case LOADKIND_FOLDER:
-		if (data) free(data);
+		SAFE_FREE(data);
 		break;
 	case LOADKIND_PAK:
 		// todo: unmap file

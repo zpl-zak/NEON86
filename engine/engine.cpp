@@ -97,6 +97,7 @@ VOID CEngine::Think()
 VOID CEngine::Update(FLOAT deltaTime)
 {
 	mLuaMachine->Update(deltaTime);
+	mInput->Update();
 }
 
 VOID CEngine::Render()

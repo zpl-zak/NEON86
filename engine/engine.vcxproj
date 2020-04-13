@@ -100,7 +100,6 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>../;../d3d9/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -282,7 +281,6 @@
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Logger.cpp" />
     <ClCompile Include="LuaBindings.cpp" />
     <ClCompile Include="LuaMachine.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -303,7 +301,6 @@
     <ClInclude Include="engine.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Logger.h" />
     <ClInclude Include="LuaBindings.h" />
     <ClInclude Include="LuaMachine.h" />
     <ClInclude Include="LuaMatrix.h" />
