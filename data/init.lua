@@ -43,7 +43,8 @@ function _init()
 	-- CameraOrthographic(5,5)
 	-- updateCamera(0)
 
-	-- ShowCursor(false)
+	ShowCursor(false)
+	SetCursorMode(1)
 	
 	quad = Mesh()
 	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
