@@ -12,8 +12,8 @@ SENSITIVITY = 0.15
 
 camera = {
 	pos = Vector3(0,0,0),
-	dir = Vector3(0.7,-0.3,0),
-	angle = {0,0}
+	dir = Vector3(0,0,0),
+	angle = {math.deg(90),0}
 }
 
 function updateCamera(dt)
@@ -80,7 +80,6 @@ function _update(dt)
 	if GetKeyDown(0x71) then
 		ShowCursor(not IsCursorVisible())
 		SetCursorMode(1-GetCursorMode())
-		camera.mouse = GetMouseXY()
 	end 
 
 	-- ESC
@@ -124,7 +123,7 @@ function _render()
 	do
 		for j=0, 15, 1
 		do
-			w = (rot * Matrix():translate(i*2, 0, j*2))
+			w = (rot * Matrix():translate(-i*2, 0, j*2))
 			cube:draw(w)
 		end
 	end
