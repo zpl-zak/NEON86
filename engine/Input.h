@@ -4,6 +4,12 @@
 
 #define INPUT CEngine::the()->GetInput()
 
+enum {
+	CURSORMODE_DEFAULT,
+	CURSORMODE_CENTERED,
+	CURSORMODE_WRAPPED, // todo
+};
+
 class ENGINE_API CInput
 {
 public:
@@ -18,9 +24,12 @@ public:
 	inline BOOL GetMouseUp(CHAR code) const { return mMouseUp[code]; }
 	inline BOOL GetLastKey(void) const { return mLastKey; }
 	POINT GetMouseXY(void) const;
+	inline POINT GetMouseDelta(void) const { return mMouseDelta; };
 
 	VOID SetCursor(BOOL state);
 	BOOL GetCursor(void);
+	inline UCHAR GetCursorMode() { return mCursorMode; }
+	inline VOID SetCursorMode(UCHAR mode) { mCursorMode = mode; }
 	
 	inline VOID SetKey(CHAR code, BOOL state) { mKeys[code] = state; }
 	inline VOID SetKeyDown(CHAR code, BOOL state) { mKeysDown[code] = state; }
@@ -50,4 +59,8 @@ private:
 	CHAR mLastKey;
 
 	BOOL mMouseInputs[NUM_MOUSEBUTTONS], mMouseDown[NUM_MOUSEBUTTONS], mMouseUp[NUM_MOUSEBUTTONS];
+	UCHAR mCursorMode;
+
+	POINT mMouseDelta;
+	POINT mLastMousePos;
 };

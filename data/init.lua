@@ -13,8 +13,7 @@ SENSITIVITY = 0.15
 camera = {
 	pos = Vector3(0,0,0),
 	dir = Vector3(0.7,-0.3,0),
-	angle = {0,0},
-	mouse = {0,0}
+	angle = {0,0}
 }
 
 function updateCamera(dt)
@@ -24,7 +23,7 @@ function updateCamera(dt)
 		   Vector3(0,1,0)
     )
 
-	lastMousePos = GetMouseXY()
+	mouseDelta = GetMouseDelta()
 	
 	camera.dir = Vector3(
 		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
@@ -32,13 +31,9 @@ function updateCamera(dt)
 		math.cos(camera.angle[2]) * math.cos(camera.angle[1])
 	)
 
-	if not IsCursorVisible() then
-		camera.angle[1] = camera.angle[1] + (lastMousePos[1] - camera.mouse[1]) * dt * SENSITIVITY
-		camera.angle[2] = camera.angle[2] - (lastMousePos[2] - camera.mouse[2]) * dt * SENSITIVITY
-
-		local windowRes = GetResolution()
-		camera.mouse = {windowRes[1]/2.0, windowRes[2]/2.0}
-		SetMouseXY(camera.mouse[1], camera.mouse[2])
+	if GetCursorMode() == 1 then
+		camera.angle[1] = camera.angle[1] + (mouseDelta[1]) * dt * SENSITIVITY
+		camera.angle[2] = camera.angle[2] - (mouseDelta[2]) * dt * SENSITIVITY
 	end
 end
 
@@ -48,7 +43,7 @@ function _init()
 	-- CameraOrthographic(5,5)
 	-- updateCamera(0)
 
-	ShowCursor(false)
+	-- ShowCursor(false)
 	
 	quad = Mesh()
 	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
@@ -83,6 +78,7 @@ function _update(dt)
 	-- F2
 	if GetKeyDown(0x71) then
 		ShowCursor(not IsCursorVisible())
+		SetCursorMode(1-GetCursorMode())
 		camera.mouse = GetMouseXY()
 	end 
 

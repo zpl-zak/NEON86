@@ -280,12 +280,40 @@ LUAF(Input, GetMouseXY)
 
     return 1;
 }
+LUAF(Input, GetMouseDelta)
+{
+    POINT pos = INPUT->GetMouseDelta();
+    lua_newtable(L);
+
+    // x
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, pos.x);
+    lua_settable(L, -3);
+
+    // y
+    lua_pushinteger(L, 2);
+    lua_pushnumber(L, pos.y);
+    lua_settable(L, -3);
+
+    return 1;
+}
 LUAF(Input, SetMouseXY)
 {
 	SHORT x = (SHORT)luaL_checkinteger(L, 1);
 	SHORT y = (SHORT)luaL_checkinteger(L, 2);
 	INPUT->SetMouseXY(x, y);
 
+    return 0;
+}
+LUAF(Input, GetCursorMode)
+{
+	lua_pushinteger(L, INPUT->GetCursorMode());
+    return 1;
+}
+LUAF(Input, SetCursorMode)
+{
+	UCHAR mode = (UCHAR)luaL_checkinteger(L, 1);
+	INPUT->SetCursorMode(mode);
     return 0;
 }
 ///<END
@@ -296,8 +324,13 @@ VOID CLuaBindings::BindInput(lua_State* L)
 	REGF(Input, GetKeyDown);
 	REGF(Input, GetKeyUp);
 	REGF(Input, GetMouseXY);
+	REGF(Input, GetMouseDelta);
 	REGF(Input, SetMouseXY);
 
 	REGF(Input, IsCursorVisible);
+	REGF(Input, ShowCursor);
+
+	REGF(Input, GetCursorMode);
+	REGF(Input, SetCursorMode);
 	REGF(Input, ShowCursor);
 }

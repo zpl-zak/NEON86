@@ -14,6 +14,8 @@ CInput::CInput(void)
     ZeroMemory(mMouseUp, NUM_MOUSEBUTTONS * sizeof(BOOL));
 
     mLastKey = -1;
+    mCursorMode = CURSORMODE_DEFAULT;
+    mMouseDelta = { 0,0 };
 }
 
 VOID CInput::Release(void)
@@ -48,7 +50,6 @@ VOID CInput::SetMouseXY(SHORT x, SHORT y)
 {
     POINT pos = { x,y };
     ClientToScreen(RENDERER->GetWindow(), &pos);
-
     SetCursorPos(pos.x, pos.y);
 }
 
@@ -67,4 +68,23 @@ VOID CInput::Update(void)
     }
 
     ClearKey();
+
+    POINT mousePos = GetMouseXY();
+    mMouseDelta.x = -(mLastMousePos.x - mousePos.x);
+    mMouseDelta.y = -(mLastMousePos.y - mousePos.y);
+
+    switch (mCursorMode)
+    {
+        case CURSORMODE_CENTERED:
+        {
+            RECT res = RENDERER->GetResolution();
+            SetMouseXY((SHORT)(res.right/2.0f), (SHORT)(res.bottom/2.0f));
+        } break;
+        case CURSORMODE_WRAPPED:
+            break; // todo
+        default:
+            break;
+    }
+
+    mLastMousePos = GetMouseXY();
 }
