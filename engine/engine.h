@@ -4,6 +4,7 @@ class CRenderer;
 class CInput;
 class CFileSystem;
 class CLuaMachine;
+class CUserInterface;
 
 #define ENGINE CEngine::the()
 
@@ -23,6 +24,7 @@ public:
 	CInput* GetInput() { return mInput; }
 	CFileSystem* GetFileSystem() { return mFileSystem; }
 	CLuaMachine* GetVM() { return mLuaMachine; }
+	CUserInterface* GetUI() { return mUserInterface; }
 
 	BOOL IsRunning() const { return mIsRunning; }
 
@@ -33,6 +35,7 @@ protected:
 	CInput* mInput;
 	CFileSystem* mFileSystem;
 	CLuaMachine* mLuaMachine;
+	CUserInterface* mUserInterface;
 private:
 	VOID Update(FLOAT deltaTime);
 	VOID Render();

@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "FileSystem.h"
 #include "LuaMachine.h"
+#include "UserInterface.h"
 
 CEngine::CEngine()
 : mIsRunning(FALSE)
@@ -18,6 +19,7 @@ CEngine::CEngine()
 	mInput = NULL;
 	mFileSystem = NULL;
 	mLuaMachine = NULL;
+	mUserInterface = NULL;
 	
 	SetFPS(60.0f);
 	mUnprocessedTime = 0.0f;
@@ -30,6 +32,7 @@ BOOL CEngine::Release()
 {
 	SAFE_RELEASE(mLuaMachine);
 	SAFE_RELEASE(mFileSystem);
+	SAFE_RELEASE(mUserInterface);
 	SAFE_RELEASE(mRenderer);
 	SAFE_RELEASE(mInput);
 
@@ -55,6 +58,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
 		return TRUE;
 
 	mRenderer = new CRenderer();
+	mUserInterface = new CUserInterface();
 	mInput = new CInput();
 	mFileSystem = new CFileSystem();
 	mLuaMachine = new CLuaMachine();

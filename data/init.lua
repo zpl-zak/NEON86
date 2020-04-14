@@ -132,4 +132,12 @@ end
 
 function _render2d( )
 	-- TODO UI SYSTEM
+	--[[
+		   MOCKUP:
+
+		   UIBegin()
+			UIQuad(0,0,0.5,0.5, Color(255,0,0))
+			UIText(0,0,12,"Hello World!")
+		   UIEnd()
+    ]]
 end

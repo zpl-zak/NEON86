@@ -69,6 +69,9 @@
     <ClCompile Include="MeshGroup.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -141,6 +144,9 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="RenderStates.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
