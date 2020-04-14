@@ -117,4 +117,4 @@ VOID CEngine::Resize(RECT resolution)
 	mRenderer->Resize(resolution);
 }
 
-CEngine *CEngine::sInstance;
+CEngine *CEngine::sInstance = NULL;
