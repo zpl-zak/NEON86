@@ -316,6 +316,7 @@
     <ClInclude Include="RenderData.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderQueue.h" />
+    <ClInclude Include="RenderStates.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="zpl_macros.h" />
@@ -328,6 +329,9 @@
       <Project>{6bd37c99-baf9-49f4-a895-0054d44050d5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

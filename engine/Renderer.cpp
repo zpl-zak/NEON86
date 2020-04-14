@@ -180,6 +180,15 @@ VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)
 	PushCommand(RENDERKIND_MATRIX, d);
 }
 
+VOID CRenderer::PushRenderState(DWORD kind, BOOL state)
+{
+	RENDERDATA d;
+	d.kind = kind;
+	d.state = state;
+
+	PushCommand(RENDERKIND_SET_RENDERSTATE, d);
+}
+
 D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
 {
 	D3DMATRIX mat;

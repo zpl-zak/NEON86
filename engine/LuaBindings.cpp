@@ -124,7 +124,7 @@ LUAF(Rend, CameraPerspective)
 		zNear,    
 		zFar);    
 
-	RENDERER->GetDevice()->SetTransform(D3DTS_PROJECTION, &matProjection);
+	RENDERER->PushMatrix(MATRIXKIND_PROJECTION, matProjection);
 
 	return 0;
 }
@@ -151,7 +151,7 @@ LUAF(Rend, CameraOrthographic)
 					 1.0f,    
 					 100.0f);
 
-	RENDERER->GetDevice()->SetTransform(D3DTS_PROJECTION, &matProjection);
+	RENDERER->PushMatrix(MATRIXKIND_PROJECTION, matProjection);
 
 	return 0;
 }
@@ -183,6 +183,14 @@ LUAF(Rend, GetResolution)
 
     return 1;
 }
+LUAF(Rend, RenderState)
+{
+	DWORD kind = (DWORD)luaL_checkinteger(L, 1);
+	BOOL state = (BOOL)lua_toboolean(L, 2);
+
+	RENDERER->PushRenderState(kind, state);
+	return 0;
+}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -191,6 +199,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, CameraPerspective);
 	REGF(Rend, CameraOrthographic);
 	REGF(Rend, GetResolution);
+	REGF(Rend, RenderState);
 
 	REGF(Rend, BindTexture);
 
@@ -230,6 +239,11 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 		lua_pushnumber(L, MATRIXKIND_VIEW); lua_setglobal(L, "VIEW");
 		lua_pushnumber(L, MATRIXKIND_PROJECTION); lua_setglobal(L, "PROJ");
 
+
+		// render states
+#define _X(NAME, VALUE) REGN(NAME, VALUE);
+#include "RenderStates.h"
+#undef _X
 	}
 }
 

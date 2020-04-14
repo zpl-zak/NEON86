@@ -31,6 +31,7 @@ public:
 	VOID PushClear(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
 	VOID PushTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
 	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
+	VOID PushRenderState(DWORD kind, BOOL state);
 
 	/// Accessors
 	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }

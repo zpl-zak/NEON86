@@ -140,8 +140,14 @@
     <ClInclude Include="InputCodes.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="RenderStates.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

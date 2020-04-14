@@ -3,6 +3,7 @@ quad = nil
 cube = nil
 rot = nil
 lookAt = nil
+twodeeTriangle = nil
 whiteTex = Texture("mafiahub.bmp")
 
 dofile("another.lua")
@@ -17,15 +18,7 @@ camera = {
 	angle = {math.deg(90),0}
 }
 
-function updateCamera(dt)
-	lookAt = Matrix():lookAt(
-		   camera.pos,
-		   camera.pos+camera.fwd,
-		   Vector3(0,1,0)
-    )
-
-	mouseDelta = GetMouseDelta()
-	
+function updateCamera(dt)	
 	camera.fwd = Vector3(
 		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
 		math.sin(camera.angle[2]),
@@ -39,17 +32,19 @@ function updateCamera(dt)
     )
 
 	if GetCursorMode() == CURSORMODE_CENTERED then
-		camera.angle[1] = camera.angle[1] + (mouseDelta[1]) * dt * SENSITIVITY
-		camera.angle[2] = camera.angle[2] - (mouseDelta[2]) * dt * SENSITIVITY
+		mouseDelta = GetMouseDelta()
+		camera.angle[1] = camera.angle[1] + (mouseDelta[1] * dt * SENSITIVITY)
+		camera.angle[2] = camera.angle[2] - (mouseDelta[2] * dt * SENSITIVITY)
 	end
+
+	lookAt = Matrix():lookAt(
+		   camera.pos,
+		   camera.pos+camera.fwd,
+		   Vector3(0,1,0)
+    )
 end
 
-
 function _init()
-	CameraPerspective(70)
-	-- CameraOrthographic(5,5)
-	-- updateCamera(0)
-
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
 	
@@ -73,6 +68,14 @@ function _init()
 	cube:addMesh(quad, Matrix():rotate(0,math.rad(180),0))
 	cube:addMesh(quad, Matrix():rotate(math.rad(90),0,0))
 	cube:addMesh(quad, Matrix():rotate(math.rad(-90),0,0))
+
+	twodeeTriangle = Mesh()
+	twodeeTriangle:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
+	twodeeTriangle:addVertex(Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(255, 255, 255)))
+	twodeeTriangle:addVertex(Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(255, 255, 255)))
+
+	twodeeTriangle:addTriangle(0,1,2)
+	twodeeTriangle:build()
 end
 
 function _destroy()
@@ -113,6 +116,8 @@ end
 
 function _render()
 	ClearScene(0, 40, 100)
+	CameraPerspective(70)
+	RenderState(RENDERSTATE_ZENABLE, true)
 	
 	lookAt:bind(VIEW)
 	
@@ -124,4 +129,12 @@ function _render()
 			cube:draw(w)
 		end
 	end
+	
+	-- UI
+	Matrix():bind(WORLD):bind(VIEW)
+	CameraOrthographic(1,1)
+	RenderState(RENDERSTATE_ZENABLE, false)
+
+	twodeeTriangle:draw()
+
 end
