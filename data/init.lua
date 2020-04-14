@@ -12,24 +12,31 @@ SENSITIVITY = 0.15
 
 camera = {
 	pos = Vector3(0,0,0),
-	dir = Vector3(0,0,0),
+	fwd = Vector3(0,0,0),
+	rhs = Vector3(0,0,0),
 	angle = {math.deg(90),0}
 }
 
 function updateCamera(dt)
 	lookAt = Matrix():lookAt(
 		   camera.pos,
-		   camera.pos+camera.dir,
+		   camera.pos+camera.fwd,
 		   Vector3(0,1,0)
     )
 
 	mouseDelta = GetMouseDelta()
 	
-	camera.dir = Vector3(
+	camera.fwd = Vector3(
 		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
 		math.sin(camera.angle[2]),
 		math.cos(camera.angle[2]) * math.cos(camera.angle[1])
 	)
+
+	camera.rhs = Vector3(
+		math.sin(camera.angle[1] + math.pi/2),
+		0,
+		math.cos(camera.angle[1] + math.pi/2)
+    )
 
 	if GetCursorMode() == 1 then
 		camera.angle[1] = camera.angle[1] + (mouseDelta[1]) * dt * SENSITIVITY
@@ -86,27 +93,19 @@ function _update(dt)
 	end
 
 	if GetKey("w") then
-		camera.pos = camera.pos + (camera.dir * dt * SPEED)
+		camera.pos = camera.pos + (camera.fwd * dt * SPEED)
 	end
 
 	if GetKey("s") then
-		camera.pos = camera.pos - (camera.dir * dt * SPEED)
+		camera.pos = camera.pos - (camera.fwd * dt * SPEED)
 	end
 
 	if GetKey("a") then
-		camera.pos = Vector3(
-				  camera.pos:x() - camera.dir:z() * dt * SPEED,
-				  camera.pos:y(),
-				  camera.pos:z() + camera.dir:x() * dt * SPEED
-        )
+		camera.pos = camera.pos - (camera.rhs * dt * SPEED)
 	end
 
 	if GetKey("d") then
-		camera.pos = Vector3(
-				  camera.pos:x() + camera.dir:z() * dt * SPEED,
-				  camera.pos:y(),
-				  camera.pos:z() - camera.dir:x() * dt * SPEED
-        )
+		camera.pos = camera.pos + (camera.rhs * dt * SPEED)
 	end
 
 	updateCamera(dt)

@@ -12,6 +12,11 @@
 	lua_setglobal(L, #VALUE); \
 	lua_settop(L, 0);
 
+#define REGN(NAME, VALUE) \
+	lua_pushinteger(L, VALUE); \
+	lua_setglobal(L, #NAME); \
+	lua_settop(L, 0);
+
 #define L_MATRIX "Matrix"
 #define L_VECTOR3 "Vector3"
 #define L_VERTEX "Vertex"

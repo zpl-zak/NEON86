@@ -293,6 +293,24 @@ LUAF(Input, GetKeyUp)
     lua_pushboolean(L, INPUT->GetKeyUp(code));
     return 1;
 }
+LUAF(Input, GetMouse)
+{
+    DWORD code = (DWORD)luaL_checkinteger(L, 1);
+    lua_pushboolean(L, INPUT->GetMouse(code));
+    return 1;
+}
+LUAF(Input, GetMouseDown)
+{
+    DWORD code = (DWORD)luaL_checkinteger(L, 1);
+    lua_pushboolean(L, INPUT->GetMouseDown(code));
+    return 1;
+}
+LUAF(Input, GetMouseUp)
+{
+    DWORD code = (DWORD)luaL_checkinteger(L, 1);
+    lua_pushboolean(L, INPUT->GetMouseUp(code));
+    return 1;
+}
 LUAF(Input, GetMouseXY)
 {
 	POINT pos = INPUT->GetMouseXY();
@@ -356,6 +374,9 @@ VOID CLuaBindings::BindInput(lua_State* L)
 	REGF(Input, GetMouseXY);
 	REGF(Input, GetMouseDelta);
 	REGF(Input, SetMouseXY);
+	REGF(Input, GetMouse);
+	REGF(Input, GetMouseDown);
+	REGF(Input, GetMouseUp);
 
 	REGF(Input, IsCursorVisible);
 	REGF(Input, ShowCursor);
@@ -366,11 +387,24 @@ VOID CLuaBindings::BindInput(lua_State* L)
 
 	// keys
 	{
-#define _X(NAME, VALUE) \
-		lua_pushinteger(L, VALUE); \
-		lua_setglobal(L, #NAME); \
-		lua_settop(L, 0);
+#define _X(NAME, VALUE) REGN(NAME, VALUE)
 #include "InputCodes.h"
 #undef _X
+	}
+
+	// mouse buttons
+	{
+		REGN(MOUSE_LEFT_BUTTON, CInput::MOUSE_LEFT_BUTTON);
+        REGN(MOUSE_MIDDLE_BUTTON, CInput::MOUSE_MIDDLE_BUTTON);
+        REGN(MOUSE_RIGHT_BUTTON, CInput::MOUSE_RIGHT_BUTTON);
+        REGN(MOUSE_WHEEL_UP, CInput::MOUSE_WHEEL_UP);
+        REGN(MOUSE_WHEEL_DOWN, CInput::MOUSE_WHEEL_DOWN);
+	}
+
+	// cursor modes
+	{
+		REGE(CURSORMODE_DEFAULT);
+		REGE(CURSORMODE_CENTERED);
+		REGE(CURSORMODE_WRAPPED);
 	}
 }
