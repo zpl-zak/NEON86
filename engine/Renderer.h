@@ -32,6 +32,7 @@ public:
 	VOID PushTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
 	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
 	VOID PushRenderState(DWORD kind, BOOL state);
+	VOID PushSamplerState(DWORD stage, DWORD kind, DWORD value);
 
 	/// Accessors
 	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }

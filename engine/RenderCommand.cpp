@@ -62,6 +62,9 @@ void CRenderCommand::ExecuteDraw(void)
 		dev->SetTextureStageState(mData.stage, D3DTSS_COLOROP, mData.tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
 		dev->SetTexture(mData.stage, mData.tex);
 		break;
+	case RENDERKIND_SET_SAMPLERSTATE:
+		dev->SetSamplerState(mData.stage, (D3DSAMPLERSTATETYPE)mData.kind, mData.state);
+		break;
 	case RENDERKIND_SET_RENDERSTATE:
 		dev->SetRenderState((D3DRENDERSTATETYPE)mData.kind, (DWORD)mData.state);
 		break;

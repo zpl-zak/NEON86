@@ -10,6 +10,7 @@ enum RENDERKIND
 	RENDERKIND_MATRIX,
 	RENDERKIND_POLYGON,
 	RENDERKIND_SET_TEXTURE,
+	RENDERKIND_SET_SAMPLERSTATE,
     RENDERKIND_SET_RENDERSTATE,
 	RENDERKIND_QUAD,
 };
@@ -80,11 +81,11 @@ struct RENDERDATA
 	union 
 	{
 		UINT flags;
-		DWORD stage;
+        DWORD stage;
         DWORD state;
 	};
 	
-	UINT kind;
+    UINT kind;
 
 	union
 	{

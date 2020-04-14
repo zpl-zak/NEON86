@@ -4,6 +4,8 @@
 
 #include <lua/lua.hpp>
 
+// todo use CTexture
+
 static INT texture_new(lua_State* L)
 {
 	char* texName = NULL;

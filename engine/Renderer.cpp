@@ -195,6 +195,16 @@ VOID CRenderer::PushRenderState(DWORD kind, BOOL state)
 	PushCommand(RENDERKIND_SET_RENDERSTATE, d);
 }
 
+VOID CRenderer::PushSamplerState(DWORD stage, DWORD kind, DWORD value)
+{
+	RENDERDATA d;
+	d.kind = kind;
+	d.stage = stage;
+	d.state = value;
+
+	PushCommand(RENDERKIND_SET_SAMPLERSTATE, d);
+}
+
 D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
 {
 	D3DMATRIX mat;
