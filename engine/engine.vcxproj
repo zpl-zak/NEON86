@@ -296,6 +296,7 @@
     <ClCompile Include="system.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InputCodes.h" />
     <ClInclude Include="LuaMeshGroup.h" />
     <ClInclude Include="MeshGroup.h" />
     <ClInclude Include="engine.h" />

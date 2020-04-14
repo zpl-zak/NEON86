@@ -234,6 +234,36 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 }
 
 /// INPUT METHODS
+static DWORD GetScanCodeFromLua(lua_State* L)
+{
+	if (lua_isinteger(L, 1))
+		return (DWORD)lua_tointeger(L, 1);
+
+	if (lua_isstring(L, 1))
+	{
+		const CHAR* str = lua_tostring(L, 1);
+
+		if (strlen(str) != 1)
+			return 0x0;
+
+		CHAR c = str[0];
+
+		if (isalpha(c))
+		{
+			CHAR dist = c - 'a';
+			return (0x41 + dist);
+		}
+
+		if (isdigit(c))
+		{
+            CHAR dist = c - '0';
+            return (0x30 + dist);
+		}
+	}
+
+	return 0x0;
+}
+
 LUAF(Input, IsCursorVisible)
 {
     lua_pushboolean(L, INPUT->GetCursor());
@@ -247,19 +277,19 @@ LUAF(Input, ShowCursor)
 }
 LUAF(Input, GetKey)
 {
-	CHAR code = (CHAR)luaL_checkinteger(L, 1);
+	DWORD code = GetScanCodeFromLua(L);
 	lua_pushboolean(L, INPUT->GetKey(code));
 	return 1;
 }
 LUAF(Input, GetKeyDown)
 {
-    CHAR code = (CHAR)luaL_checkinteger(L, 1);
-    lua_pushboolean(L, INPUT->GetKeyDown(code));
-    return 1;
+	DWORD code = GetScanCodeFromLua(L);
+	lua_pushboolean(L, INPUT->GetKeyDown(code));
+	return 1;
 }
 LUAF(Input, GetKeyUp)
 {
-    CHAR code = (CHAR)luaL_checkinteger(L, 1);
+	DWORD code = GetScanCodeFromLua(L);
     lua_pushboolean(L, INPUT->GetKeyUp(code));
     return 1;
 }
@@ -333,4 +363,14 @@ VOID CLuaBindings::BindInput(lua_State* L)
 	REGF(Input, GetCursorMode);
 	REGF(Input, SetCursorMode);
 	REGF(Input, ShowCursor);
+
+	// keys
+	{
+#define _X(NAME, VALUE) \
+		lua_pushinteger(L, VALUE); \
+		lua_setglobal(L, #NAME); \
+		lua_settop(L, 0);
+#include "InputCodes.h"
+#undef _X
+	}
 }

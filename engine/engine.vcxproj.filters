@@ -137,6 +137,9 @@
     <ClInclude Include="LuaMeshGroup.h">
       <Filter>Header Files\Lua</Filter>
     </ClInclude>
+    <ClInclude Include="InputCodes.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

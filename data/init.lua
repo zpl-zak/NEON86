@@ -39,7 +39,7 @@ end
 
 
 function _init()
-	CameraPerspective(45)
+	CameraPerspective(70)
 	-- CameraOrthographic(5,5)
 	-- updateCamera(0)
 
@@ -76,26 +76,24 @@ function _update(dt)
 	spinner = spinner + 1.5*dt
 	rot = euler(spinner, math.sin(spinner), 0)
 
-	-- F2
-	if GetKeyDown(0x71) then
+	if GetKeyDown(KEY_F2) then
 		ShowCursor(not IsCursorVisible())
 		SetCursorMode(1-GetCursorMode())
 	end 
 
-	-- ESC
-	if GetKeyDown(0x1B) then
+	if GetKeyDown(KEY_ESCAPE) then
 		ExitGame()	
 	end
 
-	if GetKey(0x57) then
+	if GetKey("w") then
 		camera.pos = camera.pos + (camera.dir * dt * SPEED)
 	end
 
-	if GetKey(0x53) then
+	if GetKey("s") then
 		camera.pos = camera.pos - (camera.dir * dt * SPEED)
 	end
 
-	if GetKey(0x41) then
+	if GetKey("a") then
 		camera.pos = Vector3(
 				  camera.pos:x() - camera.dir:z() * dt * SPEED,
 				  camera.pos:y(),
@@ -103,7 +101,7 @@ function _update(dt)
         )
 	end
 
-	if GetKey(0x44) then
+	if GetKey("d") then
 		camera.pos = Vector3(
 				  camera.pos:x() + camera.dir:z() * dt * SPEED,
 				  camera.pos:y(),
