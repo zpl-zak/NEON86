@@ -116,6 +116,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 	case WM_KEYDOWN:
 	{
+		if (INPUT->GetKey(wParam))
+			break;
+
 		INPUT->SetKey(wParam, TRUE);
 		INPUT->SetKeyDown(wParam, TRUE);
 	} break;
