@@ -9,6 +9,7 @@
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT resolution);
+BOOL CenterWindow(HWND hwndWindow);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -17,8 +18,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 {
  	HWND hWnd;
 	RECT rect;
-	rect.left = 300;
-	rect.top = 100;
+	rect.left = CW_USEDEFAULT;
+	rect.top = CW_USEDEFAULT;
 	rect.right = 1024;
 	rect.bottom = 768;
 
@@ -26,6 +27,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		lpCmdLine = "data";
 
 	hWnd = BuildWindow(hInstance, nCmdShow, L"NeonClass", L"NEON 86 | PLAYER", rect);
+	CenterWindow(hWnd);
+
 	if (!ENGINE->Init(hWnd, rect))
 	{
 		MessageBox(NULL, L"Failed to start engine!", L"Engine load failure", MB_OK);
@@ -177,5 +180,28 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     return DefWindowProc (hWnd, message, wParam, lParam);
 }
 
+BOOL CenterWindow(HWND hwndWindow)
+{
+	RECT rectWindow;
 
+    GetWindowRect(hwndWindow, &rectWindow);
+
+    int nWidth = rectWindow.right - rectWindow.left;
+    int nHeight = rectWindow.bottom - rectWindow.top;
+
+    int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+    int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+
+	int nX = nScreenWidth / 2 - nWidth/2;
+	int nY = nScreenHeight / 2 - nHeight/2;
+
+    if (nX < 0) nX = 0;
+    if (nY < 0) nY = 0;
+    if (nX + nWidth > nScreenWidth) nX = nScreenWidth - nWidth;
+    if (nY + nHeight > nScreenHeight) nY = nScreenHeight - nHeight;
+
+    MoveWindow(hwndWindow, nX, nY, nWidth, nHeight, FALSE);
+
+    return TRUE;
+}
 
