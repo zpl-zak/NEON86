@@ -38,7 +38,7 @@ function updateCamera(dt)
 		math.cos(camera.angle[1] + math.pi/2)
     )
 
-	if GetCursorMode() == 1 then
+	if GetCursorMode() == CURSORMODE_CENTERED then
 		camera.angle[1] = camera.angle[1] + (mouseDelta[1]) * dt * SENSITIVITY
 		camera.angle[2] = camera.angle[2] - (mouseDelta[2]) * dt * SENSITIVITY
 	end
@@ -51,7 +51,7 @@ function _init()
 	-- updateCamera(0)
 
 	ShowCursor(false)
-	SetCursorMode(1)
+	SetCursorMode(CURSORMODE_CENTERED)
 	
 	quad = Mesh()
 	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
