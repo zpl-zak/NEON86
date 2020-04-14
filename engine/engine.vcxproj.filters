@@ -145,9 +145,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

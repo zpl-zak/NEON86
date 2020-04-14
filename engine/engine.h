@@ -18,8 +18,6 @@ public:
 	VOID Shutdown();
 	VOID Resize(RECT resolution);
 	VOID Think();
-	
-	BOOL Fullscreen(BOOL fullscreen);
 
 	CRenderer* GetRenderer() { return mRenderer; }
 	CInput* GetInput() { return mInput; }

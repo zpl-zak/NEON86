@@ -289,9 +289,6 @@
     <ClInclude Include="StdAfx.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\engine\engine.vcxproj">
       <Project>{19275cb8-c602-4bc9-aacc-73a25a183b5d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

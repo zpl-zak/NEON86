@@ -322,9 +322,6 @@
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\lua\lua.vcxproj">
       <Project>{6bd37c99-baf9-49f4-a895-0054d44050d5}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

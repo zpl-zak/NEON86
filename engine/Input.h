@@ -52,8 +52,8 @@ public:
         MOUSE_WHEEL_DOWN = 5
     };
 
-	static constexpr int NUM_KEYS = 512;
-	static constexpr int NUM_MOUSEBUTTONS = 256;
+	static const int NUM_KEYS = 512;
+	static const int NUM_MOUSEBUTTONS = 256;
 private:
 	BOOL mKeys[NUM_KEYS], mKeysDown[NUM_KEYS], mKeysUp[NUM_KEYS];
 	DWORD mLastKey;
