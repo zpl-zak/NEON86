@@ -98,6 +98,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 {
     switch(message)
     {
+#if 0
 	case WM_SIZE:
 	{
 		RECT rect;
@@ -107,6 +108,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			
 		ENGINE->Resize(rect);
 	} break;
+#endif
 
     case WM_DESTROY:
     {

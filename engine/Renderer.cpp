@@ -140,6 +140,12 @@ void CRenderer::Resize(RECT res)
 
 	mDevice->SetViewport(&vp);
 
+#if 0
+    MessageBoxA(NULL, "Window resizing not supported yet!", "Renderer error", MB_OK);
+	TerminateProcess(NULL, 1);
+    return;
+#endif
+
 	mLastRes = res;
 }
 
