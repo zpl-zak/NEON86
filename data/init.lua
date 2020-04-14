@@ -117,7 +117,6 @@ end
 function _render()
 	ClearScene(0, 40, 100)
 	CameraPerspective(70)
-	RenderState(RENDERSTATE_ZENABLE, true)
 	
 	lookAt:bind(VIEW)
 	
@@ -129,12 +128,8 @@ function _render()
 			cube:draw(w)
 		end
 	end
-	
-	-- UI
-	Matrix():bind(WORLD):bind(VIEW)
-	CameraOrthographic(1,1)
-	RenderState(RENDERSTATE_ZENABLE, false)
+end
 
-	twodeeTriangle:draw()
-
+function _render2d( )
+	-- TODO UI SYSTEM
 end

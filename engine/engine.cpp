@@ -104,6 +104,7 @@ VOID CEngine::Render()
 {
 	mRenderer->AllowCommands(TRUE);
 	mLuaMachine->Render();
+	mLuaMachine->Render2D();
 	mRenderer->Present();
 	mRenderer->AllowCommands(FALSE);
 }

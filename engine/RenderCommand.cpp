@@ -54,6 +54,10 @@ void CRenderCommand::ExecuteDraw(void)
 				dev->DrawPrimitive((D3DPRIMITIVETYPE)mData.kind, 0, mData.primCount);
 		}
 		break;
+	case RENDERKIND_QUAD:
+	{
+		// todo
+	} break;
 	case RENDERKIND_SET_TEXTURE:
 		dev->SetTextureStageState(mData.stage, D3DTSS_COLOROP, mData.tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
 		dev->SetTexture(mData.stage, mData.tex);

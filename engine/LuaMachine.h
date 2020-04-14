@@ -30,6 +30,7 @@ public:
 	VOID Destroy(void);
 	VOID Update(FLOAT dt);
 	VOID Render(void);
+	VOID Render2D(void);
 	VOID Resize(RECT res);
 
 	inline void CheckVMErrors(INT);

@@ -117,6 +117,17 @@ VOID CLuaMachine::Render(void)
 	CheckVMErrors(r);
 }
 
+VOID CLuaMachine::Render2D(void)
+{
+    lua_getglobal(mLuaVM, "_render2d");
+
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
+
+    INT r = lua_pcall(mLuaVM, 0, 0, 0);
+    CheckVMErrors(r);
+}
+
 VOID CLuaMachine::Resize(RECT res)
 {
 	lua_getglobal(mLuaVM, "_resizeScreen");
