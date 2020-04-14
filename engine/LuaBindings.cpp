@@ -260,7 +260,7 @@ static DWORD GetScanCodeFromLua(lua_State* L)
 		if (strlen(str) != 1)
 			return 0x0;
 
-		CHAR c = str[0];
+		CHAR c = tolower(str[0]);
 
 		if (isalpha(c))
 		{
