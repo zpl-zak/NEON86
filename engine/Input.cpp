@@ -16,6 +16,7 @@ CInput::CInput(void)
     mLastKey = -1;
     mCursorMode = CURSORMODE_DEFAULT;
     mMouseDelta = { 0,0 };
+    mLastMousePos = GetMouseXY();
 }
 
 VOID CInput::Release(void)
