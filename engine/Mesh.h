@@ -3,13 +3,15 @@
 #include "system.h"
 #include "RenderData.h"
 
+class CTexture;
+
 class CMesh
 {
 public:
 	CMesh(void);
 
 	VOID Release(void);
-	VOID SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex);
+	VOID SetTexture(DWORD stage, CTexture* tex);
 	VOID AddVertex(const VERTEX& vertex);
 	VOID AddIndex(SHORT index);
 	VOID Draw(void);

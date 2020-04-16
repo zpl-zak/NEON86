@@ -4,6 +4,8 @@
 
 #include "StdAfx.h"
 
+class CTexture;
+
 enum RENDERKIND
 {
 	RENDERKIND_CLEAR,
@@ -49,6 +51,8 @@ enum RENDERSTATE
 #include "RenderStates.h"
 #undef _X
 };
+
+#define MAX_SAMPLER_STATES 13
 
 enum CLEARFLAG
 {
@@ -99,7 +103,7 @@ struct RENDERDATA
 		D3DMATRIX matrix;
 	};
 
-	LPDIRECT3DTEXTURE9 tex;
+	CTexture* tex;
 	LPDIRECT3DVERTEXBUFFER9 vertBuffer;
 	LPDIRECT3DINDEXBUFFER9 indexBuffer;
 };

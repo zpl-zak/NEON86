@@ -53,12 +53,12 @@ static INT mesh_settexture(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
 	DWORD stage = (DWORD)luaL_checkinteger(L, 2);
-	LPDIRECT3DTEXTURE9* tex = NULL;
+	CTexture* tex = NULL;
 
 	if (lua_gettop(L) == 3)
-		tex = (LPDIRECT3DTEXTURE9*)luaL_checkudata(L, 3, L_TEXTURE);
+		tex = (CTexture*)luaL_checkudata(L, 3, L_TEXTURE);
 
-	mesh->SetTexture(stage, tex ? *tex : NULL);
+	mesh->SetTexture(stage, tex ? tex : NULL);
 
 	lua_pushvalue(L, 1);
 	return 1;

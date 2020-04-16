@@ -294,6 +294,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="system.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +321,7 @@
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>

@@ -3,6 +3,8 @@
 #include "RenderCommand.h"
 #include "NeonEngine.h"
 
+#include "Texture.h"
+
 CRenderCommand::CRenderCommand(UINT kind, RENDERDATA data)
 {
 	mKind = kind;
@@ -60,7 +62,7 @@ void CRenderCommand::ExecuteDraw(void)
 	} break;
 	case RENDERKIND_SET_TEXTURE:
 		dev->SetTextureStageState(mData.stage, D3DTSS_COLOROP, mData.tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
-		dev->SetTexture(mData.stage, mData.tex);
+		dev->SetTexture(mData.stage, mData.tex ? mData.tex->GetTextureHandle() : NULL);
 		break;
 	case RENDERKIND_SET_SAMPLERSTATE:
 		dev->SetSamplerState(mData.stage, (D3DSAMPLERSTATETYPE)mData.kind, mData.state);

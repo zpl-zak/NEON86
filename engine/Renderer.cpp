@@ -168,7 +168,7 @@ VOID CRenderer::PushClear(D3DCOLOR color, UINT flags)
 	PushCommand(RENDERKIND_CLEAR, d);
 }
 
-VOID CRenderer::PushTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
+VOID CRenderer::PushTexture(DWORD stage, CTexture* tex)
 {
 	RENDERDATA d;
 	d.stage = stage;

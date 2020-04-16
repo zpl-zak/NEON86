@@ -158,12 +158,16 @@ LUAF(Rend, CameraOrthographic)
 LUAF(Rend, BindTexture)
 {
 	DWORD stage = (DWORD)luaL_checknumber(L, 1);
-	LPDIRECT3DTEXTURE9* tex = NULL;
+	CTexture* tex = NULL;
 
 	if (lua_gettop(L) == 2)
-		tex = (LPDIRECT3DTEXTURE9*)luaL_checkudata(L, 2, L_TEXTURE);
+		tex = (CTexture*)luaL_checkudata(L, 2, L_TEXTURE);
 
-	RENDERER->PushTexture(stage, tex ? *tex : NULL);
+	if (tex)
+		tex->Bind(stage);
+	else
+		RENDERER->GetDevice()->SetTexture(stage, NULL);
+
 	return 0;
 }
 LUAF(Rend, GetResolution)

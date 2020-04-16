@@ -6,6 +6,10 @@ lookAt = nil
 twodeeTriangle = nil
 whiteTex = Texture("mafiahub.bmp")
 
+whiteTex:setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
+whiteTex:setSamplerState(SAMPLERSTATE_MINFILTER, TEXF_POINT)
+whiteTex:setSamplerState(SAMPLERSTATE_MIPFILTER, TEXF_POINT)
+
 dofile("another.lua")
 
 SPEED = 15.0

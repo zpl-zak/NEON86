@@ -3,6 +3,8 @@
 #include "Mesh.h"
 #include "NeonEngine.h"
 
+#include "Texture.h"
+
 CMesh::CMesh(void)
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
@@ -18,7 +20,7 @@ VOID CMesh::Release(void)
 	SAFE_RELEASE(mData.indexBuffer);
 }
 
-VOID CMesh::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 tex)
+VOID CMesh::SetTexture(DWORD stage, CTexture* tex)
 {
 	mData.stage = stage;
 	mData.tex = tex;
@@ -42,12 +44,12 @@ VOID CMesh::Draw(void)
 		Build();
 
 	if (mData.tex)
-		RENDERER->PushTexture(mData.stage, mData.tex);
+		mData.tex->Bind(mData.stage);
 
 	RENDERER->PushCommand(RENDERKIND_POLYGON, mData);
 
 	if (mData.tex)
-		RENDERER->PushTexture(mData.stage, NULL);
+		mData.tex->Unbind(mData.stage);
 }
 
 VOID CMesh::Build(void)
