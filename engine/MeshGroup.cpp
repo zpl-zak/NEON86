@@ -51,11 +51,8 @@ VOID CMeshGroup::Draw(const D3DXMATRIX& wmat)
     for (UINT i = 0; i < mCount; i++)
     {
         D3DXMATRIX mat = mTransforms[i] * wmat;
-        RENDERER->PushMatrix(MATRIXKIND_WORLD, mat);
-        mMeshes[i]->Draw();
+        mMeshes[i]->Draw(&mat);
     }
-
-    RENDERER->PushMatrix(MATRIXKIND_WORLD, wmat);
 }
 
 VOID CMeshGroup::Clear(void)

@@ -38,13 +38,20 @@ VOID CMesh::AddIndex(SHORT index)
 	mIndices[mData.indexCount++] = index;
 }
 
-VOID CMesh::Draw(void)
+VOID CMesh::Draw(D3DXMATRIX* mat)
 {
 	if (!mData.vertBuffer || mIsDirty)
 		Build();
 
 	if (mData.tex)
 		mData.tex->Bind(mData.stage);
+
+	if (mat)
+	{
+		mData.usesMatrix = TRUE;
+		mData.matrix = *mat;
+	}
+	else mData.usesMatrix = FALSE;
 
 	RENDERER->PushCommand(RENDERKIND_POLYGON, mData);
 

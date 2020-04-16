@@ -277,6 +277,8 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CFrustum.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="MeshGroup.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="FileSystem.cpp" />
@@ -298,6 +300,7 @@
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="InputCodes.h" />
     <ClInclude Include="LuaMeshGroup.h" />
     <ClInclude Include="MeshGroup.h" />

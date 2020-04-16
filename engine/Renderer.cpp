@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "RenderQueue.h"
+#include "Frustum.h"
 #include "Mesh.h"
 
 #include "StdAfx.h"
@@ -16,6 +17,7 @@
 CRenderer::CRenderer()
 {
 	mRenderQueue = new CRenderQueue();
+	mFrustum = new CFrustum();
 	mDirect9 = NULL;
 	mDevice = NULL;
 	mWindow = NULL;
@@ -118,6 +120,7 @@ VOID CRenderer::AllowCommands(BOOL state)
 
 BOOL CRenderer::Release()
 {
+	SAFE_RELEASE(mFrustum);
 	SAFE_RELEASE(mRenderQueue);
 	SAFE_RELEASE(mDevice);
 	SAFE_RELEASE(mDirect9);

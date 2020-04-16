@@ -10,6 +10,7 @@
 #define RENDERER CEngine::the()->GetRenderer()
 
 class CRenderQueue;
+class CFrustum;
 
 #include "RenderData.h"
 
@@ -39,6 +40,7 @@ public:
 	inline RECT GetResolution() { return mLastRes; }
 	D3DMATRIX GetDeviceMatrix(UINT kind);
 	inline HWND GetWindow() const { return mWindow; }
+	inline CFrustum* GetFrustum() { return mFrustum; }
 
 protected:
 	LPDIRECT3D9 mDirect9;
@@ -47,6 +49,7 @@ protected:
 	RECT mLastRes;
 	HWND mWindow;
 	CRenderQueue *mRenderQueue;
+	CFrustum* mFrustum;
 
 	BOOL mVsync;
 	BOOL mFullscreen;

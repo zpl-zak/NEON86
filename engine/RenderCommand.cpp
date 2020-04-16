@@ -4,6 +4,7 @@
 #include "NeonEngine.h"
 
 #include "Texture.h"
+#include "Frustum.h"
 
 CRenderCommand::CRenderCommand(UINT kind, RENDERDATA data)
 {
@@ -39,10 +40,29 @@ void CRenderCommand::ExecuteDraw(void)
 		{
 			dev->SetTransform((D3DTRANSFORMSTATETYPE)mData.kind,
 												&mData.matrix);
+			
+			if (mData.kind == MATRIXKIND_PROJECTION || mData.kind == MATRIXKIND_VIEW)
+				RENDERER->GetFrustum()->Build();
 		}
 		break;
 	case RENDERKIND_POLYGON:
 		{
+			D3DXMATRIX wmat;
+			if (mData.usesMatrix)
+				wmat = mData.matrix;
+			else dev->GetTransform(D3DTS_WORLD, &wmat);
+			
+			// Check frustum
+			// TODO use sphere/AABB check
+			D3DXVECTOR3 wpos = D3DXVECTOR3();
+			D3DXVec3TransformCoord(&wpos, &wpos, &wmat);
+
+			if (!RENDERER->GetFrustum()->IsPointVisible(wpos))
+				break;
+
+			if (mData.usesMatrix)
+				dev->SetTransform(D3DTS_WORLD, &mData.matrix);
+
 			dev->SetFVF(NEONFVF);
 			dev->SetStreamSource(0,
 				mData.vertBuffer,

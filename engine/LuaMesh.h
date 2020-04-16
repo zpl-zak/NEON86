@@ -68,7 +68,7 @@ static INT mesh_draw(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
 	
-	mesh->Draw();
+	mesh->Draw(NULL);
 
 	lua_pushvalue(L, 1);
 	return 1;

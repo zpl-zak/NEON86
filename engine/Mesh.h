@@ -14,7 +14,7 @@ public:
 	VOID SetTexture(DWORD stage, CTexture* tex);
 	VOID AddVertex(const VERTEX& vertex);
 	VOID AddIndex(SHORT index);
-	VOID Draw(void);
+	VOID Draw(D3DXMATRIX*);
 	VOID Build(void);
 	VOID Clear(void);
 

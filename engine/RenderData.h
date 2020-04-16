@@ -76,6 +76,11 @@ struct VERTEX
 	float s, t; // D3DFVF_TEX1
 };
 
+struct RENDERBOUNDS {
+	FLOAT x1, y1, z1;
+	FLOAT x2, y2, z2;
+};
+
 #define MAX_VERTS 128
 #define MAX_INDICES 64
 
@@ -98,10 +103,12 @@ struct RENDERDATA
 			UINT vertCount;
 			UINT indexCount;
 			UINT primCount;
+			RENDERBOUNDS bounds;
 		};
-
-		D3DMATRIX matrix;
 	};
+
+	BOOL usesMatrix;
+	D3DMATRIX matrix;
 
 	CTexture* tex;
 	LPDIRECT3DVERTEXBUFFER9 vertBuffer;
