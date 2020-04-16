@@ -282,7 +282,11 @@ static int math_random (lua_State *L) {
   luaL_argcheck(L, low >= 0 || up <= LUA_MAXINTEGER + low, 1,
                    "interval too large");
   r *= (double)(up - low) + 1.0;
-  lua_pushinteger(L, (lua_Integer)r + low);
+
+  if (lua_type(L, 1) == LUA_TNUMBER)
+      lua_pushnumber(L, (lua_Number)r + low);
+  else
+      lua_pushinteger(L, (lua_Integer)r + low);
   return 1;
 }
 

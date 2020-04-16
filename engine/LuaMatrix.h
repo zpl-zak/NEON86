@@ -13,13 +13,30 @@ static INT matrix_new(lua_State* L)
 	return 1;
 }
 
+static D3DXVECTOR3 matrix_getcomps(lua_State* L)
+{
+    if (lua_gettop(L) == 2)
+    {
+        return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR3);
+    }
+    if (lua_gettop(L) == 4)
+    {
+		FLOAT x = (FLOAT)luaL_checknumber(L, 2);
+		FLOAT y = (FLOAT)luaL_checknumber(L, 3);
+		FLOAT z = (FLOAT)luaL_checknumber(L, 4);
+
+		return D3DXVECTOR3(x,y,z);
+    }
+
+	return D3DXVECTOR3();
+}
+
 static INT matrix_translate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	FLOAT x = (FLOAT)luaL_checknumber(L, 2);
-	FLOAT y = (FLOAT)luaL_checknumber(L, 3);
-	FLOAT z = (FLOAT)luaL_checknumber(L, 4);
-	D3DXMatrixTranslation(mat, x, y, z);
+	D3DXVECTOR3 vec = matrix_getcomps(L);
+
+	D3DXMatrixTranslation(mat, vec.x, vec.y, vec.z);
 
 	lua_pushvalue(L, 1);
 	return 1;
@@ -28,12 +45,11 @@ static INT matrix_translate(lua_State* L)
 static INT matrix_rotate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	FLOAT x = (FLOAT)luaL_checknumber(L, 2);
-	FLOAT y = (FLOAT)luaL_checknumber(L, 3);
-	FLOAT z = (FLOAT)luaL_checknumber(L, 4);
-	if (x) D3DXMatrixRotationX(mat, x);
-	if (y) D3DXMatrixRotationY(mat, y);
-	if (z) D3DXMatrixRotationZ(mat, z);
+	D3DXVECTOR3 vec = matrix_getcomps(L);
+
+	if (vec.x) D3DXMatrixRotationX(mat, vec.x);
+	if (vec.y) D3DXMatrixRotationY(mat, vec.y);
+	if (vec.z) D3DXMatrixRotationZ(mat, vec.z);
 	
 	lua_pushvalue(L, 1);
 	return 1;
@@ -42,10 +58,8 @@ static INT matrix_rotate(lua_State* L)
 static INT matrix_scale(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	FLOAT x = (FLOAT)luaL_checknumber(L, 2);
-	FLOAT y = (FLOAT)luaL_checknumber(L, 3);
-	FLOAT z = (FLOAT)luaL_checknumber(L, 4);
-	D3DXMatrixScaling(mat, x, y, z);
+	D3DXVECTOR3 vec = matrix_getcomps(L);
+	D3DXMatrixScaling(mat, vec.x, vec.y, vec.z);
 
 	lua_pushvalue(L, 1);
 	return 1;

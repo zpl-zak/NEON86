@@ -3,7 +3,6 @@ quad = nil
 cube = nil
 rot = nil
 lookAt = nil
-twodeeTriangle = nil
 whiteTex = Texture("mafiahub.bmp")
 
 whiteTex:setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
@@ -22,35 +21,19 @@ camera = {
 	angle = {0.0,0.0}
 }
 
-
-
-function updateCamera(dt)	
-	camera.fwd = Vector3(
-		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
-		math.sin(camera.angle[2]),
-		math.cos(camera.angle[2]) * math.cos(camera.angle[1])
-	)
-
-	camera.rhs = Vector3(
-		math.sin(camera.angle[1] + math.pi/2),
-		0,
-		math.cos(camera.angle[1] + math.pi/2)
-    )
-
-	if GetCursorMode() == CURSORMODE_CENTERED then
-		mouseDelta = GetMouseDelta()
-		camera.angle[1] = camera.angle[1] + (mouseDelta[1] * dt * SENSITIVITY)
-		camera.angle[2] = camera.angle[2] - (mouseDelta[2] * dt * SENSITIVITY)
-		
-		camera.angle[2] = math.clamp(-1.52, 1.55, camera.angle[2])
-	end
-
-	lookAt = Matrix():lookAt(
-		   camera.pos,
-		   camera.pos+camera.fwd,
-		   Vector3(0,1,0)
-    )
-end
+starfield = {}
+starradius = 32
+starcount = 512
+starcolors = {
+	Color(255,0,0),
+	Color(255,255,0),
+	Color(255,255,255),
+	Color(0,255,255),
+	Color(0,0,255),
+	Color(255,0,255),
+	Color(0,255,0),
+	Color(0,0,255)
+}
 
 function _init()
 	ShowCursor(false)
@@ -77,13 +60,19 @@ function _init()
 	cube:addMesh(quad, Matrix():rotate(math.rad(90),0,0))
 	cube:addMesh(quad, Matrix():rotate(math.rad(-90),0,0))
 
-	twodeeTriangle = Mesh()
-	twodeeTriangle:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
-	twodeeTriangle:addVertex(Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(255, 255, 255)))
-	twodeeTriangle:addVertex(Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(255, 255, 255)))
+	for i=1,starcount do
+		local x = math.random() - 0.5
+		local y = math.random() - 0.5
+		local z = math.random() - 0.5
+		local m = math.sqrt(x*x + y*y + z*z)
+		x = x / m; y = y / m; z = z / m
 
-	twodeeTriangle:addTriangle(0,1,2)
-	twodeeTriangle:build()
+		table.insert(starfield, {
+			color = starcolors[math.random(1,#starcolors)],
+			pos = Vector3(x,y,z) * (math.random(0.0,1.0) * starradius)
+        })
+	end
+
 end
 
 function _destroy()
@@ -127,18 +116,15 @@ function _update(dt)
 end
 
 function _render()
-	ClearScene(0, 40, 100)
+	ClearScene(22, 22, 22)
 	CameraPerspective(70)
 	
 	lookAt:bind(VIEW)
 	
-	for i=0, 15, 1
+	for i=1,#starfield
 	do
-		for j=0, 15, 1
-		do
-			w = (rot * Matrix():translate(-i*2, 0, j*2))
-			cube:draw(w)
-		end
+		local w = (rot * Matrix():translate(starfield[i].pos))
+		cube:draw(w)
 	end
 end
 
