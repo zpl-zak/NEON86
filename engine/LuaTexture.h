@@ -43,7 +43,6 @@ static INT texture_getsampler(lua_State* L)
     CTexture* tex = (CTexture*)luaL_checkudata(L, 1, L_TEXTURE);
     UINT sampler = (UINT)luaL_checkinteger(L, 2);
     
-
     lua_pushinteger(L, tex->GetSamplerState(sampler));
     return 1;
 }

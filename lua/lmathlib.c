@@ -47,6 +47,19 @@ static int math_abs (lua_State *L) {
   return 1;
 }
 
+static int math_clamp(lua_State* L) {
+    lua_Number min = luaL_checknumber(L, 1);
+    lua_Number max = luaL_checknumber(L, 2);
+    lua_Number val = luaL_checknumber(L, 3);
+
+    if (val < min) val = min;
+    if (val > max) val = max;
+
+    lua_pushnumber(L, val);
+    return 1;
+}
+
+
 static int math_sin (lua_State *L) {
   lua_pushnumber(L, l_mathop(sin)(luaL_checknumber(L, 1)));
   return 1;
@@ -351,6 +364,7 @@ static int math_log10 (lua_State *L) {
 
 static const luaL_Reg mathlib[] = {
   {"abs",   math_abs},
+  {"clamp", math_clamp},
   {"acos",  math_acos},
   {"asin",  math_asin},
   {"atan",  math_atan},

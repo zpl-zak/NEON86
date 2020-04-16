@@ -19,6 +19,12 @@ LUAF(Base, ShowMessage)
 	MessageBoxA(NULL, text, caption, MB_OK);
 	return 0;
 }
+LUAF(Base, LogString)
+{
+    const char* text = luaL_checkstring(L, 1);
+    OutputDebugStringA(text);
+    return 0;
+}
 LUAF(Base, ExitGame)
 {
 	ENGINE->Shutdown();
@@ -61,6 +67,7 @@ LUAF(Base, time)
 VOID CLuaBindings::BindBase(lua_State* L)
 {
 	REGF(Base, ShowMessage);
+	REGF(Base, LogString);
 	REGF(Base, ExitGame);
 	REGF(Base, SetFPS);
 	REGF(Base, dofile);

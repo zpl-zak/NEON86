@@ -29,7 +29,7 @@ public:
 	VOID SetCursor(BOOL state);
 	BOOL GetCursor(void);
 	inline UCHAR GetCursorMode() { return mCursorMode; }
-	inline VOID SetCursorMode(UCHAR mode) { mCursorMode = mode; }
+	VOID SetCursorMode(UCHAR mode);
 	
 	inline VOID SetKey(DWORD code, BOOL state) { mKeys[code] = state; }
 	inline VOID SetKeyDown(DWORD code, BOOL state) { mKeysDown[code] = state; }

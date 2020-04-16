@@ -19,8 +19,10 @@ camera = {
 	pos = Vector3(0,0,0),
 	fwd = Vector3(0,0,0),
 	rhs = Vector3(0,0,0),
-	angle = {math.deg(90),0}
+	angle = {0.0,0.0}
 }
+
+
 
 function updateCamera(dt)	
 	camera.fwd = Vector3(
@@ -39,6 +41,8 @@ function updateCamera(dt)
 		mouseDelta = GetMouseDelta()
 		camera.angle[1] = camera.angle[1] + (mouseDelta[1] * dt * SENSITIVITY)
 		camera.angle[2] = camera.angle[2] - (mouseDelta[2] * dt * SENSITIVITY)
+		
+		camera.angle[2] = math.clamp(-1.52, 1.55, camera.angle[2])
 	end
 
 	lookAt = Matrix():lookAt(
@@ -113,6 +117,10 @@ function _update(dt)
 
 	if GetKey("d") then
 		camera.pos = camera.pos + (camera.rhs * dt * SPEED)
+	end
+
+	if GetKey(KEY_SPACE) then
+		camera.pos = camera.pos + Vector3(0,1,0) * dt * SPEED
 	end
 
 	updateCamera(dt)

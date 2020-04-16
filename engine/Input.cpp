@@ -46,6 +46,18 @@ BOOL CInput::GetCursor(void)
     return pci.flags == CURSOR_SHOWING;
 }
 
+VOID CInput::SetCursorMode(UCHAR mode)
+{
+    mCursorMode = mode;
+
+    if (mCursorMode == CURSORMODE_CENTERED)
+    {
+        RECT res = RENDERER->GetResolution();
+        SetMouseXY((SHORT)(res.right / 2.0f), (SHORT)(res.bottom / 2.0f));
+        mLastMousePos = GetMouseXY();
+    }
+}
+
 VOID CInput::SetMouseXY(SHORT x, SHORT y)
 {
     POINT pos = { x,y };
