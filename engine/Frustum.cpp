@@ -74,7 +74,6 @@ VOID CFrustum::Build()
 
 BOOL CFrustum::IsPointVisible(D3DXVECTOR3 pos)
 {
-    return 1;
     for (UINT i = 0; i < 6; i++)
     {
         if (D3DXPlaneDotCoord(&mPlanes[i], &pos) < 0.0F)

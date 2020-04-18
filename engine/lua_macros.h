@@ -19,7 +19,7 @@
 
 #define REGC(NAME, FUNC) \
 	lua_pushcfunction(L, FUNC); \
-	lua_setfield(L, -2, #NAME);
+	lua_setfield(L, -2, NAME);
 
 #define L_MATRIX "Matrix"
 #define L_VECTOR3 "Vector3"
