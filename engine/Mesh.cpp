@@ -4,6 +4,7 @@
 #include "NeonEngine.h"
 
 #include "Texture.h"
+#include "Frustum.h"
 
 CMesh::CMesh(void)
 {
@@ -42,6 +43,16 @@ VOID CMesh::Draw(D3DXMATRIX* mat)
 {
 	if (!mData.vertBuffer || mIsDirty)
 		Build();
+
+	D3DMATRIX* fmat = mat;
+
+	if (!fmat)
+		fmat = &mData.matrix;
+
+    D3DXVECTOR3 wpos = D3DXVECTOR3(fmat->_41, fmat->_42, fmat->_43);
+
+	if (!RENDERER->GetFrustum()->IsPointVisible(wpos))
+		return;
 
 	if (mData.tex)
 		mData.tex->Bind(mData.stage);

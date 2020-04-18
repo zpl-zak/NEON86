@@ -54,8 +54,8 @@ void CRenderCommand::ExecuteDraw(void)
 			
 			// Check frustum
 			// TODO use sphere/AABB check
-			D3DXVECTOR3 wpos = D3DXVECTOR3();
-			D3DXVec3TransformCoord(&wpos, &wpos, &wmat);
+			D3DXVECTOR3 wpos = D3DXVECTOR3(wmat._41, wmat._42, wmat._43);
+			
 
 			if (!RENDERER->GetFrustum()->IsPointVisible(wpos))
 				break;
