@@ -17,6 +17,10 @@
 	lua_setglobal(L, #NAME); \
 	lua_settop(L, 0);
 
+#define REGC(NAME, FUNC) \
+	lua_pushcfunction(L, FUNC); \
+	lua_setfield(L, -2, #NAME);
+
 #define L_MATRIX "Matrix"
 #define L_VECTOR3 "Vector3"
 #define L_VERTEX "Vertex"

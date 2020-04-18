@@ -61,9 +61,9 @@ static VOID LuaTexture_register(lua_State* L)
 	luaL_newmetatable(L, L_TEXTURE);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 	
-	lua_pushcfunction(L, texture_setsampler); lua_setfield(L, -2, "setSamplerState");
-	lua_pushcfunction(L, texture_getsampler); lua_setfield(L, -2, "getSamplerState");
+    REGC("setSamplerState", texture_setsampler);
+    REGC("getSamplerState", texture_getsampler);
+    REGC("__gc", texture_delete);
 
-	lua_pushcfunction(L, texture_delete); lua_setfield(L, -2, "__gc");
 	lua_pop(L, 1);
 }

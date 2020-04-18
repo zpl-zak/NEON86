@@ -60,10 +60,10 @@ static VOID LuaMeshGroup_register(lua_State* L)
     luaL_newmetatable(L, L_MESHGROUP);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
-    lua_pushcfunction(L, meshgroup_addmesh); lua_setfield(L, -2, "addMesh");
-    lua_pushcfunction(L, meshgroup_draw); lua_setfield(L, -2, "draw");
-    lua_pushcfunction(L, meshgroup_clear); lua_setfield(L, -2, "clear");
-    lua_pushcfunction(L, meshgroup_delete); lua_setfield(L, -2, "__gc");
-
+    REGC("addMesh", meshgroup_addmesh);
+    REGC("draw", meshgroup_draw);
+    REGC("clear", meshgroup_clear);
+    REGC("__gc", meshgroup_delete);
+    
     lua_pop(L, 1);
 }

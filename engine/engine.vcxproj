@@ -277,7 +277,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CFrustum.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="MeshGroup.cpp" />
     <ClCompile Include="engine.cpp" />

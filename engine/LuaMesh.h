@@ -108,14 +108,14 @@ static VOID LuaMesh_register(lua_State* L)
 	luaL_newmetatable(L, L_MESH);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
-	lua_pushcfunction(L, mesh_addvertex); lua_setfield(L, -2, "addVertex");
-	lua_pushcfunction(L, mesh_addindex); lua_setfield(L, -2, "addIndex");
-	lua_pushcfunction(L, mesh_addtriangle); lua_setfield(L, -2, "addTriangle");
-	lua_pushcfunction(L, mesh_settexture); lua_setfield(L, -2, "setTexture");
-	lua_pushcfunction(L, mesh_draw); lua_setfield(L, -2, "draw");
-	lua_pushcfunction(L, mesh_build); lua_setfield(L, -2, "build");
-	lua_pushcfunction(L, mesh_clear); lua_setfield(L, -2, "clear");
-	lua_pushcfunction(L, mesh_delete) ; lua_setfield(L, -2, "__gc");
+    REGC("addVertex", mesh_addvertex);
+    REGC("addIndex", mesh_addindex);
+    REGC("addTriangle", mesh_addtriangle);
+    REGC("setTexture", mesh_settexture);
+    REGC("draw", mesh_draw);
+    REGC("build", mesh_build);
+    REGC("clear", mesh_clear);
+    REGC("__gc", mesh_delete);
 
 	lua_pop(L, 1);
 }

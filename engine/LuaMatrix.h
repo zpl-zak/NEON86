@@ -105,12 +105,12 @@ static VOID LuaMatrix_register(lua_State* L)
 	luaL_newmetatable(L, L_MATRIX);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
-	lua_pushcfunction(L, matrix_translate); lua_setfield(L, -2, "translate");
-	lua_pushcfunction(L, matrix_rotate); lua_setfield(L, -2, "rotate");
-	lua_pushcfunction(L, matrix_scale); lua_setfield(L, -2, "scale");
-	lua_pushcfunction(L, matrix_bind); lua_setfield(L, -2, "bind");
-	lua_pushcfunction(L, matrix_lookat); lua_setfield(L, -2, "lookAt");
+	REGC("translate", matrix_translate);
+	REGC("rotate", matrix_rotate);
+	REGC("scale", matrix_scale);
+	REGC("bind", matrix_bind);
+	REGC("lookAt", matrix_lookat);
+	REGC("__mul", matrix_mul);
 
-	lua_pushcfunction(L, matrix_mul); lua_setfield(L, -2, "__mul");
 	lua_pop(L, 1);
 }

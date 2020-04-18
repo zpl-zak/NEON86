@@ -74,7 +74,7 @@ static VOID LuaVertex_register(lua_State* L)
 	luaL_newmetatable(L, L_VERTEX);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 	
-	lua_pushcfunction(L, vertex_get); lua_setfield(L, -2, "get");
+	REGC("get", vertex_get);
 	
 	lua_pop(L, 1);
 }

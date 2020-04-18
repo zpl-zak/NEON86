@@ -136,16 +136,16 @@ static VOID LuaVector_register(lua_State* L)
 	luaL_newmetatable(L, L_VECTOR3);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
-	lua_pushcfunction(L, vector3_cross); lua_setfield(L, -2, "cross");
-	lua_pushcfunction(L, vector3_get); lua_setfield(L, -2, "get");
+    REGC("cross", vector3_cross);
+    REGC("get", vector3_get);
 
-	lua_pushcfunction(L, vector3_add); lua_setfield(L, -2, "__add");
-	lua_pushcfunction(L, vector3_sub); lua_setfield(L, -2, "__sub");
-	lua_pushcfunction(L, vector3_dot); lua_setfield(L, -2, "__mul");
+    REGC("__add", vector3_add);
+    REGC("__sub", vector3_sub);
+    REGC("__mul", vector3_dot);
 
-	lua_pushcfunction(L, vector3_x); lua_setfield(L, -2, "x");
-	lua_pushcfunction(L, vector3_y); lua_setfield(L, -2, "y");
-	lua_pushcfunction(L, vector3_z); lua_setfield(L, -2, "z");
+    REGC("x", vector3_x);
+    REGC("y", vector3_y);
+    REGC("z", vector3_z);
 
 	lua_pop(L, 1);
 }
