@@ -111,6 +111,5 @@ struct RENDERDATA
 	D3DMATRIX matrix;
 
 	CTexture* tex;
-	LPDIRECT3DVERTEXBUFFER9 vertBuffer;
-	LPDIRECT3DINDEXBUFFER9 indexBuffer;
+	LPD3DXMESH mesh;
 };

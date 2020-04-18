@@ -17,8 +17,7 @@ CMesh::CMesh(void)
 
 VOID CMesh::Release(void)
 {
-	SAFE_RELEASE(mData.vertBuffer);
-	SAFE_RELEASE(mData.indexBuffer);
+	SAFE_RELEASE(mData.mesh);
 }
 
 VOID CMesh::SetTexture(DWORD stage, CTexture* tex)
@@ -41,7 +40,7 @@ VOID CMesh::AddIndex(SHORT index)
 
 VOID CMesh::Draw(D3DXMATRIX* mat)
 {
-	if (!mData.vertBuffer || mIsDirty)
+	if (!mData.mesh || mIsDirty)
 		Build();
 
 	if (mData.tex)
@@ -69,32 +68,27 @@ VOID CMesh::Build(void)
 	if (mData.vertCount == 0)
 		return;
 
-	dev->CreateVertexBuffer(mData.vertCount*sizeof(VERTEX),
-							0,
-							NEONFVF,
-							D3DPOOL_MANAGED,
-							&mData.vertBuffer,
-							NULL);
-
-	mData.vertBuffer->Lock(0, 0, (VOID**)&vidMem, 0);
-	memcpy(vidMem, mVerts, mData.vertCount*sizeof(VERTEX));
-	mData.vertBuffer->Unlock();
-
-	if (mData.indexCount > 0)
-	{
-		dev->CreateIndexBuffer(mData.indexCount*sizeof(SHORT),
-							   0,
-							   D3DFMT_INDEX16,
-							   D3DPOOL_MANAGED,
-							   &mData.indexBuffer,
-							   NULL);
-
-		mData.indexBuffer->Lock(0, 0, (VOID**)&vidMem, 0);
-		memcpy(vidMem, mIndices, mData.indexCount*sizeof(SHORT));
-		mData.indexBuffer->Unlock();
-	}
-
 	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
+	
+	D3DXCreateMeshFVF(mData.primCount,
+		mData.vertCount,
+		D3DXMESH_MANAGED,
+		NEONFVF,
+		dev,
+		&mData.mesh);
+
+	
+    mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
+    memcpy(vidMem, mVerts, mData.vertCount * sizeof(VERTEX));
+	mData.mesh->UnlockVertexBuffer();
+
+    if (mData.indexCount > 0)
+    {
+        mData.mesh->LockIndexBuffer(0, (VOID**)&vidMem);
+        memcpy(vidMem, mIndices, mData.indexCount * sizeof(SHORT));
+		mData.mesh->UnlockIndexBuffer();
+    }
+
 	mIsDirty = FALSE;
 }
 

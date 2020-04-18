@@ -154,17 +154,7 @@ VOID CRenderer::PushPolygon(const RENDERDATA& data)
     if (data.usesMatrix)
         mDevice->SetTransform(D3DTS_WORLD, &data.matrix);
 
-    mDevice->SetFVF(NEONFVF);
-    mDevice->SetStreamSource(0,
-        data.vertBuffer,
-        0,
-        sizeof(VERTEX));
-    mDevice->SetIndices(data.indexBuffer);
-
-    if (data.indexBuffer)
-        mDevice->DrawIndexedPrimitive((D3DPRIMITIVETYPE)data.kind, 0, 0, data.vertCount, 0, data.primCount);
-    else
-        mDevice->DrawPrimitive((D3DPRIMITIVETYPE)data.kind, 0, data.primCount);
+	data.mesh->DrawSubset(0);
 }
 
 VOID CRenderer::PushClear(D3DCOLOR color, UINT flags)
