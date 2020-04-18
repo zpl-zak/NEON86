@@ -111,5 +111,8 @@ struct RENDERDATA
 	D3DMATRIX matrix;
 
 	CTexture* tex;
+
 	LPD3DXMESH mesh;
+	D3DXVECTOR3 meshOrigin;
+	FLOAT meshRadius;
 };

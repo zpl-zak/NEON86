@@ -146,10 +146,11 @@ VOID CRenderer::PushPolygon(const RENDERDATA& data)
 
     // Check frustum
     // TODO use sphere/AABB check
-    /*D3DXVECTOR3 wpos = D3DXVECTOR3(wmat._41, wmat._42, wmat._43);
+    D3DXVECTOR3 wpos = D3DXVECTOR3(wmat._41, wmat._42, wmat._43);
+	D3DXVECTOR3 pos = data.meshOrigin + wpos;
 
-	if (!GetFrustum()->IsPointVisible(wpos))
-		return;*/
+	if (!GetFrustum()->IsSphereVisible(pos, data.meshRadius))
+		return;
 
     if (data.usesMatrix)
         mDevice->SetTransform(D3DTS_WORLD, &data.matrix);

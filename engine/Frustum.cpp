@@ -90,5 +90,11 @@ BOOL CFrustum::IsBoxVisible(D3DXVECTOR3 pos, RENDERBOUNDS bounds)
 
 BOOL CFrustum::IsSphereVisible(D3DXVECTOR3 pos, FLOAT radius)
 {
-    return 0;
+    for (UINT i = 0; i < 6; i++)
+    {
+        if (D3DXPlaneDotCoord(&mPlanes[i], &pos) < -radius)
+            return FALSE;
+    }
+
+    return TRUE;
 }

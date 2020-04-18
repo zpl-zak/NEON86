@@ -80,6 +80,13 @@ VOID CMesh::Build(void)
 	
     mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
     memcpy(vidMem, mVerts, mData.vertCount * sizeof(VERTEX));
+
+    D3DXComputeBoundingSphere((D3DXVECTOR3*)&mVerts,
+        mData.vertCount,
+        sizeof(VERTEX),
+        &mData.meshOrigin,
+        &mData.meshRadius);
+
 	mData.mesh->UnlockVertexBuffer();
 
     if (mData.indexCount > 0)
