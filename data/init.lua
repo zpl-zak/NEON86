@@ -22,7 +22,7 @@ camera = {
 }
 
 starfield = {}
-starradius = 32
+starradius = 64
 starcount = 512
 starcolors = {
 	Color(255,0,0),

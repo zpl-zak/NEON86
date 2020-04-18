@@ -76,7 +76,6 @@ VOID CMesh::Build(void)
 		NEONFVF,
 		dev,
 		&mData.mesh);
-
 	
     mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
     memcpy(vidMem, mVerts, mData.vertCount * sizeof(VERTEX));
