@@ -44,16 +44,6 @@ VOID CMesh::Draw(D3DXMATRIX* mat)
 	if (!mData.vertBuffer || mIsDirty)
 		Build();
 
-	D3DMATRIX* fmat = mat;
-
-	if (!fmat)
-		fmat = &mData.matrix;
-
-    D3DXVECTOR3 wpos = D3DXVECTOR3(fmat->_41, fmat->_42, fmat->_43);
-
-	if (!RENDERER->GetFrustum()->IsPointVisible(wpos))
-		return;
-
 	if (mData.tex)
 		mData.tex->Bind(mData.stage);
 
@@ -64,7 +54,7 @@ VOID CMesh::Draw(D3DXMATRIX* mat)
 	}
 	else mData.usesMatrix = FALSE;
 
-	RENDERER->PushCommand(RENDERKIND_POLYGON, mData);
+	RENDERER->PushPolygon(mData);
 
 	if (mData.tex)
 		mData.tex->Unbind(mData.stage);

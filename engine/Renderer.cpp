@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Renderer.h"
-#include "RenderQueue.h"
+#include "Texture.h"
 #include "Frustum.h"
 #include "Mesh.h"
 
@@ -16,7 +16,6 @@
 
 CRenderer::CRenderer()
 {
-	mRenderQueue = new CRenderQueue();
 	mFrustum = new CFrustum();
 	mDirect9 = NULL;
 	mDevice = NULL;
@@ -83,23 +82,9 @@ VOID CRenderer::ResetDevice(void)
 
 	BuildParams();
 	mDevice->Reset(&mParams);
-}
 
-VOID CRenderer::Present()
-{
-	if (!mDevice)
-		return;
-
-	mRenderQueue->ExecutePreDraw();
-
-	mDevice->BeginScene();
-	mRenderQueue->ExecuteDraw();
-	mDevice->EndScene();
-
-	mRenderQueue->ExecutePostDraw();
-	Clear();
-
-	mDevice->Present(NULL, NULL, NULL, NULL);
+    mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
 VOID CRenderer::SetVSYNC(BOOL state)
@@ -110,7 +95,7 @@ VOID CRenderer::SetVSYNC(BOOL state)
 
 VOID CRenderer::Clear()
 {
-	mRenderQueue->Clear();
+
 }
 
 VOID CRenderer::AllowCommands(BOOL state)
@@ -121,14 +106,13 @@ VOID CRenderer::AllowCommands(BOOL state)
 BOOL CRenderer::Release()
 {
 	SAFE_RELEASE(mFrustum);
-	SAFE_RELEASE(mRenderQueue);
 	SAFE_RELEASE(mDevice);
 	SAFE_RELEASE(mDirect9);
 
 	return TRUE;
 }
 
-void CRenderer::Resize(RECT res)
+VOID CRenderer::Resize(RECT res)
 {
 	if (!mDevice)
 		return;
@@ -153,59 +137,64 @@ void CRenderer::Resize(RECT res)
 }
 
 /// Render commands
-
-VOID CRenderer::PushCommand(UINT kind, const RENDERDATA& data)
+VOID CRenderer::PushPolygon(const RENDERDATA& data)
 {
-	if (!mCanAddCommands)
-		return;
+    D3DXMATRIX wmat;
+    if (data.usesMatrix)
+        wmat = data.matrix;
+    else mDevice->GetTransform(D3DTS_WORLD, &wmat);
 
-	mRenderQueue->PushCommand(kind, data);
+    // Check frustum
+    // TODO use sphere/AABB check
+    /*D3DXVECTOR3 wpos = D3DXVECTOR3(wmat._41, wmat._42, wmat._43);
+
+	if (!GetFrustum()->IsPointVisible(wpos))
+		return;*/
+
+    if (data.usesMatrix)
+        mDevice->SetTransform(D3DTS_WORLD, &data.matrix);
+
+    mDevice->SetFVF(NEONFVF);
+    mDevice->SetStreamSource(0,
+        data.vertBuffer,
+        0,
+        sizeof(VERTEX));
+    mDevice->SetIndices(data.indexBuffer);
+
+    if (data.indexBuffer)
+        mDevice->DrawIndexedPrimitive((D3DPRIMITIVETYPE)data.kind, 0, 0, data.vertCount, 0, data.primCount);
+    else
+        mDevice->DrawPrimitive((D3DPRIMITIVETYPE)data.kind, 0, data.primCount);
 }
 
 VOID CRenderer::PushClear(D3DCOLOR color, UINT flags)
 {
-	RENDERDATA d;
-	d.color = color;
-	d.flags = flags;
-
-	PushCommand(RENDERKIND_CLEAR, d);
+	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
 VOID CRenderer::PushTexture(DWORD stage, CTexture* tex)
 {
-	RENDERDATA d;
-	d.stage = stage;
-	d.tex = tex;
-
-	PushCommand(RENDERKIND_SET_TEXTURE, d);
+    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
+    mDevice->SetTexture(stage, tex ? tex->GetTextureHandle() : NULL);
 }
 
 VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)
 {
-	RENDERDATA d;
-	d.kind = kind;
-	d.matrix = mat;
+    mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind,
+        &mat);
 
-	PushCommand(RENDERKIND_MATRIX, d);
+    if (kind == MATRIXKIND_PROJECTION || kind == MATRIXKIND_VIEW)
+        GetFrustum()->Build();
 }
 
 VOID CRenderer::PushRenderState(DWORD kind, BOOL state)
 {
-	RENDERDATA d;
-	d.kind = kind;
-	d.state = state;
-
-	PushCommand(RENDERKIND_SET_RENDERSTATE, d);
+	mDevice->SetRenderState((D3DRENDERSTATETYPE)kind, (DWORD)state);
 }
 
 VOID CRenderer::PushSamplerState(DWORD stage, DWORD kind, DWORD value)
 {
-	RENDERDATA d;
-	d.kind = kind;
-	d.stage = stage;
-	d.state = value;
-
-	PushCommand(RENDERKIND_SET_SAMPLERSTATE, d);
+	mDevice->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)kind, value);
 }
 
 D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)

@@ -285,9 +285,7 @@
     <ClCompile Include="LuaBindings.cpp" />
     <ClCompile Include="LuaMachine.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="RenderCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="RenderQueue.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -316,10 +314,8 @@
     <ClInclude Include="lua_macros.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="NeonEngine.h" />
-    <ClInclude Include="RenderCommand.h" />
     <ClInclude Include="RenderData.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="RenderQueue.h" />
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />

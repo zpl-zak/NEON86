@@ -9,7 +9,6 @@
 
 #define RENDERER CEngine::the()->GetRenderer()
 
-class CRenderQueue;
 class CFrustum;
 
 #include "RenderData.h"
@@ -22,13 +21,12 @@ public:
 	LRESULT CreateDevice(HWND window);
 	VOID ResetDevice(void);
 	BOOL Release();
-	VOID Present();
 	VOID Resize(RECT res);
 	VOID SetVSYNC(BOOL state);
 	VOID AllowCommands(BOOL state);
 
 	/// Render commands
-	inline VOID PushCommand(UINT commandKind, const RENDERDATA& data);
+	VOID PushPolygon(const RENDERDATA& data);
 	VOID PushClear(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
 	VOID PushTexture(DWORD stage, CTexture* tex);
 	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
@@ -48,7 +46,6 @@ protected:
 	D3DPRESENT_PARAMETERS mParams;
 	RECT mLastRes;
 	HWND mWindow;
-	CRenderQueue *mRenderQueue;
 	CFrustum* mFrustum;
 
 	BOOL mVsync;
