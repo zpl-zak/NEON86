@@ -15,7 +15,7 @@ VOID CFrustum::Release()
 
 VOID CFrustum::Build()
 {
-    FLOAT zmin, r;
+    //FLOAT zmin, r;
     D3DXMATRIX mat;
 
     D3DXMATRIX projMat = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);

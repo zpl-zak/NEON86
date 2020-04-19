@@ -53,10 +53,22 @@ VOID CMesh::Draw(D3DXMATRIX* mat)
 	}
 	else mData.usesMatrix = FALSE;
 
-	RENDERER->PushPolygon(mData);
+	RENDERER->DrawMesh(mData);
 
 	if (mData.tex)
 		mData.tex->Unbind(mData.stage);
+}
+
+VOID CMesh::CalculateNormals()
+{
+    if (!mData.mesh)
+    {
+        MessageBoxA(NULL, "Mesh is not built yet, you can not calculate normals!", "Mesh error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
+
+	D3DXComputeNormals(mData.mesh, NULL);
 }
 
 VOID CMesh::Build(void)

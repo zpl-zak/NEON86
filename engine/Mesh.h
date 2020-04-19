@@ -15,6 +15,7 @@ public:
 	VOID AddVertex(const VERTEX& vertex);
 	VOID AddIndex(SHORT index);
 	VOID Draw(D3DXMATRIX*);
+	VOID CalculateNormals();
 	VOID Build(void);
 	VOID Clear(void);
 

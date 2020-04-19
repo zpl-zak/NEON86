@@ -6,9 +6,10 @@
 
 static INT vertex_new(lua_State* L)
 {
-	FLOAT x=0.0f, y=0.0f, z=0.0f;
-	FLOAT s=0.0f, t=0.0f;
-	UINT color = 0xFFFFFFFF;
+	FLOAT x=0.0F, y=0.0F, z=0.0F;
+	FLOAT nx=0.0F, ny=0.0F, nz=0.0F;
+	FLOAT su=0.0F, tv=0.0F;
+	DWORD color = 0xFFFFFFFF;
 
 	if (lua_gettop(L) >= 3)
 	{
@@ -19,21 +20,31 @@ static INT vertex_new(lua_State* L)
 
 	if (lua_gettop(L) >= 5)
 	{
-		s = (FLOAT)luaL_checknumber(L, 4);
-		t = (FLOAT)luaL_checknumber(L, 5);
+		su = (FLOAT)luaL_checknumber(L, 4);
+		tv = (FLOAT)luaL_checknumber(L, 5);
 	}
 
 	if (lua_gettop(L) == 6)
 	{
-		color = (UINT)luaL_checknumber(L, 6);
+		color = (DWORD)luaL_checknumber(L, 6);
+	}
+
+	if (lua_gettop(L) == 9)
+	{
+        nx = (FLOAT)luaL_checknumber(L, 7);
+        ny = (FLOAT)luaL_checknumber(L, 8);
+        nz = (FLOAT)luaL_checknumber(L, 9);
 	}
 
 	VERTEX* vert = (VERTEX*)lua_newuserdata(L, sizeof(VERTEX));
 	vert->x = x;
 	vert->y = y;
 	vert->z = z;
-	vert->s = s;
-	vert->t = t;
+	vert->su = su;
+	vert->tv = tv;
+	vert->nx = nx;
+	vert->ny = ny;
+	vert->nz = nz;
 	vert->color = color;
 
 	luaL_setmetatable(L, L_VERTEX);
@@ -43,7 +54,7 @@ static INT vertex_new(lua_State* L)
 static INT vertex_get(lua_State* L)
 {
 	VERTEX* vert = (VERTEX*)luaL_checkudata(L, 1, L_VERTEX);
-	FLOAT arr[5] = { vert->x, vert->y, vert->z, vert->s, vert->t };
+	FLOAT arr[8] = { vert->x, vert->y, vert->z, vert->su, vert->tv, vert->nx, vert->ny, vert->nz };
 	FLOAT col[4] = { (FLOAT)vert->r, (FLOAT)vert->g, (FLOAT)vert->b, (FLOAT)vert->a };
 
 	lua_newtable(L);

@@ -1,13 +1,7 @@
 spinner = 0.0
-quad = nil
 cube = nil
 rot = nil
 lookAt = nil
-whiteTex = Texture("mafiahub.bmp")
-
-whiteTex:setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
-whiteTex:setSamplerState(SAMPLERSTATE_MINFILTER, TEXF_POINT)
-whiteTex:setSamplerState(SAMPLERSTATE_MIPFILTER, TEXF_POINT)
 
 dofile("another.lua")
 
@@ -38,27 +32,11 @@ starcolors = {
 function _init()
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
+	ToggleLights(true)
+	SetGlobalAmbiance(Color(255,255,255))
 	
-	quad = Mesh()
-	quad:addVertex(Vertex( -1.0, 1.0, -1.0, 0, 0, Color(255, 255, 255)))
-	quad:addVertex(Vertex( 1.0, 1.0, -1.0, -1.0, 0.0, Color(255, 255, 255)))
-	quad:addVertex(Vertex( -1.0, -1.0, -1.0, 0.0, -1.0, Color(255, 255, 255)))
-	quad:addVertex(Vertex( 1.0, -1.0, -1.0, -1.0, -1.0, Color(255, 0, 0)))
-	
-	quad:addTriangle(0,1,2)
-	quad:addTriangle(2,1,3)
-	
-	quad:setTexture(0, whiteTex)
-	
-	quad:build()
-
 	cube = MeshGroup()
-	cube:addMesh(quad, Matrix())
-	cube:addMesh(quad, Matrix():rotate(0,math.rad(90),0))
-	cube:addMesh(quad, Matrix():rotate(0,math.rad(-90),0))
-	cube:addMesh(quad, Matrix():rotate(0,math.rad(180),0))
-	cube:addMesh(quad, Matrix():rotate(math.rad(90),0,0))
-	cube:addMesh(quad, Matrix():rotate(math.rad(-90),0,0))
+	cube:loadMesh("cube.glb")
 
 	for i=1,starcount do
 		local x = math.random() - 0.5

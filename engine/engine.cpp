@@ -106,13 +106,11 @@ VOID CEngine::Update(FLOAT deltaTime)
 
 VOID CEngine::Render()
 {
-	mRenderer->AllowCommands(TRUE);
 	mRenderer->GetDevice()->BeginScene();
 	mLuaMachine->Render();
 	mLuaMachine->Render2D();
 	mRenderer->GetDevice()->EndScene();
 	mRenderer->GetDevice()->Present(NULL, NULL, NULL, NULL);
-	mRenderer->AllowCommands(FALSE);
 }
 
 VOID CEngine::Resize(RECT resolution)

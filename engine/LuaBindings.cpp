@@ -108,7 +108,7 @@ LUAF(Rend, ClearScene)
 	
 	if (lua_isnumber(L, 4))
 		flags = (UINT)luaL_checknumber(L, 4);
-	RENDERER->PushClear(D3DCOLOR_XRGB(r,g,b), flags);
+	RENDERER->ClearBuffer(D3DCOLOR_XRGB(r,g,b), flags);
 	return 0;
 }
 LUAF(Rend, CameraPerspective)
@@ -131,7 +131,7 @@ LUAF(Rend, CameraPerspective)
 		zNear,    
 		zFar);    
 
-	RENDERER->PushMatrix(MATRIXKIND_PROJECTION, matProjection);
+	RENDERER->SetMatrix(MATRIXKIND_PROJECTION, matProjection);
 
 	return 0;
 }
@@ -158,7 +158,7 @@ LUAF(Rend, CameraOrthographic)
 					 1.0f,    
 					 100.0f);
 
-	RENDERER->PushMatrix(MATRIXKIND_PROJECTION, matProjection);
+	RENDERER->SetMatrix(MATRIXKIND_PROJECTION, matProjection);
 
 	return 0;
 }
@@ -199,7 +199,7 @@ LUAF(Rend, RenderState)
 	DWORD kind = (DWORD)luaL_checkinteger(L, 1);
 	BOOL state = (BOOL)lua_toboolean(L, 2);
 
-	RENDERER->PushRenderState(kind, state);
+	RENDERER->SetRenderState(kind, state);
 	return 0;
 }
 LUAF(Rend, SamplerState)
@@ -208,8 +208,24 @@ LUAF(Rend, SamplerState)
     DWORD kind = (DWORD)luaL_checkinteger(L, 2);
     BOOL state = (BOOL)lua_toboolean(L, 3);
 
-    RENDERER->PushSamplerState(stage, kind, state);
+    RENDERER->SetSamplerState(stage, kind, state);
     return 0;
+}
+LUAF(Rend, ToggleLights)
+{
+	BOOL state = (BOOL)lua_toboolean(L, 1);
+
+	RENDERER->ToggleLights(state);
+	return 0;
+}
+
+LUAF(Rend, SetGlobalAmbiance)
+{
+	DWORD color = (DWORD)luaL_checknumber(L, 1);
+
+	RENDERER->SetRenderState(D3DRS_AMBIENT, color);
+
+	return 0;
 }
 ///<END
 
@@ -221,6 +237,8 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, GetResolution);
 	REGF(Rend, RenderState);
 	REGF(Rend, SamplerState);
+	REGF(Rend, ToggleLights);
+	REGF(Rend, SetGlobalAmbiance);
 
 	REGF(Rend, BindTexture);
 

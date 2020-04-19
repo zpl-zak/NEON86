@@ -84,22 +84,31 @@ static INT mesh_build(lua_State* L)
 	return 1;
 }
 
-static INT mesh_delete(lua_State* L)
+static INT mesh_clear(lua_State* L)
+{
+    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+
+    mesh->Clear();
+
+    return 0;
+}
+
+static INT mesh_calcnormals(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
 
-	mesh->Release();
-
+	mesh->CalculateNormals();
+	
 	return 0;
 }
 
-static INT mesh_clear(lua_State* L)
+static INT mesh_delete(lua_State* L)
 {
-	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
 
-	mesh->Clear();
+    mesh->Release();
 
-	return 0;
+    return 0;
 }
 
 static VOID LuaMesh_register(lua_State* L)
@@ -114,6 +123,7 @@ static VOID LuaMesh_register(lua_State* L)
     REGC("setTexture", mesh_settexture);
     REGC("draw", mesh_draw);
     REGC("build", mesh_build);
+	REGC("calcNormals", mesh_calcnormals);
     REGC("clear", mesh_clear);
     REGC("__gc", mesh_delete);
 

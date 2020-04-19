@@ -23,15 +23,15 @@ public:
 	BOOL Release();
 	VOID Resize(RECT res);
 	VOID SetVSYNC(BOOL state);
-	VOID AllowCommands(BOOL state);
-
+	VOID ToggleLights(BOOL state);
+	
 	/// Render commands
-	VOID PushPolygon(const RENDERDATA& data);
-	VOID PushClear(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
-	VOID PushTexture(DWORD stage, CTexture* tex);
-	VOID PushMatrix(UINT matrixKind, const D3DXMATRIX& mat);
-	VOID PushRenderState(DWORD kind, BOOL state);
-	VOID PushSamplerState(DWORD stage, DWORD kind, DWORD value);
+	VOID DrawMesh(const RENDERDATA& data);
+	VOID ClearBuffer(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
+	VOID SetTexture(DWORD stage, CTexture* tex);
+	VOID SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
+	VOID SetRenderState(DWORD kind, DWORD value);
+	VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
 
 	/// Accessors
 	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
@@ -50,8 +50,7 @@ protected:
 
 	BOOL mVsync;
 	BOOL mFullscreen;
-	BOOL mCanAddCommands;
-
+	
 	VOID Clear(void);
 	VOID BuildParams(void);
 };

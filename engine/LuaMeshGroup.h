@@ -36,6 +36,17 @@ static INT meshgroup_draw(lua_State* L)
     return 1;
 }
 
+static INT meshgroup_loadmesh(lua_State* L)
+{
+    CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
+    LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
+
+    meshGroup->LoadMesh(meshName);
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
 static INT meshgroup_delete(lua_State* L)
 {
     CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
@@ -62,6 +73,7 @@ static VOID LuaMeshGroup_register(lua_State* L)
 
     REGC("addMesh", meshgroup_addmesh);
     REGC("draw", meshgroup_draw);
+    REGC("loadMesh", meshgroup_loadmesh);
     REGC("clear", meshgroup_clear);
     REGC("__gc", meshgroup_delete);
     

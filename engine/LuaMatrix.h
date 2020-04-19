@@ -81,7 +81,7 @@ static INT matrix_bind(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	FLOAT kind = (FLOAT)luaL_checknumber(L, 2);
-	RENDERER->PushMatrix((UINT)kind, *mat);
+	RENDERER->SetMatrix((UINT)kind, *mat);
 
 	lua_pushvalue(L, 1);
 	return 1;

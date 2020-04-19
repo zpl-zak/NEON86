@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "FileSystem.h"
 
 #include <cstdio>
@@ -30,6 +31,19 @@ BOOL CFileSystem::LoadGameInternal()
 	return FALSE;
 }
 
+VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
+{
+    switch (kind)
+    {
+        case RESOURCEKIND_META:
+            *resName = RESOURCE_META;
+            break;
+        case RESOURCEKIND_SCRIPT:
+            *resName = RESOURCE_SCRIPT;
+            break;
+    }
+}
+
 BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 {
 	if (!gamePath)
@@ -50,26 +64,11 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 	return ok;
 }
 
-FDATA CFileSystem::GetResource(UCHAR kind, LPSTR resName)
+FDATA CFileSystem::GetResource(UCHAR kind, LPCSTR resName/*=NULL*/)
 {
 	FDATA res={NULL, 0L};
 
-	if (!mLoadDone)
-		return res;
-
-	switch (kind)
-	{
-	case RESOURCEKIND_META:
-		resName = RESOURCE_META;
-		break;
-	case RESOURCEKIND_SCRIPT:
-		resName = RESOURCE_SCRIPT;
-		break;
-	default:
-		if (!resName)
-			return res;
-		break;
-	}
+	FILE* fp = OpenResource(kind, resName);
 
 	UCHAR* data = NULL;
 	UINT size = 0L;
@@ -78,12 +77,6 @@ FDATA CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 	{
 	case LOADKIND_FOLDER:
 		{
-			static CHAR path[MAX_PATH] = {0};
-			sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
-
-			FILE* fp = NULL;
-			fopen_s(&fp, path, "rb");
-
 			if (!fp)
 				return res;
 
@@ -108,6 +101,78 @@ FDATA CFileSystem::GetResource(UCHAR kind, LPSTR resName)
 	res.size = size;
 
 	return res;
+}
+
+FILE* CFileSystem::OpenResource(UCHAR kind, LPCSTR resName /*= NULL*/)
+{
+    if (!mLoadDone)
+        return NULL;
+
+    FixName(kind, &resName);
+
+    switch (mLoadKind)
+    {
+        case LOADKIND_FOLDER:
+        {
+            static CHAR path[MAX_PATH] = { 0 };
+            sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
+
+            FILE* fp = NULL;
+            fopen_s(&fp, path, "rb");
+
+			return fp;
+        }
+        break;
+        case LOADKIND_PAK:
+            // todo use memory mapping technique
+            break;
+    }
+
+	return NULL;
+}
+
+VOID CFileSystem::CloseResource(FILE* handle)
+{
+	if (handle)
+		fclose(handle);
+}
+
+LPSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
+{
+    if (!mLoadDone)
+        return NULL;
+
+    FixName(kind, &resName);
+
+    switch (mLoadKind)
+    {
+        case LOADKIND_FOLDER:
+        {
+            static CHAR path[MAX_PATH] = { 0 };
+            sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
+			return (LPSTR)path;
+        }
+        break;
+        case LOADKIND_PAK:
+            // todo use memory mapping technique
+			// we might also need to expose the file temporarily here
+            break;
+    }
+
+    return NULL;
+}
+
+BOOL CFileSystem::Exists(UCHAR kind, LPCSTR resName)
+{
+	FILE* res = OpenResource(kind, resName);
+
+	if (res)
+	{
+		CloseResource(res);
+		return TRUE;
+	}
+
+    return FALSE;
 }
 
 VOID CFileSystem::FreeResource(VOID* data)

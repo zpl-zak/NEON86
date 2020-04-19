@@ -21,7 +21,9 @@ CRenderer::CRenderer()
 	mDevice = NULL;
 	mWindow = NULL;
 	mVsync = TRUE;
-	mCanAddCommands = FALSE;
+	mFullscreen = FALSE;
+	ZeroMemory(&mLastRes, sizeof(mLastRes));
+	ZeroMemory(&mParams, sizeof(mParams));
 }
 
 VOID CRenderer::BuildParams()
@@ -65,13 +67,6 @@ LRESULT CRenderer::CreateDevice(HWND window)
 	if (!mDevice)
 		return res;
 
-	mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-
-	mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-	mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-
 	return res;
 }
 
@@ -83,8 +78,17 @@ VOID CRenderer::ResetDevice(void)
 	BuildParams();
 	mDevice->Reset(&mParams);
 
+
     mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    mDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+    mDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	mDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_COLOR1);
+
+    mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+
 }
 
 VOID CRenderer::SetVSYNC(BOOL state)
@@ -93,14 +97,34 @@ VOID CRenderer::SetVSYNC(BOOL state)
 	ResetDevice();
 }
 
+VOID CRenderer::ToggleLights(BOOL state)
+{
+	mDevice->SetRenderState(D3DRS_LIGHTING, state);
+
+    D3DLIGHT9 light;    // create the light struct
+
+    ZeroMemory(&light, sizeof(light));    // clear out the light struct for use
+    light.Type = D3DLIGHT_DIRECTIONAL;    // make the light type 'directional light'
+    light.Diffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);    // set the light's color
+    light.Direction = D3DXVECTOR3(-1.0f, -0.3f, -1.0f);
+
+    mDevice->SetLight(0, &light);    // send the light struct properties to light #0
+    mDevice->LightEnable(0, TRUE);    // turn on light #0
+	mDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(50, 50, 50));
+
+    D3DMATERIAL9 mtrl;
+    ZeroMemory(&mtrl, sizeof(mtrl));
+    mtrl.Ambient.r = 1.f;
+    mtrl.Ambient.g = 0.0f;
+    mtrl.Ambient.b = 0.0f;
+    mtrl.Ambient.a = 0.0f;
+    mDevice->SetMaterial(&mtrl);
+    mDevice->SetRenderState(D3DRS_AMBIENT, 0x0020202);
+}
+
 VOID CRenderer::Clear()
 {
 
-}
-
-VOID CRenderer::AllowCommands(BOOL state)
-{
-	mCanAddCommands = state;
 }
 
 BOOL CRenderer::Release()
@@ -137,7 +161,7 @@ VOID CRenderer::Resize(RECT res)
 }
 
 /// Render commands
-VOID CRenderer::PushPolygon(const RENDERDATA& data)
+VOID CRenderer::DrawMesh(const RENDERDATA& data)
 {
     D3DXMATRIX wmat;
     if (data.usesMatrix)
@@ -149,8 +173,8 @@ VOID CRenderer::PushPolygon(const RENDERDATA& data)
     D3DXVECTOR3 wpos = D3DXVECTOR3(wmat._41, wmat._42, wmat._43);
 	D3DXVECTOR3 pos = data.meshOrigin + wpos;
 
-	if (!GetFrustum()->IsSphereVisible(pos, data.meshRadius))
-		return;
+	/*if (!GetFrustum()->IsSphereVisible(pos, data.meshRadius))
+		return;*/
 
     if (data.usesMatrix)
         mDevice->SetTransform(D3DTS_WORLD, &data.matrix);
@@ -158,18 +182,18 @@ VOID CRenderer::PushPolygon(const RENDERDATA& data)
 	data.mesh->DrawSubset(0);
 }
 
-VOID CRenderer::PushClear(D3DCOLOR color, UINT flags)
+VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 {
 	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
-VOID CRenderer::PushTexture(DWORD stage, CTexture* tex)
+VOID CRenderer::SetTexture(DWORD stage, CTexture* tex)
 {
     mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, tex ? tex->GetTextureHandle() : NULL);
 }
 
-VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)
+VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
 {
     mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind,
         &mat);
@@ -178,12 +202,12 @@ VOID CRenderer::PushMatrix(UINT kind, const D3DXMATRIX& mat)
         GetFrustum()->Build();
 }
 
-VOID CRenderer::PushRenderState(DWORD kind, BOOL state)
+VOID CRenderer::SetRenderState(DWORD kind, DWORD value)
 {
-	mDevice->SetRenderState((D3DRENDERSTATETYPE)kind, (DWORD)state);
+	mDevice->SetRenderState((D3DRENDERSTATETYPE)kind, (DWORD)value);
 }
 
-VOID CRenderer::PushSamplerState(DWORD stage, DWORD kind, DWORD value)
+VOID CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
 {
 	mDevice->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)kind, value);
 }
