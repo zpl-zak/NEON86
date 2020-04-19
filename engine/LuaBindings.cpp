@@ -7,7 +7,7 @@
 #include "LuaMatrix.h"
 #include "LuaVector3.h"
 #include "LuaVertex.h"
-#include "LuaTexture.h"
+#include "LuaMaterial.h"
 #include "LuaMesh.h"
 #include "LuaMeshGroup.h"
 
@@ -114,7 +114,7 @@ LUAF(Rend, ClearScene)
 LUAF(Rend, CameraPerspective)
 {
 	FLOAT fov = (FLOAT)luaL_checknumber(L, 1);
-	FLOAT zNear=1.0f, zFar=100.0f;
+	FLOAT zNear=0.1f, zFar=1000.0f;
 
 	if (lua_gettop(L) == 3)
 	{
@@ -165,10 +165,10 @@ LUAF(Rend, CameraOrthographic)
 LUAF(Rend, BindTexture)
 {
 	DWORD stage = (DWORD)luaL_checknumber(L, 1);
-	CTexture* tex = NULL;
+	CMaterial* tex = NULL;
 
 	if (lua_gettop(L) == 2)
-		tex = (CTexture*)luaL_checkudata(L, 2, L_TEXTURE);
+		tex = (CMaterial*)luaL_checkudata(L, 2, L_MATERIAL);
 
 	if (tex)
 		tex->Bind(stage);
@@ -211,22 +211,6 @@ LUAF(Rend, SamplerState)
     RENDERER->SetSamplerState(stage, kind, state);
     return 0;
 }
-LUAF(Rend, ToggleLights)
-{
-	BOOL state = (BOOL)lua_toboolean(L, 1);
-
-	RENDERER->ToggleLights(state);
-	return 0;
-}
-
-LUAF(Rend, SetGlobalAmbiance)
-{
-	DWORD color = (DWORD)luaL_checknumber(L, 1);
-
-	RENDERER->SetRenderState(D3DRS_AMBIENT, color);
-
-	return 0;
-}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -237,13 +221,11 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, GetResolution);
 	REGF(Rend, RenderState);
 	REGF(Rend, SamplerState);
-	REGF(Rend, ToggleLights);
-	REGF(Rend, SetGlobalAmbiance);
 
 	REGF(Rend, BindTexture);
 
 	LuaVertex_register(L);
-	LuaTexture_register(L);
+	LuaMaterial_register(L);
 	LuaMesh_register(L);
 	LuaMeshGroup_register(L);
 

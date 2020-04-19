@@ -3,7 +3,7 @@
 #include "Mesh.h"
 #include "NeonEngine.h"
 
-#include "Texture.h"
+#include "Material.h"
 #include "Frustum.h"
 
 CMesh::CMesh(void)
@@ -20,7 +20,7 @@ VOID CMesh::Release(void)
 	SAFE_RELEASE(mData.mesh);
 }
 
-VOID CMesh::SetTexture(DWORD stage, CTexture* tex)
+VOID CMesh::SetTexture(DWORD stage, CMaterial* tex)
 {
 	mData.stage = stage;
 	mData.tex = tex;

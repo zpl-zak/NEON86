@@ -305,7 +305,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="system.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -320,7 +320,7 @@
     <ClInclude Include="LuaMachine.h" />
     <ClInclude Include="LuaMatrix.h" />
     <ClInclude Include="LuaMesh.h" />
-    <ClInclude Include="LuaTexture.h" />
+    <ClInclude Include="LuaMaterial.h" />
     <ClInclude Include="LuaVector3.h" />
     <ClInclude Include="LuaVertex.h" />
     <ClInclude Include="lua_macros.h" />
@@ -331,7 +331,7 @@
     <ClInclude Include="RenderStates.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>

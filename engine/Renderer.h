@@ -23,12 +23,11 @@ public:
 	BOOL Release();
 	VOID Resize(RECT res);
 	VOID SetVSYNC(BOOL state);
-	VOID ToggleLights(BOOL state);
 	
 	/// Render commands
 	VOID DrawMesh(const RENDERDATA& data);
 	VOID ClearBuffer(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
-	VOID SetTexture(DWORD stage, CTexture* tex);
+	VOID SetTexture(DWORD stage, CMaterial* tex);
 	VOID SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
 	VOID SetRenderState(DWORD kind, DWORD value);
 	VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);

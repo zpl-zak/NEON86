@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Renderer.h"
-#include "Texture.h"
+#include "Material.h"
 #include "Frustum.h"
 #include "Mesh.h"
 
@@ -78,48 +78,18 @@ VOID CRenderer::ResetDevice(void)
 	BuildParams();
 	mDevice->Reset(&mParams);
 
-
     mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-    mDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
-    mDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-	mDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_COLOR1);
 
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
-
 }
 
 VOID CRenderer::SetVSYNC(BOOL state)
 {
 	mVsync = state;
 	ResetDevice();
-}
-
-VOID CRenderer::ToggleLights(BOOL state)
-{
-	mDevice->SetRenderState(D3DRS_LIGHTING, state);
-
-    D3DLIGHT9 light;    // create the light struct
-
-    ZeroMemory(&light, sizeof(light));    // clear out the light struct for use
-    light.Type = D3DLIGHT_DIRECTIONAL;    // make the light type 'directional light'
-    light.Diffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);    // set the light's color
-    light.Direction = D3DXVECTOR3(-1.0f, -0.3f, -1.0f);
-
-    mDevice->SetLight(0, &light);    // send the light struct properties to light #0
-    mDevice->LightEnable(0, TRUE);    // turn on light #0
-	mDevice->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(50, 50, 50));
-
-    D3DMATERIAL9 mtrl;
-    ZeroMemory(&mtrl, sizeof(mtrl));
-    mtrl.Ambient.r = 1.f;
-    mtrl.Ambient.g = 0.0f;
-    mtrl.Ambient.b = 0.0f;
-    mtrl.Ambient.a = 0.0f;
-    mDevice->SetMaterial(&mtrl);
-    mDevice->SetRenderState(D3DRS_AMBIENT, 0x0020202);
 }
 
 VOID CRenderer::Clear()
@@ -187,9 +157,9 @@ VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
-VOID CRenderer::SetTexture(DWORD stage, CTexture* tex)
+VOID CRenderer::SetTexture(DWORD stage, CMaterial* tex)
 {
-    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, tex ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
+    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, tex ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, tex ? tex->GetTextureHandle() : NULL);
 }
 

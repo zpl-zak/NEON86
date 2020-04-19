@@ -1,6 +1,7 @@
 #pragma once
 
 #include "system.h"
+#include "RenderData.h"
 
 class CMesh;
 struct aiScene;
@@ -10,10 +11,10 @@ class CMeshGroup
 {
 public:
     CMeshGroup(void);
-
+     
     VOID Release(void);
     VOID AddMesh(CMesh*, const D3DXMATRIX&);
-    VOID LoadMesh(LPCSTR modelName);
+    VOID LoadMesh(LPCSTR modelName, UINT texFiltering = TEXF_ANISOTROPIC);
     
     VOID Draw(const D3DXMATRIX& wmat);
     VOID Clear(void);
@@ -25,5 +26,5 @@ private:
     UINT mCount;
     UINT mCapacity;
 
-    CMesh* LoadNode(const aiScene* scene, const aiMesh* mesh);
+    CMesh* LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFiltering);
 };

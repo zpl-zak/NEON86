@@ -40,8 +40,12 @@ static INT meshgroup_loadmesh(lua_State* L)
 {
     CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
+    UINT texFlags = TEXF_ANISOTROPIC;
 
-    meshGroup->LoadMesh(meshName);
+    if (lua_gettop(L) == 3)
+        texFlags = (UINT)luaL_checkinteger(L, 3);
+
+    meshGroup->LoadMesh(meshName, texFlags);
 
     lua_pushvalue(L, 1);
     return 1;

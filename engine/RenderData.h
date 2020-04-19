@@ -4,7 +4,7 @@
 
 #include "StdAfx.h"
 
-class CTexture;
+class CMaterial;
 
 enum RENDERKIND
 {
@@ -111,7 +111,7 @@ struct RENDERDATA
 	BOOL usesMatrix;
 	D3DMATRIX matrix;
 
-	CTexture* tex;
+	CMaterial* tex;
 
 	LPD3DXMESH mesh;
 	D3DXVECTOR3 meshOrigin;

@@ -4,7 +4,7 @@
 #include "Mesh.h"
 #include "NeonEngine.h"
 #include "FileSystem.h"
-#include "Texture.h"
+#include "Material.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -56,9 +56,10 @@ VOID CMeshGroup::AddMesh(CMesh* mesh, const D3DXMATRIX& mat)
     aiProcess_Triangulate |\
     aiProcess_CalcTangentSpace |\
     aiProcess_FlipUVs |\
-    aiProcess_JoinIdenticalVertices
+    aiProcess_JoinIdenticalVertices |\
+    aiProcess_PreTransformVertices
 
-VOID CMeshGroup::LoadMesh(LPCSTR modelName)
+VOID CMeshGroup::LoadMesh(LPCSTR modelName, UINT texFiltering)
 {
     Assimp::Importer imp;
 
@@ -73,7 +74,7 @@ VOID CMeshGroup::LoadMesh(LPCSTR modelName)
 
     for (UINT i = 0; i < model->mNumMeshes; i++)
     {
-        CMesh* mesh = LoadNode(model, model->mMeshes[i]);
+        CMesh* mesh = LoadNode(model, model->mMeshes[i], texFiltering);
         AddMesh(mesh, identityMat);
     }
 }
@@ -95,7 +96,7 @@ VOID CMeshGroup::Clear(void)
     mCount = 0;
 }
 
-CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh)
+CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFiltering)
 {
     CMesh* newMesh = new CMesh();
     // todo TrackRef
@@ -136,7 +137,7 @@ CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh)
     if (mesh->mMaterialIndex < scene->mNumMaterials)
     {
         const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-        CTexture* newMaterial = NULL;
+        CMaterial* newMaterial = NULL;
 
         aiString path;
         mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
@@ -146,19 +147,43 @@ CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh)
         {
             if (tex->mHeight != 0)
             {
-                newMaterial = new CTexture(NULL, tex->mWidth, tex->mHeight);
+                newMaterial = new CMaterial(NULL, tex->mWidth, tex->mHeight);
                 newMaterial->UploadRGB888(tex->pcData, sizeof(aiTexel) * tex->mWidth * tex->mHeight);
             }
             else
             {
-                newMaterial = new CTexture(tex->pcData, tex->mWidth);
+                newMaterial = new CMaterial(tex->pcData, tex->mWidth);
             }
         }
         else
         {
 
-            newMaterial = new CTexture((LPSTR)path.C_Str());
+            newMaterial = new CMaterial((LPSTR)path.C_Str());
             // todo TrackRef
+        }
+
+        if (newMaterial)
+        {
+            newMaterial->SetSamplerState(SAMPLERSTATE_MAGFILTER, texFiltering);
+            newMaterial->SetSamplerState(SAMPLERSTATE_MIPFILTER, texFiltering);
+            newMaterial->SetSamplerState(SAMPLERSTATE_MINFILTER, texFiltering);
+
+            aiColor4D diffuse;
+            mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+            newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
+
+            aiColor4D specular;
+            mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+            newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
+            newMaterial->SetPower(20.0F);
+
+            aiColor4D ambient;
+            mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+            newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
+
+            aiColor4D emissive;
+            mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
+            newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
         }
 
         newMesh->SetTexture(0, newMaterial);

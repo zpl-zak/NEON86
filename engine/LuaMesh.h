@@ -53,10 +53,10 @@ static INT mesh_settexture(lua_State* L)
 {
 	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
 	DWORD stage = (DWORD)luaL_checkinteger(L, 2);
-	CTexture* tex = NULL;
+	CMaterial* tex = NULL;
 
 	if (lua_gettop(L) == 3)
-		tex = (CTexture*)luaL_checkudata(L, 3, L_TEXTURE);
+		tex = (CMaterial*)luaL_checkudata(L, 3, L_MATERIAL);
 
 	mesh->SetTexture(stage, tex ? tex : NULL);
 

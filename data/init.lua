@@ -2,18 +2,13 @@ spinner = 0.0
 cube = nil
 rot = nil
 lookAt = nil
+tristram = MeshGroup()
+tristram:loadMesh("tristram.glb")
 
 dofile("another.lua")
 
-SPEED = 15.0
+SPEED = 5.0
 SENSITIVITY = 0.15
-
-camera = {
-	pos = Vector3(0,0,0),
-	fwd = Vector3(0,0,0),
-	rhs = Vector3(0,0,0),
-	angle = {0.0,0.0}
-}
 
 starfield = {}
 starradius = 64
@@ -32,8 +27,6 @@ starcolors = {
 function _init()
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
-	ToggleLights(true)
-	SetGlobalAmbiance(Color(255,255,255))
 	
 	cube = MeshGroup()
 	cube:loadMesh("cube.glb")
@@ -70,24 +63,26 @@ function _update(dt)
 		ExitGame()	
 	end
 
+	local vel = Vector3()
+
 	if GetKey("w") then
-		camera.pos = camera.pos + (camera.fwd * dt * SPEED)
+		vel = vel + Vector3(camera.fwdl * dt * SPEED)
 	end
 
 	if GetKey("s") then
-		camera.pos = camera.pos - (camera.fwd * dt * SPEED)
+		vel = vel + Vector3(camera.fwdl * dt * SPEED):neg()
 	end
 
 	if GetKey("a") then
-		camera.pos = camera.pos - (camera.rhs * dt * SPEED)
+		vel = vel + Vector3(camera.rhs * dt * SPEED):neg()
 	end
 
 	if GetKey("d") then
-		camera.pos = camera.pos + (camera.rhs * dt * SPEED)
+		vel = vel + Vector3(camera.rhs * dt * SPEED)
 	end
 
-	if GetKey(KEY_SPACE) then
-		camera.pos = camera.pos + Vector3(0,1,0) * dt * SPEED
+	if vel:mag() ~= 0 then
+		camera.vel = camera.vel + (Vector3(vel) - camera.vel)*0.10
 	end
 
 	updateCamera(dt)
@@ -98,6 +93,8 @@ function _render()
 	CameraPerspective(70)
 	
 	lookAt:bind(VIEW)
+
+	tristram:draw(Matrix())
 	
 	for i=1,#starfield
 	do

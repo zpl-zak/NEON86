@@ -21,10 +21,18 @@
 	lua_pushcfunction(L, FUNC); \
 	lua_setfield(L, -2, NAME);
 
+#define LUAS(CLASS, L_CLASS, NAME, FIELD) \
+static INT NAME(lua_State* L) {\
+	CLASS* x = (CLASS*)luaL_checkudata(L, 1, L_CLASS); \
+	if (lua_gettop(L) == 2) x->FIELD = (FLOAT)luaL_checknumber(L, 2); \
+	lua_pushnumber(L, x->FIELD); \
+	return 1; }
+
+
 #define L_MATRIX "Matrix"
 #define L_VECTOR3 "Vector3"
 #define L_VERTEX "Vertex"
-#define L_TEXTURE "Texture"
+#define L_MATERIAL "Material"
 #define L_MESH "Mesh"
 #define L_MESHGROUP "MeshGroup"
 

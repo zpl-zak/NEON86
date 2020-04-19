@@ -2,12 +2,26 @@ function euler(x,y,z)
 	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
 end
 
+camera = {
+	pos = Vector3(0,0,0),
+	fwd = Vector3(0,0,0),
+	fwdl = Vector3(0,0,0),
+	rhs = Vector3(0,0,0),
+	vel = Vector3(),
+	angle = {0.0,0.0}
+}
 
 function updateCamera(dt)	
 	camera.fwd = Vector3(
 		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
 		math.sin(camera.angle[2]),
 		math.cos(camera.angle[2]) * math.cos(camera.angle[1])
+	)
+
+	camera.fwdl = Vector3(
+		math.sin(camera.angle[1]),
+		math.sin(camera.angle[2]),
+		math.cos(camera.angle[1])
 	)
 
 	camera.rhs = Vector3(
@@ -29,4 +43,14 @@ function updateCamera(dt)
 		   camera.pos+camera.fwd,
 		   Vector3(0,1,0)
     )
+
+	camera.pos = camera.pos + camera.vel
+
+	camera.vel = camera.vel + camera.vel:neg()*0.10
+
+	camera.pos:y(camera.pos:y() - dt*10)
+
+	if camera.pos:y() < 2.0 then
+		camera.pos:y(2)
+	end
 end

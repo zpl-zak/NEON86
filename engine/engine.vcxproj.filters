@@ -69,10 +69,10 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="Frustum.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
+    <ClCompile Include="Material.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,9 +128,6 @@
     <ClInclude Include="UserInterface.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="Frustum.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
@@ -143,13 +140,16 @@
     <ClInclude Include="LuaMeshGroup.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="LuaTexture.h">
-      <Filter>Header Files\Lua\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="LuaVector3.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
     <ClInclude Include="LuaVertex.h">
+      <Filter>Header Files\Lua\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaMaterial.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
   </ItemGroup>
