@@ -99,7 +99,7 @@ VOID CMeshGroup::Clear(void)
 CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFiltering)
 {
     CMesh* newMesh = new CMesh();
-    // todo TrackRef
+    CReferenceManager::TrackRef(newMesh);
 
     for (UINT i=0; i<mesh->mNumVertices;i++)
     {
@@ -157,9 +157,7 @@ CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFi
         }
         else
         {
-
             newMaterial = new CMaterial((LPSTR)path.C_Str());
-            // todo TrackRef
         }
 
         if (newMaterial)
@@ -184,6 +182,8 @@ CMesh* CMeshGroup::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFi
             aiColor4D emissive;
             mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
             newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
+
+            CReferenceManager::TrackRef(newMaterial);
         }
 
         newMesh->SetTexture(0, newMaterial);

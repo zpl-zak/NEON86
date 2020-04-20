@@ -2,13 +2,21 @@ function euler(x,y,z)
 	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
 end
 
+function lerp( a,b,t )
+	return a + (b - a)*t
+end
+
+
+walkbob = math.pi / 2
+
 camera = {
-	pos = Vector3(0,0,0),
+	pos = Vector3(0,2,0),
 	fwd = Vector3(0,0,0),
 	fwdl = Vector3(0,0,0),
 	rhs = Vector3(0,0,0),
 	vel = Vector3(),
-	angle = {0.0,0.0}
+	angle = {0.0,0.0},
+	heldControls = false
 }
 
 function updateCamera(dt)	
@@ -47,10 +55,12 @@ function updateCamera(dt)
 	camera.pos = camera.pos + camera.vel
 
 	camera.vel = camera.vel + camera.vel:neg()*0.10
-
-	camera.pos:y(camera.pos:y() - dt*10)
-
-	if camera.pos:y() < 2.0 then
-		camera.pos:y(2)
+	camera.pos:y(lerp(camera.pos:y(), (2 + math.sin(walkbob)/4), 0.10))
+	
+	if camera.heldControls then
+		walkbob = walkbob + dt*6
+		camera.heldControls = false
+	else
+		walkbob = math.pi / 2
 	end
 end

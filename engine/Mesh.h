@@ -2,10 +2,11 @@
 
 #include "system.h"
 #include "RenderData.h"
+#include "ReferenceManager.h"
 
 class CMaterial;
 
-class CMesh
+class CMesh: public CReference<CMesh>
 {
 public:
 	CMesh(void);

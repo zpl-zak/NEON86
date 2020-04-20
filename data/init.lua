@@ -81,8 +81,13 @@ function _update(dt)
 		vel = vel + Vector3(camera.rhs * dt * SPEED)
 	end
 
+	if GetKey(KEY_SHIFT) then
+		vel = vel * 2
+	end
+
 	if vel:mag() ~= 0 then
 		camera.vel = camera.vel + (Vector3(vel) - camera.vel)*0.10
+		camera.heldControls = true
 	end
 
 	updateCamera(dt)

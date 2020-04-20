@@ -5,6 +5,8 @@
 #include "NeonEngine.h"
 #include "LuaBindings.h"
 
+#include "ReferenceManager.h"
+
 #include <lua/lua.hpp>
 
 CLuaMachine::CLuaMachine(void)
@@ -16,6 +18,7 @@ CLuaMachine::CLuaMachine(void)
 
 VOID CLuaMachine::Release(void)
 {
+	CReferenceManager::Release();
 	FILESYSTEM->FreeResource(mMainScript);
 	mMainScript = NULL;
 	DestroyVM();

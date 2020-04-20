@@ -4,8 +4,9 @@
 #include "StdAfx.h"
 
 #include "RenderData.h"
+#include "ReferenceManager.h"
 
-class CMaterial
+class CMaterial: public CReference<CMaterial>
 {
 public:
     CMaterial(LPSTR texName = NULL, UINT w=1, UINT h=1);

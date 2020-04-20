@@ -75,6 +75,9 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="ReferenceManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -151,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="LuaMaterial.h">
       <Filter>Header Files\Lua\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceManager.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
