@@ -107,6 +107,7 @@ static VOID LuaModel_register(lua_State* L)
     REGC("draw", model_draw);
     REGC("loadModel", model_loadmodel);
     REGC("getMeshGroups", model_getmeshgroups);
+    REGC("findMeshGroup", model_findmeshgroup);
     REGC("__gc", model_delete);
 
     lua_pop(L, 1);
