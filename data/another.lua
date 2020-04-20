@@ -55,7 +55,7 @@ function updateCamera(dt)
 	camera.pos = camera.pos + camera.vel
 
 	camera.vel = camera.vel + camera.vel:neg()*0.10
-	camera.pos:y(lerp(camera.pos:y(), (2 + math.sin(walkbob)/4), 0.10))
+	camera.pos:y(lerp(camera.pos:y(), (1.75 + math.sin(walkbob)/12), 0.10))
 	
 	if camera.heldControls then
 		walkbob = walkbob + dt*6

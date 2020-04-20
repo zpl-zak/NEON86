@@ -20,8 +20,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	RECT rect;
 	rect.left = CW_USEDEFAULT;
 	rect.top = CW_USEDEFAULT;
-	rect.right = 1024;
-	rect.bottom = 768;
+	rect.right = 1280;
+	rect.bottom = 800;
 
 	if (!lpCmdLine)
 		lpCmdLine = "data";
