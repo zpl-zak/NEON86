@@ -80,10 +80,16 @@ VOID CRenderer::ResetDevice(void)
 
     mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	mDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    mDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    mDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
+
+	mDevice->SetFVF(NEONFVF);
 }
 
 VOID CRenderer::SetVSYNC(BOOL state)

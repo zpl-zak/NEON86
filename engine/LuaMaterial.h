@@ -98,6 +98,14 @@ static INT material_setpower(lua_State* L)
     return 0;
 }
 
+static INT material_setopacity(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    FLOAT val = (FLOAT)luaL_checknumber(L, 2);
+    mat->SetOpacity(val);
+
+    return 0;
+}
 
 static VOID LuaMaterial_register(lua_State* L)
 {
@@ -113,6 +121,7 @@ static VOID LuaMaterial_register(lua_State* L)
     REGC("setSpecular", material_setspecular);
     REGC("setEmission", material_setemission);
     REGC("setPower", material_setpower);
+    REGC("setOpacity", material_setopacity);
 
     REGC("__gc", material_delete);
 

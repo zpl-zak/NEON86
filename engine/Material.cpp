@@ -49,6 +49,7 @@ VOID CMaterial::DefaultMaterial()
     ZeroMemory(&mMaterialData, sizeof(mMaterialData));
 
     mMaterialData.Ambient.r = mMaterialData.Ambient.g = mMaterialData.Ambient.b = mMaterialData.Ambient.a = 0.45f;
+    mMaterialData.opacity = 1.0f;
 }
 
 VOID CMaterial::Release(void)
@@ -114,4 +115,9 @@ VOID CMaterial::SetEmission(D3DCOLORVALUE color)
 VOID CMaterial::SetPower(FLOAT val)
 {
     mMaterialData.Power = val;
+}
+
+void CMaterial::SetOpacity(FLOAT val)
+{
+    mMaterialData.opacity = val;
 }
