@@ -9,8 +9,9 @@
 CMesh::CMesh(void)
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
-	ZeroMemory(mVerts, sizeof(mVerts));
-	ZeroMemory(mIndices, sizeof(mIndices));
+	mVertCapacity = mIndexCapacity = 4;
+	mVerts = (VERTEX*)malloc(mVertCapacity * sizeof(VERTEX));
+	mIndices = (SHORT*)malloc(mIndexCapacity * sizeof(SHORT));
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
 	mIsDirty = FALSE;
 }
@@ -29,12 +30,40 @@ VOID CMesh::SetTexture(DWORD stage, CMaterial* tex)
 VOID CMesh::AddVertex(const VERTEX& vertex)
 {
 	mIsDirty = TRUE;
+    if (mData.vertCount >= mVertCapacity)
+    {
+        mVertCapacity += 4;
+
+        mVerts = (VERTEX*)realloc(mVerts, mVertCapacity * sizeof(VERTEX));
+        
+        if (!mVerts)
+        {
+            MessageBoxA(NULL, "Can't add vertex to mesh!", "Out of memory error", MB_OK);
+            ENGINE->Shutdown();
+            return;
+        }
+    }
+
 	mVerts[mData.vertCount++] = vertex;
 }
 
 VOID CMesh::AddIndex(SHORT index)
 {
 	mIsDirty = TRUE;
+    if (mData.indexCount >= mIndexCapacity)
+    {
+        mIndexCapacity += 4;
+
+        mIndices = (SHORT*)realloc(mIndices, mIndexCapacity * sizeof(SHORT));
+
+        if (!mVerts)
+        {
+            MessageBoxA(NULL, "Can't add index to mesh!", "Out of memory error", MB_OK);
+            ENGINE->Shutdown();
+            return;
+        }
+    }
+
 	mIndices[mData.indexCount++] = index;
 }
 
@@ -92,7 +121,7 @@ VOID CMesh::Build(void)
     mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
     memcpy(vidMem, mVerts, mData.vertCount * sizeof(VERTEX));
 
-    D3DXComputeBoundingSphere((D3DXVECTOR3*)&mVerts,
+    D3DXComputeBoundingSphere((D3DXVECTOR3*)mVerts,
         mData.vertCount,
         sizeof(VERTEX),
         &mData.meshOrigin,
@@ -117,4 +146,9 @@ VOID CMesh::Clear(void)
 	ZeroMemory(&mData, sizeof(RENDERDATA));
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
 	mIsDirty = FALSE;
+    mVertCapacity = mIndexCapacity = 4;
+    SAFE_FREE(mVerts);
+    SAFE_FREE(mIndices);
+    mVerts = (VERTEX*)malloc(mVertCapacity * sizeof(VERTEX));
+    mIndices = (SHORT*)malloc(mIndexCapacity * sizeof(SHORT));
 }

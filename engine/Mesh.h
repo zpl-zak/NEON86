@@ -28,8 +28,10 @@ public:
 
 private:
 	RENDERDATA mData;
-
-	VERTEX mVerts[MAX_VERTS];
-	SHORT mIndices[MAX_INDICES];
+	 
+	UINT mVertCapacity;
+	UINT mIndexCapacity;
+	VERTEX* mVerts;
+	SHORT* mIndices; 
 	BOOL mIsDirty;
 };
