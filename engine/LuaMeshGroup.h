@@ -25,27 +25,30 @@ static INT meshgroup_addmesh(lua_State* L)
     return 1;
 }
 
+static INT meshgroup_getmeshes(lua_State* L)
+{
+    CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
+
+    lua_newtable(L);
+
+    for (UINT i=0; i<meshGroup->GetNumMeshes(); i++)
+    {
+        CMesh* mesh = meshGroup->GetMeshes()[i];
+        lua_pushinteger(L, i+1ULL);
+        lua_pushlightuserdata(L, (void*)mesh);
+        luaL_setmetatable(L, L_MESH);
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
 static INT meshgroup_draw(lua_State* L)
 {
     CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
     meshGroup->Draw(*mat);
-
-    lua_pushvalue(L, 1);
-    return 1;
-}
-
-static INT meshgroup_loadmesh(lua_State* L)
-{
-    CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
-    LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
-    UINT texFlags = TEXF_ANISOTROPIC;
-
-    if (lua_gettop(L) == 3)
-        texFlags = (UINT)luaL_checkinteger(L, 3);
-
-    meshGroup->LoadMesh(meshName, texFlags);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -77,7 +80,7 @@ static VOID LuaMeshGroup_register(lua_State* L)
 
     REGC("addMesh", meshgroup_addmesh);
     REGC("draw", meshgroup_draw);
-    REGC("loadMesh", meshgroup_loadmesh);
+    REGC("getMeshes", meshgroup_getmeshes);
     REGC("clear", meshgroup_clear);
     REGC("__gc", meshgroup_delete);
     

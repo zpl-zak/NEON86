@@ -5,6 +5,7 @@
 #include <vector>
 
 class CMesh;
+class CMeshGroup;
 class CMaterial;
 
 template<typename T>
@@ -46,6 +47,7 @@ public:
 
     static CReferenceContainer<CMesh> meshes;
     static CReferenceContainer<CMaterial> materials;
+    static CReferenceContainer<CMeshGroup> meshGroups;
 };
 
 template<typename T>
@@ -73,4 +75,10 @@ inline void CReference<CMaterial>::TrackRef(CMaterial* self)
 {
     mSelf = self;
     CReferenceManager::materials.AddRef(*this);
+}
+
+inline void CReference<CMeshGroup>::TrackRef(CMeshGroup* self)
+{
+    mSelf = self;
+    CReferenceManager::meshGroups.AddRef(*this);
 }

@@ -20,6 +20,12 @@ public:
 	VOID Build(void);
 	VOID Clear(void);
 
+	inline UINT GetNumVertices() { return mData.vertCount; }
+	inline VERTEX* GetVertices() { return mVerts; }
+
+	inline UINT GetNumIndices() { return mData.indexCount; }
+	inline SHORT* GetIndices() { return mIndices; }
+
 private:
 	RENDERDATA mData;
 

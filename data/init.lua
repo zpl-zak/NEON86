@@ -2,17 +2,19 @@ spinner = 0.0
 cube = nil
 rot = nil
 lookAt = nil
-tristram = MeshGroup()
-tristram:loadMesh("tristram.glb")
+tristram = Model("tristram.glb")
 
-dofile("another.lua")
+sponza = MeshGroup()
+--sponza:loadMesh("sponza.gltf")
+
+dofile("camera.lua")
 
 SPEED = 5.0
 SENSITIVITY = 0.15
 
 starfield = {}
 starradius = 64
-starcount = 512
+starcount = 0
 starcolors = {
 	Color(255,0,0),
 	Color(255,255,0),
@@ -28,8 +30,8 @@ function _init()
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
 	
-	cube = MeshGroup()
-	cube:loadMesh("cube.glb")
+	cube = Model()
+	cube:loadModel("cube.glb")
 
 	for i=1,starcount do
 		local x = math.random() - 0.5
@@ -94,12 +96,14 @@ function _update(dt)
 end
 
 function _render()
-	ClearScene(22, 22, 22)
+	ClearScene(196, 232, 255)
 	CameraPerspective(70)
 	
 	lookAt:bind(VIEW)
 
 	tristram:draw(Matrix())
+
+	sponza:draw(Matrix():translate(0,5, 10))
 	
 	for i=1,#starfield
 	do

@@ -111,6 +111,41 @@ static INT mesh_delete(lua_State* L)
     return 0;
 }
 
+static INT mesh_getvertices(lua_State* L)
+{
+	CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+
+	lua_newtable(L);
+
+	for (UINT i=0; i<mesh->GetNumVertices(); i++)
+	{
+		VERTEX* vert = (mesh->GetVertices() + i);
+		lua_pushinteger(L, i + 1ULL);
+		lua_pushlightuserdata(L, (void*)vert);
+		luaL_setmetatable(L, L_VERTEX);
+		lua_settable(L, -3);
+	}
+
+	return 1;
+}
+
+static INT mesh_getindices(lua_State* L)
+{
+    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+
+    lua_newtable(L);
+
+    for (UINT i = 0; i < mesh->GetNumIndices(); i++)
+    {
+        SHORT index = *(mesh->GetIndices() + i);
+        lua_pushinteger(L, i + 1ULL);
+        lua_pushinteger(L, index);
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
 static VOID LuaMesh_register(lua_State* L)
 {
 	lua_register(L, L_MESH, mesh_new);
@@ -125,6 +160,10 @@ static VOID LuaMesh_register(lua_State* L)
     REGC("build", mesh_build);
 	REGC("calcNormals", mesh_calcnormals);
     REGC("clear", mesh_clear);
+
+	REGC("getVertices", mesh_getvertices);
+	REGC("getIndices", mesh_getindices);
+
     REGC("__gc", mesh_delete);
 
 	lua_pop(L, 1);

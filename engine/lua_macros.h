@@ -35,5 +35,6 @@ static INT NAME(lua_State* L) {\
 #define L_MATERIAL "Material"
 #define L_MESH "Mesh"
 #define L_MESHGROUP "MeshGroup"
+#define L_MODEL "Model"
 
 #define ENDF {0,0}

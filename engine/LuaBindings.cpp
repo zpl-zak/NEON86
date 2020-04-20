@@ -10,6 +10,7 @@
 #include "LuaMaterial.h"
 #include "LuaMesh.h"
 #include "LuaMeshGroup.h"
+#include "LuaModel.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage) 
@@ -228,6 +229,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaMaterial_register(L);
 	LuaMesh_register(L);
 	LuaMeshGroup_register(L);
+	LuaModel_register(L);
 
 	// enums
 	{
