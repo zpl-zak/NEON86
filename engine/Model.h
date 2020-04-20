@@ -16,6 +16,7 @@ public:
 
     inline UINT GetNumMeshGroups() { return mCount; }
     inline CMeshGroup** GetMeshGroups() { return mMeshGroups; }
+    CMeshGroup* FindMeshGroup(LPCSTR name);
 private:
     CMeshGroup** mMeshGroups;
     UINT mCapacity;

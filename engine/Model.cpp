@@ -64,6 +64,7 @@ void CModel::LoadModel(LPCSTR modelPath, UINT texFiltering)
             CReferenceManager::TrackRef(meshGroup);
             
             meshName = m->mName;
+            meshGroup->SetName(meshName);
         }
 
         CMesh* mesh = CMeshLoader::LoadNode(model, m, texFiltering);
@@ -82,6 +83,17 @@ void CModel::Draw(const D3DXMATRIX& wmat)
     {
         mMeshGroups[i]->Draw(wmat);
     }
+}
+
+CMeshGroup* CModel::FindMeshGroup(LPCSTR name)
+{
+    for (UINT i = 0; i < mCount; i++)
+    {
+        if (!strcmp(name, mMeshGroups[i]->GetName().C_Str()))
+            return mMeshGroups[i];
+    }
+
+    return NULL;
 }
 
 void CModel::AddMeshGroup(CMeshGroup* mg)

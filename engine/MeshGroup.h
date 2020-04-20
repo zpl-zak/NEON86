@@ -4,6 +4,8 @@
 #include "RenderData.h"
 #include "ReferenceManager.h"
 
+#include <Assimp/Importer.hpp>
+
 class CMesh;
 
 class CMeshGroup: public CReference<CMeshGroup>
@@ -21,9 +23,13 @@ public:
     inline CMesh** GetMeshes() { return mMeshes; }
     inline D3DXMATRIX* GetTransforms() { return mTransforms; }
 
+    inline aiString GetName() { return mName; }
+    inline void SetName(aiString name) { mName = name; }
+
 private:
     CMesh** mMeshes;
     D3DXMATRIX* mTransforms;
     UINT mCount;
     UINT mCapacity;
+    aiString mName;
 };

@@ -71,6 +71,23 @@ static INT model_loadmodel(lua_State* L)
     return 1;
 }
 
+static INT model_findmeshgroup(lua_State* L)
+{
+    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
+    
+    CMeshGroup* mg = model->FindMeshGroup(meshName);
+
+    if (mg)
+    {
+        lua_pushlightuserdata(L, (void*)mg);
+        luaL_setmetatable(L, L_MESHGROUP);
+    }
+    else lua_pushnil(L);
+
+    return 1;
+}
+
 static INT model_delete(lua_State* L)
 {
     CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);

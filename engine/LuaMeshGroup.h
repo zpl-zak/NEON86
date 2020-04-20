@@ -72,6 +72,24 @@ static INT meshgroup_clear(lua_State* L)
     return 0;
 }
 
+static INT meshgroup_setname(lua_State* L)
+{
+    CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
+    LPCSTR meshName = luaL_checkstring(L, 2);
+
+    meshGroup->SetName(aiString(meshName));
+
+    return 0;
+}
+
+static INT meshgroup_getname(lua_State* L)
+{
+    CMeshGroup* meshGroup = (CMeshGroup*)luaL_checkudata(L, 1, L_MESHGROUP);
+
+    lua_pushstring(L, meshGroup->GetName().C_Str());
+    return 1;
+}
+
 static VOID LuaMeshGroup_register(lua_State* L)
 {
     lua_register(L, L_MESHGROUP, meshgroup_new);
@@ -82,6 +100,8 @@ static VOID LuaMeshGroup_register(lua_State* L)
     REGC("draw", meshgroup_draw);
     REGC("getMeshes", meshgroup_getmeshes);
     REGC("clear", meshgroup_clear);
+    REGC("setName", meshgroup_setname);
+    REGC("getName", meshgroup_getname);
     REGC("__gc", meshgroup_delete);
     
     lua_pop(L, 1);
