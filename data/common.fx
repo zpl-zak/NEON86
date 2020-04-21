@@ -21,6 +21,7 @@ struct TMATERIAL
 TNEON NEON;
 TMATERIAL MAT;
 
+/* Vertex data */
 struct VS_INPUT
 {
 	float3 position : POSITION;
@@ -28,3 +29,7 @@ struct VS_INPUT
     float4 color : COLOR0;
 	float3 normal : NORMAL;
 };
+
+/* Textures */
+texture diffuseMap;
+

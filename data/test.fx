@@ -5,8 +5,6 @@ float3 campos;
 float4 globalAmbient;
 float alphaValue;
 
-texture diffuseMap;
-
 sampler2D colorMap = sampler_state
 {
 	Texture = <diffuseMap>;
