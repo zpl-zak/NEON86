@@ -60,7 +60,7 @@ function _render()
 	testEffect:setFloat("alphaValue", alphaValue)
 	testEffect:commit()
 
-	tristram:draw(Matrix())
+	tristram:draw(Matrix():scale(10,10,10))
 
 	testEffect:endPass()
 

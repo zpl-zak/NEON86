@@ -5,6 +5,8 @@ float3 campos;
 float4 globalAmbient;
 float alphaValue;
 
+float4 sunColor = float4(0.91f, 0.58f, 0.13f, 1.0f);
+
 sampler2D colorMap = sampler_state
 {
 	Texture = <diffuseTex>;
@@ -96,8 +98,8 @@ float4 CalcSunLight(VS_OUTPUT IN)
 
     float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
 
-	return (MAT.Diffuse * float4(0.91f, 0.58f, 0.13f, 1.0f) * 4.0f * diffuse)
-            + (MAT.Specular * specular * power * s);
+	return (MAT.Diffuse * sunColor * 4.0f * diffuse)
+            + (sunColor * 4.0f * specular * power * s);
 }
 
 float4 CalcPointLight(VS_OUTPUT IN)

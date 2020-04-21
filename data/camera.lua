@@ -4,7 +4,7 @@ SENSITIVITY = 0.15
 lookAt = nil
 
 camera = {
-	pos = Vector3(0,2,0),
+	pos = Vector3(0,6,-12),
 	fwd = Vector3(),
 	fwdl = Vector3(),
 	rhs = Vector3(),
