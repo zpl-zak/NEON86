@@ -92,7 +92,7 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titl
 		instance,
 		NULL);
 
-	ShowWindow(hWnd, cmdShow);
+	ShowWindow(hWnd, SW_SHOW);
 
 	return hWnd;
 }

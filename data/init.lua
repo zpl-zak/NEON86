@@ -1,6 +1,8 @@
-tristram = Model("cube.obj")
+model = Model("cube.obj")
 
 dofile("camera.lua")
+
+time = 0.0
 
 testEffect = Effect("test.fx")
 
@@ -43,6 +45,8 @@ function _update(dt)
 	end
 
 	updateCamera(dt)
+
+	time = time + dt
 end
 
 function _render()
@@ -58,9 +62,10 @@ function _render()
 	testEffect:setVector3("campos", camera.pos)
 	testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
 	testEffect:setFloat("alphaValue", alphaValue)
+	testEffect:setFloat("time", time)
 	testEffect:commit()
 
-	tristram:draw(Matrix():scale(10,10,10))
+	model:draw(Matrix():scale(10,10,10))
 
 	testEffect:endPass()
 

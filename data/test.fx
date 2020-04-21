@@ -4,8 +4,10 @@
 float3 campos;
 float4 globalAmbient;
 float alphaValue;
+float time;
 
 float4 sunColor = float4(0.91f, 0.58f, 0.13f, 1.0f);
+float3 sunDir = float3(4.0f, 3.0f, -5.0f);
 
 sampler2D colorMap = sampler_state
 {
@@ -82,23 +84,23 @@ VS_OUTPUT VS_PointLighting(VS_INPUT IN)
     return OUT;
 }
 
-
 float4 CalcSunLight(VS_OUTPUT IN)
 {
     float3 n = normalize(IN.normal);
-    float3 l = float3(4.0f, 3.0f, -5.0f);
+    float3 l = sunDir;
     float3 v = normalize(IN.viewDir);
-    float4 s = float4(0.0f,0.0f,0.0f,0.0f);
+    float4 s = float4(0,0,0,0);
     
     l = normalize(l);    
     float diffuse = saturate(dot(n, l));
     float3 h = normalize(l+v);
-    s = (hasSpecularTex == true) ? tex2D(specularMap, IN.texCoord) : s;
+    float4 ss = tex2D(specularMap, IN.texCoord);
+    s = (hasSpecularTex == true) ? ss : s;
     float specular = saturate(dot(n, h));
 
     float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
 
-	return (MAT.Diffuse * sunColor * 4.0f * diffuse)
+	return (MAT.Diffuse * sunColor * 2.0f * diffuse)
             + (sunColor * 4.0f * specular * power * s);
 }
 
@@ -139,9 +141,9 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
         IN.normal = normalize(mul(nm, tx));
     }
 
-    float4 OUT = globalAmbient + CalcPointLight(IN) + CalcSunLight(IN);
-    OUT *= tex2D(colorMap, IN.texCoord);
-    OUT.a = alphaValue;        
+    float4 OUT = globalAmbient + CalcPointLight(IN) + CalcSunLight(IN)/4;
+    OUT.a = alphaValue;
+    OUT += tex2D(colorMap, IN.texCoord);
 	return OUT;
 }
 

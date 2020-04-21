@@ -1,0 +1,16 @@
+# Blender MTL File: 'mountains.blend'
+# Material Count: 1
+
+newmtl Material.002
+Ns 96.078431
+Ka 1.000000 1.000000 1.000000
+Kd 0.640000 0.640000 0.640000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Bump Mountains Normal Output 513.png
+map_Kd Mountains Bitmap Output 513.png
+map_Ks Mountains Height Output 513.png
+map_Ns Mountains Height Output 513.png

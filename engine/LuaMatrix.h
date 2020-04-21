@@ -35,8 +35,11 @@ static INT matrix_translate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	D3DXVECTOR3 vec = matrix_getcomps(L);
-
-	D3DXMatrixTranslation(mat, vec.x, vec.y, vec.z);
+	
+	D3DXMATRIX t;
+	D3DXMatrixTranslation(&t, vec.x, vec.y, vec.z);
+	
+	*mat *= t;
 
 	lua_pushvalue(L, 1);
 	return 1;
@@ -47,9 +50,12 @@ static INT matrix_rotate(lua_State* L)
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	D3DXVECTOR3 vec = matrix_getcomps(L);
 
-	if (vec.x) D3DXMatrixRotationX(mat, vec.x);
-	if (vec.y) D3DXMatrixRotationY(mat, vec.y);
-	if (vec.z) D3DXMatrixRotationZ(mat, vec.z);
+	D3DXMATRIX tx, ty, tz;
+	D3DXMatrixRotationX(&tx, vec.x);
+	D3DXMatrixRotationY(&ty, vec.y);
+	D3DXMatrixRotationZ(&tz, vec.z);
+
+	*mat *= tx * ty * tz;
 	
 	lua_pushvalue(L, 1);
 	return 1;
@@ -59,7 +65,9 @@ static INT matrix_scale(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	D3DXVECTOR3 vec = matrix_getcomps(L);
-	D3DXMatrixScaling(mat, vec.x, vec.y, vec.z);
+	D3DXMATRIX t;
+	D3DXMatrixScaling(&t, vec.x, vec.y, vec.z);
+	*mat *= t;
 
 	lua_pushvalue(L, 1);
 	return 1;
