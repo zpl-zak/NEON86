@@ -32,6 +32,8 @@ public:
     void SetPower(FLOAT val);
     void SetOpacity(FLOAT val);
 
+    inline MATERIAL GetMaterialData() const { return mMaterialData; }
+
 private:
     LPDIRECT3DTEXTURE9 mTextureHandle;
     MATERIAL mMaterialData;

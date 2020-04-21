@@ -11,9 +11,9 @@ walkbob = math.pi / 2
 
 camera = {
 	pos = Vector3(0,2,0),
-	fwd = Vector3(0,0,0),
-	fwdl = Vector3(0,0,0),
-	rhs = Vector3(0,0,0),
+	fwd = Vector3(),
+	fwdl = Vector3(),
+	rhs = Vector3(),
 	vel = Vector3(),
 	angle = {0.0,0.0},
 	heldControls = false

@@ -289,6 +289,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="MeshGroup.cpp" />
     <ClCompile Include="engine.cpp" />
@@ -312,8 +313,10 @@
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="InputCodes.h" />
+    <ClInclude Include="LuaEffect.h" />
     <ClInclude Include="LuaMeshGroup.h" />
     <ClInclude Include="LuaModel.h" />
     <ClInclude Include="MeshGroup.h" />

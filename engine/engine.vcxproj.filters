@@ -84,6 +84,9 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -171,6 +174,12 @@
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="LuaModel.h">
+      <Filter>Header Files\Lua\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaEffect.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
   </ItemGroup>

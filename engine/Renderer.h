@@ -10,6 +10,7 @@
 #define RENDERER CEngine::the()->GetRenderer()
 
 class CFrustum;
+class CEffect;
 
 #include "RenderData.h"
 
@@ -27,10 +28,12 @@ public:
 	/// Render commands
 	VOID DrawMesh(const RENDERDATA& data);
 	VOID ClearBuffer(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
-	VOID SetTexture(DWORD stage, CMaterial* tex);
+	VOID SetMaterial(DWORD stage, CMaterial* tex);
 	VOID SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
 	VOID SetRenderState(DWORD kind, DWORD value);
 	VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
+
+	inline void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
 	/// Accessors
 	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
@@ -38,6 +41,7 @@ public:
 	D3DMATRIX GetDeviceMatrix(UINT kind);
 	inline HWND GetWindow() const { return mWindow; }
 	inline CFrustum* GetFrustum() { return mFrustum; }
+	inline CEffect* GetActiveEffect() { return mActiveEffect; }
 
 protected:
 	LPDIRECT3D9 mDirect9;
@@ -46,6 +50,7 @@ protected:
 	RECT mLastRes;
 	HWND mWindow;
 	CFrustum* mFrustum;
+	CEffect* mActiveEffect;
 
 	BOOL mVsync;
 	BOOL mFullscreen;

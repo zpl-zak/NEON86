@@ -48,7 +48,8 @@ VOID CMaterial::DefaultMaterial()
 {
     ZeroMemory(&mMaterialData, sizeof(mMaterialData));
 
-    mMaterialData.Ambient.r = mMaterialData.Ambient.g = mMaterialData.Ambient.b = mMaterialData.Ambient.a = 0.45f;
+    mMaterialData.Ambient.r = mMaterialData.Ambient.g = mMaterialData.Ambient.b = mMaterialData.Ambient.a = 1.0f;
+    mMaterialData.Diffuse.r = mMaterialData.Diffuse.g = mMaterialData.Diffuse.b = mMaterialData.Diffuse.a = 1.0f;
     mMaterialData.opacity = 1.0f;
 }
 
@@ -59,7 +60,7 @@ VOID CMaterial::Release(void)
 
 VOID CMaterial::Bind(DWORD stage)
 {
-    RENDERER->SetTexture(stage, this);
+    RENDERER->SetMaterial(stage, this);
 
     for (UINT i = 0; i < MAX_SAMPLER_STATES; i++)
     {
@@ -69,7 +70,7 @@ VOID CMaterial::Bind(DWORD stage)
 
 VOID CMaterial::Unbind(DWORD stage)
 {
-    RENDERER->SetTexture(stage, NULL);
+    RENDERER->SetMaterial(stage, NULL);
 }
 
 VOID* CMaterial::Lock()

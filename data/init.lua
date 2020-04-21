@@ -9,8 +9,11 @@ sponza = MeshGroup()
 
 dofile("camera.lua")
 
+testEffect = Effect("test.fx")
+
 SPEED = 5.0
 SENSITIVITY = 0.15
+time = 0.0
 
 starfield = {}
 starradius = 64
@@ -30,8 +33,7 @@ function _init()
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
 	
-	cube = Model()
-	cube:loadModel("cube.glb")
+	cube = Model("cube.glb")
 
 	for i=1,starcount do
 		local x = math.random() - 0.5
@@ -54,6 +56,7 @@ end
 
 function _update(dt)
 	spinner = spinner + 1.5*dt
+	time = time + dt
 	rot = euler(spinner, math.sin(spinner), 0)
 
 	if GetKeyDown(KEY_F2) then
@@ -96,20 +99,34 @@ function _update(dt)
 end
 
 function _render()
-	ClearScene(196, 232, 255)
+	ClearScene(20,20,20)
 	CameraPerspective(70)
 	
 	lookAt:bind(VIEW)
 
-	tristram:draw(Matrix())
+	local numPasses = testEffect:start("PointLighting")
 
-	sponza:draw(Matrix():translate(0,5, 10))
-	
-	for i=1,#starfield
+	for i=1,numPasses
 	do
-		local w = (rot * Matrix():translate(starfield[i].pos))
-		cube:draw(w)
+		testEffect:beginPass(i)
+		testEffect:setVector3("campos", camera.pos)
+		testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
+		testEffect:commit()
+
+		tristram:draw(Matrix())
+	
+		sponza:draw(Matrix():translate(0,5, 10))
+		
+		for i=1,#starfield
+		do
+			local w = (rot * Matrix():translate(starfield[i].pos))
+			cube:draw(w)
+		end
+
+		testEffect:endPass()
 	end
+
+	testEffect:finish()
 end
 
 function _render2d( )

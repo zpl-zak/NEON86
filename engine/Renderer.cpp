@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "Frustum.h"
 #include "Mesh.h"
+#include "Effect.h"
 
 #include "StdAfx.h"
 
@@ -20,6 +21,7 @@ CRenderer::CRenderer()
 	mDirect9 = NULL;
 	mDevice = NULL;
 	mWindow = NULL;
+	mActiveEffect = NULL;
 	mVsync = TRUE;
 	mFullscreen = FALSE;
 	ZeroMemory(&mLastRes, sizeof(mLastRes));
@@ -60,7 +62,7 @@ LRESULT CRenderer::CreateDevice(HWND window)
 	LRESULT res = mDirect9->CreateDevice(	D3DADAPTER_DEFAULT,
 							D3DDEVTYPE_HAL,
 							window,
-							D3DCREATE_HARDWARE_VERTEXPROCESSING,
+							D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE,
 							&mParams,
 							&mDevice);
 
@@ -139,8 +141,24 @@ VOID CRenderer::Resize(RECT res)
 /// Render commands
 VOID CRenderer::DrawMesh(const RENDERDATA& data)
 {
-    if (data.usesMatrix)
-        mDevice->SetTransform(D3DTS_WORLD, &data.matrix);
+	if (data.usesMatrix)
+		SetMatrix(MATRIXKIND_WORLD, data.matrix);
+
+	if (GetActiveEffect())
+	{
+		D3DXMATRIX world = GetDeviceMatrix(MATRIXKIND_WORLD);
+		D3DXMATRIX view  = GetDeviceMatrix(MATRIXKIND_VIEW);
+		D3DXMATRIX proj  = GetDeviceMatrix(MATRIXKIND_PROJECTION);
+		D3DXMATRIX inverseWorld;
+		D3DXMatrixInverse(&inverseWorld, NULL, &world);
+
+        D3DXMATRIX mvp = world * view * proj;
+
+		GetActiveEffect()->SetMatrix("NEON.World", world);
+		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld);
+		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
+        GetActiveEffect()->CommitChanges();
+	}
 
 	data.mesh->DrawSubset(0);
 }
@@ -150,10 +168,24 @@ VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
-VOID CRenderer::SetTexture(DWORD stage, CMaterial* tex)
+VOID CRenderer::SetMaterial(DWORD stage, CMaterial* tex)
 {
     mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, tex ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, tex ? tex->GetTextureHandle() : NULL);
+
+    if (GetActiveEffect() && tex)
+    {
+        CEffect* fx = GetActiveEffect();
+
+        fx->SetColor("MAT.Diffuse", tex->GetMaterialData().Diffuse);
+        fx->SetColor("MAT.Ambient", tex->GetMaterialData().Ambient);
+        fx->SetColor("MAT.Specular", tex->GetMaterialData().Specular);
+        fx->SetColor("MAT.Emissive", tex->GetMaterialData().Emissive);
+        fx->SetFloat("MAT.Power", tex->GetMaterialData().Power);
+        fx->SetFloat("MAT.Opacity", tex->GetMaterialData().opacity);
+
+		fx->SetTexture("diffuseMap", tex->GetTextureHandle());
+    }
 }
 
 VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
