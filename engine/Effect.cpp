@@ -2,7 +2,31 @@
 #include "Effect.h"
 #include "NeonEngine.h"
 
-#include <comdef.h>
+class CD3DIncludeImpl: ID3DXInclude
+{
+public:
+    CD3DIncludeImpl() {}
+    HRESULT _stdcall Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override;
+    HRESULT _stdcall Close(LPCVOID pData) override;
+};
+
+HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
+{
+    FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_USER, pFileName);
+
+    if (!f.data)
+        return E_FAIL;
+
+    *ppData = f.data;
+    *pBytes = f.size;
+    return S_OK;
+}
+
+HRESULT CD3DIncludeImpl::Close(LPCVOID pData)
+{
+    FILESYSTEM->FreeResource((LPVOID)pData);
+    return S_OK;
+}
 
 CEffect::CEffect(LPCSTR effectPath)
 {
@@ -20,13 +44,15 @@ CEffect::CEffect(LPCSTR effectPath)
     DWORD shaderFlags = D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER;
     //shaderFlags |= D3DXSHADER_FORCE_VS_SOFTWARE_NOOPT | D3DXSHADER_FORCE_PS_SOFTWARE_NOOPT | D3DXSHADER_DEBUG;
 
+    CD3DIncludeImpl inclHandler;
+
     LPD3DXBUFFER errors = NULL;
     HRESULT hr = D3DXCreateEffect(
         RENDERER->GetDevice(),
         (LPCSTR)f.data,
         (UINT)f.size,
         NULL,
-        NULL,
+        (LPD3DXINCLUDE)&inclHandler,
         shaderFlags,
         NULL,
         &mEffect,

@@ -1,28 +1,7 @@
-struct TNEON
-{
-    float4x4 World;
-    float4x4 InverseWorld;
-    float4x4 View;
-    float4x4 Proj;
-    float4x4 MVP;
-};
+#include "common.fx"
 
-struct TMATERIAL
-{
-    float4 Diffuse; 
-    float4 Ambient; 
-    float4 Specular;
-    float4 Emissive;
-    float Power;
-    float Opacity;
-};
-
-TNEON NEON;
-TMATERIAL MAT;
-
-float time;
+/* Uniforms */
 float3 campos;
-
 float4 globalAmbient;
 float alphaValue;
 
@@ -37,6 +16,7 @@ sampler2D colorMap = sampler_state
     MaxAnisotropy = 16;
 };
 
+/* Vertex data */
 struct VS_INPUT
 {
 	float3 position : POSITION;
@@ -53,13 +33,7 @@ struct VS_OUTPUT
     float3 normal : NORMAL;
 };
 
-struct Light
-{
-    float4 diffuse;
-};
-
-Light lights[4];
-
+/* Ambient */
 VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
 {
     VS_OUTPUT OUT;
@@ -79,6 +53,7 @@ float4 PS_AmbientLighting(VS_OUTPUT IN) : COLOR
 	return outc;
 }
 
+/* Point TEST */
 VS_OUTPUT VS_PointLighting(VS_INPUT IN)
 {
     VS_OUTPUT OUT;
@@ -111,11 +86,12 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
     color += globalAmbient +
             (MAT.Diffuse * nDotL * atten);
 
-    float4 outc = lights[0].diffuse * color * tex2D(colorMap, IN.texCoord);
+    float4 outc = color * tex2D(colorMap, IN.texCoord);
     outc.a = alphaValue;        
 	return outc;
 }
 
+/* Techniques */
 technique AmbientLighting
 {
     pass

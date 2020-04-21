@@ -57,7 +57,6 @@ function _render()
 
 	testEffect:setVector3("campos", camera.pos)
 	testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
-	testEffect:setVector4("lights[0].diffuse", Vector3(1.0), 1.0)
 	testEffect:setFloat("alphaValue", alphaValue)
 	testEffect:commit()
 
