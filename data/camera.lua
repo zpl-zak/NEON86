@@ -1,13 +1,8 @@
-function euler(x,y,z)
-	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
-end
-
-function lerp( a,b,t )
-	return a + (b - a)*t
-end
-
+SPEED = 5.0
+SENSITIVITY = 0.15
 
 walkbob = math.pi / 2
+lookAt = nil
 
 camera = {
 	pos = Vector3(0,2,0),
@@ -19,7 +14,9 @@ camera = {
 	heldControls = false
 }
 
-function updateCamera(dt)	
+function updateCamera(dt)
+	handleInput(dt)
+
 	camera.fwd = Vector3(
 		math.cos(camera.angle[2]) * math.sin(camera.angle[1]),
 		math.sin(camera.angle[2]),
@@ -63,4 +60,41 @@ function updateCamera(dt)
 	else
 		walkbob = math.pi / 2
 	end
+end
+
+function handleInput(dt)
+	local vel = Vector3()
+
+	if GetKey("w") then
+		vel = vel + Vector3(camera.fwdl * dt * SPEED)
+	end
+
+	if GetKey("s") then
+		vel = vel + Vector3(camera.fwdl * dt * SPEED):neg()
+	end
+
+	if GetKey("a") then
+		vel = vel + Vector3(camera.rhs * dt * SPEED):neg()
+	end
+
+	if GetKey("d") then
+		vel = vel + Vector3(camera.rhs * dt * SPEED)
+	end
+
+	if GetKey(KEY_SHIFT) then
+		vel = vel * 2
+	end
+
+	if vel:mag() ~= 0 then
+		camera.vel = camera.vel + (Vector3(vel) - camera.vel)*0.10
+		camera.heldControls = true
+	end
+end
+
+function euler(x,y,z)
+	return Matrix():rotate(0,0,z) * Matrix():rotate(0,y,0) * Matrix():rotate(x,0,0)
+end
+
+function lerp( a,b,t )
+	return a + (b - a)*t
 end
