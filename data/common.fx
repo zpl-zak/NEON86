@@ -20,3 +20,11 @@ struct TMATERIAL
 
 TNEON NEON;
 TMATERIAL MAT;
+
+struct VS_INPUT
+{
+	float3 position : POSITION;
+	float2 texCoord : TEXCOORD0;
+    float4 color : COLOR0;
+	float3 normal : NORMAL;
+};

@@ -17,14 +17,6 @@ sampler2D colorMap = sampler_state
 };
 
 /* Vertex data */
-struct VS_INPUT
-{
-	float3 position : POSITION;
-	float2 texCoord : TEXCOORD0;
-    float4 color : COLOR0;
-	float3 normal : NORMAL;
-};
-
 struct VS_OUTPUT
 {
     float4 position : POSITION;
