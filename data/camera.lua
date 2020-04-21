@@ -1,7 +1,6 @@
-SPEED = 5.0
+SPEED = 15.0
 SENSITIVITY = 0.15
 
-walkbob = math.pi / 2
 lookAt = nil
 
 camera = {
@@ -50,27 +49,18 @@ function updateCamera(dt)
     )
 
 	camera.pos = camera.pos + camera.vel
-
 	camera.vel = camera.vel + camera.vel:neg()*0.10
-	camera.pos:y(lerp(camera.pos:y(), (1.75 + math.sin(walkbob)/12), 0.10))
-	
-	if camera.heldControls then
-		walkbob = walkbob + dt*6
-		camera.heldControls = false
-	else
-		walkbob = math.pi / 2
-	end
 end
 
 function handleInput(dt)
 	local vel = Vector3()
 
 	if GetKey("w") then
-		vel = vel + Vector3(camera.fwdl * dt * SPEED)
+		vel = vel + Vector3(camera.fwd * dt * SPEED)
 	end
 
 	if GetKey("s") then
-		vel = vel + Vector3(camera.fwdl * dt * SPEED):neg()
+		vel = vel + Vector3(camera.fwd * dt * SPEED):neg()
 	end
 
 	if GetKey("a") then
