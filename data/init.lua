@@ -51,20 +51,19 @@ function _render()
 	
 	lookAt:bind(VIEW)
 
-	local numPasses = testEffect:start(renderMode)
+	testEffect:start(renderMode)
 
-	for i=1,numPasses
-	do
-		testEffect:beginPass(i)
-		testEffect:setVector3("campos", camera.pos)
-		testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
-		testEffect:setVector4("lights[0].diffuse", Vector3(1.0), 1.0)
-		testEffect:setFloat("alphaValue", alphaValue)
-		testEffect:commit()
+	testEffect:beginPass(1)
 
-		tristram:draw(Matrix())
-		testEffect:endPass()
-	end
+	testEffect:setVector3("campos", camera.pos)
+	testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
+	testEffect:setVector4("lights[0].diffuse", Vector3(1.0), 1.0)
+	testEffect:setFloat("alphaValue", alphaValue)
+	testEffect:commit()
+
+	tristram:draw(Matrix())
+
+	testEffect:endPass()
 
 	testEffect:finish()
 end
