@@ -86,7 +86,7 @@ struct RENDERBOUNDS {
 
 struct MATERIAL : D3DMATERIAL9
 {
-	FLOAT opacity;
+	FLOAT Opacity;
 };
 
 #define MAX_VERTS 65536

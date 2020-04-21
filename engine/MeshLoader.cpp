@@ -86,9 +86,11 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
             newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
 
             aiColor4D specular;
+            float power;
             mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+            mat->Get(AI_MATKEY_SHININESS, power);
             newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
-            newMaterial->SetPower(20.0F);
+            newMaterial->SetPower(power);
 
             aiColor4D ambient;
             mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
