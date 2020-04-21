@@ -7,7 +7,25 @@ float alphaValue;
 
 sampler2D colorMap = sampler_state
 {
-	Texture = <diffuseMap>;
+	Texture = <diffuseTex>;
+    MagFilter = Linear;
+    MinFilter = Anisotropic;
+    MipFilter = Linear;
+    MaxAnisotropy = 16;
+};
+
+sampler2D specularMap = sampler_state
+{
+	Texture = <specularTex>;
+    MagFilter = Linear;
+    MinFilter = Anisotropic;
+    MipFilter = Linear;
+    MaxAnisotropy = 16;
+};
+
+sampler2D normalMap = sampler_state
+{
+	Texture = <normalTex>;
     MagFilter = Linear;
     MinFilter = Anisotropic;
     MipFilter = Linear;
@@ -22,6 +40,7 @@ struct VS_OUTPUT
     float4 worldPos : POSITION2;
     float3 viewDir : POSITION3;
     float3 normal : NORMAL;
+    float3 tangent : TANGENT;
 };
 
 /* Ambient */
@@ -34,6 +53,7 @@ VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
     OUT.viewDir = (campos - OUT.worldPos);
     OUT.texCoord = IN.texCoord;
     OUT.normal = IN.normal;
+    OUT.tangent = IN.tangent;
 
     return OUT;
 }
@@ -55,43 +75,72 @@ VS_OUTPUT VS_PointLighting(VS_INPUT IN)
     OUT.viewDir = (campos - OUT.worldPos);
     OUT.texCoord = IN.texCoord;
     OUT.normal = mul(IN.normal, NEON.InverseWorld);
+    OUT.tangent = mul(IN.tangent, NEON.InverseWorld);
 
     return OUT;
+}
+
+
+float4 CalcSunLight(VS_OUTPUT IN)
+{
+    float3 n = normalize(IN.normal);
+    float3 l = float3(4.0f, 3.0f, -5.0f);
+    float3 v = normalize(IN.viewDir);
+    float4 s = float4(0.0f,0.0f,0.0f,0.0f);
+    
+    l = normalize(l);    
+    float diffuse = saturate(dot(n, l));
+    float3 h = normalize(l+v);
+    s = (hasSpecularTex == true) ? tex2D(specularMap, IN.texCoord) : s;
+    float specular = saturate(dot(n, h));
+
+    float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
+
+	return (MAT.Diffuse * float4(0.91f, 0.58f, 0.13f, 1.0f) * 4.0f * diffuse)
+            + (MAT.Specular * specular * power * s);
+}
+
+float4 CalcPointLight(VS_OUTPUT IN)
+{
+    float3 n = normalize(IN.normal);
+    float3 v = normalize(IN.viewDir);
+    float4 s = float4(0.0f,0.0f,0.0f,0.0f);
+    
+    float3 l = (campos - IN.worldPos) / 10.0f;
+    float atten = saturate(1.0f - dot(l, l));
+    
+    l = normalize(l);
+    float3 h = normalize(l+v);
+    s = (hasSpecularTex == true) ? tex2D(specularMap, IN.texCoord) : s;
+    
+    float diffuse = saturate(dot(n, l));
+    float specular = saturate(dot(n, h));
+
+    float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
+
+	return (MAT.Diffuse * diffuse * atten) +
+            (MAT.Specular * specular * power * atten * s);
 }
 
 float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
 {
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    
     float3 n = normalize(IN.normal);
-    float3 v = normalize(IN.viewDir);
 
-    float3 l = float3(0.0f, 0.0f, 0.0f);
-    float3 h = float3(0.0f, 0.0f, 0.0f);
-    
-    float atten = 0.0f;
-    float diffuse = 0.0f;
-    float specular = 0.0f;
-    float power = 0.0f;
-    
-    l = (campos - IN.worldPos) / 10.0f;
-    atten = saturate(1.0f - dot(l, l));
-    
-    l = normalize(l);
-    h = normalize(l+v);
-    
-    diffuse = saturate(dot(n, l));
-    specular = saturate(dot(n, h));
+    if (hasNormalTex == true)
+    {
+        float4 nm = tex2D(normalMap, IN.texCoord);
+        nm = (2.0f*nm) - 1.0f;
+        IN.tangent = normalize(IN.tangent - dot(IN.tangent, n)*n);
+        float3 bt = cross(n, IN.tangent);
+        float3x3 tx = float3x3(IN.tangent, bt, n);
+        IN.normal = normalize(mul(nm, tx));
+    }
 
-    power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
-    
-    color += globalAmbient +
-            (MAT.Diffuse * diffuse * atten) +
-            (MAT.Specular * specular * power * atten);
-
-    float4 outc = color * tex2D(colorMap, IN.texCoord);
-    outc.a = alphaValue;        
-	return outc;
+    float4 OUT = globalAmbient + CalcPointLight(IN) + CalcSunLight(IN);
+    OUT *= tex2D(colorMap, IN.texCoord);
+    OUT.a = alphaValue;        
+	return OUT;
 }
 
 /* Techniques */

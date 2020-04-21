@@ -19,7 +19,13 @@ static INT material_new(lua_State* L)
 	}
 
 	CMaterial* mat = (CMaterial*)lua_newuserdata(L, sizeof(CMaterial));
-	*mat = CMaterial(matName, w, h);
+
+    if (matName)
+        *mat = CMaterial(TEXTURESLOT_ALBEDO, matName);
+    else if (lua_gettop(L) == 2)
+        *mat = CMaterial(TEXTURESLOT_ALBEDO, w, h);
+    else
+        *mat = CMaterial();
 	
 	luaL_setmetatable(L, L_MATERIAL);
 	return mat->GetTextureHandle() != NULL;

@@ -3,44 +3,34 @@
 
 #include "NeonEngine.h"
 
-CMaterial::CMaterial(LPSTR texName, UINT w, UINT h)
+CMaterial::CMaterial(UINT slot, LPSTR texName)
 {
-    LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
-    mTextureHandle = NULL;
+    ZeroMemory(mTextureHandle, sizeof(mTextureHandle));
     ZeroMemory(mStats, sizeof(mStats));
 
-    if (!texName)
-        D3DXCreateTexture(dev, w, h, 0, 0, D3DFMT_X8R8G8B8, D3DPOOL_MANAGED, &mTextureHandle);
-    else
-    {
-        FDATA img = FILESYSTEM->GetResource(RESOURCEKIND_IMAGE, texName);
-        if (!img.data)
-        {
-            MessageBoxA(NULL, "Image not found!", "Resource error", MB_OK);
-            ENGINE->Shutdown();
-            return;
-        }
-        D3DXCreateTextureFromFileInMemory(dev, img.data, img.size, &mTextureHandle);
-    }
-
+    CreateTextureForSlot(slot, texName);
     DefaultMaterial();
 }
 
-CMaterial::CMaterial(VOID* data, UINT size)
+CMaterial::CMaterial(UINT slot, UINT w, UINT h)
 {
-    LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
-    mTextureHandle = NULL;
+    CMaterial();
+
+    CreateTextureForSlot(slot, NULL, w, h);
+}
+
+CMaterial::CMaterial()
+{
+    ZeroMemory(mTextureHandle, sizeof(mTextureHandle));
     ZeroMemory(mStats, sizeof(mStats));
+    DefaultMaterial();
+}
 
-    if (!data)
-    {
-        MessageBoxA(NULL, "Embedded image is empty!", "Texture error", MB_OK);
-        ENGINE->Shutdown();
-        return;
-    }
+CMaterial::CMaterial(UINT slot, VOID* data, UINT size)
+{
+    CMaterial();
 
-    D3DXCreateTextureFromFileInMemory(dev, data, size, &mTextureHandle);
-
+    CreateEmbeddedTextureForSlot(slot, data, size);
     DefaultMaterial();
 }
 
@@ -57,7 +47,43 @@ VOID CMaterial::DefaultMaterial()
 
 VOID CMaterial::Release(void)
 {
-    SAFE_RELEASE(mTextureHandle);
+    for (UINT i=0; i<MAX_TEXTURE_SLOTS;i++)
+    {
+        SAFE_RELEASE(mTextureHandle[i]);
+    }
+}
+
+void CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
+{
+    LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
+
+    if (!texName)
+        D3DXCreateTexture(dev, w, h, 0, 0, D3DFMT_X8R8G8B8, D3DPOOL_MANAGED, &mTextureHandle[slot]);
+    else
+    {
+        FDATA img = FILESYSTEM->GetResource(RESOURCEKIND_IMAGE, texName);
+        if (!img.data)
+        {
+            MessageBoxA(NULL, "Image not found!", "Resource error", MB_OK);
+            ENGINE->Shutdown();
+            return;
+        }
+        D3DXCreateTextureFromFileInMemory(dev, img.data, img.size, &mTextureHandle[slot]);
+    }
+}
+
+void CMaterial::CreateEmbeddedTextureForSlot(UINT slot, void* data, UINT size)
+{
+    LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
+    
+    if (!data)
+    {
+        MessageBoxA(NULL, "Embedded image is empty!", "Texture error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
+
+    D3DXCreateTextureFromFileInMemory(dev, data, size, &mTextureHandle[slot]);
 }
 
 VOID CMaterial::Bind(DWORD stage)
@@ -75,24 +101,24 @@ VOID CMaterial::Unbind(DWORD stage)
     RENDERER->SetMaterial(stage, NULL);
 }
 
-VOID* CMaterial::Lock()
+VOID* CMaterial::Lock(UINT slot)
 {
     D3DLOCKED_RECT r;
-    mTextureHandle->LockRect(0, &r, NULL, 0);
+    mTextureHandle[slot]->LockRect(0, &r, NULL, 0);
     return r.pBits;
 }
 
-VOID CMaterial::UploadRGB888(VOID* data, UINT size)
+VOID CMaterial::UploadRGB888(UINT slot, VOID* data, UINT size)
 {
     D3DLOCKED_RECT r;
-    mTextureHandle->LockRect(0, &r, NULL, D3DLOCK_DISCARD);
+    mTextureHandle[slot]->LockRect(0, &r, NULL, D3DLOCK_DISCARD);
     memcpy(r.pBits, data, size);
-    mTextureHandle->UnlockRect(0);
+    mTextureHandle[slot]->UnlockRect(0);
 }
 
-VOID CMaterial::Unlock()
+VOID CMaterial::Unlock(UINT slot)
 {
-    mTextureHandle->UnlockRect(0);
+    mTextureHandle[slot]->UnlockRect(0);
 }
 
 VOID CMaterial::SetAmbient(D3DCOLORVALUE color)

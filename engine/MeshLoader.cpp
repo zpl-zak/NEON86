@@ -2,6 +2,7 @@
 #include "MeshLoader.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "NeonEngine.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -52,59 +53,63 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
     if (mesh->mMaterialIndex < scene->mNumMaterials)
     {
         const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-        CMaterial* newMaterial = NULL;
+        CMaterial* newMaterial = new CMaterial();
 
-        aiString path;
-        mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
-        const aiTexture* tex = scene->GetEmbeddedTexture(path.C_Str());
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_HEIGHT);
 
-        if (tex)
-        {
-            if (tex->mHeight != 0)
-            {
-                newMaterial = new CMaterial(NULL, tex->mWidth, tex->mHeight);
-                newMaterial->UploadRGB888(tex->pcData, sizeof(aiTexel) * tex->mWidth * tex->mHeight);
-            }
-            else
-            {
-                newMaterial = new CMaterial(tex->pcData, tex->mWidth);
-            }
-        }
-        else
-        {
-            newMaterial = new CMaterial((LPSTR)path.C_Str());
-        }
+        newMaterial->SetSamplerState(SAMPLERSTATE_MAGFILTER, texFiltering);
+        newMaterial->SetSamplerState(SAMPLERSTATE_MIPFILTER, texFiltering);
+        newMaterial->SetSamplerState(SAMPLERSTATE_MINFILTER, texFiltering);
 
-        if (newMaterial)
-        {
-            newMaterial->SetSamplerState(SAMPLERSTATE_MAGFILTER, texFiltering);
-            newMaterial->SetSamplerState(SAMPLERSTATE_MIPFILTER, texFiltering);
-            newMaterial->SetSamplerState(SAMPLERSTATE_MINFILTER, texFiltering);
+        aiColor4D diffuse;
+        mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+        newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
 
-            aiColor4D diffuse;
-            mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-            newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
+        aiColor4D specular;
+        float power;
+        mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+        mat->Get(AI_MATKEY_SHININESS, power);
+        newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r * power, specular.g * power, specular.b * power });
+        newMaterial->SetPower(power);
 
-            aiColor4D specular;
-            float power;
-            mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
-            mat->Get(AI_MATKEY_SHININESS, power);
-            newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
-            newMaterial->SetPower(power);
+        aiColor4D ambient;
+        mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+        newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
 
-            aiColor4D ambient;
-            mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-            newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
+        aiColor4D emissive;
+        mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
+        newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
 
-            aiColor4D emissive;
-            mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
-            newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
-
-            CReferenceManager::TrackRef(newMaterial);
-        }
-
-        newMesh->SetTexture(0, newMaterial);
+        CReferenceManager::TrackRef(newMaterial);
+        
+        newMesh->SetMaterial(0, newMaterial);
     }
 
     return newMesh;
+}
+
+void CMeshLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
+{
+    aiString path;
+    mat->GetTexture((aiTextureType)texType, 0, &path);
+    const aiTexture* tex = scene->GetEmbeddedTexture(path.C_Str());
+
+    if (tex)
+    {
+        if (tex->mHeight != 0)
+        {
+            newMaterial->CreateTextureForSlot(slot, NULL, tex->mWidth, tex->mHeight);
+            newMaterial->UploadRGB888(slot, tex->pcData, sizeof(aiTexel) * tex->mWidth * tex->mHeight);
+        }
+        else
+        {
+            newMaterial->CreateEmbeddedTextureForSlot(slot, tex->pcData, tex->mWidth);
+        }
+    }
+    else if (FILESYSTEM->Exists(RESOURCEKIND_USER, (LPSTR)path.C_Str()))
+    {
+        newMaterial->CreateTextureForSlot(slot, (LPSTR)path.C_Str());
+    }
 }

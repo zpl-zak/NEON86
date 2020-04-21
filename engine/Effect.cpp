@@ -156,6 +156,11 @@ void CEffect::SetVector4(LPCSTR name, D3DXVECTOR4 value)
     mEffect->SetVector(name, &value);
 }
 
+void CEffect::SetBool(LPCSTR name, BOOL value)
+{
+    mEffect->SetBool(name, value);
+}
+
 void CEffect::SetDefaults()
 {
     D3DXMATRIX p = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);

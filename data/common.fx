@@ -32,5 +32,11 @@ struct VS_INPUT
 };
 
 /* Textures */
-texture diffuseMap;
+texture diffuseTex;
+bool hasDiffuseTex;
 
+texture specularTex;
+bool hasSpecularTex;
+
+texture normalTex;
+bool hasNormalTex;

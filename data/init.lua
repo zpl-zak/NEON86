@@ -1,4 +1,4 @@
-tristram = Model("tristram.glb")
+tristram = Model("cube.obj")
 
 dofile("camera.lua")
 

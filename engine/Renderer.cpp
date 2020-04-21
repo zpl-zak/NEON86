@@ -157,24 +157,33 @@ VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
-VOID CRenderer::SetMaterial(DWORD stage, CMaterial* tex)
+VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 {
-    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, tex ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
-    mDevice->SetTexture(stage, tex ? tex->GetTextureHandle() : NULL);
-
-    if (GetActiveEffect() && tex)
+    if (GetActiveEffect() && mat)
     {
         CEffect* fx = GetActiveEffect();
 
-        fx->SetColor("MAT.Diffuse", tex->GetMaterialData().Diffuse);
-        fx->SetColor("MAT.Ambient", tex->GetMaterialData().Ambient);
-        fx->SetColor("MAT.Specular", tex->GetMaterialData().Specular);
-        fx->SetColor("MAT.Emissive", tex->GetMaterialData().Emissive);
-        fx->SetFloat("MAT.Power", tex->GetMaterialData().Power);
-        fx->SetFloat("MAT.Opacity", tex->GetMaterialData().Opacity);
+        fx->SetColor("MAT.Diffuse", mat->GetMaterialData().Diffuse);
+        fx->SetColor("MAT.Ambient", mat->GetMaterialData().Ambient);
+        fx->SetColor("MAT.Specular", mat->GetMaterialData().Specular);
+        fx->SetColor("MAT.Emissive", mat->GetMaterialData().Emissive);
+        fx->SetFloat("MAT.Power", mat->GetMaterialData().Power);
+        fx->SetFloat("MAT.Opacity", mat->GetMaterialData().Opacity);
 
-		fx->SetTexture("diffuseMap", tex->GetTextureHandle());
+		fx->SetTexture("diffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO));
+		fx->SetBool("hasDiffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO) != NULL);
+
+		fx->SetTexture("specularTex", mat->GetTextureHandle(TEXTURESLOT_SPECULAR));
+		fx->SetBool("hasSpecularTex", mat->GetTextureHandle(TEXTURESLOT_SPECULAR) != NULL);
+
+        fx->SetTexture("normalTex", mat->GetTextureHandle(TEXTURESLOT_NORMAL));
+        fx->SetBool("hasNormalTex", mat->GetTextureHandle(TEXTURESLOT_NORMAL) != NULL);
     }
+	else
+	{
+        mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, mat ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
+        mDevice->SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
+	}
 }
 
 VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)

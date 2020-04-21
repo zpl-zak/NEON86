@@ -23,6 +23,7 @@ public:
     void SetTexture(LPCSTR name, IDirect3DTexture9* value);
     void SetVector3(LPCSTR name, D3DXVECTOR3 value);
     void SetVector4(LPCSTR name, D3DXVECTOR4 value);
+    void SetBool(LPCSTR name, BOOL value);
 private:
     ID3DXEffect* mEffect;
 

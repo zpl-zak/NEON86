@@ -12,7 +12,7 @@ public:
 	CMesh(void);
 
 	VOID Release(void);
-	VOID SetTexture(DWORD stage, CMaterial* tex);
+	VOID SetMaterial(DWORD stage, CMaterial* tex);
 	VOID AddVertex(const VERTEX& vertex);
 	VOID AddIndex(SHORT index);
 	VOID Draw(D3DXMATRIX*);
