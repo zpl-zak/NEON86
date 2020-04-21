@@ -63,19 +63,21 @@ enum CLEARFLAG
 	CLEARFLAG_STANDARD = (CLEARFLAG_COLOR|CLEARFLAG_DEPTH),
 };
 
-#define NEONFVF (D3DFVF_XYZ | D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_NORMAL)
 struct VERTEX
 {
-	FLOAT x, y, z; // D3DFVF_XYZ
-	FLOAT nx, ny, nz; // D3DFVF_NORMAL
+	FLOAT x, y, z;
+	FLOAT nx, ny, nz;
+	FLOAT tx, ty, tz;
 	union {
-		DWORD color; // D3DFVF_DIFFUSE
+		DWORD color;
 		struct {
 			BYTE a, r, g, b;
 		};
 	};
-	FLOAT su, tv; // D3DFVF_TEX1
+	FLOAT su, tv;
 };
+
+extern D3DVERTEXELEMENT9 meshVertexFormat[];
 
 struct RENDERBOUNDS {
 	FLOAT x1, y1, z1;

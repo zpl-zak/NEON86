@@ -111,10 +111,10 @@ VOID CMesh::Build(void)
 
 	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
 	
-	D3DXCreateMeshFVF(mData.primCount,
+	D3DXCreateMesh(mData.primCount,
 		mData.vertCount,
 		D3DXMESH_MANAGED,
-		NEONFVF,
+		meshVertexFormat,
 		dev,
 		&mData.mesh);
 	
@@ -152,3 +152,13 @@ VOID CMesh::Clear(void)
     mVerts = (VERTEX*)malloc(mVertCapacity * sizeof(VERTEX));
     mIndices = (SHORT*)malloc(mIndexCapacity * sizeof(SHORT));
 }
+
+D3DVERTEXELEMENT9 meshVertexFormat[] =
+{
+    {0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION,0},
+    {0, 12, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,0},
+    {0, 24, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TANGENT, 0},
+    {0, 36, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+    {0, 40, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,0},
+    D3DDECL_END()
+};

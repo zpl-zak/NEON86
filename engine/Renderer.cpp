@@ -81,8 +81,6 @@ VOID CRenderer::ResetDevice(void)
 	mDevice->Reset(&mParams);
 
 	SetDefaultRenderStates();
-
-	mDevice->SetFVF(NEONFVF);
 }
 
 VOID CRenderer::SetVSYNC(BOOL state)

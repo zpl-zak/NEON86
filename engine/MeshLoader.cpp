@@ -18,6 +18,7 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
         const aiVector3D pos = mesh->mVertices[i];
         const aiVector3D uv = mesh->mTextureCoords[0][i];
         const aiVector3D nm = mesh->mNormals[i];
+        const aiVector3D ta = mesh->mTangents[i];
 
         vert.x = pos.x;
         vert.y = pos.y;
@@ -29,6 +30,10 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
 
         vert.su = uv.x;
         vert.tv = uv.y;
+
+        vert.tx = ta.x;
+        vert.ty = ta.y;
+        vert.tz = ta.z;
 
         vert.color = D3DCOLOR_XRGB(255, 255, 255);
 
