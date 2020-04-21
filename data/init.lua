@@ -15,6 +15,9 @@ SPEED = 5.0
 SENSITIVITY = 0.15
 time = 0.0
 
+renderMode = "PointLighting"
+alphaValue = 1.0
+
 starfield = {}
 starradius = 64
 starcount = 0
@@ -90,6 +93,26 @@ function _update(dt)
 		vel = vel * 2
 	end
 
+	if GetKeyDown(KEY_F3) then
+		if renderMode == "PointLighting" then
+			renderMode = "AmbientLighting"
+		else
+			renderMode = "PointLighting"
+		end
+	end
+
+	if GetKeyDown(KEY_F4) then
+		alphaValue = alphaValue + 0.5
+
+		if alphaValue > 1.0 then
+			alphaValue = 0.0
+		end
+	end
+
+	if GetKeyDown(KEY_F5) then
+		alphaValue = 1.0
+	end
+
 	if vel:mag() ~= 0 then
 		camera.vel = camera.vel + (Vector3(vel) - camera.vel)*0.10
 		camera.heldControls = true
@@ -104,13 +127,14 @@ function _render()
 	
 	lookAt:bind(VIEW)
 
-	local numPasses = testEffect:start("PointLighting")
+	local numPasses = testEffect:start(renderMode)
 
 	for i=1,numPasses
 	do
 		testEffect:beginPass(i)
 		testEffect:setVector3("campos", camera.pos)
 		testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
+		testEffect:setFloat("alphaValue", alphaValue)
 		testEffect:commit()
 
 		tristram:draw(Matrix())

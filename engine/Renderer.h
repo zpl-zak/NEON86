@@ -35,6 +35,8 @@ public:
 
 	inline void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
+	void SetDefaultRenderStates();
+
 	/// Accessors
 	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
 	inline RECT GetResolution() { return mLastRes; }

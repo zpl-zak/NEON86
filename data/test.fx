@@ -24,6 +24,7 @@ float time;
 float3 campos;
 
 float4 globalAmbient;
+float alphaValue;
 
 texture diffuseMap;
 
@@ -48,8 +49,8 @@ struct VS_OUTPUT
 {
     float4 position : POSITION;
     float2 texCoord : TEXCOORD0;
-    float4 worldPos : TEXCOORD1;
-    float3 normal : TEXCOORD2;
+    float4 worldPos : POSITION2;
+    float3 normal : NORMAL;
 };
 
 VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
@@ -66,7 +67,9 @@ VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
 
 float4 PS_AmbientLighting(VS_OUTPUT IN) : COLOR
 {
-    return tex2D(colorMap, IN.texCoord);
+    float4 outc = tex2D(colorMap, IN.texCoord);
+    outc.a = alphaValue;        
+	return outc;
 }
 
 VS_OUTPUT VS_PointLighting(VS_INPUT IN)
@@ -100,8 +103,10 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
     
     color += globalAmbient +
             (MAT.Diffuse * nDotL * atten);
-                   
-	return color * tex2D(colorMap, IN.texCoord);
+
+    float4 outc = color * tex2D(colorMap, IN.texCoord);
+    outc.a = alphaValue;        
+	return outc;
 }
 
 technique AmbientLighting

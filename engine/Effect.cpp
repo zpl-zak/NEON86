@@ -142,4 +142,6 @@ void CEffect::SetDefaults()
     SetMatrix("NEON.View", v);
     SetMatrix("NEON.World", w);
     SetMatrix("NEON.MVP", mvp);
+
+    RENDERER->SetDefaultRenderStates();
 }
