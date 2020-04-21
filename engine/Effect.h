@@ -18,7 +18,7 @@ public:
 
     // Uniforms
     void SetFloat(LPCSTR name, FLOAT value);
-    void SetMatrix(LPCSTR name, D3DXMATRIX value);
+    void SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose=FALSE);
     void SetColor(LPCSTR name, D3DCOLORVALUE value);
     void SetTexture(LPCSTR name, IDirect3DTexture9* value);
     void SetVector3(LPCSTR name, D3DXVECTOR3 value);

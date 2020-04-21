@@ -101,9 +101,12 @@ void CEffect::SetFloat(LPCSTR name, FLOAT value)
     mEffect->SetFloat(name, value);
 }
 
-void CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value)
+void CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose)
 {
-    mEffect->SetMatrix(name, &value);
+    if (transpose)
+        mEffect->SetMatrixTranspose(name, &value);
+    else
+        mEffect->SetMatrix(name, &value);
 }
 
 void CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value)

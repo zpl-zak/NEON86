@@ -155,7 +155,7 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
         D3DXMATRIX mvp = world * view * proj;
 
 		GetActiveEffect()->SetMatrix("NEON.World", world);
-		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld);
+		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
 		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
         GetActiveEffect()->CommitChanges();
 	}
