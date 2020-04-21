@@ -53,6 +53,13 @@ struct VS_OUTPUT
     float3 normal : NORMAL;
 };
 
+struct Light
+{
+    float4 diffuse;
+};
+
+Light lights[4];
+
 VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
 {
     VS_OUTPUT OUT;
@@ -104,7 +111,7 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
     color += globalAmbient +
             (MAT.Diffuse * nDotL * atten);
 
-    float4 outc = color * tex2D(colorMap, IN.texCoord);
+    float4 outc = lights[0].diffuse * color * tex2D(colorMap, IN.texCoord);
     outc.a = alphaValue;        
 	return outc;
 }
