@@ -49,8 +49,10 @@ VOID CMaterial::DefaultMaterial()
     ZeroMemory(&mMaterialData, sizeof(mMaterialData));
 
     mMaterialData.Ambient.r = mMaterialData.Ambient.g = mMaterialData.Ambient.b = mMaterialData.Ambient.a = 1.0f;
+    mMaterialData.Specular.r = mMaterialData.Specular.g = mMaterialData.Specular.b = mMaterialData.Specular.a = 1.0f;
     mMaterialData.Diffuse.r = mMaterialData.Diffuse.g = mMaterialData.Diffuse.b = mMaterialData.Diffuse.a = 1.0f;
-    mMaterialData.opacity = 1.0f;
+    mMaterialData.Opacity = 1.0f;
+    mMaterialData.Power = 1.0f;
 }
 
 VOID CMaterial::Release(void)
@@ -120,5 +122,5 @@ VOID CMaterial::SetPower(FLOAT val)
 
 void CMaterial::SetOpacity(FLOAT val)
 {
-    mMaterialData.opacity = val;
+    mMaterialData.Opacity = val;
 }

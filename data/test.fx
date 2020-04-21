@@ -20,6 +20,7 @@ struct VS_OUTPUT
     float4 position : POSITION;
     float2 texCoord : TEXCOORD0;
     float4 worldPos : POSITION2;
+    float3 viewDir : POSITION3;
     float3 normal : NORMAL;
 };
 
@@ -30,6 +31,7 @@ VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
 
     OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
     OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
+    OUT.viewDir = (campos - OUT.worldPos);
     OUT.texCoord = IN.texCoord;
     OUT.normal = IN.normal;
 
@@ -50,6 +52,7 @@ VS_OUTPUT VS_PointLighting(VS_INPUT IN)
 
     OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
     OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
+    OUT.viewDir = (campos - OUT.worldPos);
     OUT.texCoord = IN.texCoord;
     OUT.normal = mul(IN.normal, NEON.InverseWorld);
 
@@ -61,20 +64,30 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
     
     float3 n = normalize(IN.normal);
+    float3 v = normalize(IN.viewDir);
+
     float3 l = float3(0.0f, 0.0f, 0.0f);
+    float3 h = float3(0.0f, 0.0f, 0.0f);
     
     float atten = 0.0f;
-    float nDotL = 0.0f;
+    float diffuse = 0.0f;
+    float specular = 0.0f;
+    float power = 0.0f;
     
     l = (campos - IN.worldPos) / 10.0f;
     atten = saturate(1.0f - dot(l, l));
     
     l = normalize(l);
+    h = normalize(l+v);
     
-    nDotL = saturate(dot(n, l));
+    diffuse = saturate(dot(n, l));
+    specular = saturate(dot(n, h));
+
+    power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
     
     color += globalAmbient +
-            (MAT.Diffuse * nDotL * atten);
+            (MAT.Diffuse * diffuse * atten) +
+            (MAT.Specular * specular * power * atten);
 
     float4 outc = color * tex2D(colorMap, IN.texCoord);
     outc.a = alphaValue;        

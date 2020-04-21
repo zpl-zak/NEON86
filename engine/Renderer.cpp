@@ -171,7 +171,7 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* tex)
         fx->SetColor("MAT.Specular", tex->GetMaterialData().Specular);
         fx->SetColor("MAT.Emissive", tex->GetMaterialData().Emissive);
         fx->SetFloat("MAT.Power", tex->GetMaterialData().Power);
-        fx->SetFloat("MAT.Opacity", tex->GetMaterialData().opacity);
+        fx->SetFloat("MAT.Opacity", tex->GetMaterialData().Opacity);
 
 		fx->SetTexture("diffuseMap", tex->GetTextureHandle());
     }
