@@ -328,7 +328,7 @@
     <ClInclude Include="LuaMatrix.h" />
     <ClInclude Include="LuaMesh.h" />
     <ClInclude Include="LuaMaterial.h" />
-    <ClInclude Include="LuaVector3.h" />
+    <ClInclude Include="LuaVector4.h" />
     <ClInclude Include="LuaVertex.h" />
     <ClInclude Include="lua_macros.h" />
     <ClInclude Include="Mesh.h" />

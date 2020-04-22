@@ -81,7 +81,7 @@ static INT effect_setvector3(lua_State* L)
 {
     CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
-    D3DXVECTOR3* value = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR3);
+    D3DXVECTOR3* value = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR);
 
     fx->SetVector3(name, *value);
     return 0;
@@ -91,10 +91,20 @@ static INT effect_setvector4(lua_State* L)
 {
     CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
-    D3DXVECTOR3* value = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR3);
-    FLOAT value2 = (FLOAT)luaL_checknumber(L, 4);
+    
+    if (lua_gettop(L) == 4)
+    {
+        D3DXVECTOR3* value = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR);
+        FLOAT value2 = (FLOAT)lua_tonumber(L, 4);
+        fx->SetVector4(name, D3DXVECTOR4(*value, value2));
+    }
+    else
+    {
+        D3DXVECTOR4* value = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
+        fx->SetVector4(name, *value);
+    }
+        
 
-    fx->SetVector4(name, D3DXVECTOR4(*value, value2));
     return 0;
 }
 

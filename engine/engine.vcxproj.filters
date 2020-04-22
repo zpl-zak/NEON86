@@ -152,9 +152,6 @@
     <ClInclude Include="LuaMeshGroup.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="LuaVector3.h">
-      <Filter>Header Files\Lua\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="LuaVertex.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
@@ -180,6 +177,9 @@
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="LuaEffect.h">
+      <Filter>Header Files\Lua\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaVector4.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
   </ItemGroup>

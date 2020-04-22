@@ -5,7 +5,7 @@
 #include <lua/lua.hpp>
 
 #include "LuaMatrix.h"
-#include "LuaVector3.h"
+#include "LuaVector4.h"
 #include "LuaVertex.h"
 #include "LuaMaterial.h"
 #include "LuaMesh.h"

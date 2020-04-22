@@ -17,7 +17,7 @@ static D3DXVECTOR3 matrix_getcomps(lua_State* L)
 {
     if (lua_gettop(L) == 2)
     {
-        return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR3);
+        return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
     }
     if (lua_gettop(L) == 4)
     {
@@ -98,13 +98,79 @@ static INT matrix_bind(lua_State* L)
 static INT matrix_lookat(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	D3DXVECTOR3* eye = (D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR3);
-	D3DXVECTOR3* at = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR3);
-	D3DXVECTOR3* up = (D3DXVECTOR3*)luaL_checkudata(L, 4, L_VECTOR3);
+	D3DXVECTOR3* eye = (D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
+	D3DXVECTOR3* at = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR);
+	D3DXVECTOR3* up = (D3DXVECTOR3*)luaL_checkudata(L, 4, L_VECTOR);
+	D3DXMATRIX t;
 
-	D3DXMatrixLookAtLH(mat, eye, at, up);
+	D3DXMatrixLookAtLH(&t, eye, at, up);
+
+	*mat *= t;
 	lua_pushvalue(L, 1);
 	return 1;
+}
+
+static INT matrix_getfield(lua_State* L)
+{
+	D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+	UINT row = (UINT)luaL_checkinteger(L, 2);
+	UINT col = (UINT)luaL_checkinteger(L, 3);
+
+	D3DXMATRIX mat = *matPtr;
+	lua_pushnumber(L, mat(row, col));
+	return 1;
+}
+
+static INT matrix_getrow(lua_State* L)
+{
+    D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+	UINT row = (UINT)luaL_checkinteger(L, 2);
+
+    D3DXMATRIX mat = *matPtr;
+	D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
+	luaL_setmetatable(L, L_VECTOR);
+	*vec = D3DXVECTOR4(mat(row, 0), mat(row, 1), mat(row, 2), mat(row, 3));
+    return 1;
+}
+
+static INT matrix_getcol(lua_State* L)
+{
+    D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    UINT col = (UINT)luaL_checkinteger(L, 2);
+
+    D3DXMATRIX mat = *matPtr;
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
+    luaL_setmetatable(L, L_VECTOR);
+    *vec = D3DXVECTOR4(mat(0, col), mat(1, col), mat(2, col), mat(3, col));
+    return 1;
+}
+
+static INT matrix_inverse(lua_State* L)
+{
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+	D3DXMATRIX t;
+	FLOAT d;
+
+    D3DXMATRIX* ok = D3DXMatrixInverse(&t, &d, mat);
+
+	if (!ok)
+		lua_pushnil(L);
+	else
+	{
+		lua_newtable(L);
+
+		lua_pushinteger(L, 1);
+		lua_pushvalue(L, 1);
+		lua_settable(L, 2);
+
+		lua_pushinteger(L, 2);
+		lua_pushnumber(L, d);
+		lua_settable(L, 2);
+
+		lua_pushvalue(L, 2);
+	}
+
+    return 1;
 }
 
 static VOID LuaMatrix_register(lua_State* L)
@@ -119,6 +185,10 @@ static VOID LuaMatrix_register(lua_State* L)
 	REGC("bind", matrix_bind);
 	REGC("lookAt", matrix_lookat);
 	REGC("__mul", matrix_mul);
+	REGC("m", matrix_getfield);
+	REGC("inverse", matrix_inverse);
+	REGC("row", matrix_getrow);
+	REGC("col", matrix_getcol);
 
 	lua_pop(L, 1);
 }

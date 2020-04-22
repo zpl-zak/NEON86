@@ -60,7 +60,7 @@ function _render()
 	testEffect:beginPass(1)
 
 	testEffect:setVector3("campos", camera.pos)
-	testEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
+	testEffect:setVector4("globalAmbient", Vector4(0.12,0.12,0.12))
 	testEffect:setFloat("alphaValue", alphaValue)
 	testEffect:setFloat("time", time)
 	testEffect:commit()

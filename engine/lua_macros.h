@@ -30,7 +30,7 @@ static INT NAME(lua_State* L) {\
 
 
 #define L_MATRIX "Matrix"
-#define L_VECTOR3 "Vector3"
+#define L_VECTOR "Vector"
 #define L_VERTEX "Vertex"
 #define L_MATERIAL "Material"
 #define L_MESH "Mesh"
