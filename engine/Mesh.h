@@ -12,7 +12,7 @@ public:
 	CMesh(void);
 
 	VOID Release(void);
-	VOID SetMaterial(DWORD stage, CMaterial* tex);
+	VOID SetTexture(DWORD stage, CMaterial* tex);
 	VOID AddVertex(const VERTEX& vertex);
 	VOID AddIndex(SHORT index);
 	VOID Draw(D3DXMATRIX*);
@@ -25,7 +25,6 @@ public:
 
 	inline UINT GetNumIndices() { return mData.indexCount; }
 	inline SHORT* GetIndices() { return mIndices; }
-
 private:
 	RENDERDATA mData;
 	 

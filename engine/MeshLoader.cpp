@@ -85,7 +85,7 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
 
         CReferenceManager::TrackRef(newMaterial);
         
-        newMesh->SetMaterial(0, newMaterial);
+        newMesh->SetTexture(0, newMaterial);
     }
 
     return newMesh;
@@ -102,7 +102,7 @@ void CMeshLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CM
         if (tex->mHeight != 0)
         {
             newMaterial->CreateTextureForSlot(slot, NULL, tex->mWidth, tex->mHeight);
-            newMaterial->UploadRGB888(slot, tex->pcData, sizeof(aiTexel) * tex->mWidth * tex->mHeight);
+            newMaterial->UploadARGB(slot, tex->pcData, sizeof(aiTexel) * tex->mWidth * tex->mHeight);
         }
         else
         {

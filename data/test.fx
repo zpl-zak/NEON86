@@ -5,6 +5,7 @@ float3 campos;
 float4 globalAmbient;
 float alphaValue;
 float time;
+bool enableFresnel;
 
 float4 sunColor = float4(0.91f, 0.58f, 0.13f, 1.0f);
 float3 sunDir = float3(4.0f, 3.0f, -5.0f);
@@ -46,28 +47,6 @@ struct VS_OUTPUT
     float3 normal : NORMAL;
     float3 tangent : TANGENT;
 };
-
-/* Ambient */
-VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
-{
-    VS_OUTPUT OUT;
-
-    OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
-    OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
-    OUT.viewDir = (campos - OUT.worldPos);
-    OUT.texCoord = IN.texCoord;
-    OUT.normal = IN.normal;
-    OUT.tangent = IN.tangent;
-
-    return OUT;
-}
-
-float4 PS_AmbientLighting(VS_OUTPUT IN) : COLOR
-{
-    float4 outc = tex2D(colorMap, IN.texCoord);
-    outc.a = alphaValue;        
-	return outc;
-}
 
 /* Point TEST */
 VS_OUTPUT VS_PointLighting(VS_INPUT IN)
@@ -126,13 +105,21 @@ float4 CalcPointLight(VS_OUTPUT IN)
             (MAT.Specular * specular * power * atten * s);
 }
 
+float2 parallaxmap(float2 uv, float3 viewDir)
+{
+    float h = tex2D(specularMap, uv).r;
+    float2 p = viewDir.xy / viewDir.z * (h * 2.0);
+    return uv - p;
+}
+
 float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
 {
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
-    float3 n = normalize(IN.normal);
+    IN.texCoord = parallaxmap(IN.texCoord, IN.viewDir);
 
     if (hasNormalTex == true)
     {
+        float3 n = normalize(IN.normal);
         float4 nm = tex2D(normalMap, IN.texCoord);
         nm = (2.0f*nm) - 1.0f;
         IN.tangent = normalize(IN.tangent - dot(IN.tangent, n)*n);
@@ -141,22 +128,31 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
         IN.normal = normalize(mul(nm, tx));
     }
 
-    float4 OUT = globalAmbient + CalcPointLight(IN) + CalcSunLight(IN)/4;
+    float4 t = tex2D(colorMap, IN.texCoord);
+
+    if (enableFresnel == true)
+    {
+        float minRefl = 0.0f;    
+        //float3 reflv = reflect(-IN.viewVec, IN.normal);
+        float4 reflc = tex2D(colorMap, float2(1.0,1.0)-IN.texCoord);//float4(0.6,0.6,0.6,1.0);
+
+        float3 lo = normalize(IN.viewDir);
+        float3 lh = normalize(sunDir+lo);
+
+        float4 fresnel = minRefl + (1.0f - minRefl) * 
+            pow(abs(1.0f - max(0, dot(lh, lo))), 5.0f);
+
+        t = lerp(t, reflc, min(0.8, fresnel));
+    }
+
+    float4 OUT = globalAmbient + /* CalcPointLight(IN) + */ CalcSunLight(IN)/4;
+
     OUT.a = alphaValue;
-    OUT += tex2D(colorMap, IN.texCoord);
+    OUT += t;
 	return OUT;
 }
 
 /* Techniques */
-technique AmbientLighting
-{
-    pass
-    {
-        VertexShader = compile vs_3_0 VS_AmbientLighting();
-        PixelShader = compile ps_3_0 PS_AmbientLighting();
-    }
-}
-
 technique PointLighting
 {
     pass

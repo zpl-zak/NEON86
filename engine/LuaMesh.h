@@ -58,7 +58,7 @@ static INT mesh_settexture(lua_State* L)
 	if (lua_gettop(L) == 3)
 		tex = (CMaterial*)luaL_checkudata(L, 3, L_MATERIAL);
 
-	mesh->SetMaterial(stage, tex ? tex : NULL);
+	mesh->SetTexture(stage, tex ? tex : NULL);
 
 	lua_pushvalue(L, 1);
 	return 1;

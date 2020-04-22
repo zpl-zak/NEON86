@@ -21,7 +21,7 @@ VOID CMesh::Release(void)
 	SAFE_RELEASE(mData.mesh);
 }
 
-VOID CMesh::SetMaterial(DWORD stage, CMaterial* tex)
+VOID CMesh::SetTexture(DWORD stage, CMaterial* tex)
 {
 	mData.stage = stage;
 	mData.tex = tex;

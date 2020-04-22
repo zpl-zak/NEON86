@@ -19,14 +19,17 @@ public:
 
     void CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);
     void CreateEmbeddedTextureForSlot(UINT slot, void* data, UINT size);
+    
     inline void SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
     inline UINT GetSamplerState(UINT state) const { return mStats[state]; }
     inline LPDIRECT3DTEXTURE9 GetTextureHandle(UINT slot=TEXTURESLOT_ALBEDO) { return mTextureHandle[slot]; }
+    inline LPDIRECT3DTEXTURE9 GetUserTextureHandle(UINT userSlot) { return mTextureHandle[TEXTURESLOT_USER0+userSlot]; }
 
+    void SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
     void Bind(DWORD stage);
     void Unbind(DWORD stage);
     void* Lock(UINT slot=TEXTURESLOT_ALBEDO);
-    void UploadRGB888(UINT slot, VOID* data, UINT size);
+    void UploadARGB(UINT slot, VOID* data, UINT size);
     void Unlock(UINT slot = TEXTURESLOT_ALBEDO);
 
     void SetAmbient(D3DCOLORVALUE color);

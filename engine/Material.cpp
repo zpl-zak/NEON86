@@ -58,7 +58,7 @@ void CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 
     if (!texName)
-        D3DXCreateTexture(dev, w, h, 0, 0, D3DFMT_X8R8G8B8, D3DPOOL_MANAGED, &mTextureHandle[slot]);
+        D3DXCreateTexture(dev, w, h, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &mTextureHandle[slot]);
     else
     {
         FDATA img = FILESYSTEM->GetResource(RESOURCEKIND_IMAGE, texName);
@@ -86,6 +86,18 @@ void CMaterial::CreateEmbeddedTextureForSlot(UINT slot, void* data, UINT size)
     D3DXCreateTextureFromFileInMemory(dev, data, size, &mTextureHandle[slot]);
 }
 
+void CMaterial::SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle)
+{
+    if (userSlot < (MAX_TEXTURE_SLOTS - TEXTURESLOT_USER0))
+    {
+        MessageBoxA(NULL, "User slot is invalid!", "Texture error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
+
+    mTextureHandle[userSlot + TEXTURESLOT_USER0] = handle;
+}
+
 VOID CMaterial::Bind(DWORD stage)
 {
     RENDERER->SetMaterial(stage, this);
@@ -108,7 +120,7 @@ VOID* CMaterial::Lock(UINT slot)
     return r.pBits;
 }
 
-VOID CMaterial::UploadRGB888(UINT slot, VOID* data, UINT size)
+VOID CMaterial::UploadARGB(UINT slot, VOID* data, UINT size)
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, NULL, D3DLOCK_DISCARD);

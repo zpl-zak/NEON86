@@ -31,6 +31,80 @@ static INT material_new(lua_State* L)
 	return mat->GetTextureHandle() != NULL;
 }
 
+static INT material_loadfile(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    LPCSTR texName = (LPCSTR)luaL_checkinteger(L, 2);
+    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
+
+    mat->CreateTextureForSlot(TEXTURESLOT_USER0 + userSlot, (LPSTR)texName);
+
+    return 0;
+}
+
+static INT material_getres(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
+    LPDIRECT3DTEXTURE9 h = mat->GetUserTextureHandle(userSlot);
+    D3DSURFACE_DESC a;
+
+    h->GetLevelDesc(0, &a);
+    
+    lua_newtable(L);
+
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, a.Width);
+    lua_settable(L, 3);
+
+    lua_pushinteger(L, 2);
+    lua_pushinteger(L, a.Height);
+    lua_settable(L, 3);
+
+    lua_pushvalue(L, 3);
+
+    return 1;
+}
+
+static INT material_loaddata(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1 + TEXTURESLOT_USER0;
+    UINT width = (UINT)luaL_checkinteger(L, 4);
+    UINT height = (UINT)luaL_checkinteger(L, 5);
+    
+    mat->CreateTextureForSlot(userSlot, NULL, width, height);
+    //mat->UploadARGB(userSlot, 2, 2);
+
+    return 0;
+}
+
+static INT material_getdata(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1 + TEXTURESLOT_USER0;
+    mat->GetUserTextureHandle(userSlot);
+    D3DSURFACE_DESC a;
+    mat->GetUserTextureHandle(userSlot)->GetLevelDesc(0, &a);
+
+    UINT* buf = (UINT*)mat->Lock(userSlot);
+
+    lua_newtable(L);
+
+    for (UINT i = 0; i < (a.Width * a.Height); i++)
+    {
+        lua_pushinteger(L, i + 1);
+        lua_pushinteger(L, buf[i]);
+        lua_settable(L, 3);
+    }
+
+    mat->Unlock(userSlot);
+
+    lua_pushvalue(L, 3);
+
+    return 1;
+}
+
 static INT material_setsampler(lua_State* L)
 {
     CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
@@ -121,6 +195,11 @@ static VOID LuaMaterial_register(lua_State* L)
 	
     REGC("setSamplerState", material_setsampler);
     REGC("getSamplerState", material_getsampler);
+
+    REGC("loadFile", material_loadfile);
+    REGC("loadData", material_loaddata);
+    REGC("res", material_getres);
+    REGC("data", material_getdata);
 
     REGC("setDiffuse", material_setdiffuse);
     REGC("setAmbient", material_setambient);
