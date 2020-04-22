@@ -51,7 +51,7 @@ end
 
 function _render()
 	ClearScene(20,20,20)
-	CameraPerspective(70)
+	CameraPerspective(62)
 	
 	lookAt:bind(VIEW)
 

@@ -15,20 +15,16 @@ static INT matrix_new(lua_State* L)
 
 static D3DXVECTOR3 matrix_getcomps(lua_State* L)
 {
-    if (lua_gettop(L) == 2)
+    if (lua_gettop(L) == 2 && (luaL_testudata(L, 2, L_VECTOR)))
     {
         return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
     }
-    if (lua_gettop(L) == 4)
-    {
-		FLOAT x = (FLOAT)luaL_checknumber(L, 2);
-		FLOAT y = (FLOAT)luaL_checknumber(L, 3);
-		FLOAT z = (FLOAT)luaL_checknumber(L, 4);
+	
+	FLOAT x = (FLOAT)lua_tonumber(L, 2);
+	FLOAT y = (FLOAT)lua_tonumber(L, 3);
+	FLOAT z = (FLOAT)lua_tonumber(L, 4);
 
-		return D3DXVECTOR3(x,y,z);
-    }
-
-	return D3DXVECTOR3();
+	return D3DXVECTOR3(x,y,z);
 }
 
 static INT matrix_translate(lua_State* L)
@@ -37,7 +33,7 @@ static INT matrix_translate(lua_State* L)
 	D3DXVECTOR3 vec = matrix_getcomps(L);
 	
 	D3DXMATRIX t;
-	D3DXMatrixTranslation(&t, vec.x, vec.y, vec.z);
+	D3DXMatrixTranslation(&t, -vec.x, -vec.y, -vec.z);
 	
 	*mat *= t;
 
@@ -50,12 +46,10 @@ static INT matrix_rotate(lua_State* L)
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	D3DXVECTOR3 vec = matrix_getcomps(L);
 
-	D3DXMATRIX tx, ty, tz;
-	D3DXMatrixRotationX(&tx, vec.x);
-	D3DXMatrixRotationY(&ty, vec.y);
-	D3DXMatrixRotationZ(&tz, vec.z);
+	D3DXMATRIX t;
+	D3DXMatrixRotationYawPitchRoll(&t, vec.x, vec.y, vec.z);
 
-	*mat *= tx * ty * tz;
+	*mat *= t;
 	
 	lua_pushvalue(L, 1);
 	return 1;
@@ -113,8 +107,8 @@ static INT matrix_lookat(lua_State* L)
 static INT matrix_getfield(lua_State* L)
 {
 	D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	UINT row = (UINT)luaL_checkinteger(L, 2);
-	UINT col = (UINT)luaL_checkinteger(L, 3);
+	UINT row = (UINT)luaL_checkinteger(L, 2) -1;
+	UINT col = (UINT)luaL_checkinteger(L, 3) -1;
 
 	D3DXMATRIX mat = *matPtr;
 	lua_pushnumber(L, mat(row, col));
@@ -124,7 +118,7 @@ static INT matrix_getfield(lua_State* L)
 static INT matrix_getrow(lua_State* L)
 {
     D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	UINT row = (UINT)luaL_checkinteger(L, 2);
+	UINT row = (UINT)luaL_checkinteger(L, 2) - 1;
 
     D3DXMATRIX mat = *matPtr;
 	D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
@@ -136,7 +130,7 @@ static INT matrix_getrow(lua_State* L)
 static INT matrix_getcol(lua_State* L)
 {
     D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-    UINT col = (UINT)luaL_checkinteger(L, 2);
+    UINT col = (UINT)luaL_checkinteger(L, 2) - 1;
 
     D3DXMATRIX mat = *matPtr;
     D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
