@@ -57,7 +57,7 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
 
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
-        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_HEIGHT);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_NORMALS);
 
         newMaterial->SetSamplerState(SAMPLERSTATE_MAGFILTER, texFiltering);
         newMaterial->SetSamplerState(SAMPLERSTATE_MIPFILTER, texFiltering);
@@ -71,8 +71,9 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
         float power;
         mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
         mat->Get(AI_MATKEY_SHININESS, power);
-        newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r * power, specular.g * power, specular.b * power });
-        newMaterial->SetPower(power);
+
+        newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
+        newMaterial->SetPower(power*5.0f);
 
         aiColor4D ambient;
         mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);

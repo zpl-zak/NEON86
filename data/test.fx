@@ -101,7 +101,7 @@ float4 CalcSunLight(VS_OUTPUT IN)
     float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
 
 	return (MAT.Diffuse * sunColor * 2.0f * diffuse)
-            + (sunColor * 4.0f * specular * power * s);
+            + (MAT.Specular * sunColor * 4.0f * specular * power * s);
 }
 
 float4 CalcPointLight(VS_OUTPUT IN)

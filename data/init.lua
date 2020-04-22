@@ -1,4 +1,4 @@
-model = Model("cube.obj")
+model = Model("brick.dae")
 
 dofile("camera.lua")
 
@@ -6,7 +6,6 @@ time = 0.0
 
 testEffect = Effect("test.fx")
 
-renderMode = "PointLighting"
 alphaValue = 1.0
 
 function _init()
@@ -22,14 +21,6 @@ function _update(dt)
 
 	if GetKeyDown(KEY_ESCAPE) then
 		ExitGame()	
-	end
-
-	if GetKeyDown(KEY_F3) then
-		if renderMode == "PointLighting" then
-			renderMode = "AmbientLighting"
-		else
-			renderMode = "PointLighting"
-		end
 	end
 
 	if GetKeyDown(KEY_F4) then
@@ -55,7 +46,7 @@ function _render()
 	
 	lookAt:bind(VIEW)
 
-	testEffect:start(renderMode)
+	testEffect:start("PointLighting")
 
 	testEffect:beginPass(1)
 
