@@ -1,12 +1,19 @@
-model = Model("brick.dae")
+
+skybox = Model("skybox.fbx")
+
 
 dofile("camera.lua")
+dofile("solar.lua")
 
 time = 0.0
 
-testEffect = Effect("test.fx")
+spaceFX = Effect("space.fx")
 
+scale = 1
 alphaValue = 1.0
+
+
+demoSystem = generateSystem(Vector(), 430)
 
 function _init()
 	ShowCursor(false)
@@ -46,19 +53,21 @@ function _render()
 	
 	lookAt:bind(VIEW)
 
-	testEffect:start("PointLighting")
+	spaceFX:start("Main")
 
-	testEffect:beginPass(1)
+	spaceFX:beginPass(1)
 
-	testEffect:setVector3("campos", camera.pos)
-	testEffect:setVector4("globalAmbient", Vector4(0.12,0.12,0.12))
-	testEffect:setFloat("alphaValue", alphaValue)
-	testEffect:setFloat("time", time)
-	testEffect:commit()
+	spaceFX:setVector3("campos", camera.pos)
+	spaceFX:setVector4("globalAmbient", Vector4(0.23,0.23,0.23))
+	spaceFX:setFloat("alphaValue", alphaValue)
+	spaceFX:setFloat("time", time)
 
-	model:draw(Matrix():scale(10,10,10))
+	drawSystem(demoSystem)
+	
+	spaceFX:endPass()
+	spaceFX:finish()
 
-	testEffect:endPass()
-
-	testEffect:finish()
+	--[[ unlit ]]
+	skybox:draw(Matrix():scale(scale):translate(camera.pos))
+	
 end

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Model.h"
 
-#include "MeshGroup.h"
+#include "Mesh.h"
 #include "MeshLoader.h"
 #include "NeonEngine.h"
 #include "FileSystem.h"
@@ -14,7 +14,7 @@ CModel::CModel(LPSTR modelPath)
 {
     mCapacity = 4;
     mCount = 0;
-    mMeshGroups = (CMeshGroup**)malloc(mCapacity * sizeof(CMeshGroup*));
+    mMeshGroups = (CMesh**)malloc(mCapacity * sizeof(CMesh*));
     D3DXMatrixIdentity(&identityMat);
 
     if (modelPath)
@@ -49,7 +49,7 @@ void CModel::LoadModel(LPCSTR modelPath, UINT texFiltering)
         return;
     }
 
-    CMeshGroup* meshGroup = NULL;
+    CMesh* meshGroup = NULL;
     aiString meshName;
 
     for (UINT i = 0; i < model->mNumMeshes; i++)
@@ -60,14 +60,14 @@ void CModel::LoadModel(LPCSTR modelPath, UINT texFiltering)
             if (meshGroup)
                 AddMeshGroup(meshGroup);
 
-            meshGroup = new CMeshGroup();
+            meshGroup = new CMesh();
             CReferenceManager::TrackRef(meshGroup);
             
             meshName = m->mName;
             meshGroup->SetName(meshName);
         }
 
-        CMesh* mesh = CMeshLoader::LoadNode(model, m, texFiltering);
+        CFaceGroup* mesh = CMeshLoader::LoadNode(model, m, texFiltering);
         meshGroup->AddMesh(mesh, identityMat);
     }
 
@@ -85,7 +85,7 @@ void CModel::Draw(const D3DXMATRIX& wmat)
     }
 }
 
-CMeshGroup* CModel::FindMeshGroup(LPCSTR name)
+CMesh* CModel::FindMeshGroup(LPCSTR name)
 {
     for (UINT i = 0; i < mCount; i++)
     {
@@ -96,7 +96,7 @@ CMeshGroup* CModel::FindMeshGroup(LPCSTR name)
     return NULL;
 }
 
-void CModel::AddMeshGroup(CMeshGroup* mg)
+void CModel::AddMeshGroup(CMesh* mg)
 {
     if (!mg)
         return;
@@ -105,7 +105,7 @@ void CModel::AddMeshGroup(CMeshGroup* mg)
     {
         mCapacity += 4;
 
-        mMeshGroups = (CMeshGroup**)realloc(mMeshGroups, mCapacity * sizeof(CMeshGroup*));
+        mMeshGroups = (CMesh**)realloc(mMeshGroups, mCapacity * sizeof(CMesh*));
         
         if (!mMeshGroups )
         {

@@ -34,10 +34,10 @@ static INT material_new(lua_State* L)
 static INT material_loadfile(lua_State* L)
 {
     CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
-    LPCSTR texName = (LPCSTR)luaL_checkinteger(L, 2);
+    LPCSTR texName = (LPCSTR)luaL_checkstring(L, 2);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
 
-    mat->CreateTextureForSlot(TEXTURESLOT_USER0 + userSlot, (LPSTR)texName);
+    mat->CreateTextureForSlot(userSlot, (LPSTR)texName);
 
     return 0;
 }
@@ -69,7 +69,7 @@ static INT material_getres(lua_State* L)
 static INT material_loaddata(lua_State* L)
 {
     CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
-    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1 + TEXTURESLOT_USER0;
+    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     UINT width = (UINT)luaL_checkinteger(L, 4);
     UINT height = (UINT)luaL_checkinteger(L, 5);
     
@@ -82,7 +82,7 @@ static INT material_loaddata(lua_State* L)
 static INT material_getdata(lua_State* L)
 {
     CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
-    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1 + TEXTURESLOT_USER0;
+    UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     mat->GetUserTextureHandle(userSlot);
     D3DSURFACE_DESC a;
     mat->GetUserTextureHandle(userSlot)->GetLevelDesc(0, &a);
@@ -93,7 +93,7 @@ static INT material_getdata(lua_State* L)
 
     for (UINT i = 0; i < (a.Width * a.Height); i++)
     {
-        lua_pushinteger(L, i + 1);
+        lua_pushinteger(L, i + 1ULL);
         lua_pushinteger(L, buf[i]);
         lua_settable(L, 3);
     }

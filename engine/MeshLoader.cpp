@@ -1,16 +1,16 @@
 #include "StdAfx.h"
 #include "MeshLoader.h"
-#include "Mesh.h"
+#include "FaceGroup.h"
 #include "Material.h"
 #include "NeonEngine.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
-CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFiltering)
+CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFiltering)
 {
-    CMesh* newMesh = new CMesh();
-    CReferenceManager::TrackRef(newMesh);
+    CFaceGroup* newFGroup = new CFaceGroup();
+    CReferenceManager::TrackRef(newFGroup);
 
     for (UINT i = 0; i < mesh->mNumVertices; i++)
     {
@@ -20,6 +20,7 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
         const aiVector3D uv = mesh->mTextureCoords[0][i];
         const aiVector3D nm = mesh->mNormals[i];
         const aiVector3D ta = mesh->mTangents[i];
+        const aiVector3D tb = mesh->mBitangents[i];
 
         vert.x = pos.x;
         vert.y = pos.y;
@@ -36,18 +37,22 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
         vert.ty = ta.y;
         vert.tz = ta.z;
 
+        vert.bx = tb.x;
+        vert.by = tb.y;
+        vert.bz = tb.z;
+
         vert.color = D3DCOLOR_XRGB(255, 255, 255);
 
-        newMesh->AddVertex(vert);
+        newFGroup->AddVertex(vert);
     }
 
     for (UINT i = 0; i < mesh->mNumFaces; i++)
     {
         const aiFace face = mesh->mFaces[i];
 
-        newMesh->AddIndex(face.mIndices[0]);
-        newMesh->AddIndex(face.mIndices[1]);
-        newMesh->AddIndex(face.mIndices[2]);
+        newFGroup->AddIndex(face.mIndices[0]);
+        newFGroup->AddIndex(face.mIndices[1]);
+        newFGroup->AddIndex(face.mIndices[2]);
     }
 
     if (mesh->mMaterialIndex < scene->mNumMaterials)
@@ -58,6 +63,7 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_NORMALS);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_DISPLACE, aiTextureType_DISPLACEMENT);
 
         newMaterial->SetSamplerState(SAMPLERSTATE_MAGFILTER, texFiltering);
         newMaterial->SetSamplerState(SAMPLERSTATE_MIPFILTER, texFiltering);
@@ -85,10 +91,10 @@ CMesh* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texF
 
         CReferenceManager::TrackRef(newMaterial);
         
-        newMesh->SetTexture(0, newMaterial);
+        newFGroup->SetMaterial(0, newMaterial);
     }
 
-    return newMesh;
+    return newFGroup;
 }
 
 void CMeshLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)

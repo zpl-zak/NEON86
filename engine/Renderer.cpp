@@ -6,7 +6,7 @@
 #include "Renderer.h"
 #include "Material.h"
 #include "Frustum.h"
-#include "Mesh.h"
+#include "FaceGroup.h"
 #include "Effect.h"
 
 #include "StdAfx.h"
@@ -145,7 +145,7 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
 		D3DXMATRIX mv = world * view;
 
 		GetActiveEffect()->SetMatrix("NEON.World", world);
-		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld);
+		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
 		GetActiveEffect()->SetMatrix("NEON.WorldView", mv);
 		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
         GetActiveEffect()->CommitChanges();
@@ -180,7 +180,27 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 
         fx->SetTexture("normalTex", mat->GetTextureHandle(TEXTURESLOT_NORMAL));
         fx->SetBool("hasNormalTex", mat->GetTextureHandle(TEXTURESLOT_NORMAL) != NULL);
+
+        fx->SetTexture("dispTex", mat->GetTextureHandle(TEXTURESLOT_DISPLACE));
+        fx->SetBool("hasDispTex", mat->GetTextureHandle(TEXTURESLOT_DISPLACE) != NULL);
+		fx->CommitChanges();
     }
+	else if (GetActiveEffect())
+	{
+		CEffect* fx = GetActiveEffect();
+
+        fx->SetTexture("diffuseTex", NULL);
+        fx->SetBool("hasDiffuseTex", NULL);
+
+        fx->SetTexture("specularTex", NULL);
+        fx->SetBool("hasSpecularTex", NULL);
+
+        fx->SetTexture("normalTex", NULL);
+        fx->SetBool("hasNormalTex", NULL);
+
+        fx->SetTexture("dispTex", NULL);
+        fx->SetBool("hasDispTex", NULL);
+	}
 	else
 	{
         mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, mat ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);

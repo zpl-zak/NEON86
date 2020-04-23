@@ -68,19 +68,20 @@ enum TEXTURESLOT
 	TEXTURESLOT_ALBEDO,
 	TEXTURESLOT_SPECULAR,
 	TEXTURESLOT_NORMAL,
+	TEXTURESLOT_DISPLACE,
 
-	TEXTURESLOT_USER0,
-
-	TEXTURESLOT_USER_END = 30,
+    TEXTURESLOT_USER_END = 30,
 
 	MAX_TEXTURE_SLOTS,
 };
 
+#pragma pack(push, 1)
 struct VERTEX
 {
 	FLOAT x, y, z;
 	FLOAT nx, ny, nz;
 	FLOAT tx, ty, tz;
+	FLOAT bx, by, bz;
 	union {
 		DWORD color;
 		struct {
@@ -89,6 +90,7 @@ struct VERTEX
 	};
 	FLOAT su, tv;
 };
+#pragma pack(pop)
 
 extern D3DVERTEXELEMENT9 meshVertexFormat[];
 
@@ -128,7 +130,7 @@ struct RENDERDATA
 	BOOL usesMatrix;
 	D3DMATRIX matrix;
 
-	CMaterial* tex;
+	CMaterial* mat;
 
 	LPD3DXMESH mesh;
 	D3DXVECTOR3 meshOrigin;

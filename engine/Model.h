@@ -3,7 +3,7 @@
 #include "system.h"
 #include "RenderData.h"
 
-class CMeshGroup;
+class CMesh;
 
 class CModel
 {
@@ -15,14 +15,14 @@ public:
     void Draw(const D3DXMATRIX& wmat);
 
     inline UINT GetNumMeshGroups() { return mCount; }
-    inline CMeshGroup** GetMeshGroups() { return mMeshGroups; }
-    CMeshGroup* FindMeshGroup(LPCSTR name);
+    inline CMesh** GetMeshGroups() { return mMeshGroups; }
+    CMesh* FindMeshGroup(LPCSTR name);
 private:
-    CMeshGroup** mMeshGroups;
+    CMesh** mMeshGroups;
     UINT mCapacity;
     UINT mCount;
 
     static D3DXMATRIX identityMat;
 
-    void AddMeshGroup(CMeshGroup* mg);
+    void AddMeshGroup(CMesh* mg);
 };

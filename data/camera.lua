@@ -4,7 +4,7 @@ SENSITIVITY = 0.15
 lookAt = nil
 
 camera = {
-	pos = Vector3(0,6,-12),
+	pos = Vector3(0,6,-48),
 	fwd = Vector3(),
 	fwdl = Vector3(),
 	rhs = Vector3(),
@@ -24,7 +24,7 @@ function updateCamera(dt)
 		-- camera.angle[2] = math.clamp(-1.52, 1.55, camera.angle[2])
 	end
 
-	lookAt = Matrix():translate(camera.pos)
+	lookAt = Matrix():translate(camera.pos*-1)
 					  :rotate(-camera.angle[1], 0, 0)
 					  :rotate(0, camera.angle[2], 0)
 

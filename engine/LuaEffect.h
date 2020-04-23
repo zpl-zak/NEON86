@@ -61,7 +61,7 @@ static INT effect_setbool(lua_State* L)
 {
     CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
-    FLOAT value = (FLOAT)luaL_checknumber(L, 3);
+    FLOAT value = (FLOAT)lua_toboolean(L, 3);
 
     fx->SetBool(name, value == 1.0f);
     return 0;

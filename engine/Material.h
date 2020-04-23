@@ -23,7 +23,7 @@ public:
     inline void SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
     inline UINT GetSamplerState(UINT state) const { return mStats[state]; }
     inline LPDIRECT3DTEXTURE9 GetTextureHandle(UINT slot=TEXTURESLOT_ALBEDO) { return mTextureHandle[slot]; }
-    inline LPDIRECT3DTEXTURE9 GetUserTextureHandle(UINT userSlot) { return mTextureHandle[TEXTURESLOT_USER0+userSlot]; }
+    inline LPDIRECT3DTEXTURE9 GetUserTextureHandle(UINT userSlot) { return mTextureHandle[userSlot]; }
 
     void SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
     void Bind(DWORD stage);

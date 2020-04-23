@@ -60,12 +60,6 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGroup.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
@@ -85,6 +79,12 @@
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="FaceGroup.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
@@ -125,12 +125,6 @@
     <ClInclude Include="system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshGroup.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="InputCodes.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -144,12 +138,6 @@
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="LuaMatrix.h">
-      <Filter>Header Files\Lua\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaMesh.h">
-      <Filter>Header Files\Lua\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="LuaMeshGroup.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
     <ClInclude Include="LuaVertex.h">
@@ -180,6 +168,18 @@
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
     <ClInclude Include="LuaVector4.h">
+      <Filter>Header Files\Lua\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceGroup.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaFaceGroup.h">
+      <Filter>Header Files\Lua\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaMesh.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
   </ItemGroup>

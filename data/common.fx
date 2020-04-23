@@ -30,6 +30,7 @@ struct VS_INPUT
     float4 color : COLOR0;
 	float2 texCoord : TEXCOORD0;
     float3 tangent : TANGENT;
+    float3 bitangent : BINORMAL;
 };
 
 /* Textures */
@@ -41,3 +42,6 @@ bool hasSpecularTex;
 
 texture normalTex;
 bool hasNormalTex;
+
+texture dispTex;
+bool hasDispTex;

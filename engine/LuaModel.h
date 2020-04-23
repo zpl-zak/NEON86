@@ -14,8 +14,8 @@ static INT model_new(lua_State* L)
     if (lua_gettop(L) == 1)
         modelPath = lua_tostring(L, 1);
 
-    if (lua_gettop(L) == 3)
-        texFlags = (UINT)luaL_checkinteger(L, 3);
+    if (lua_gettop(L) == 2)
+        texFlags = (UINT)luaL_checkinteger(L, 2);
 
     CModel* model = (CModel*)lua_newuserdata(L, sizeof(CModel));
     *model = CModel();
@@ -27,7 +27,7 @@ static INT model_new(lua_State* L)
     return 1;
 }
 
-static INT model_getmeshgroups(lua_State* L)
+static INT model_getmeshes(lua_State* L)
 {
     CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
 
@@ -35,10 +35,10 @@ static INT model_getmeshgroups(lua_State* L)
 
     for (UINT i = 0; i < model->GetNumMeshGroups(); i++)
     {
-        CMeshGroup* mesh = model->GetMeshGroups()[i];
+        CMesh* mesh = model->GetMeshGroups()[i];
         lua_pushinteger(L, i + 1ULL);
         lua_pushlightuserdata(L, (void*)mesh);
-        luaL_setmetatable(L, L_MESHGROUP);
+        luaL_setmetatable(L, L_MESH);
         lua_settable(L, -3);
     }
 
@@ -71,17 +71,17 @@ static INT model_loadmodel(lua_State* L)
     return 1;
 }
 
-static INT model_findmeshgroup(lua_State* L)
+static INT model_findmesh(lua_State* L)
 {
     CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     
-    CMeshGroup* mg = model->FindMeshGroup(meshName);
+    CMesh* mg = model->FindMeshGroup(meshName);
 
     if (mg)
     {
         lua_pushlightuserdata(L, (void*)mg);
-        luaL_setmetatable(L, L_MESHGROUP);
+        luaL_setmetatable(L, L_MESH);
     }
     else lua_pushnil(L);
 
@@ -106,8 +106,8 @@ static VOID LuaModel_register(lua_State* L)
 
     REGC("draw", model_draw);
     REGC("loadModel", model_loadmodel);
-    REGC("getMeshGroups", model_getmeshgroups);
-    REGC("findMeshGroup", model_findmeshgroup);
+    REGC("getMeshes", model_getmeshes);
+    REGC("findMesh", model_findmesh);
     REGC("__gc", model_delete);
 
     lua_pop(L, 1);

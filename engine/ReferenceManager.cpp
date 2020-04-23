@@ -2,13 +2,13 @@
 
 #include "ReferenceManager.h"
 
-#include "Mesh.h"
+#include "FaceGroup.h"
 #include "Material.h"
-#include "MeshGroup.h"
+#include "Mesh.h"
 
-CReferenceContainer<CMesh> CReferenceManager::meshes;
+CReferenceContainer<CFaceGroup> CReferenceManager::meshes;
 CReferenceContainer<CMaterial> CReferenceManager::materials;
-CReferenceContainer<CMeshGroup> CReferenceManager::meshGroups;
+CReferenceContainer<CMesh> CReferenceManager::meshGroups;
 
 void CReferenceManager::Release()
 {

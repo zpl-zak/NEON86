@@ -4,8 +4,8 @@
 
 #include <vector>
 
+class CFaceGroup;
 class CMesh;
-class CMeshGroup;
 class CMaterial;
 
 template<typename T>
@@ -45,9 +45,9 @@ public:
         t->TrackRef((T*)t);
     }
 
-    static CReferenceContainer<CMesh> meshes;
+    static CReferenceContainer<CFaceGroup> meshes;
     static CReferenceContainer<CMaterial> materials;
-    static CReferenceContainer<CMeshGroup> meshGroups;
+    static CReferenceContainer<CMesh> meshGroups;
 };
 
 template<typename T>
@@ -65,7 +65,7 @@ inline void CReferenceContainer<T>::Release()
     mRefs.clear();
 }
 
-inline void CReference<CMesh>::TrackRef(CMesh* self)
+inline void CReference<CFaceGroup>::TrackRef(CFaceGroup* self)
 {
     mSelf = self;
     CReferenceManager::meshes.AddRef(*this);
@@ -77,7 +77,7 @@ inline void CReference<CMaterial>::TrackRef(CMaterial* self)
     CReferenceManager::materials.AddRef(*this);
 }
 
-inline void CReference<CMeshGroup>::TrackRef(CMeshGroup* self)
+inline void CReference<CMesh>::TrackRef(CMesh* self)
 {
     mSelf = self;
     CReferenceManager::meshGroups.AddRef(*this);

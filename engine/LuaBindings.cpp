@@ -8,8 +8,8 @@
 #include "LuaVector4.h"
 #include "LuaVertex.h"
 #include "LuaMaterial.h"
+#include "LuaFaceGroup.h"
 #include "LuaMesh.h"
-#include "LuaMeshGroup.h"
 #include "LuaModel.h"
 #include "LuaEffect.h"
 
@@ -258,6 +258,13 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 		REGE(CLEARFLAG_DEPTH);
 		REGE(CLEARFLAG_STENCIL);
 		REGE(CLEARFLAG_STANDARD);
+
+        REGN(TEXTURESLOT_ALBEDO, TEXTURESLOT_ALBEDO + 1);
+        REGN(TEXTURESLOT_SPECULAR, TEXTURESLOT_SPECULAR + 1);
+        REGN(TEXTURESLOT_NORMAL, TEXTURESLOT_NORMAL + 1);
+        REGN(TEXTURESLOT_DISPLACE, TEXTURESLOT_DISPLACE + 1);
+        REGN(TEXTURESLOT_USER_END, TEXTURESLOT_USER_END + 1);
+        REGN(MAX_TEXTURE_SLOTS, MAX_TEXTURE_SLOTS + 1);
 
 		// helpers
 		lua_pushnumber(L, MATRIXKIND_WORLD); lua_setglobal(L, "WORLD");

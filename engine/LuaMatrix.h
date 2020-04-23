@@ -24,6 +24,12 @@ static D3DXVECTOR3 matrix_getcomps(lua_State* L)
 	FLOAT y = (FLOAT)lua_tonumber(L, 3);
 	FLOAT z = (FLOAT)lua_tonumber(L, 4);
 
+	if (lua_gettop(L) == 2)
+		y = z = x;
+
+	if (lua_gettop(L) == 3)
+		z = x;
+
 	return D3DXVECTOR3(x,y,z);
 }
 
@@ -33,7 +39,7 @@ static INT matrix_translate(lua_State* L)
 	D3DXVECTOR3 vec = matrix_getcomps(L);
 	
 	D3DXMATRIX t;
-	D3DXMatrixTranslation(&t, -vec.x, -vec.y, -vec.z);
+	D3DXMatrixTranslation(&t, vec.x, vec.y, vec.z);
 	
 	*mat *= t;
 

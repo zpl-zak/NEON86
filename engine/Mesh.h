@@ -4,33 +4,32 @@
 #include "RenderData.h"
 #include "ReferenceManager.h"
 
-class CMaterial;
+#include <Assimp/Importer.hpp>
+
+class CFaceGroup;
 
 class CMesh: public CReference<CMesh>
 {
 public:
-	CMesh(void);
+    CMesh(void);
+     
+    VOID Release(void);
+    VOID AddMesh(CFaceGroup*, const D3DXMATRIX&);
+    
+    VOID Draw(const D3DXMATRIX& wmat);
+    VOID Clear(void);
 
-	VOID Release(void);
-	VOID SetTexture(DWORD stage, CMaterial* tex);
-	VOID AddVertex(const VERTEX& vertex);
-	VOID AddIndex(SHORT index);
-	VOID Draw(D3DXMATRIX*);
-	VOID CalculateNormals();
-	VOID Build(void);
-	VOID Clear(void);
+    inline UINT GetNumMeshes() const { return mCount; }
+    inline CFaceGroup** GetMeshes() { return mMeshes; }
+    inline D3DXMATRIX* GetTransforms() { return mTransforms; }
 
-	inline UINT GetNumVertices() { return mData.vertCount; }
-	inline VERTEX* GetVertices() { return mVerts; }
+    inline aiString GetName() { return mName; }
+    inline void SetName(aiString name) { mName = name; }
 
-	inline UINT GetNumIndices() { return mData.indexCount; }
-	inline SHORT* GetIndices() { return mIndices; }
 private:
-	RENDERDATA mData;
-	 
-	UINT mVertCapacity;
-	UINT mIndexCapacity;
-	VERTEX* mVerts;
-	SHORT* mIndices; 
-	BOOL mIsDirty;
+    CFaceGroup** mMeshes;
+    D3DXMATRIX* mTransforms;
+    UINT mCount;
+    UINT mCapacity;
+    aiString mName;
 };
