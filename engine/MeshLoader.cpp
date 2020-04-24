@@ -7,7 +7,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
-CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT texFiltering)
+CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)
 {
     CFaceGroup* newFGroup = new CFaceGroup();
     CReferenceManager::TrackRef(newFGroup);
@@ -60,37 +60,35 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, UINT
         const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
         CMaterial* newMaterial = new CMaterial();
 
-        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
-        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
-        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_NORMALS);
-        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_DISPLACE, aiTextureType_DISPLACEMENT);
+        if (loadMaterials)
+        {
+            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
+            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
+            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_NORMALS);
+            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_DISPLACE, aiTextureType_DISPLACEMENT);
 
-        newMaterial->SetSamplerState(SAMPLERSTATE_MAGFILTER, texFiltering);
-        newMaterial->SetSamplerState(SAMPLERSTATE_MIPFILTER, texFiltering);
-        newMaterial->SetSamplerState(SAMPLERSTATE_MINFILTER, texFiltering);
+            aiColor4D diffuse;
+            mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+            newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
 
-        aiColor4D diffuse;
-        mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-        newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
+            aiColor4D specular;
+            float power;
+            mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+            mat->Get(AI_MATKEY_SHININESS, power);
 
-        aiColor4D specular;
-        float power;
-        mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
-        mat->Get(AI_MATKEY_SHININESS, power);
+            newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
+            newMaterial->SetPower(power * 5.0f);
 
-        newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
-        newMaterial->SetPower(power*5.0f);
+            aiColor4D ambient;
+            mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+            newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
 
-        aiColor4D ambient;
-        mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-        newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
-
-        aiColor4D emissive;
-        mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
-        newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
+            aiColor4D emissive;
+            mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
+            newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
+        }
 
         CReferenceManager::TrackRef(newMaterial);
-        
         newFGroup->SetMaterial(0, newMaterial);
     }
 

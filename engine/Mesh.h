@@ -19,8 +19,8 @@ public:
     VOID Draw(const D3DXMATRIX& wmat);
     VOID Clear(void);
 
-    inline UINT GetNumMeshes() const { return mCount; }
-    inline CFaceGroup** GetMeshes() { return mMeshes; }
+    inline UINT GetNumFGroups() const { return mCount; }
+    inline CFaceGroup** GetFGroups() { return mMeshes; }
     inline D3DXMATRIX* GetTransforms() { return mTransforms; }
 
     inline aiString GetName() { return mName; }

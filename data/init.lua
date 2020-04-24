@@ -1,7 +1,4 @@
 
-skybox = Model("skybox.fbx")
-
-
 dofile("camera.lua")
 dofile("solar.lua")
 
@@ -13,7 +10,9 @@ scale = 1
 alphaValue = 1.0
 
 
-demoSystem = generateSystem(Vector(), 430)
+demoSystem = generateSystem(Vector(), 12, 4, 30)
+
+skybox = Model("skybox.fbx")
 
 function _init()
 	ShowCursor(false)
@@ -68,6 +67,6 @@ function _render()
 	spaceFX:finish()
 
 	--[[ unlit ]]
-	skybox:draw(Matrix():scale(scale):translate(camera.pos))
+	skybox:draw(Matrix():scale(scale*2):translate(camera.pos))
 	
 end

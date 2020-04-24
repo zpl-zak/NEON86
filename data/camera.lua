@@ -55,7 +55,7 @@ function handleInput(dt)
 	end
 
 	if GetKey(KEY_SHIFT) then
-		vel = vel * 2
+		vel = vel * 8
 	end
 
 	if vel:mag() ~= 0 then

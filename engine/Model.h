@@ -11,11 +11,11 @@ public:
     CModel(LPSTR modelPath=NULL);
     void Release();
 
-    void LoadModel(LPCSTR modelPath, UINT texFiltering = TEXF_ANISOTROPIC);
+    void LoadModel(LPCSTR modelPath, BOOL loadMaterials = TRUE);
     void Draw(const D3DXMATRIX& wmat);
 
-    inline UINT GetNumMeshGroups() { return mCount; }
-    inline CMesh** GetMeshGroups() { return mMeshGroups; }
+    inline UINT GetNumMeshes() { return mCount; }
+    inline CMesh** GetMeshes() { return mMeshGroups; }
     CMesh* FindMeshGroup(LPCSTR name);
 private:
     CMesh** mMeshGroups;

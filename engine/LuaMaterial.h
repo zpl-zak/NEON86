@@ -125,6 +125,25 @@ static INT material_getsampler(lua_State* L)
     return 1;
 }
 
+static INT material_gethandle(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    UINT slot = (UINT)luaL_checkinteger(L, 2) - 1;
+
+    lua_pushlightuserdata(L, (void*)mat->GetTextureHandle(slot));
+    return 1;
+}
+
+static INT material_sethandle(lua_State* L)
+{
+    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    UINT slot = (UINT)luaL_checkinteger(L, 2) - 1;
+    LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 3);
+
+    mat->SetUserTexture(slot, handle);
+    return 1;
+}
+
 static INT material_delete(lua_State* L)
 {
 	CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
@@ -200,6 +219,8 @@ static VOID LuaMaterial_register(lua_State* L)
     REGC("loadData", material_loaddata);
     REGC("res", material_getres);
     REGC("data", material_getdata);
+    REGC("getHandle", material_gethandle);
+    REGC("setHandle", material_sethandle);
 
     REGC("setDiffuse", material_setdiffuse);
     REGC("setAmbient", material_setambient);

@@ -88,7 +88,7 @@ void CMaterial::CreateEmbeddedTextureForSlot(UINT slot, void* data, UINT size)
 
 void CMaterial::SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle)
 {
-    if (userSlot < (MAX_TEXTURE_SLOTS))
+    if (userSlot >= (MAX_TEXTURE_SLOTS))
     {
         MessageBoxA(NULL, "User slot is invalid!", "Texture error", MB_OK);
         ENGINE->Shutdown();

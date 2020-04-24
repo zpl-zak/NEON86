@@ -9,10 +9,12 @@
 #include "FileSystem.h"
 #include "LuaMachine.h"
 #include "UserInterface.h"
+#include <ctime>
 
 CEngine::CEngine()
 : mIsRunning(FALSE)
 {
+	srand((size_t)time(0));
 	sInstance = this; 
 	mIsInitialised = FALSE;
 	mRenderer = NULL;

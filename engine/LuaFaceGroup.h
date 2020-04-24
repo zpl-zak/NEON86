@@ -66,8 +66,8 @@ static INT facegroup_setmaterial(lua_State* L)
 
 static INT facegroup_getmaterial(lua_State* L)
 {
-    CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
-    CMaterial* mat = mesh->GetMaterial();
+    CFaceGroup* fgroup = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+    CMaterial* mat = fgroup->GetMaterial();
 	lua_pushlightuserdata(L, (void*)mat);
 	luaL_setmetatable(L, L_MATERIAL);
 

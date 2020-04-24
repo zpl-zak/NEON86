@@ -31,9 +31,9 @@ static INT mesh_getfgroups(lua_State* L)
 
     lua_newtable(L);
 
-    for (UINT i=0; i<mesh->GetNumMeshes(); i++)
+    for (UINT i=0; i<mesh->GetNumFGroups(); i++)
     {
-        CFaceGroup* fg = mesh->GetMeshes()[i];
+        CFaceGroup* fg = mesh->GetFGroups()[i];
         lua_pushinteger(L, i+1ULL);
         lua_pushlightuserdata(L, (void*)fg);
         luaL_setmetatable(L, L_FACEGROUP);

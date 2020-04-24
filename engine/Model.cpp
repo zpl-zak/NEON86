@@ -36,7 +36,7 @@ void CModel::Release()
     aiProcess_JoinIdenticalVertices |\
     aiProcess_PreTransformVertices
 
-void CModel::LoadModel(LPCSTR modelPath, UINT texFiltering)
+void CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
 {
     Assimp::Importer imp;
 
@@ -67,7 +67,7 @@ void CModel::LoadModel(LPCSTR modelPath, UINT texFiltering)
             meshGroup->SetName(meshName);
         }
 
-        CFaceGroup* mesh = CMeshLoader::LoadNode(model, m, texFiltering);
+        CFaceGroup* mesh = CMeshLoader::LoadNode(model, m, loadMaterials);
         meshGroup->AddMesh(mesh, identityMat);
     }
 

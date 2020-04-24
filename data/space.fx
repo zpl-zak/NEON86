@@ -16,9 +16,9 @@ float3 sunPos = float3(0,0,0);
 sampler2D colorMap = sampler_state
 {
 	Texture = <diffuseTex>;
-    MagFilter = Linear;
+    MagFilter = Anisotropic;
     MinFilter = Anisotropic;
-    MipFilter = Linear;
+    MipFilter = Anisotropic;
     MaxAnisotropy = 16;
 };
 
@@ -118,6 +118,11 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
 {
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);    
 
+    if (isSun)
+    {
+        IN.texCoord = WarpUV(IN.texCoord);
+    }
+
     if (hasNormalTex)
     {        
         float4 nm = tex2D(normalMap, IN.texCoord);
@@ -125,17 +130,16 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
         IN.normal = normalize(mul(nm, IN.tbn));
     }
 
-    float4 OUT = float4(0,0,0,1);
+    float4 OUT = float4(1,1,1,1);
 
-    if (isSun)
+    if (hasDiffuseTex)
     {
-        IN.texCoord = WarpUV(IN.texCoord);
         OUT = tex2D(colorMap, IN.texCoord);
     }
-    else
+    
+    if (!isSun)
     {
-        OUT = globalAmbient + Sunlight(IN);
-        OUT *= tex2D(colorMap, IN.texCoord);
+        OUT *= globalAmbient + Sunlight(IN);
     }
 
     OUT.a = alphaValue;
