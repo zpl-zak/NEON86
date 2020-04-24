@@ -1,10 +1,10 @@
-SPEED = 15.0
+SPEED = 15.0*scale
 SENSITIVITY = 0.15
 
 lookAt = nil
 
 camera = {
-	pos = Vector3(0,6,-48),
+	pos = Vector3(0,6,-540*scale),
 	fwd = Vector3(),
 	fwdl = Vector3(),
 	rhs = Vector3(),
@@ -55,7 +55,7 @@ function handleInput(dt)
 	end
 
 	if GetKey(KEY_SHIFT) then
-		vel = vel * 8
+		vel = vel * 32
 	end
 
 	if vel:mag() ~= 0 then

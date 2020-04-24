@@ -52,6 +52,13 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 	if (gamePath == mGamePath && mLoadDone)
 		return TRUE;
 
+	LPSTR p = gamePath;
+	while (!isspace(*p) && *p != 0)
+		p++;
+
+	if (*p!=0)
+		*p=0;
+
 	mLoadKind = loadKind;
 	SAFE_DELETE(mGamePath);
 	UINT strSize = strlen(gamePath)+1;

@@ -35,7 +35,7 @@ VOID CRenderer::BuildParams()
 	mParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	mParams.hDeviceWindow = mWindow;
 	mParams.EnableAutoDepthStencil = TRUE;
-	mParams.AutoDepthStencilFormat = D3DFMT_D16;
+	mParams.AutoDepthStencilFormat = D3DFMT_D24S8;
 
 	if (mVsync)
 	{

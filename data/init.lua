@@ -1,3 +1,4 @@
+scale = 1
 
 dofile("camera.lua")
 dofile("solar.lua")
@@ -6,17 +7,18 @@ time = 0.0
 
 spaceFX = Effect("space.fx")
 
-scale = 1
 alphaValue = 1.0
 
 
-demoSystem = generateSystem(Vector(), 12, 4, 30)
+demoSystem = generateSystem(Vector(), 24, 4, 30)
 
 skybox = Model("skybox.fbx")
 
 function _init()
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
+
+	math.randomseed(1337)
 end
 
 function _update(dt)
@@ -48,7 +50,7 @@ end
 
 function _render()
 	ClearScene(20,20,20)
-	CameraPerspective(62)
+	CameraPerspective(62, 0.1, 10000)
 	
 	lookAt:bind(VIEW)
 
@@ -67,6 +69,6 @@ function _render()
 	spaceFX:finish()
 
 	--[[ unlit ]]
-	skybox:draw(Matrix():scale(scale*2):translate(camera.pos))
+	skybox:draw(Matrix():scale(scale*20):translate(camera.pos))
 	
 end
