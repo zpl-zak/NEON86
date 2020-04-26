@@ -66,7 +66,8 @@ function _render()
     mainShader:endPass()
     mainShader:finish()
 
-    blitScreen()
+    -- blitScreen()
+    blitScreenFFP()
 end
 
 function drawScene()
@@ -89,11 +90,21 @@ function blitScreen()
     mainShader:setTexture("sceneTex", mainRT)
     mainShader:commit()
 
-    -- Draw the scene
-    res = GetResolution()
-    DrawQuad(0, res[1], 0, res[2], 0xFFFFFF)
+    -- Copy the RT via shader
+    FillScreen()
 
     -- Finalize the pass and present changes to the screen
     mainShader:endPass()
     mainShader:finish()
+end
+
+
+function blitScreenFFP()
+    ClearTarget()
+    ClearScene(0,0,0)
+    BindTexture(0, mainRT)
+
+     -- Copy the RT directly into backbuffer
+    FillScreen()
+    BindTexture(0, 0)
 end

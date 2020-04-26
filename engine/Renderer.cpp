@@ -290,6 +290,12 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 	}
 }
 
+void CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
+{
+    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
+    mDevice->SetTexture(stage, handle ? handle : NULL);
+}
+
 void CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
 {
     mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind,

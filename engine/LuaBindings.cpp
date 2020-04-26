@@ -170,13 +170,22 @@ LUAF(Rend, BindTexture)
 	DWORD stage = (DWORD)luaL_checknumber(L, 1);
 	CMaterial* tex = NULL;
 
-	if (lua_gettop(L) == 2)
-		tex = (CMaterial*)luaL_checkudata(L, 2, L_MATERIAL);
-
-	if (tex)
-		tex->Bind(stage);
+    if (luaL_testudata(L, 2, L_RENDERTARGET))
+    {
+        CRenderTarget* rtt = (CRenderTarget*)lua_touserdata(L, 2);
+		RENDERER->SetTexture(stage, rtt->GetTextureHandle());
+    }
+    else if (luaL_testudata(L, 2, L_MATERIAL))
+    {
+        CMaterial* mat = (CMaterial*)lua_touserdata(L, 2);
+		mat->Bind(stage);
+    }
+    else if (lua_gettop(L) == 2) {
+        LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 2);
+		RENDERER->SetTexture(stage, handle);
+    }
 	else
-		RENDERER->GetDevice()->SetTexture(stage, NULL);
+		RENDERER->SetTexture(stage, NULL);
 
 	return 0;
 }
@@ -230,6 +239,17 @@ LUAF(Rend, DrawQuad)
 	RENDERER->DrawQuad(x1, x2, y1, y2, color);
     return 0;
 }
+LUAF(Rend, FillScreen)
+{
+	DWORD color = 0x00FFFFFF;
+
+	if (lua_gettop(L) == 1)
+		color = (DWORD)lua_tointeger(L, 1);
+
+	RECT res = RENDERER->GetResolution();
+    RENDERER->DrawQuad(0, (FLOAT)res.right, 0, (FLOAT)res.bottom, color);
+    return 0;
+}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -242,6 +262,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, SamplerState);
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawQuad);
+	REGF(Rend, FillScreen);
 
 	REGF(Rend, BindTexture);
 
