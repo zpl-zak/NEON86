@@ -2,16 +2,40 @@
 #include "Effect.h"
 #include "NeonEngine.h"
 
+#include "BuiltinShaders.h"
+
 class CD3DIncludeImpl: ID3DXInclude
 {
 public:
-    CD3DIncludeImpl() {}
+    CD3DIncludeImpl();
     HRESULT _stdcall Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override;
     HRESULT _stdcall Close(LPCVOID pData) override;
+
+private:
+    BOOL mIsSystemInclude;
 };
+
+CD3DIncludeImpl::CD3DIncludeImpl()
+{
+    mIsSystemInclude = FALSE;
+}
 
 HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
 {
+    if (IncludeType == D3DXINC_SYSTEM)
+    {
+        mIsSystemInclude = TRUE;
+
+        if (!strcmp(pFileName, "neon") || !strcmp(pFileName, "common.fx"))
+        {
+            *ppData = _shader_common;
+            *pBytes = strlen(_shader_common);
+            return S_OK;
+        }
+        
+        return E_FAIL;
+    }
+
     FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_USER, pFileName);
 
     if (!f.data)
@@ -19,11 +43,15 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
 
     *ppData = f.data;
     *pBytes = f.size;
+    mIsSystemInclude = FALSE;
     return S_OK;
 }
 
 HRESULT CD3DIncludeImpl::Close(LPCVOID pData)
 {
+    if (mIsSystemInclude)
+        return S_OK;
+
     FILESYSTEM->FreeResource((LPVOID)pData);
     return S_OK;
 }

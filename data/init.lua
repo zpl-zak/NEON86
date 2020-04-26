@@ -1,5 +1,5 @@
 -- Load model w/o materials
-model = Model("cube.fbx", false)
+model = Model("assets/cube.fbx", false)
 
 -- Assign albedo texture via Lua
 -- 1. Find our mesh
@@ -9,7 +9,7 @@ cubeMesh = model:findMesh("Cube")
 faceGroup = cubeMesh:getFGroups()[1]
 
 -- 3. Create a basic material for cube
-cubeMaterial = Material("cube_albedo.png")
+cubeMaterial = Material("assets/cube_albedo.png")
 
 -- 4. Assign our material
 faceGroup:setMaterial(0, cubeMaterial)

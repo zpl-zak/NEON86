@@ -313,6 +313,7 @@
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuiltinShaders.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="InputCodes.h" />

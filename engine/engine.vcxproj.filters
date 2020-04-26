@@ -182,6 +182,9 @@
     <ClInclude Include="LuaMesh.h">
       <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="BuiltinShaders.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

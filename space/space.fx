@@ -1,4 +1,4 @@
-#include "common.fx"
+#include <neon>
 
 /* Uniforms */
 float3 campos;

@@ -1,4 +1,4 @@
-#include "common.fx"
+#include <neon>
 #include "noise.fx"
 
 /* Uniforms */

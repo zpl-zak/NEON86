@@ -1,6 +1,6 @@
 // This includes the system header file provided by the engine.
 // It contains all the necessary data to perform shading.
-#include <common.fx>
+#include <neon>
 
 // Global variables / uniforms
 // These can be set up from Lua as well
