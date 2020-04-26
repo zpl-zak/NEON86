@@ -41,7 +41,18 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
         vert.by = tb.y;
         vert.bz = tb.z;
 
-        vert.color = D3DCOLOR_XRGB(255, 255, 255);
+        if (mesh->HasVertexColors(0))
+        {
+            const aiColor4D tc = mesh->mColors[0][i];
+
+            vert.color = D3DCOLOR_ARGB(
+                (BYTE)(tc.a * 255.0f),
+                (BYTE)(tc.r * 255.0f),
+                (BYTE)(tc.g * 255.0f),
+                (BYTE)(tc.b * 255.0f)
+            );
+        }
+        else vert.color = D3DCOLOR_XRGB(255, 255, 255);
 
         newFGroup->AddVertex(vert);
     }
@@ -55,38 +66,35 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
         newFGroup->AddIndex(face.mIndices[2]);
     }
 
-    if (mesh->mMaterialIndex < scene->mNumMaterials)
+    if (mesh->mMaterialIndex < scene->mNumMaterials && loadMaterials)
     {
         const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
         CMaterial* newMaterial = new CMaterial();
 
-        if (loadMaterials)
-        {
-            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
-            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
-            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_NORMALS);
-            LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_DISPLACE, aiTextureType_DISPLACEMENT);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_NORMAL, aiTextureType_NORMALS);
+        LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_DISPLACE, aiTextureType_DISPLACEMENT);
 
-            aiColor4D diffuse;
-            mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-            newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
+        aiColor4D diffuse;
+        mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+        newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
 
-            aiColor4D specular;
-            float power;
-            mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
-            mat->Get(AI_MATKEY_SHININESS, power);
+        aiColor4D specular;
+        float power;
+        mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+        mat->Get(AI_MATKEY_SHININESS, power);
 
-            newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
-            newMaterial->SetPower(power * 5.0f);
+        newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
+        newMaterial->SetPower(power * 5.0f);
 
-            aiColor4D ambient;
-            mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-            newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
+        aiColor4D ambient;
+        mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+        newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
 
-            aiColor4D emissive;
-            mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
-            newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
-        }
+        aiColor4D emissive;
+        mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
+        newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
 
         CReferenceManager::TrackRef(newMaterial);
         newFGroup->SetMaterial(0, newMaterial);

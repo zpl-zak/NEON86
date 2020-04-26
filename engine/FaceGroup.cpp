@@ -72,8 +72,7 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 	if (!mData.mesh || mIsDirty)
 		Build();
 
-	if (mData.mat)
-		mData.mat->Bind(mData.stage);
+	mData.mat->Bind(mData.stage);
 
 	if (mat)
 	{
@@ -84,8 +83,7 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 
 	RENDERER->DrawMesh(mData);
 
-	if (mData.mat)
-		mData.mat->Unbind(mData.stage);
+	mData.mat->Unbind(mData.stage);
 }
 
 VOID CFaceGroup::CalculateNormals()

@@ -86,11 +86,9 @@ float4 Sunlight(VS_OUTPUT IN)
     float3 v = normalize(IN.viewDir);
     float4 s = float4(0.0f,0.0f,0.0f,0.0f);
     
-    float3 l = (sunPos - IN.worldPos) / 100500.0f;
-    float atten = saturate(1.0f - dot(l, l));
-    
-    l = normalize(l);
+    float3 l = normalize(sunPos - IN.worldPos);
     float3 h = normalize(l+v);
+    
     s = (hasSpecularTex == true) ? tex2D(specularMap, IN.texCoord) : s;
     
     float diffuse = saturate(dot(n, l));
@@ -98,8 +96,8 @@ float4 Sunlight(VS_OUTPUT IN)
 
     float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
 
-	return (sunColor * MAT.Diffuse * diffuse * atten) +
-            (sunColor * MAT.Specular * specular * power * atten * s);
+	return (sunColor * MAT.Diffuse * diffuse) +
+            (sunColor * MAT.Specular * specular * power * s);
 }
 
 float2 WarpUV(float2 uv)

@@ -1,74 +1,66 @@
-scale = 1
+-- Load model w/o materials
+model = Model("cube.fbx", false)
 
-dofile("camera.lua")
-dofile("solar.lua")
+-- Assign albedo texture via Lua
+-- 1. Find our mesh
+cubeMesh = model:findMesh("Cube")
 
-time = 0.0
+-- 2. Retrieve the first facegroup
+faceGroup = cubeMesh:getFGroups()[1]
 
-spaceFX = Effect("space.fx")
+-- 3. Create a basic material for cube
+cubeMaterial = Material("cube_albedo.png")
 
-alphaValue = 1.0
+-- 4. Assign our material
+faceGroup:setMaterial(0, cubeMaterial)
 
+-- Create effect for our rendering pipeline
+mainShader = Effect("main.fx")
 
-demoSystem = generateSystem(Vector(), 24, 4, 30)
+-- Construct the camera view
+viewMat = Matrix():lookAt(
+    Vector(2,3,-5),
+    Vector(0,0,0),
+    Vector(0,1,0)
+)
 
-skybox = Model("skybox.fbx")
-
-function _init()
-	ShowCursor(false)
-	SetCursorMode(CURSORMODE_CENTERED)
-
-	math.randomseed(1337)
-end
+-- Track global time to simulate movement
+time = 0
 
 function _update(dt)
-	if GetKeyDown(KEY_F2) then
-		ShowCursor(not IsCursorVisible())
-		SetCursorMode(1-GetCursorMode())
-	end 
+    if GetKeyDown(KEY_ESCAPE) then
+        ExitGame()
+    end
 
-	if GetKeyDown(KEY_ESCAPE) then
-		ExitGame()	
-	end
-
-	if GetKeyDown(KEY_F4) then
-		alphaValue = alphaValue + 0.5
-
-		if alphaValue > 1.0 then
-			alphaValue = 0.0
-		end
-	end
-
-	if GetKeyDown(KEY_F5) then
-		alphaValue = 1.0
-	end
-
-	updateCamera(dt)
-
-	time = time + dt
+    time = time + dt
 end
 
 function _render()
-	ClearScene(20,20,20)
-	CameraPerspective(62, 0.1, 10000)
-	
-	lookAt:bind(VIEW)
+    ClearScene(20,20,20)
+    CameraPerspective(62)
 
-	spaceFX:start("Main")
+    viewMat:bind(VIEW)
 
-	spaceFX:beginPass(1)
+    -- Initialize the shader and load the Main technique
+    mainShader:start("Main")
 
-	spaceFX:setVector3("campos", camera.pos)
-	spaceFX:setVector4("globalAmbient", Vector4(0.23,0.23,0.23))
-	spaceFX:setFloat("alphaValue", alphaValue)
-	spaceFX:setFloat("time", time)
+    -- Main technique has a single pass, use it
+    mainShader:beginPass(1)
 
-	drawSystem(demoSystem)
-	
-	spaceFX:endPass()
-	spaceFX:finish()
+    -- Set up global shader variables and commit changes to the GPU
+    mainShader:setVector4("ambience", Vector(1,0.05,0.05,1))
+    mainShader:commit()
 
-	--[[ unlit ]]
-	skybox:draw(Matrix():scale(scale*20):translate(camera.pos))
-	
+    -- Draw the scene
+    drawScene()
+
+    -- Finalize the pass and present changes to the screen
+    mainShader:endPass()
+    mainShader:finish()
+end
+
+function drawScene()
+
+    -- Draw model with a specific transformation matrix
+    model:draw(Matrix():rotate(time))
 end

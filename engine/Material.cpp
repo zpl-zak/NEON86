@@ -102,6 +102,11 @@ VOID CMaterial::Bind(DWORD stage)
 {
     RENDERER->SetMaterial(stage, this);
 
+    /* Exit early since if this is a NULL material. */
+    /* Exit if we use shaders as well. Shaders use their own sampler properties. */
+    if (this == nullptr || RENDERER->GetActiveEffect())
+        return;
+
     for (UINT i = 0; i < MAX_SAMPLER_STATES; i++)
     {
         RENDERER->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)i, mStats[i]);
