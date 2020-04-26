@@ -18,11 +18,17 @@ cubeMaterial:loadFile("assets/cube_albedo.png", 2)
 -- 4. Assign our material
 faceGroup:setMaterial(0, cubeMaterial)
 
+-- Floor model
+floor = Model("assets/floor.fbx")
+floor:findMesh("Plane"):getFGroups ()[1]:setMaterial(0, cubeMaterial)
+
 -- Create effect for our rendering pipeline
 mainShader = Effect("main.fx")
 
 -- Create our render target for post-processing effect
 mainRT = RenderTarget()
+
+shadowMap = RenderTarget(512, 512)
 
 -- Construct the camera view
 viewMat = Matrix():lookAt(
@@ -45,7 +51,7 @@ end
 function _render()
     mainRT:bind()
     ClearScene(20,20,20)
-    CameraPerspective(62)
+    CameraPerspective(62, 0.01, 100)
     viewMat:bind(VIEW)
     
     -- Initialize the shader and load the Main technique
@@ -66,14 +72,16 @@ function _render()
     mainShader:endPass()
     mainShader:finish()
 
-    -- blitScreen()
-    blitScreenFFP()
+    blitScreen()
+    -- blitScreenFFP()
+    -- drawScene()
 end
 
 function drawScene()
 
     -- Draw model with a specific transformation matrix
     model:draw(Matrix():rotate(time))
+    floor:draw(Matrix():translate(0,-2,0))
 end
 
 function blitScreen()

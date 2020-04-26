@@ -128,7 +128,7 @@ static INT effect_settexture(lua_State* L)
         CRenderTarget* rtt = (CRenderTarget*)lua_touserdata(L, 3);
         fx->SetTexture(name, rtt->GetTextureHandle());
     }
-    if (luaL_testudata(L, 3, L_MATERIAL))
+    else if (luaL_testudata(L, 3, L_MATERIAL))
     {
         UINT slot = TEXTURESLOT_ALBEDO;
         CMaterial* mat = (CMaterial*)lua_touserdata(L, 3);
