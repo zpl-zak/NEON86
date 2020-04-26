@@ -6,11 +6,19 @@
 // These can be set up from Lua as well
 float3 sunDir = float3(4.0f, 3.0f, -5.0f);
 float4 ambience = float4(0.05,0.05,0.05,1);
+float time;
 
 // Our global sampler state for the diffuse texture
 sampler2D colorMap = sampler_state
 {
 	Texture = <diffuseTex>;
+    Filter = MIN_MAG_MIP_POINT;
+    MaxAnisotropy = 16;
+};
+
+sampler2D glowMap = sampler_state
+{
+	Texture = <specularTex>;
     Filter = MIN_MAG_MIP_POINT;
     MaxAnisotropy = 16;
 };
@@ -50,8 +58,21 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     OUT = ambience + MAT.Diffuse * diffuse;
     OUT *= IN.color * tex2D(colorMap, IN.texCoord);
 
+    if (hasSpecularTex)
+    {
+        float4 sn = tex2D(glowMap, IN.texCoord);
+
+        if (sn.r < 0.5f)
+        {
+            OUT = float4(0,255*(saturate(sin(time))),0,255);
+        }
+    }
+
     return OUT;
 }
+
+// Our Render-to-texture entry points
+#include "rtt.fx"
 
 // Our rendering technique, each technique consists of single/multiple passes
 // These passes are emitted from the Lua side
@@ -64,5 +85,14 @@ technique Main
         // [ShaderType] = compile [ShaderModel] [EntryPoint]
         VertexShader = compile vs_3_0 VS_Main();
         PixelShader = compile ps_3_0 PS_Main();
+    }
+}
+
+// Render-To-Texture technique
+technique RTT
+{
+    pass Copy {
+        VertexShader = compile vs_3_0 VS_Copy();
+        PixelShader = compile ps_3_0 PS_Copy();
     }
 }

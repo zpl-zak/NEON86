@@ -118,6 +118,24 @@ static INT effect_setvector4(lua_State* L)
     return 0;
 }
 
+static INT effect_settexture(lua_State* L)
+{
+    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    LPCSTR name = luaL_checkstring(L, 2);
+    
+    if (luaL_testudata(L, 3, L_RENDERTARGET))
+    {
+        CRenderTarget* rtt = (CRenderTarget*)lua_touserdata(L, 3);
+        fx->SetTexture(name, rtt->GetTextureHandle());
+    }
+    else {
+        LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 3);
+        fx->SetTexture(name, handle);
+    }
+    
+    return 0;
+}
+
 static INT effect_delete(lua_State* L)
 {
     CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
@@ -144,6 +162,7 @@ static VOID LuaEffect_register(lua_State* L)
     REGC("setMatrix", effect_setmatrix);
     REGC("setVector3", effect_setvector3);
     REGC("setVector4", effect_setvector4);
+    REGC("setTexture", effect_settexture);
 
     REGC("__gc", effect_delete);
 

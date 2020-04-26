@@ -87,6 +87,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -184,6 +187,12 @@
     </ClInclude>
     <ClInclude Include="BuiltinShaders.h">
       <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaRenderTarget.h">
+      <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

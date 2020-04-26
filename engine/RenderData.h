@@ -90,9 +90,22 @@ struct VERTEX
 	};
 	FLOAT su, tv;
 };
+
+struct VERTEX_2D
+{
+	FLOAT x, y, z, rhw;
+    union {
+        DWORD color;
+        struct {
+            BYTE a, r, g, b;
+        };
+    };
+    FLOAT su, tv;
+};
 #pragma pack(pop)
 
 extern D3DVERTEXELEMENT9 meshVertexFormat[];
+extern D3DVERTEXELEMENT9 meshVertex2DFormat[];
 
 struct RENDERBOUNDS {
 	FLOAT x1, y1, z1;

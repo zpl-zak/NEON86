@@ -65,12 +65,10 @@ BOOL CEngine::Init(HWND window, RECT resolution)
 	mFileSystem = new CFileSystem();
 	mLuaMachine = new CLuaMachine();
 
-	if (mRenderer->CreateDevice(window) != ERROR_SUCCESS)
+	if (mRenderer->CreateDevice(window, resolution) != ERROR_SUCCESS)
 	{
 		return FALSE;
 	}
-
-	mRenderer->Resize(resolution);
 
 	mIsInitialised = TRUE;
 	mIsRunning = TRUE;
@@ -111,6 +109,7 @@ VOID CEngine::Render()
 	mRenderer->GetDevice()->BeginScene();
 	mLuaMachine->Render();
 	mLuaMachine->Render2D();
+	mRenderer->Blit();
 	mRenderer->GetDevice()->EndScene();
 	mRenderer->GetDevice()->Present(NULL, NULL, NULL, NULL);
 }

@@ -38,6 +38,12 @@ static const char* _shader_common = _M(
         float3 bitangent : BINORMAL;
     };
 
+    struct VS_INPUT_2D {
+        float4 position : POSITION;
+        float4 color : COLOR0;
+        float2 texCoord : TEXCOORD0;
+    };
+
     /* Textures */
     texture diffuseTex;
     bool hasDiffuseTex;

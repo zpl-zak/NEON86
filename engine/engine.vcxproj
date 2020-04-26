@@ -302,6 +302,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ReferenceManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -320,6 +321,7 @@
     <ClInclude Include="LuaEffect.h" />
     <ClInclude Include="LuaMesh.h" />
     <ClInclude Include="LuaModel.h" />
+    <ClInclude Include="LuaRenderTarget.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="FileSystem.h" />
@@ -340,6 +342,7 @@
     <ClInclude Include="RenderData.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderStates.h" />
+    <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="Material.h" />

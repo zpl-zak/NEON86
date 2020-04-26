@@ -28,7 +28,7 @@ static INT material_new(lua_State* L)
         *mat = CMaterial();
 	
 	luaL_setmetatable(L, L_MATERIAL);
-	return mat->GetTextureHandle() != NULL;
+	return 1;
 }
 
 static INT material_loadfile(lua_State* L)

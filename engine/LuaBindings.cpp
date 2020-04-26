@@ -11,6 +11,7 @@
 #include "LuaFaceGroup.h"
 #include "LuaMesh.h"
 #include "LuaModel.h"
+#include "LuaRenderTarget.h"
 #include "LuaEffect.h"
 
 /// BASE METHODS
@@ -213,6 +214,22 @@ LUAF(Rend, SamplerState)
     RENDERER->SetSamplerState(stage, kind, state);
     return 0;
 }
+LUAF(Rend, ClearTarget)
+{
+	RENDERER->SetRenderTarget(NULL);
+    return 0;
+}
+LUAF(Rend, DrawQuad)
+{
+	FLOAT x1 = (FLOAT)luaL_checknumber(L, 1);
+	FLOAT x2 = (FLOAT)luaL_checknumber(L, 2);
+	FLOAT y1 = (FLOAT)luaL_checknumber(L, 3);
+	FLOAT y2 = (FLOAT)luaL_checknumber(L, 4);
+	DWORD color = (DWORD)luaL_checkinteger(L, 5);
+
+	RENDERER->DrawQuad(x1, x2, y1, y2, color);
+    return 0;
+}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -223,6 +240,8 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, GetResolution);
 	REGF(Rend, RenderState);
 	REGF(Rend, SamplerState);
+	REGF(Rend, ClearTarget);
+	REGF(Rend, DrawQuad);
 
 	REGF(Rend, BindTexture);
 
@@ -232,6 +251,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaMeshGroup_register(L);
 	LuaModel_register(L);
 	LuaEffect_register(L);
+	LuaRenderTarget_register(L);
 
 	// enums
 	{

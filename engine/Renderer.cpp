@@ -8,6 +8,7 @@
 #include "Frustum.h"
 #include "FaceGroup.h"
 #include "Effect.h"
+#include "RenderTarget.h"
 
 #include "StdAfx.h"
 
@@ -21,6 +22,7 @@ CRenderer::CRenderer()
 	mDirect9 = NULL;
 	mDevice = NULL;
 	mWindow = NULL;
+	mMainTarget = NULL;
 	mActiveEffect = NULL;
 	mVsync = TRUE;
 	mFullscreen = FALSE;
@@ -28,7 +30,7 @@ CRenderer::CRenderer()
 	ZeroMemory(&mParams, sizeof(mParams));
 }
 
-VOID CRenderer::BuildParams()
+void CRenderer::BuildParams()
 {
 	ZeroMemory(&mParams, sizeof(mParams));
 	mParams.Windowed = TRUE;
@@ -49,7 +51,7 @@ VOID CRenderer::BuildParams()
 	}
 }
 
-LRESULT CRenderer::CreateDevice(HWND window)
+LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 {
 	mWindow = window;
 	mDirect9 = Direct3DCreate9(D3D_SDK_VERSION);
@@ -59,20 +61,61 @@ LRESULT CRenderer::CreateDevice(HWND window)
 
 	BuildParams();
 
-	LRESULT res = mDirect9->CreateDevice(	D3DADAPTER_DEFAULT,
+	D3DDISPLAYMODE mode;
+	mDirect9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode);
+
+	LRESULT res = mDirect9->CheckDeviceType(D3DADAPTER_DEFAULT,
+											D3DDEVTYPE_HAL,
+											mode.Format,
+											D3DFMT_A8R8G8B8,
+											true);
+
+	if (FAILED(res))
+		return res;
+
+	D3DCAPS9 caps;
+
+	res = mDirect9->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
+
+	INT capflags = D3DCREATE_FPU_PRESERVE;
+
+	if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
+	{
+		capflags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
+	}
+	else
+	{
+		capflags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+	}
+
+    if (caps.DevCaps & D3DDEVCAPS_PUREDEVICE) {
+        capflags |= D3DCREATE_PUREDEVICE;
+    }
+
+	res = mDirect9->CreateDevice(D3DADAPTER_DEFAULT,
 							D3DDEVTYPE_HAL,
 							window,
-							D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE,
+							capflags,
 							&mParams,
 							&mDevice);
 
 	if (!mDevice)
 		return res;
 
+	Resize(winres);
+
+	LPDIRECT3DSURFACE9 display;
+	mDevice->GetRenderTarget(0, &display);
+	display->GetDesc(&mDisplayDesc);
+	display->Release();
+
+	mMainTarget = new CRenderTarget();
+	SetRenderTarget(NULL);
+
 	return res;
 }
 
-VOID CRenderer::ResetDevice(void)
+void CRenderer::ResetDevice(void)
 {
 	if (!mDevice)
 		return;
@@ -83,19 +126,34 @@ VOID CRenderer::ResetDevice(void)
 	SetDefaultRenderStates();
 }
 
-VOID CRenderer::SetVSYNC(BOOL state)
+void CRenderer::SetVSYNC(BOOL state)
 {
 	mVsync = state;
 	ResetDevice();
 }
 
-VOID CRenderer::Clear()
+void CRenderer::Blit()
+{
+	DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 0));
+    IDirect3DSurface9* bbuf = NULL;
+    mDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &bbuf);
+	mDevice->StretchRect(
+		mMainTarget->GetSurfaceHandle(),
+		NULL,
+		bbuf,
+		NULL,
+		D3DTEXF_NONE);
+	bbuf->Release();
+}
+
+void CRenderer::Clear()
 {
 
 }
 
 BOOL CRenderer::Release()
 {
+	SAFE_RELEASE(mMainTarget);
 	SAFE_RELEASE(mFrustum);
 	SAFE_RELEASE(mDevice);
 	SAFE_RELEASE(mDirect9);
@@ -103,7 +161,7 @@ BOOL CRenderer::Release()
 	return TRUE;
 }
 
-VOID CRenderer::Resize(RECT res)
+void CRenderer::Resize(RECT res)
 {
 	if (!mDevice)
 		return;
@@ -128,7 +186,7 @@ VOID CRenderer::Resize(RECT res)
 }
 
 /// Render commands
-VOID CRenderer::DrawMesh(const RENDERDATA& data)
+void CRenderer::DrawMesh(const RENDERDATA& data)
 {
 	if (data.usesMatrix)
 		SetMatrix(MATRIXKIND_WORLD, data.matrix);
@@ -154,12 +212,36 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
 	data.mesh->DrawSubset(0);
 }
 
-VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
+void CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color)
+{
+	VERTEX_2D verts[] = 
+	{
+		{x1, y2, 0, 1, color, 0.0f, 0.0f},
+		{x2, y1, 0, 1, color, 1.0f, 1.0f},
+		{x2, y2, 0, 1, color, 1.0f, 0.0f},
+
+		{x1, y2, 0, 1, color, 0.0f, 0.0f},
+		{x1, y1, 0, 1, color, 0.0f, 1.0f},
+		{x2, y1, 0, 1, color, 1.0f, 1.0f},
+	};
+
+	static IDirect3DVertexDeclaration9* vertsDecl = NULL;
+
+	if (!vertsDecl)
+		mDevice->CreateVertexDeclaration(meshVertex2DFormat, &vertsDecl);
+
+	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+	mDevice->SetVertexDeclaration(vertsDecl);
+	mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6, (void*)verts, sizeof(VERTEX_2D));
+	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+}
+
+void CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 {
 	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
-VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
+void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 {
     if (GetActiveEffect() && mat)
     {
@@ -208,7 +290,7 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 	}
 }
 
-VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
+void CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
 {
     mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind,
         &mat);
@@ -217,12 +299,30 @@ VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
         GetFrustum()->Build();
 }
 
-VOID CRenderer::SetRenderState(DWORD kind, DWORD value)
+void CRenderer::ResetMatrices()
+{
+	D3DXMATRIX mat;
+	D3DXMatrixIdentity(&mat);
+
+	mDevice->SetTransform(D3DTS_WORLD, &mat);
+	mDevice->SetTransform(D3DTS_VIEW, &mat);
+	mDevice->SetTransform(D3DTS_PROJECTION, &mat);
+}
+
+void CRenderer::SetRenderTarget(CRenderTarget* target)
+{
+	if (target && target->GetSurfaceHandle())
+		mDevice->SetRenderTarget(0, target->GetSurfaceHandle());
+	else
+		mDevice->SetRenderTarget(0, mMainTarget->GetSurfaceHandle());
+}
+
+void CRenderer::SetRenderState(DWORD kind, DWORD value)
 {
 	mDevice->SetRenderState((D3DRENDERSTATETYPE)kind, (DWORD)value);
 }
 
-VOID CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
+void CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
 {
 	mDevice->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)kind, value);
 }
@@ -248,3 +348,11 @@ D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
 	mDevice->GetTransform((D3DTRANSFORMSTATETYPE)kind, &mat);
 	return mat;
 }
+
+D3DVERTEXELEMENT9 meshVertex2DFormat[] =
+{
+    {0,  0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITIONT,0},
+    {0, 16,  D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+    {0, 20, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,0},
+    D3DDECL_END()
+};
