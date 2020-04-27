@@ -35,9 +35,16 @@ static INT effect_end(lua_State* L)
 static INT effect_beginpass(lua_State* L)
 {
     CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
-    UINT pass = (UINT)luaL_checkinteger(L, 2);
+    UINT pass = -1;
 
-    lua_pushinteger(L, fx->BeginPass(pass-1));
+    if (lua_isstring(L, 2))
+    {
+        LPCSTR passName = luaL_checkstring(L, 2);
+        pass = fx->FindPass(passName);
+    }
+    else pass = (UINT)luaL_checkinteger(L, 2) - 1;
+
+    lua_pushinteger(L, fx->BeginPass(pass));
     return 1;
 }
 

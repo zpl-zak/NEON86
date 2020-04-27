@@ -212,17 +212,17 @@ void CRenderer::DrawMesh(const RENDERDATA& data)
 	data.mesh->DrawSubset(0);
 }
 
-void CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color)
+void CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY)
 {
 	VERTEX_2D verts[] = 
 	{
-		{x1, y2, 0, 1, color, 0.0f, 0.0f},
-		{x2, y1, 0, 1, color, 1.0f, 1.0f},
-		{x2, y2, 0, 1, color, 1.0f, 0.0f},
+		{x1, y2, 0, 1, color, 0.0f, flipY - 0.0f},
+		{x2, y1, 0, 1, color, 1.0f, flipY - 1.0f},
+		{x2, y2, 0, 1, color, 1.0f, flipY - 0.0f},
 
-		{x1, y2, 0, 1, color, 0.0f, 0.0f},
-		{x1, y1, 0, 1, color, 0.0f, 1.0f},
-		{x2, y1, 0, 1, color, 1.0f, 1.0f},
+		{x1, y2, 0, 1, color, 0.0f, flipY - 0.0f},
+		{x1, y1, 0, 1, color, 0.0f, flipY - 1.0f},
+		{x2, y1, 0, 1, color, 1.0f, flipY - 1.0f},
 	};
 
 	static IDirect3DVertexDeclaration9* vertsDecl = NULL;

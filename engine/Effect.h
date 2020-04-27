@@ -12,6 +12,7 @@ public:
     UINT Begin(LPCSTR technique);
     HRESULT End();
 
+    UINT FindPass(LPCSTR passName);
     HRESULT BeginPass(UINT passID);
     HRESULT EndPass();
     HRESULT CommitChanges();

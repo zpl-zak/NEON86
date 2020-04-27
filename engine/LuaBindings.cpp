@@ -252,12 +252,16 @@ LUAF(Rend, DrawQuad)
 LUAF(Rend, FillScreen)
 {
 	DWORD color = 0x00FFFFFF;
+	BOOL flipY = FALSE;
 
-	if (lua_gettop(L) == 1)
+	if (lua_gettop(L) >= 1)
 		color = (DWORD)lua_tointeger(L, 1);
 
+	if (lua_gettop(L) >= 2)
+		flipY = (BOOL)lua_toboolean(L, 2);
+
 	RECT res = RENDERER->GetResolution();
-    RENDERER->DrawQuad(0, (FLOAT)res.right, 0, (FLOAT)res.bottom, color);
+    RENDERER->DrawQuad(0, (FLOAT)res.right, 0, (FLOAT)res.bottom, color, flipY);
     return 0;
 }
 ///<END

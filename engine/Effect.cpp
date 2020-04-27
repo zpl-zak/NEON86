@@ -132,6 +132,25 @@ HRESULT CEffect::End()
     return mEffect->End();
 }
 
+UINT CEffect::FindPass(LPCSTR passName)
+{
+    D3DXHANDLE curTech = mEffect->GetCurrentTechnique();
+    D3DXTECHNIQUE_DESC td;
+    mEffect->GetTechniqueDesc(curTech, &td);
+
+    for (UINT i=0; i<td.Passes;i++)
+    {
+        D3DXHANDLE h = mEffect->GetPass(curTech, i);
+        D3DXPASS_DESC pd;
+        mEffect->GetPassDesc(h, &pd);
+
+        if (!strcmp(passName, pd.Name))
+            return i;
+    }
+
+    return (UINT)-1;
+}
+
 HRESULT CEffect::BeginPass(UINT passID)
 {
     HRESULT ok = mEffect->BeginPass(passID);

@@ -29,7 +29,7 @@ public:
 	
 	/// Render commands
 	void DrawMesh(const RENDERDATA& data);
-	void DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color);
+	void DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY=FALSE);
 	void ClearBuffer(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
 	void SetMaterial(DWORD stage, CMaterial* mat);
 	void SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
