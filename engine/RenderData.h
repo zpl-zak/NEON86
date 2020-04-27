@@ -89,6 +89,7 @@ struct VERTEX
 		};
 	};
 	FLOAT su, tv;
+    FLOAT su2, tv2;
 };
 
 struct VERTEX_2D

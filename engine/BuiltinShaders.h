@@ -34,6 +34,7 @@ static const char* _shader_common = _M(
         float3 normal : NORMAL;
         float4 color : COLOR0;
         float2 texCoord : TEXCOORD0;
+        float2 texCoord2 : TEXCOORD1;
         float3 tangent : TANGENT;
         float3 bitangent : BINORMAL;
     };

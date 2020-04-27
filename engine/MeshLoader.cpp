@@ -17,7 +17,6 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
         VERTEX vert = { 0 };
 
         const aiVector3D pos = mesh->mVertices[i];
-        const aiVector3D uv = mesh->mTextureCoords[0][i];
         const aiVector3D nm = mesh->mNormals[i];
         const aiVector3D ta = mesh->mTangents[i];
         const aiVector3D tb = mesh->mBitangents[i];
@@ -30,8 +29,19 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
         vert.ny = nm.y;
         vert.nz = nm.z;
 
-        vert.su = uv.x;
-        vert.tv = uv.y;
+        if (mesh->HasTextureCoords(0))
+        {
+            const aiVector3D uv = mesh->mTextureCoords[0][i];
+            vert.su = uv.x;
+            vert.tv = uv.y;
+        }
+
+        if (mesh->HasTextureCoords(1))
+        {
+            const aiVector3D uv = mesh->mTextureCoords[1][i];
+            vert.su2 = uv.x;
+            vert.tv2 = uv.y;
+        }
 
         vert.tx = ta.x;
         vert.ty = ta.y;
