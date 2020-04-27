@@ -24,5 +24,5 @@ private:
 
     static D3DXMATRIX identityMat;
 
-    void AddMeshGroup(CMesh* mg);
+    void AddMesh(CMesh* mg);
 };

@@ -49,29 +49,29 @@ void CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
         return;
     }
 
-    CMesh* meshGroup = NULL;
+    CMesh* mesh = NULL;
     aiString meshName;
 
     for (UINT i = 0; i < model->mNumMeshes; i++)
     {
         aiMesh* m = model->mMeshes[i];
-        if (!meshGroup || strcmp(meshName.C_Str(), m->mName.C_Str()))
+        if (!mesh || strcmp(meshName.C_Str(), m->mName.C_Str()))
         {
-            if (meshGroup)
-                AddMeshGroup(meshGroup);
+            if (mesh)
+                AddMesh(mesh);
 
-            meshGroup = new CMesh();
-            CReferenceManager::TrackRef(meshGroup);
+            mesh = new CMesh();
+            CReferenceManager::TrackRef(mesh);
             
             meshName = m->mName;
-            meshGroup->SetName(meshName);
+            mesh->SetName(meshName);
         }
 
-        CFaceGroup* mesh = CMeshLoader::LoadNode(model, m, loadMaterials);
-        meshGroup->AddMesh(mesh, identityMat);
+        CFaceGroup* node = CMeshLoader::LoadNode(model, m, loadMaterials);
+        mesh->AddMesh(node, identityMat);
     }
 
-    AddMeshGroup(meshGroup);
+    AddMesh(mesh);
 }
 
 void CModel::Draw(const D3DXMATRIX& wmat)
@@ -96,7 +96,7 @@ CMesh* CModel::FindMesh(LPCSTR name)
     return NULL;
 }
 
-void CModel::AddMeshGroup(CMesh* mg)
+void CModel::AddMesh(CMesh* mg)
 {
     if (!mg)
         return;
@@ -107,7 +107,7 @@ void CModel::AddMeshGroup(CMesh* mg)
 
         mMeshes = (CMesh**)realloc(mMeshes, mCapacity * sizeof(CMesh*));
         
-        if (!mMeshes )
+        if (!mMeshes)
         {
             MessageBoxA(NULL, "Can't add mesh group to model!", "Out of memory error", MB_OK);
             ENGINE->Shutdown();
