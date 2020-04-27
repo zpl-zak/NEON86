@@ -76,6 +76,9 @@ VOID CLuaMachine::Restart(void)
 /// Events
 VOID CLuaMachine::Init(void)
 {
+    if (!mLuaVM)
+        return;
+
 	lua_getglobal(mLuaVM, "_init");
 
 	if (!lua_isfunction(mLuaVM, -1))
@@ -87,6 +90,9 @@ VOID CLuaMachine::Init(void)
 
 VOID CLuaMachine::Destroy(void)
 {
+    if (!mLuaVM)
+        return;
+
 	lua_getglobal(mLuaVM, "_destroy");
 
 	if (!lua_isfunction(mLuaVM, -1))
@@ -98,6 +104,9 @@ VOID CLuaMachine::Destroy(void)
 
 VOID CLuaMachine::Update(FLOAT dt)
 {
+	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
+		return;
+
 	lua_getglobal(mLuaVM, "_update");
 
 	if (!lua_isfunction(mLuaVM, -1))
@@ -111,6 +120,9 @@ VOID CLuaMachine::Update(FLOAT dt)
 
 VOID CLuaMachine::Render(void)
 {
+	if (!mLuaVM)
+		return;
+
 	lua_getglobal(mLuaVM, "_render");
 
 	if (!lua_isfunction(mLuaVM, -1))
@@ -122,6 +134,9 @@ VOID CLuaMachine::Render(void)
 
 VOID CLuaMachine::Render2D(void)
 {
+    if (!mLuaVM)
+        return;
+
     lua_getglobal(mLuaVM, "_render2d");
 
     if (!lua_isfunction(mLuaVM, -1))
@@ -133,6 +148,9 @@ VOID CLuaMachine::Render2D(void)
 
 VOID CLuaMachine::Resize(RECT res)
 {
+    if (!mLuaVM)
+        return;
+
 	lua_getglobal(mLuaVM, "_resizeScreen");
 
 	if (!lua_isfunction(mLuaVM, -1))

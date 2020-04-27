@@ -60,6 +60,24 @@ LUAF(Base, dofile)
 
 	return 0;
 }
+LUAF(Base, loadfile)
+{
+    const char* scriptName = luaL_checkstring(L, 1);
+
+    FDATA fd = FILESYSTEM->GetResource(RESOURCEKIND_TEXT, (LPSTR)scriptName);
+
+    if (!fd.data)
+    {
+        MessageBoxA(NULL, "No dofile game script found!", "Resource error", MB_OK);
+        ENGINE->Shutdown();
+        return 0;
+    }
+
+    lua_pushlstring(L, (char*)fd.data, fd.size);
+    FILESYSTEM->FreeResource(fd.data);
+
+    return 1;
+}
 LUAF(Base, time)
 {
 	lua_pushnumber(L, GetTime());
@@ -74,6 +92,7 @@ VOID CLuaBindings::BindBase(lua_State* L)
 	REGF(Base, ExitGame);
 	REGF(Base, SetFPS);
 	REGF(Base, dofile);
+	REGF(Base, loadfile);
 	REGF(Base, time);
 }
 

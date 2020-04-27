@@ -69,7 +69,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext)
 	if (!m_wndSplitter.CreateStatic(this, 1, 2))
 		return FALSE;
 	
-	if (!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CEngineViewport), CSize(600, 100), pContext) ||
+	if (!m_wndSplitter.CreateView(0, 1, RUNTIME_CLASS(CEngineViewport), CSize(640, 480), pContext) ||
 		!m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(CEngineViewport), CSize(100, 100), pContext))
 	{
 		m_wndSplitter.DestroyWindow();

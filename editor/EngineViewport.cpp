@@ -76,7 +76,7 @@ void CEngineViewport::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	
-	mEngine->GetRenderer()->Present();
+	mEngine->Think();
 	this->Invalidate(FALSE);
 }
 
@@ -113,7 +113,14 @@ void CEngineViewport::OnInitialUpdate()
 	RECT rect;
 	GetClientRect(&rect);
 
-	mEngine->Init(GetSafeHwnd(), rect); 
+	if (!mEngine->IsRunning())
+	{
+		mEngine->Init(GetSafeHwnd(), rect);
+
+		FILESYSTEM->LoadGame("W:\\neon86\\data");
+		VM->Play();
+		VM->Pause();
+	}
 }
 
 void CEngineViewport::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
