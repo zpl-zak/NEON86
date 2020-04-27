@@ -29,7 +29,7 @@ public:
     void Bind(DWORD stage);
     void Unbind(DWORD stage);
     void* Lock(UINT slot=TEXTURESLOT_ALBEDO);
-    void UploadARGB(UINT slot, VOID* data, UINT size);
+    void UploadARGB(UINT slot, void* data, UINT size);
     void Unlock(UINT slot = TEXTURESLOT_ALBEDO);
 
     void SetAmbient(D3DCOLORVALUE color);
