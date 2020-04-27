@@ -23,6 +23,9 @@ void CRenderTarget::Release(void)
 
     SAFE_RELEASE(mTextureHandle);
     SAFE_RELEASE(mDepthTextureHandle);
+    SAFE_RELEASE(mDepthSurfaceHandle);
+
+    mSurfaceHandle = NULL;
 }
 
 void CRenderTarget::Bind()
