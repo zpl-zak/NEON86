@@ -158,8 +158,8 @@ LUAF(Rend, CameraOrthographic)
 	D3DXMatrixOrthoLH(&matProjection,
 		  			 w,
 					 h,
-					 1.0f,    
-					 100.0f);
+					 zNear,    
+					 zFar);
 
 	RENDERER->SetMatrix(MATRIXKIND_PROJECTION, matProjection);
 
@@ -204,6 +204,16 @@ LUAF(Rend, GetResolution)
     lua_pushnumber(L, res.bottom);
     lua_settable(L, -3);
 
+    return 1;
+}
+LUAF(Rend, GetMatrix)
+{
+    DWORD kind = (DWORD)luaL_checkinteger(L, 1);
+    
+	matrix_new(L);
+	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+	*mat = RENDERER->GetDeviceMatrix(kind);
+    
     return 1;
 }
 LUAF(Rend, RenderState)
@@ -257,6 +267,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearScene);
 	REGF(Rend, CameraPerspective);
 	REGF(Rend, CameraOrthographic);
+	REGF(Rend, GetMatrix);
 	REGF(Rend, GetResolution);
 	REGF(Rend, RenderState);
 	REGF(Rend, SamplerState);

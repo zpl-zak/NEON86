@@ -10,11 +10,16 @@ static INT rtt_new(lua_State* L)
     UINT w = 0, h = 0;
     CRenderTarget* rtt = (CRenderTarget*)lua_newuserdata(L, sizeof(CRenderTarget));
 
-    if (lua_gettop(L) == 2)
+    if (lua_gettop(L) >= 2)
     {
+        BOOL depth = FALSE;
         w = (UINT)luaL_checkinteger(L, 1);
         h = (UINT)luaL_checkinteger(L, 2);
-        *rtt = CRenderTarget(w, h);
+
+        if (lua_gettop(L) >= 3)
+            depth = (BOOL)lua_toboolean(L, 3);
+
+        *rtt = CRenderTarget(w, h, depth);
     } else {
         *rtt = CRenderTarget();
     }

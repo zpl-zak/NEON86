@@ -109,7 +109,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 	display->GetDesc(&mDisplayDesc);
 	display->Release();
 
-	mMainTarget = new CRenderTarget();
+	mMainTarget = new CRenderTarget(mLastRes.right, mLastRes.bottom, TRUE);
 	SetRenderTarget(NULL);
 
 	return res;
@@ -315,12 +315,20 @@ void CRenderer::ResetMatrices()
 	mDevice->SetTransform(D3DTS_PROJECTION, &mat);
 }
 
-void CRenderer::SetRenderTarget(CRenderTarget* target)
+void CRenderer::SetRenderTarget(CRenderTarget* target, BOOL depth)
 {
 	if (target && target->GetSurfaceHandle())
+	{
 		mDevice->SetRenderTarget(0, target->GetSurfaceHandle());
+
+        if (depth)
+            mDevice->SetDepthStencilSurface(target->GetDepthHandle());
+	}
 	else
+	{
 		mDevice->SetRenderTarget(0, mMainTarget->GetSurfaceHandle());
+		mDevice->SetDepthStencilSurface(mMainTarget->GetDepthHandle());
+	}
 }
 
 void CRenderer::SetRenderState(DWORD kind, DWORD value)

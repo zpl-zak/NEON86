@@ -20,15 +20,13 @@ faceGroup:setMaterial(0, cubeMaterial)
 
 -- Floor model
 floor = Model("assets/floor.fbx")
-floor:findMesh("Plane"):getFGroups ()[1]:setMaterial(0, cubeMaterial)
+floor:findMesh("Plane"):getFGroups()[1]:setMaterial(0, cubeMaterial)
 
 -- Create effect for our rendering pipeline
 mainShader = Effect("main.fx")
 
 -- Create our render target for post-processing effect
 mainRT = RenderTarget()
-
-shadowMap = RenderTarget(512, 512)
 
 -- Construct the camera view
 viewMat = Matrix():lookAt(
@@ -48,12 +46,15 @@ function _update(dt)
     time = time + dt
 end
 
-function _render()
+function drawShadedScene()
     mainRT:bind()
     ClearScene(20,20,20)
-    CameraPerspective(62, 0.01, 100)
-    viewMat:bind(VIEW)
-    
+    CameraPerspective(62, 2, 150)
+    viewMat = Matrix()
+        :rotate(time/4, 0, 0)
+        :translate(0,0,5)
+        :bind(VIEW)
+
     -- Initialize the shader and load the Main technique
     mainShader:start("Main")
 
@@ -62,6 +63,7 @@ function _render()
 
     -- Set up global shader variables and commit changes to the GPU
     mainShader:setVector4("ambience", Vector(1,0.05,0.05,1))
+    mainShader:setTexture("shadowTex", shadowMap)
     mainShader:setFloat("time", time)
     mainShader:commit()
 
@@ -71,8 +73,16 @@ function _render()
     -- Finalize the pass
     mainShader:endPass()
     mainShader:finish()
+    ClearTarget()
+end
 
-    blitScreen()
+function _render()
+    ClearScene(20,20,20)
+    CameraPerspective(62, 2, 100)
+    viewMat:bind(VIEW)
+    drawShadedScene()
+
+    blitScreen(mainRT)
     -- blitScreenFFP()
     -- drawScene()
 end
@@ -84,7 +94,7 @@ function drawScene()
     floor:draw(Matrix():translate(0,-2,0))
 end
 
-function blitScreen()
+function blitScreen(rt)
     ClearTarget()
     ClearScene(0,0,0)
  
@@ -95,7 +105,7 @@ function blitScreen()
     mainShader:beginPass(1)
 
     -- Set up global shader variables and commit changes to the GPU
-    mainShader:setTexture("sceneTex", mainRT)
+    mainShader:setTexture("sceneTex", rt)
     mainShader:commit()
 
     -- Copy the RT via shader

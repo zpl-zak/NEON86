@@ -35,7 +35,7 @@ public:
 	void SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
 	void SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
 	void ResetMatrices();
-	void SetRenderTarget(CRenderTarget* target);
+	void SetRenderTarget(CRenderTarget* target, BOOL depth=FALSE);
 	void SetRenderState(DWORD kind, DWORD value);
 	void SetSamplerState(DWORD stage, DWORD kind, DWORD value);
 

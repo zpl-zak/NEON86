@@ -27,6 +27,7 @@ sampler2D glowMap = sampler_state
 // data to the pixel shader and the rasterizer
 struct VS_OUTPUT {
     float4 position : POSITION;
+    float4 worldPos : TEXCOORD2;
     float4 color : COLOR0;
     float2 texCoord : TEXCOORD0;
     float3 normal : NORMAL;
@@ -38,6 +39,7 @@ VS_OUTPUT VS_Main(VS_INPUT IN)
 {
     VS_OUTPUT OUT;
     OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
+    OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
     OUT.normal = mul(IN.normal, NEON.World);
     OUT.color = IN.color;
     OUT.texCoord = IN.texCoord;
@@ -64,14 +66,13 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
 
         if (sn.r < 0.5f)
         {
-            OUT = float4(0,255*(saturate(sin(time))),0,255);
+            OUT = float4(0,255,0,255);
         }
     }
 
     return OUT;
 }
 
-// Our Render-to-texture entry points
 #include "rtt.fx"
 
 // Our rendering technique, each technique consists of single/multiple passes
