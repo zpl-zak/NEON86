@@ -46,7 +46,7 @@ function _update(dt)
         ExitGame()
     end
 
-    if GetKeyDown(KEY_F2) then
+    if GetKeyDown("m") then
         shaderDisabled = not shaderDisabled
     end
 
@@ -59,14 +59,13 @@ function drawSceneUsingShader()
     CameraPerspective(62, 2, 10)
 
     -- Initialize the shader and load the Main technique
-    mainShader:start("Main")
+    mainShader:begin("Main")
 
     -- Main technique has a single pass, use it
     mainShader:beginPass("Default")
 
     -- Set up global shader variables and commit changes to the GPU
     mainShader:setVector4("ambience", Vector(1,0.05,0.05,1))
-    mainShader:setTexture("shadowTex", shadowMap)
     mainShader:setFloat("time", time)
     mainShader:commit()
 
@@ -75,7 +74,7 @@ function drawSceneUsingShader()
 
     -- Finalize the pass
     mainShader:endPass()
-    mainShader:finish()
+    mainShader:done()
     ClearTarget()
 end
 
@@ -102,9 +101,8 @@ function _render()
     end
 end
 
+-- Draw model with a specific transformation matrix
 function drawScene()
-
-    -- Draw model with a specific transformation matrix
     model:draw(Matrix():rotate(time))
     floor:draw(Matrix():translate(0,-2,0))
 end
@@ -116,7 +114,7 @@ function blitScreen(rt)
     ClearScene(0,0,0)
  
     -- Initialize the shader and load the RTT technique
-    mainShader:start("RTT")
+    mainShader:begin("RTT")
 
     -- RTT technique has a Copy pass, use it
     mainShader:beginPass("Copy")
@@ -130,7 +128,7 @@ function blitScreen(rt)
 
     -- Finalize the pass and present changes to the screen
     mainShader:endPass()
-    mainShader:finish()
+    mainShader:done()
 end
 
 -- Blit rendered RenderTarget using FFP

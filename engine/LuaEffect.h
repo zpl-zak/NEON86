@@ -170,6 +170,10 @@ static VOID LuaEffect_register(lua_State* L)
     REGC("start", effect_begin);
     REGC("finish", effect_end);
 
+    REGC("begin", effect_begin);
+    REGC("flush", effect_end);
+    REGC("done", effect_end);
+
     REGC("beginPass", effect_beginpass);
     REGC("endPass", effect_endpass);
     REGC("commit", effect_commit);
