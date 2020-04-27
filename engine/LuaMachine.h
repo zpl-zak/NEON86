@@ -36,6 +36,7 @@ public:
 	inline void CheckVMErrors(INT);
 private:
 	UCHAR mPlayKind;
+	UCHAR mScheduledTermination;
 	UCHAR *mMainScript;
 	lua_State* mLuaVM;
 

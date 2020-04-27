@@ -98,6 +98,11 @@ VOID CEngine::Think()
 		Sleep(1); // Let CPU sleep a bit
 }
 
+void CEngine::ResetApplicationTime()
+{
+	mLastTime = GetTime(TRUE);
+}
+
 VOID CEngine::Update(FLOAT deltaTime)
 {
 	mLuaMachine->Update(deltaTime);

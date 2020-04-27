@@ -33,6 +33,11 @@ LUAF(Base, ExitGame)
 	ENGINE->Shutdown();
 	return 0;
 }
+LUAF(Base, RestartGame)
+{
+	VM->Restart();
+    return 0;
+}
 LUAF(Base, SetFPS)
 {
 	FLOAT fps = (FLOAT)luaL_checknumber(L, 1);
@@ -78,7 +83,7 @@ LUAF(Base, loadfile)
 
     return 1;
 }
-LUAF(Base, time)
+LUAF(Base, getTime)
 {
 	lua_pushnumber(L, GetTime());
     return 1;
@@ -89,11 +94,12 @@ VOID CLuaBindings::BindBase(lua_State* L)
 {
 	REGF(Base, ShowMessage);
 	REGF(Base, LogString);
-	REGF(Base, ExitGame);
+    REGF(Base, ExitGame);
+    REGF(Base, RestartGame);
 	REGF(Base, SetFPS);
 	REGF(Base, dofile);
 	REGF(Base, loadfile);
-	REGF(Base, time);
+	REGF(Base, getTime);
 }
 
 /// MATH METHODS

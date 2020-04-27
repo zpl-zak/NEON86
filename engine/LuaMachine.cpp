@@ -14,6 +14,7 @@ CLuaMachine::CLuaMachine(void)
 	mPlayKind = PLAYKIND_STOPPED;
 	mMainScript = NULL;
 	mLuaVM = NULL;
+	mScheduledTermination = FALSE;
 }
 
 VOID CLuaMachine::Release(void)
@@ -27,6 +28,11 @@ VOID CLuaMachine::Release(void)
 /// States
 VOID CLuaMachine::Play(void)
 {
+	if (mScheduledTermination)
+	{
+		return;
+	}
+
 	if (mPlayKind != PLAYKIND_STOPPED)
 		return;
 
@@ -60,17 +66,17 @@ VOID CLuaMachine::Stop(void)
 	if (mPlayKind == PLAYKIND_STOPPED)
 		return;
 
-	Destroy();
-	Release();
+	mScheduledTermination = TRUE;
 	mPlayKind = PLAYKIND_STOPPED;
 }
 
 VOID CLuaMachine::Restart(void)
 {
 	if (mPlayKind != PLAYKIND_STOPPED)
-		Stop();
+        Stop();
 
-	Play();
+	// Request immediate restart upon termination.
+    mScheduledTermination = 2;
 }
 
 /// Events
@@ -78,6 +84,8 @@ VOID CLuaMachine::Init(void)
 {
     if (!mLuaVM)
         return;
+
+	ENGINE->ResetApplicationTime();
 
 	lua_getglobal(mLuaVM, "_init");
 
@@ -104,6 +112,20 @@ VOID CLuaMachine::Destroy(void)
 
 VOID CLuaMachine::Update(FLOAT dt)
 {
+	if (mScheduledTermination)
+	{
+		UCHAR term = mScheduledTermination;
+        Destroy();
+        Release();
+
+        mScheduledTermination = FALSE;
+		
+		if (term == 2) /* Restart was requested */
+			Play();
+
+		return;
+	}
+
 	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
 		return;
 

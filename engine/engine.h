@@ -19,6 +19,7 @@ public:
 	VOID Shutdown();
 	VOID Resize(RECT resolution);
 	VOID Think();
+	void ResetApplicationTime();
 
 	CRenderer* GetRenderer() { return mRenderer; }
 	CInput* GetInput() { return mInput; }
