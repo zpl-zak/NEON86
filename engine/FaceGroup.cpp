@@ -18,6 +18,8 @@ CFaceGroup::CFaceGroup(void)
 
 VOID CFaceGroup::Release(void)
 {
+	SAFE_FREE(mVerts);
+	SAFE_FREE(mIndices);
 	SAFE_RELEASE(mData.mesh);
 }
 
@@ -102,7 +104,7 @@ VOID CFaceGroup::Build(void)
 {
 	LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 	VOID *vidMem = NULL;
-	Release();
+	SAFE_RELEASE(mData.mesh);
 
 	if (mData.vertCount == 0)
 		return;

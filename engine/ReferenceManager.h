@@ -45,9 +45,9 @@ public:
         t->TrackRef((T*)t);
     }
 
-    static CReferenceContainer<CFaceGroup> meshes;
+    static CReferenceContainer<CFaceGroup> faceGroups;
     static CReferenceContainer<CMaterial> materials;
-    static CReferenceContainer<CMesh> meshGroups;
+    static CReferenceContainer<CMesh> meshes;
 };
 
 template<typename T>
@@ -68,7 +68,7 @@ inline void CReferenceContainer<T>::Release()
 inline void CReference<CFaceGroup>::TrackRef(CFaceGroup* self)
 {
     mSelf = self;
-    CReferenceManager::meshes.AddRef(*this);
+    CReferenceManager::faceGroups.AddRef(*this);
 }
 
 inline void CReference<CMaterial>::TrackRef(CMaterial* self)
@@ -80,5 +80,5 @@ inline void CReference<CMaterial>::TrackRef(CMaterial* self)
 inline void CReference<CMesh>::TrackRef(CMesh* self)
 {
     mSelf = self;
-    CReferenceManager::meshGroups.AddRef(*this);
+    CReferenceManager::meshes.AddRef(*this);
 }

@@ -6,13 +6,13 @@
 #include "Material.h"
 #include "Mesh.h"
 
-CReferenceContainer<CFaceGroup> CReferenceManager::meshes;
+CReferenceContainer<CFaceGroup> CReferenceManager::faceGroups;
 CReferenceContainer<CMaterial> CReferenceManager::materials;
-CReferenceContainer<CMesh> CReferenceManager::meshGroups;
+CReferenceContainer<CMesh> CReferenceManager::meshes;
 
 void CReferenceManager::Release()
 {
-    meshes.Release();
+    faceGroups.Release();
     materials.Release();
-    meshGroups.Release();
+    meshes.Release();
 }
