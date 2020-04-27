@@ -85,7 +85,7 @@ void CModel::Draw(const D3DXMATRIX& wmat)
     }
 }
 
-CMesh* CModel::FindMeshGroup(LPCSTR name)
+CMesh* CModel::FindMesh(LPCSTR name)
 {
     for (UINT i = 0; i < mCount; i++)
     {

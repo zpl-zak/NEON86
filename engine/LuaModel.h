@@ -76,7 +76,7 @@ static INT model_findmesh(lua_State* L)
     CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     
-    CMesh* mg = model->FindMeshGroup(meshName);
+    CMesh* mg = model->FindMesh(meshName);
 
     if (mg)
     {
