@@ -2,7 +2,7 @@
 
 #define _M(...) #__VA_ARGS__
 
-static const char* _shader_common = _M(
+static LPCSTR _shader_common = _M(
     /* NEON structures */
     struct TNEON
     {
