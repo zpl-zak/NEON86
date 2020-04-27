@@ -30,8 +30,5 @@ VS_OUTPUT_2D VS_Copy(VS_INPUT_2D IN)
 // from data calculated in the Vertex shader and/or uniforms
 float4 PS_Copy(VS_OUTPUT_2D IN) : COLOR
 {
-    IN.texCoord.y = 1 - IN.texCoord.y;
-    float4 OUT = tex2D(sceneMap, IN.texCoord);
-    
-    return OUT;
+    return tex2D(sceneMap, IN.texCoord);
 }

@@ -50,7 +50,11 @@ function _update(dt)
         shaderDisabled = not shaderDisabled
     end
 
-    time = time + dt
+    if GetKeyDown("r") then
+        RestartGame()
+    end
+
+    time = getTime()
 end
 
 function drawSceneUsingShader()
@@ -124,7 +128,7 @@ function blitScreen(rt)
     mainShader:commit()
 
     -- Copy the RT via shader
-    FillScreen()
+    FillScreen(0xFFFFFFFF, true)
 
     -- Finalize the pass and present changes to the screen
     mainShader:endPass()
