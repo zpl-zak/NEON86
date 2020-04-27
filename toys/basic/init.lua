@@ -26,7 +26,8 @@ floor:findMesh("Plane"):getFGroups()[1]:setMaterial(0, cubeMaterial)
 mainShader = Effect("main.fx")
 
 -- Create our render target for post-processing effect
-mainRT = RenderTarget()
+winres = GetResolution()
+mainRT = RenderTarget(winres[1]/8, winres[2]/8)
 
 -- Construct the camera view
 viewMat = Matrix():lookAt(

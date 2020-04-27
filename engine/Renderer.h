@@ -46,6 +46,7 @@ public:
 	/// Accessors
 	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
 	inline RECT GetResolution() { return mLastRes; }
+	RECT GetLocalCoordinates() const;
 	D3DMATRIX GetDeviceMatrix(UINT kind);
 	inline HWND GetWindow() const { return mWindow; }
 	inline CFrustum* GetFrustum() { return mFrustum; }

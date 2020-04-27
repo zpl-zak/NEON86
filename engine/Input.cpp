@@ -51,7 +51,7 @@ VOID CInput::SetCursorMode(UCHAR mode)
 {
     mCursorMode = mode;
 
-    if (mCursorMode == CURSORMODE_CENTERED)
+    if (mCursorMode == CURSORMODE_CENTERED || mCursorMode == CURSORMODE_WRAPPED)
     {
         RECT res = RENDERER->GetResolution();
         SetMouseXY((SHORT)(res.right / 2.0f), (SHORT)(res.bottom / 2.0f));
@@ -91,13 +91,40 @@ VOID CInput::Update(void)
         case CURSORMODE_CENTERED:
         {
             RECT res = RENDERER->GetResolution();
-            SetMouseXY((SHORT)(res.right/2.0f), (SHORT)(res.bottom/2.0f));
+            POINT pos = {
+                res.right/2.0f,
+                res.bottom/2.0f
+            };
+            SetMouseXY((SHORT)pos.x, (SHORT)pos.y);
+            mousePos = pos;
         } break;
         case CURSORMODE_WRAPPED:
-            break; // todo
+        {
+            RECT res = RENDERER->GetLocalCoordinates();
+            POINT pos = mousePos;
+            ClientToScreen(RENDERER->GetWindow(), &pos);
+
+            while (pos.x > res.right)
+                pos.x -= res.right;
+
+            while (pos.y > res.bottom)
+                pos.y -= res.bottom;
+
+            while (pos.x < res.left)
+                pos.x += res.left;
+
+            while (pos.y < res.top)
+                pos.y += res.top;
+
+            ScreenToClient(RENDERER->GetWindow(), &pos);
+
+            SetMouseXY((SHORT)pos.x, (SHORT)pos.y);
+            mousePos = pos;
+        }
+            break;
         default:
             break;
     }
 
-    mLastMousePos = GetMouseXY();
+    mLastMousePos = mousePos;
 }

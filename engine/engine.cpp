@@ -112,6 +112,7 @@ VOID CEngine::Update(FLOAT deltaTime)
 VOID CEngine::Render()
 {
 	mRenderer->GetDevice()->BeginScene();
+	mRenderer->ClearBuffer(0xFF000000);
 	mLuaMachine->Render();
 	mLuaMachine->Render2D();
 	mRenderer->Blit();

@@ -363,6 +363,14 @@ D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
 	return mat;
 }
 
+RECT CRenderer::GetLocalCoordinates() const
+{
+    RECT Rect;
+    GetWindowRect(mWindow, &Rect);
+    MapWindowPoints(HWND_DESKTOP, GetParent(mWindow), (LPPOINT)&Rect, 2);
+    return Rect;
+}
+
 D3DVERTEXELEMENT9 meshVertexFormat[] =
 {
     {0,  0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION,0},

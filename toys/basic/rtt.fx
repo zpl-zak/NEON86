@@ -8,7 +8,7 @@ texture sceneTex;
 sampler2D sceneMap = sampler_state
 {
     Texture = <sceneTex>;
-    Filter = MIN_MAG_MIP_LINEAR;
+    Filter = MIN_MAG_MIP_POINT;
     AddressU = MIRROR;
     AddressV = MIRROR;
     MaxAnisotropy = 16;
