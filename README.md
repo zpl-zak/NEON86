@@ -1,6 +1,6 @@
 # NEON 86
 
-A retro toy game engine written in **VC++98.** 
+A retro toy game engine written in **VC++98** style!
 
 ## Structure
 
@@ -9,6 +9,7 @@ A retro toy game engine written in **VC++98.**
 | engine    | The meat of this project, small library providing the toy engine |
 | editor    | An MFC application used to author new games                      |
 | player    | A sample Win32 application that loads test data                  |
+| toys      | Example prototypes using the engine                              |
 | d3d9, lua | Our dependencies, duh\!                                          |
 
 ## License
