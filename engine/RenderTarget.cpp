@@ -20,6 +20,9 @@ void CRenderTarget::Release(void)
 
     if (surf == mSurfaceHandle)
         RENDERER->SetRenderTarget(NULL);
+
+    SAFE_RELEASE(mTextureHandle);
+    SAFE_RELEASE(mDepthTextureHandle);
 }
 
 void CRenderTarget::Bind()
