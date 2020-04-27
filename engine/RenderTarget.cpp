@@ -32,7 +32,7 @@ void CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
     mDepth = depth;
     mTextureHandle = NULL;
     mSurfaceHandle = NULL;
-    mDepthHandle = NULL;
+    mDepthSurfaceHandle = NULL;
     mDepthTextureHandle = NULL;
 
     D3DSURFACE_DESC dp = RENDERER->GetDisplayDesc();
@@ -76,7 +76,7 @@ void CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
         }
 
 
-        RENDERER->GetDevice()->CreateDepthStencilSurface(w, h, D3DFMT_D24X8, dp.MultiSampleType, dp.MultiSampleQuality, TRUE, &mDepthHandle, NULL);
+        RENDERER->GetDevice()->CreateDepthStencilSurface(w, h, D3DFMT_D24X8, dp.MultiSampleType, dp.MultiSampleQuality, TRUE, &mDepthSurfaceHandle, NULL);
     }
 
     mTextureHandle->GetSurfaceLevel(0, &mSurfaceHandle);

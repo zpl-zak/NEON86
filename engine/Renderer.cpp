@@ -322,12 +322,12 @@ void CRenderer::SetRenderTarget(CRenderTarget* target, BOOL depth)
 		mDevice->SetRenderTarget(0, target->GetSurfaceHandle());
 
         if (depth)
-            mDevice->SetDepthStencilSurface(target->GetDepthHandle());
+            mDevice->SetDepthStencilSurface(target->GetDepthSurfaceHandle());
 	}
 	else
 	{
 		mDevice->SetRenderTarget(0, mMainTarget->GetSurfaceHandle());
-		mDevice->SetDepthStencilSurface(mMainTarget->GetDepthHandle());
+		mDevice->SetDepthStencilSurface(mMainTarget->GetDepthSurfaceHandle());
 	}
 }
 
