@@ -38,22 +38,25 @@ viewMat = Matrix():lookAt(
 -- Track global time to simulate movement
 time = 0
 
+-- Simple switch to toggle between FFP and shader system
+shaderDisabled = false
+
 function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
     end
 
+    if GetKeyDown(KEY_F2) then
+        shaderDisabled = not shaderDisabled
+    end
+
     time = time + dt
 end
 
-function drawShadedScene()
+function drawSceneUsingShader()
     mainRT:bind()
     ClearScene(20,20,20)
     CameraPerspective(62, 2, 10)
-    viewMat = Matrix()
-        :rotate(time/4, 0, 0)
-        :translate(0,0,5)
-        :bind(VIEW)
 
     -- Initialize the shader and load the Main technique
     mainShader:start("Main")
@@ -76,15 +79,27 @@ function drawShadedScene()
     ClearTarget()
 end
 
-function _render()
+function drawSceneUsingFFP()
+    mainRT:bind()
     ClearScene(20,20,20)
-    CameraPerspective(62, 2, 100)
-    viewMat:bind(VIEW)
-    drawShadedScene()
+    CameraPerspective(62, 2, 10)
+    drawScene()
+    ClearTarget()
+end
 
-    -- blitScreen(mainRT)
-    blitScreenFFP(mainRT)
-    -- drawScene()
+function _render()
+    viewMat = Matrix()
+        :rotate(time/4, 0, 0)
+        :translate(0,0,5)
+        :bind(VIEW)
+
+    if shaderDisabled then 
+        drawSceneUsingFFP()
+        blitScreenFFP(mainRT)
+    else
+        drawSceneUsingShader()
+        blitScreen(mainRT)
+    end
 end
 
 function drawScene()
