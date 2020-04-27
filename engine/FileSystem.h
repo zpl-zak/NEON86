@@ -56,4 +56,5 @@ private:
 
 	BOOL LoadGameInternal();
 	VOID FixName(UCHAR kind, LPCSTR* resName);
+	BOOL ValidatePath(LPCSTR path, LPCSTR dir=NULL);
 };

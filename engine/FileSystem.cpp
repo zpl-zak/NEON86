@@ -33,6 +33,11 @@ BOOL CFileSystem::LoadGameInternal()
 
 VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
 {
+	static CHAR fixedTmpName[MAX_PATH] = { 0 };
+
+	if (!resName)
+		return;
+
     switch (kind)
     {
         case RESOURCEKIND_META:
@@ -41,7 +46,73 @@ VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
         case RESOURCEKIND_SCRIPT:
             *resName = RESOURCE_SCRIPT;
             break;
+		default:
+			ZeroMemory(fixedTmpName, MAX_PATH);
+
+			LPCSTR p = *resName;
+			UINT i = 0;
+			while (*p != 0)
+			{
+				if (*p == '/')
+					fixedTmpName[i] = '\\';
+				else fixedTmpName[i] = *p;
+
+				p++;
+				i++;
+			}
+
+			*resName = fixedTmpName;
+			break;
     }
+}
+
+BOOL CFileSystem::ValidatePath(LPCSTR path, LPCSTR dir)
+{
+	CHAR buf[MAX_PATH] = { 0 };
+    WIN32_FIND_DATA data;
+
+	if (!dir)
+	{
+		sprintf_s(buf, MAX_PATH, "%s\\*", mGamePath);
+	}
+	else
+		sprintf_s(buf, MAX_PATH, "%s\\%s\\*", mGamePath, dir);
+    HANDLE hFind = FindFirstFile(buf, &data);
+
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+			if (!strcmp(data.cFileName, ".") || !strcmp(data.cFileName, ".."))
+				continue;
+
+			if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{
+				if (dir)
+					sprintf_s(buf, MAX_PATH, "%s\\%s", dir, data.cFileName);
+				else
+					sprintf_s(buf, MAX_PATH, "%s", data.cFileName);
+
+				if (ValidatePath(path, buf))
+				{
+					FindClose(hFind);
+					return TRUE;
+				}
+			}
+
+			if (dir)
+				sprintf_s(buf, MAX_PATH, "%s\\%s", dir, data.cFileName);
+			else
+				sprintf_s(buf, MAX_PATH, "%s", data.cFileName);
+
+			if (!strcmp(buf, path))
+			{
+				FindClose(hFind);
+				return TRUE;
+			}
+        } while (FindNextFile(hFind, &data));
+        FindClose(hFind);
+    }
+
+	return FALSE;
 }
 
 BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
@@ -116,6 +187,9 @@ FILE* CFileSystem::OpenResource(UCHAR kind, LPCSTR resName /*= NULL*/)
         return NULL;
 
     FixName(kind, &resName);
+
+	if (!ValidatePath(resName))
+		return NULL;
 
     switch (mLoadKind)
     {
