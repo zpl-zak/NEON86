@@ -64,11 +64,11 @@ LUAF(Base, loadfile)
 {
     const char* scriptName = luaL_checkstring(L, 1);
 
-    FDATA fd = FILESYSTEM->GetResource(RESOURCEKIND_TEXT, (LPSTR)scriptName);
+    FDATA fd = FILESYSTEM->GetResource(RESOURCEKIND_USER, (LPSTR)scriptName);
 
     if (!fd.data)
     {
-        MessageBoxA(NULL, "No dofile game script found!", "Resource error", MB_OK);
+        MessageBoxA(NULL, "No loadfile content found!", "Resource error", MB_OK);
         ENGINE->Shutdown();
         return 0;
     }
