@@ -14,7 +14,7 @@ CModel::CModel(LPSTR modelPath)
 {
     mCapacity = 4;
     mCount = 0;
-    mMeshGroups = (CMesh**)malloc(mCapacity * sizeof(CMesh*));
+    mMeshes = (CMesh**)malloc(mCapacity * sizeof(CMesh*));
     D3DXMatrixIdentity(&identityMat);
 
     if (modelPath)
@@ -23,7 +23,7 @@ CModel::CModel(LPSTR modelPath)
 
 void CModel::Release()
 {
-    SAFE_FREE(mMeshGroups);
+    SAFE_FREE(mMeshes);
     mCount = 0;
     mCapacity = 0;
 }
@@ -76,12 +76,12 @@ void CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
 
 void CModel::Draw(const D3DXMATRIX& wmat)
 {
-    if (!mMeshGroups)
+    if (!mMeshes)
         return;
 
     for (UINT i=0; i<mCount;i++)
     {
-        mMeshGroups[i]->Draw(wmat);
+        mMeshes[i]->Draw(wmat);
     }
 }
 
@@ -89,8 +89,8 @@ CMesh* CModel::FindMeshGroup(LPCSTR name)
 {
     for (UINT i = 0; i < mCount; i++)
     {
-        if (!strcmp(name, mMeshGroups[i]->GetName().C_Str()))
-            return mMeshGroups[i];
+        if (!strcmp(name, mMeshes[i]->GetName().C_Str()))
+            return mMeshes[i];
     }
 
     return NULL;
@@ -105,9 +105,9 @@ void CModel::AddMeshGroup(CMesh* mg)
     {
         mCapacity += 4;
 
-        mMeshGroups = (CMesh**)realloc(mMeshGroups, mCapacity * sizeof(CMesh*));
+        mMeshes = (CMesh**)realloc(mMeshes, mCapacity * sizeof(CMesh*));
         
-        if (!mMeshGroups )
+        if (!mMeshes )
         {
             MessageBoxA(NULL, "Can't add mesh group to model!", "Out of memory error", MB_OK);
             ENGINE->Shutdown();
@@ -115,7 +115,7 @@ void CModel::AddMeshGroup(CMesh* mg)
         }
     }
 
-    mMeshGroups[mCount++] = mg;
+    mMeshes[mCount++] = mg;
 }
 
 D3DXMATRIX CModel::identityMat;

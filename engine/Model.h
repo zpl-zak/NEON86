@@ -15,10 +15,10 @@ public:
     void Draw(const D3DXMATRIX& wmat);
 
     inline UINT GetNumMeshes() { return mCount; }
-    inline CMesh** GetMeshes() { return mMeshGroups; }
+    inline CMesh** GetMeshes() { return mMeshes; }
     CMesh* FindMeshGroup(LPCSTR name);
 private:
-    CMesh** mMeshGroups;
+    CMesh** mMeshes;
     UINT mCapacity;
     UINT mCount;
 

@@ -20,14 +20,14 @@ public:
     VOID Clear(void);
 
     inline UINT GetNumFGroups() const { return mCount; }
-    inline CFaceGroup** GetFGroups() { return mMeshes; }
+    inline CFaceGroup** GetFGroups() { return mFaceGroups; }
     inline D3DXMATRIX* GetTransforms() { return mTransforms; }
 
     inline aiString GetName() { return mName; }
     inline void SetName(aiString name) { mName = name; }
 
 private:
-    CFaceGroup** mMeshes;
+    CFaceGroup** mFaceGroups;
     D3DXMATRIX* mTransforms;
     UINT mCount;
     UINT mCapacity;
