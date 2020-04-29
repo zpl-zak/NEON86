@@ -288,15 +288,14 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 	}
 	else
 	{
-        mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, mat ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
-        mDevice->SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
+		SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
 	}
 }
 
 void CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
 {
     mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
-    mDevice->SetTexture(stage, handle ? handle : NULL);
+    mDevice->SetTexture(stage, handle);
 }
 
 void CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
