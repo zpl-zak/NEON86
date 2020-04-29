@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "editor", "editor\editor.vcxproj", "{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "engine\engine.vcxproj", "{19275CB8-C602-4BC9-AACC-73A25A183B5D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "player", "player\player.vcxproj", "{3E2BAB92-6971-4B86-B1B3-1C5612133E16}"
@@ -29,18 +27,6 @@ Global
 		RelWithDebInfo|x64 = RelWithDebInfo|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Debug|Win32.Build.0 = Debug|Win32
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Debug|x64.ActiveCfg = Debug|x64
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Debug|x64.Build.0 = Debug|x64
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.MinSizeRel|Win32.ActiveCfg = Release|Win32
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.MinSizeRel|x64.ActiveCfg = Release|x64
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Release|Win32.ActiveCfg = Release|Win32
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Release|Win32.Build.0 = Release|Win32
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Release|x64.ActiveCfg = Release|x64
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.Release|x64.Build.0 = Release|x64
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.RelWithDebInfo|Win32.ActiveCfg = Release|Win32
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D}.RelWithDebInfo|x64.ActiveCfg = Release|x64
 		{19275CB8-C602-4BC9-AACC-73A25A183B5D}.Debug|Win32.ActiveCfg = Debug|Win32
 		{19275CB8-C602-4BC9-AACC-73A25A183B5D}.Debug|Win32.Build.0 = Debug|Win32
 		{19275CB8-C602-4BC9-AACC-73A25A183B5D}.Debug|x64.ActiveCfg = Debug|x64
@@ -92,7 +78,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9CF190CB-040C-4D8D-AD30-B7AB62784F8D} = {A6A667BC-C4C7-451E-97BE-D80A8A931F0A}
 		{19275CB8-C602-4BC9-AACC-73A25A183B5D} = {2A6718CE-1244-4580-93E0-B03D2E99FA29}
 		{3E2BAB92-6971-4B86-B1B3-1C5612133E16} = {A6A667BC-C4C7-451E-97BE-D80A8A931F0A}
 		{6BD37C99-BAF9-49F4-A895-0054D44050D5} = {EE2598B7-2F1E-4D5A-A997-F2065BB1F43D}

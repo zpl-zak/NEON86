@@ -15,58 +15,58 @@ class CRenderTarget;
 
 #include "RenderData.h"
 
-class ENGINE_API CRenderer  
+class ENGINE_API CRenderer
 {
 public:
-	CRenderer();
+    CRenderer();
 
-	LRESULT CreateDevice(HWND window, RECT winres);
-	void ResetDevice(void);
-	BOOL Release();
-	void Resize(RECT res);
-	void SetVSYNC(BOOL state);
-	void Blit();
-	
-	/// Render commands
-	void DrawMesh(const RENDERDATA& data);
-	void DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY=FALSE);
-	void ClearBuffer(D3DCOLOR color, UINT flags=CLEARFLAG_STANDARD);
-	void SetMaterial(DWORD stage, CMaterial* mat);
-	void SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
-	void SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
-	void ResetMatrices();
-	void SetRenderTarget(CRenderTarget* target, BOOL depth=FALSE);
-	void SetRenderState(DWORD kind, DWORD value);
-	void SetSamplerState(DWORD stage, DWORD kind, DWORD value);
+    LRESULT CreateDevice(HWND window, RECT winres);
+    void ResetDevice(void);
+    BOOL Release();
+    void Resize(RECT res);
+    void SetVSYNC(BOOL state);
+    void Blit();
 
-	inline void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
+    /// Render commands
+    void DrawMesh(const RENDERDATA& data);
+    void DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY = FALSE);
+    void ClearBuffer(D3DCOLOR color, UINT flags = CLEARFLAG_STANDARD);
+    void SetMaterial(DWORD stage, CMaterial* mat);
+    void SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
+    void SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
+    void ResetMatrices();
+    void SetRenderTarget(CRenderTarget* target, BOOL depth = FALSE);
+    void SetRenderState(DWORD kind, DWORD value);
+    void SetSamplerState(DWORD stage, DWORD kind, DWORD value);
 
-	void SetDefaultRenderStates();
+    inline void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
-	/// Accessors
-	inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
-	inline RECT GetResolution() { return mLastRes; }
-	RECT GetLocalCoordinates() const;
-	D3DMATRIX GetDeviceMatrix(UINT kind);
-	inline HWND GetWindow() const { return mWindow; }
-	inline CFrustum* GetFrustum() { return mFrustum; }
-	inline CEffect* GetActiveEffect() { return mActiveEffect; }
-	inline D3DSURFACE_DESC GetDisplayDesc() { return mDisplayDesc; }
+    void SetDefaultRenderStates();
+
+    /// Accessors
+    inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
+    inline RECT GetResolution() { return mLastRes; }
+    RECT GetLocalCoordinates() const;
+    D3DMATRIX GetDeviceMatrix(UINT kind);
+    inline HWND GetWindow() const { return mWindow; }
+    inline CFrustum* GetFrustum() { return mFrustum; }
+    inline CEffect* GetActiveEffect() { return mActiveEffect; }
+    inline D3DSURFACE_DESC GetDisplayDesc() { return mDisplayDesc; }
 
 protected:
-	LPDIRECT3D9 mDirect9;
-	LPDIRECT3DDEVICE9 mDevice;
-	D3DPRESENT_PARAMETERS mParams;
-	RECT mLastRes;
-	HWND mWindow;
-	CFrustum* mFrustum;
-	CEffect* mActiveEffect;
-	CRenderTarget* mMainTarget;
-	
-	D3DSURFACE_DESC mDisplayDesc;
-	BOOL mVsync;
-	BOOL mFullscreen;
-	
-	void Clear(void);
-	void BuildParams(void);
+    LPDIRECT3D9 mDirect9;
+    LPDIRECT3DDEVICE9 mDevice;
+    D3DPRESENT_PARAMETERS mParams;
+    RECT mLastRes;
+    HWND mWindow;
+    CFrustum* mFrustum;
+    CEffect* mActiveEffect;
+    CRenderTarget* mMainTarget;
+
+    D3DSURFACE_DESC mDisplayDesc;
+    BOOL mVsync;
+    BOOL mFullscreen;
+
+    void Clear(void);
+    void BuildParams(void);
 };

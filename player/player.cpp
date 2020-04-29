@@ -16,36 +16,36 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
- 	HWND hWnd;
-	RECT rect;
-	rect.left = CW_USEDEFAULT;
-	rect.top = CW_USEDEFAULT;
-	rect.right = 1280;
-	rect.bottom = 800;
+    HWND hWnd;
+    RECT rect;
+    rect.left = CW_USEDEFAULT;
+    rect.top = CW_USEDEFAULT;
+    rect.right = 1280;
+    rect.bottom = 800;
 
-	if (!lpCmdLine)
-		lpCmdLine = "data";
+    if (!lpCmdLine)
+        lpCmdLine = "data";
 
-	hWnd = BuildWindow(hInstance, nCmdShow, L"NeonClass", L"NEON 86 | PLAYER", rect);
-	CenterWindow(hWnd);
+    hWnd = BuildWindow(hInstance, nCmdShow, L"NeonClass", L"NEON 86 | PLAYER", rect);
+    CenterWindow(hWnd);
 
-	if (!ENGINE->Init(hWnd, rect))
-	{
-		MessageBox(NULL, L"Failed to start engine!", L"Engine load failure", MB_OK);
-		ENGINE->Release();
-		return 0;
-	}
+    if (!ENGINE->Init(hWnd, rect))
+    {
+        MessageBox(NULL, L"Failed to start engine!", L"Engine load failure", MB_OK);
+        ENGINE->Release();
+        return 0;
+    }
 
-	if (!FILESYSTEM->LoadGame(lpCmdLine))
-	{
-		MessageBox(NULL, L"Failed to load game!", L"Game load failure", MB_OK);
-		ENGINE->Release();
-		return 0;
-	}
+    if (!FILESYSTEM->LoadGame(lpCmdLine))
+    {
+        MessageBox(NULL, L"Failed to load game!", L"Game load failure", MB_OK);
+        ENGINE->Release();
+        return 0;
+    }
 
-	VM->Play();
+    VM->Play();
 
-	MSG msg;
+    MSG msg;
 
     while(ENGINE->IsRunning())
     {
@@ -55,46 +55,46 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
 
-		ENGINE->Think();
+        ENGINE->Think();
     }
 
-	VM->Stop();
-	ENGINE->Release();
+    VM->Stop();
+    ENGINE->Release();
 
-	return 0;
+    return 0;
 }
 
 HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT rect)
 {
-	HWND hWnd;
-	WNDCLASSEX wc;
+    HWND hWnd;
+    WNDCLASSEX wc;
 
-	ZeroMemory(&wc, sizeof(WNDCLASSEX));
+    ZeroMemory(&wc, sizeof(WNDCLASSEX));
 
-	wc.cbSize = sizeof(WNDCLASSEX);
-	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WindowProc;
-	wc.hInstance = instance;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	wc.lpszClassName = className;
+    wc.cbSize = sizeof(WNDCLASSEX);
+    wc.style = CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = instance;
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+    wc.lpszClassName = className;
 
-	RegisterClassEx(&wc);
+    RegisterClassEx(&wc);
 
-	hWnd = CreateWindowEx(NULL,
-		className,
-		titleName,
-		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
-		rect.left, rect.top,
-		rect.right, rect.bottom,
-		NULL,
-		NULL,
-		instance,
-		NULL);
+    hWnd = CreateWindowEx(NULL,
+        className,
+        titleName,
+        WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
+        rect.left, rect.top,
+        rect.right, rect.bottom,
+        NULL,
+        NULL,
+        instance,
+        NULL);
 
-	ShowWindow(hWnd, SW_SHOW);
+    ShowWindow(hWnd, SW_SHOW);
 
-	return hWnd;
+    return hWnd;
 }
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -102,15 +102,15 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     switch(message)
     {
 #if 0
-	case WM_SIZE:
-	{
-		RECT rect;
-		GetClientRect(hWnd, &rect);
-		rect.right -= rect.left;
-		rect.bottom -= rect.top;
-			
-		ENGINE->Resize(rect);
-	} break;
+    case WM_SIZE:
+    {
+        RECT rect;
+        GetClientRect(hWnd, &rect);
+        rect.right -= rect.left;
+        rect.bottom -= rect.top;
+            
+        ENGINE->Resize(rect);
+    } break;
 #endif
 
     case WM_DESTROY:
@@ -119,13 +119,13 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         return 0;
     } break;
 
-	case WM_LBUTTONDOWN:
-	{
-		if (wParam & MK_LBUTTON)
-		{
-			INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
-			INPUT->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
-		}
+    case WM_LBUTTONDOWN:
+    {
+        if (wParam & MK_LBUTTON)
+        {
+            INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
+            INPUT->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
+        }
 
         if (wParam & MK_MBUTTON)
         {
@@ -138,7 +138,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
             INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, TRUE);
             INPUT->SetMouseDown(CInput::MOUSE_RIGHT_BUTTON, TRUE);
         }
-	} break;
+    } break;
 
     case WM_LBUTTONUP:
     {
@@ -161,20 +161,20 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
         }
     } break;
 
-	case WM_KEYDOWN:
-	{
-		if (INPUT->GetKey(wParam))
-			break;
+    case WM_KEYDOWN:
+    {
+        if (INPUT->GetKey(wParam))
+            break;
 
-		INPUT->SetKey(wParam, TRUE);
-		INPUT->SetKeyDown(wParam, TRUE);
-	} break;
+        INPUT->SetKey(wParam, TRUE);
+        INPUT->SetKeyDown(wParam, TRUE);
+    } break;
 
-	case WM_KEYUP:
-	{
+    case WM_KEYUP:
+    {
         INPUT->SetKey(wParam, FALSE);
         INPUT->SetKeyUp(wParam, TRUE);
-	} break;
+    } break;
     }
 
     return DefWindowProc (hWnd, message, wParam, lParam);
@@ -182,7 +182,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 BOOL CenterWindow(HWND hwndWindow)
 {
-	RECT rectWindow;
+    RECT rectWindow;
 
     GetWindowRect(hwndWindow, &rectWindow);
 
@@ -192,8 +192,8 @@ BOOL CenterWindow(HWND hwndWindow)
     int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
     int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-	int nX = nScreenWidth / 2 - nWidth/2;
-	int nY = nScreenHeight / 2 - nHeight/2;
+    int nX = nScreenWidth / 2 - nWidth/2;
+    int nY = nScreenHeight / 2 - nHeight/2;
 
     if (nX < 0) nX = 0;
     if (nY < 0) nY = 0;
