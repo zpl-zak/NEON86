@@ -241,7 +241,7 @@ void CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
 
 void CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 {
-	mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
+	mDevice->Clear(0, NULL, flags, color, 1.0f, 1);
 }
 
 void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
