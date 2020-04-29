@@ -134,7 +134,7 @@ void CRenderer::SetVSYNC(BOOL state)
 
 void CRenderer::Blit()
 {
-	DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 0));
+	DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 255));
     IDirect3DSurface9* bbuf = NULL;
     mDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &bbuf);
 	mDevice->StretchRect(
