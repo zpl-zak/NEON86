@@ -196,14 +196,17 @@ void CRenderer::DrawMesh(const RENDERDATA& data)
 		D3DXMATRIX world = GetDeviceMatrix(MATRIXKIND_WORLD);
 		D3DXMATRIX view  = GetDeviceMatrix(MATRIXKIND_VIEW);
 		D3DXMATRIX proj  = GetDeviceMatrix(MATRIXKIND_PROJECTION);
-		D3DXMATRIX inverseWorld;
+		D3DXMATRIX inverseWorld, inverseMV;
 		D3DXMatrixInverse(&inverseWorld, NULL, &world);
 
         D3DXMATRIX mvp = world * view * proj;
 		D3DXMATRIX mv = world * view;
 
+		D3DXMatrixInverse(&inverseMV, NULL, &mv);
+
 		GetActiveEffect()->SetMatrix("NEON.World", world);
 		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
+		GetActiveEffect()->SetMatrix("NEON.InverseWorldView", inverseMV, TRUE);
 		GetActiveEffect()->SetMatrix("NEON.WorldView", mv);
 		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
         GetActiveEffect()->CommitChanges();
