@@ -33,6 +33,17 @@ VOID CLuaMachine::Play(void)
 		return;
 	}
 
+	if (mPlayKind == PLAYKIND_PLAYING)
+	{
+		mPlayKind = PLAYKIND_PAUSED;
+		return;
+	}
+	else if (mPlayKind == PLAYKIND_PAUSED)
+    {
+		mPlayKind = PLAYKIND_PLAYING;
+		return;
+    }
+
 	if (mPlayKind != PLAYKIND_STOPPED)
 		return;
 

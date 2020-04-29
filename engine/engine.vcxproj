@@ -20,6 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{19275CB8-C602-4BC9-AACC-73A25A183B5D}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -68,7 +69,7 @@
     <_ProjectFileVersion>16.0.29904.37</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
@@ -78,7 +79,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)Build\$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -134,7 +135,7 @@
       <OutputFile>.\Debug/engine.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>$(SolutionDir)postbuild.bat $(Configuration)</Command>
+      <Command>$(SolutionDir)postbuild.bat Build\$(Configuration)</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Handle post-build setup</Message>
@@ -235,7 +236,7 @@
       <OutputFile>.\Release/engine.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>$(SolutionDir)postbuild.bat $(Configuration)</Command>
+      <Command>$(SolutionDir)postbuild.bat Build\$(Configuration)</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Handle post-build setup</Message>

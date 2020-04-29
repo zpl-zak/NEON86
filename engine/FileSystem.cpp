@@ -8,7 +8,7 @@
 CFileSystem::CFileSystem(void)
 {
 	mLoadKind = LOADKIND_FOLDER;
-	mGamePath = NULL;
+	mGamePath = "";
 	mLoadDone = FALSE;
 }
 
@@ -131,7 +131,10 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 		*p=0;
 
 	mLoadKind = loadKind;
-	SAFE_DELETE(mGamePath);
+
+	if (mLoadDone)
+		SAFE_DELETE(mGamePath);
+
 	UINT strSize = strlen(gamePath)+1;
 	mGamePath = new CHAR[strSize];
 	strcpy_s(mGamePath, strSize, gamePath);
@@ -271,5 +274,6 @@ VOID CFileSystem::FreeResource(VOID* data)
 
 VOID CFileSystem::Release(void)
 {
-	SAFE_DELETE(mGamePath);
+	if (mLoadDone)
+		SAFE_DELETE(mGamePath);
 }
