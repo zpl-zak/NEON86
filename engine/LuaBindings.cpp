@@ -129,9 +129,14 @@ VOID CLuaBindings::BindMath(lua_State* L)
 /// RENDERER METHODS
 LUAF(Rend, ClearScene)
 {
-	UINT r = (UINT)luaL_checknumber(L, 1);
-	UINT g = (UINT)luaL_checknumber(L, 2);
-	UINT b = (UINT)luaL_checknumber(L, 3);
+	UINT r = 0, g = 0, b = 0;
+
+	if (lua_gettop(L) >= 3)
+	{
+		r = (UINT)luaL_checknumber(L, 1);
+		g = (UINT)luaL_checknumber(L, 2);
+		b = (UINT)luaL_checknumber(L, 3);
+	}
 	UINT flags = CLEARFLAG_STANDARD;
 	
 	if (lua_isnumber(L, 4))
@@ -270,8 +275,9 @@ LUAF(Rend, DrawQuad)
 	FLOAT y1 = (FLOAT)luaL_checknumber(L, 3);
 	FLOAT y2 = (FLOAT)luaL_checknumber(L, 4);
 	DWORD color = (DWORD)luaL_checkinteger(L, 5);
+	BOOL flipY = (BOOL)lua_toboolean(L, 6);
 
-	RENDERER->DrawQuad(x1, x2, y1, y2, color);
+	RENDERER->DrawQuad(x1, x2, y1, y2, color, flipY);
     return 0;
 }
 LUAF(Rend, FillScreen)
@@ -348,9 +354,9 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
         REGN(MAX_TEXTURE_SLOTS, MAX_TEXTURE_SLOTS + 1);
 
 		// helpers
-		lua_pushnumber(L, MATRIXKIND_WORLD); lua_setglobal(L, "WORLD");
-		lua_pushnumber(L, MATRIXKIND_VIEW); lua_setglobal(L, "VIEW");
-		lua_pushnumber(L, MATRIXKIND_PROJECTION); lua_setglobal(L, "PROJ");
+		REGN(WORLD, MATRIXKIND_WORLD);
+		REGN(VIEW, MATRIXKIND_VIEW);
+		REGN(PROJ, MATRIXKIND_PROJECTION);
 
 
 		// render states
