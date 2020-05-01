@@ -34,6 +34,8 @@
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PreferredToolArchitecture>x86</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -113,13 +115,14 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AssemblerOutput>All</AssemblerOutput>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>d3dx9.lib;odbc32.lib;odbccp32.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dx9.lib;assimpd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>../assimp;../d3d9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -221,7 +224,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>d3dx9.lib;odbc32.lib;odbccp32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3dx9.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>../assimp;../d3d9;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -292,6 +295,12 @@
   <ItemGroup>
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="imgui_demo.cpp" />
+    <ClCompile Include="imgui_draw.cpp" />
+    <ClCompile Include="imgui_impl_dx9.cpp" />
+    <ClCompile Include="imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="engine.cpp" />
     <ClCompile Include="FileSystem.cpp" />
@@ -318,6 +327,14 @@
     <ClInclude Include="BuiltinShaders.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Frustum.h" />
+    <ClInclude Include="imconfig.h" />
+    <ClInclude Include="imgui.h" />
+    <ClInclude Include="imgui_impl_dx9.h" />
+    <ClInclude Include="imgui_impl_win32.h" />
+    <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="imstb_rectpack.h" />
+    <ClInclude Include="imstb_textedit.h" />
+    <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="InputCodes.h" />
     <ClInclude Include="LuaEffect.h" />
     <ClInclude Include="LuaMesh.h" />

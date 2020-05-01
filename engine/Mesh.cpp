@@ -14,8 +14,8 @@ CMesh::CMesh(VOID)
 {
     mCount = 0;
     mCapacity = 4;
-    mFaceGroups = (CFaceGroup**)malloc(mCapacity * sizeof(CFaceGroup*));
-    mTransforms = (D3DXMATRIX*)malloc(mCapacity * sizeof(D3DXMATRIX));
+    mFaceGroups = (CFaceGroup**)neon_malloc(mCapacity * sizeof(CFaceGroup*));
+    mTransforms = (D3DXMATRIX*)neon_malloc(mCapacity * sizeof(D3DXMATRIX));
 }
 
 VOID CMesh::Release(VOID)
@@ -34,8 +34,8 @@ VOID CMesh::AddMesh(CFaceGroup* mesh, const D3DXMATRIX& mat)
     {
         mCapacity += 4;
 
-        mFaceGroups = (CFaceGroup**)realloc(mFaceGroups, mCapacity * sizeof(CFaceGroup*));
-        mTransforms = (D3DXMATRIX*)realloc(mTransforms, mCapacity * sizeof(D3DXMATRIX));
+        mFaceGroups = (CFaceGroup**)neon_realloc(mFaceGroups, mCapacity * sizeof(CFaceGroup*));
+        mTransforms = (D3DXMATRIX*)neon_realloc(mTransforms, mCapacity * sizeof(D3DXMATRIX));
 
         if (!mFaceGroups || !mTransforms)
         {

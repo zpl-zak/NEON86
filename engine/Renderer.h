@@ -22,10 +22,10 @@ public:
 
     LRESULT CreateDevice(HWND window, RECT winres);
     VOID ResetDevice(VOID);
-    BOOL Release();
+    BOOL Release(VOID);
     VOID Resize(RECT res);
     VOID SetVSYNC(BOOL state);
-    VOID Blit();
+    VOID Blit(VOID);
 
     /// Render commands
     VOID DrawMesh(const RENDERDATA& data);
@@ -46,7 +46,7 @@ public:
     /// Accessors
     inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
     inline RECT GetResolution() { return mLastRes; }
-    RECT GetLocalCoordinates() const;
+    RECT GetLocalCoordinates(VOID) const;
     D3DMATRIX GetDeviceMatrix(UINT kind);
     inline HWND GetWindow() const { return mWindow; }
     inline CFrustum* GetFrustum() { return mFrustum; }

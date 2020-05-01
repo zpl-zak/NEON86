@@ -20,6 +20,7 @@ public:
 	VOID Resize(RECT resolution);
 	VOID Think();
 	VOID ResetApplicationTime();
+	LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	CRenderer* GetRenderer() { return mRenderer; }
 	CInput* GetInput() { return mInput; }

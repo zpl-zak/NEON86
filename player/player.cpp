@@ -4,11 +4,12 @@
 #include "stdafx.h"
 
 #include <windowsx.h>
+#include <strsafe.h>
 
 #include "NeonEngine.h"
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT resolution);
+HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT& resolution);
 BOOL CenterWindow(HWND hwndWindow);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -64,7 +65,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     return 0;
 }
 
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT rect)
+HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT& rect)
 {
     HWND hWnd;
     WNDCLASSEX wc;
@@ -81,16 +82,47 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titl
 
     RegisterClassEx(&wc);
 
+    DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
+
+    AdjustWindowRectEx(&rect, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
+
     hWnd = CreateWindowEx(NULL,
         className,
         titleName,
-        WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
+        style,
         rect.left, rect.top,
         rect.right, rect.bottom,
         NULL,
         NULL,
         instance,
         NULL);
+
+    RECT pica;
+    GetClientRect(hWnd, &pica);
+
+    if (!hWnd)
+    {
+        int errcode = GetLastError();
+        LPVOID msg;
+
+        FormatMessageA(
+            FORMAT_MESSAGE_ALLOCATE_BUFFER |
+            FORMAT_MESSAGE_FROM_SYSTEM |
+            FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL,
+            errcode,
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+            (LPSTR)&msg,
+            0, NULL);
+        
+        MessageBoxA(NULL,
+            (LPCSTR)msg,
+            "Window creation failed",
+            MB_ICONERROR);
+
+        LocalFree(msg);
+        ExitProcess(1);
+    }
 
     ShowWindow(hWnd, SW_SHOW);
 
@@ -99,85 +131,10 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titl
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    switch(message)
-    {
-#if 0
-    case WM_SIZE:
-    {
-        RECT rect;
-        GetClientRect(hWnd, &rect);
-        rect.right -= rect.left;
-        rect.bottom -= rect.top;
-            
-        ENGINE->Resize(rect);
-    } break;
-#endif
+    if (ENGINE->IsRunning() && !ENGINE->ProcessEvents(hWnd, message, wParam, lParam))
+        return FALSE;
 
-    case WM_DESTROY:
-    {
-        ENGINE->Shutdown();
-        return 0;
-    } break;
-
-    case WM_LBUTTONDOWN:
-    {
-        if (wParam & MK_LBUTTON)
-        {
-            INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
-            INPUT->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
-        }
-
-        if (wParam & MK_MBUTTON)
-        {
-            INPUT->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
-            INPUT->SetMouseDown(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
-        }
-
-        if (wParam & MK_RBUTTON)
-        {
-            INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, TRUE);
-            INPUT->SetMouseDown(CInput::MOUSE_RIGHT_BUTTON, TRUE);
-        }
-    } break;
-
-    case WM_LBUTTONUP:
-    {
-        if (wParam & MK_LBUTTON)
-        {
-            INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, FALSE);
-            INPUT->SetMouseUp(CInput::MOUSE_LEFT_BUTTON, TRUE);
-        }
-
-        if (wParam & MK_MBUTTON)
-        {
-            INPUT->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, FALSE);
-            INPUT->SetMouseUp(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
-        }
-
-        if (wParam & MK_RBUTTON)
-        {
-            INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, FALSE);
-            INPUT->SetMouseUp(CInput::MOUSE_RIGHT_BUTTON, TRUE);
-        }
-    } break;
-
-    case WM_KEYDOWN:
-    {
-        if (INPUT->GetKey(wParam))
-            break;
-
-        INPUT->SetKey(wParam, TRUE);
-        INPUT->SetKeyDown(wParam, TRUE);
-    } break;
-
-    case WM_KEYUP:
-    {
-        INPUT->SetKey(wParam, FALSE);
-        INPUT->SetKeyUp(wParam, TRUE);
-    } break;
-    }
-
-    return DefWindowProc (hWnd, message, wParam, lParam);
+    return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 BOOL CenterWindow(HWND hwndWindow)

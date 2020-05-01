@@ -92,8 +92,8 @@ VOID CInput::Update(VOID)
         {
             RECT res = RENDERER->GetResolution();
             POINT pos = {
-                res.right/2.0f,
-                res.bottom/2.0f
+                (LONG)(res.right/2.0f),
+                (LONG)(res.bottom/2.0f)
             };
             SetMouseXY((SHORT)pos.x, (SHORT)pos.y);
             mousePos = pos;

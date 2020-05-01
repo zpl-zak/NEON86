@@ -102,14 +102,17 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 	if (!mDevice)
 		return res;
 
-	Resize(winres);
-
 	LPDIRECT3DSURFACE9 display;
 	mDevice->GetRenderTarget(0, &display);
 	display->GetDesc(&mDisplayDesc);
 	display->Release();
 
-	mMainTarget = new CRenderTarget(mLastRes.right, mLastRes.bottom, TRUE);
+	winres.right = mDisplayDesc.Width;
+	winres.bottom = mDisplayDesc.Height;
+
+	Resize(winres);
+
+	mMainTarget = new CRenderTarget(winres.right, winres.bottom, TRUE);
 	SetRenderTarget(NULL);
 
 	return res;

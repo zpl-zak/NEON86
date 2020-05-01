@@ -14,7 +14,7 @@ CModel::CModel(LPSTR modelPath)
 {
     mCapacity = 4;
     mCount = 0;
-    mMeshes = (CMesh**)malloc(mCapacity * sizeof(CMesh*));
+    mMeshes = (CMesh**)neon_malloc(mCapacity * sizeof(CMesh*));
     D3DXMatrixIdentity(&identityMat);
 
     if (modelPath)
@@ -105,7 +105,7 @@ VOID CModel::AddMesh(CMesh* mg)
     {
         mCapacity += 4;
 
-        mMeshes = (CMesh**)realloc(mMeshes, mCapacity * sizeof(CMesh*));
+        mMeshes = (CMesh**)neon_realloc(mMeshes, mCapacity * sizeof(CMesh*));
         
         if (!mMeshes)
         {

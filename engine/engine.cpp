@@ -11,7 +11,7 @@
 #include "UserInterface.h"
 #include <ctime>
 
-CEngine::CEngine()
+CEngine::CEngine(VOID)
 : mIsRunning(FALSE)
 {
     srand((size_t)time(0));
@@ -60,7 +60,6 @@ BOOL CEngine::Init(HWND window, RECT resolution)
         return TRUE;
 
     mRenderer = new CRenderer();
-    mUserInterface = new CUserInterface();
     mInput = new CInput();
     mFileSystem = new CFileSystem();
     mLuaMachine = new CLuaMachine();
@@ -69,6 +68,8 @@ BOOL CEngine::Init(HWND window, RECT resolution)
     {
         return FALSE;
     }
+
+    mUserInterface = new CUserInterface();
 
     mIsInitialised = TRUE;
     mIsRunning = TRUE;
@@ -103,9 +104,101 @@ VOID CEngine::ResetApplicationTime()
     mLastTime = GetTime(TRUE);
 }
 
+LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    if (mUserInterface->ProcessEvents(hWnd, message, wParam, lParam))
+        return FALSE;
+
+    switch (message)
+    {
+#if 0
+        case WM_SIZE:
+        {
+            RECT rect;
+            GetClientRect(hWnd, &rect);
+            rect.right -= rect.left;
+            rect.bottom -= rect.top;
+
+            ENGINE->Resize(rect);
+        } break;
+#endif
+
+        case WM_DESTROY:
+        {
+            ENGINE->Shutdown();
+            return FALSE;
+        } break;
+
+        case WM_LBUTTONDOWN:
+        {
+            if (wParam & MK_LBUTTON)
+            {
+                INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
+                INPUT->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
+            }
+
+            if (wParam & MK_MBUTTON)
+            {
+                INPUT->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
+                INPUT->SetMouseDown(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
+            }
+
+            if (wParam & MK_RBUTTON)
+            {
+                INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, TRUE);
+                INPUT->SetMouseDown(CInput::MOUSE_RIGHT_BUTTON, TRUE);
+            }
+        } break;
+
+        case WM_LBUTTONUP:
+        {
+            if (wParam & MK_LBUTTON)
+            {
+                INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, FALSE);
+                INPUT->SetMouseUp(CInput::MOUSE_LEFT_BUTTON, TRUE);
+            }
+
+            if (wParam & MK_MBUTTON)
+            {
+                INPUT->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, FALSE);
+                INPUT->SetMouseUp(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
+            }
+
+            if (wParam & MK_RBUTTON)
+            {
+                INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, FALSE);
+                INPUT->SetMouseUp(CInput::MOUSE_RIGHT_BUTTON, TRUE);
+            }
+        } break;
+
+        case WM_SYSCOMMAND:
+        if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
+            return 0;
+        break;
+
+        case WM_KEYDOWN:
+        {
+            if (INPUT->GetKey(wParam))
+                break;
+
+            INPUT->SetKey(wParam, TRUE);
+            INPUT->SetKeyDown(wParam, TRUE);
+        } break;
+
+        case WM_KEYUP:
+        {
+            INPUT->SetKey(wParam, FALSE);
+            INPUT->SetKeyUp(wParam, TRUE);
+        } break;
+    }
+
+    return TRUE;
+}
+
 VOID CEngine::Update(FLOAT deltaTime)
 {
     mLuaMachine->Update(deltaTime);
+    mUserInterface->Update(deltaTime);
     mInput->Update();
 }
 
@@ -114,7 +207,7 @@ VOID CEngine::Render()
     mRenderer->GetDevice()->BeginScene();
     mRenderer->ClearBuffer(0xFF000000);
     mLuaMachine->Render();
-    mLuaMachine->Render2D();
+    mUserInterface->Render();
     mRenderer->Blit();
     mRenderer->GetDevice()->EndScene();
     mRenderer->GetDevice()->Present(NULL, NULL, NULL, NULL);

@@ -165,7 +165,7 @@ FDATA CFileSystem::GetResource(UCHAR kind, LPCSTR resName/*=NULL*/)
 			DWORD fileSize = ftell(fp);
 			fseek(fp, 0, SEEK_SET);
 
-			data = (UCHAR*)malloc(fileSize+1);
+			data = (UCHAR*)neon_malloc(fileSize+1);
 			fread((UCHAR*)data, 1, fileSize, fp);
 			data[fileSize] = NULL;
 			fclose(fp);

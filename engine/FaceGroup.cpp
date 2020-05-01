@@ -10,8 +10,8 @@ CFaceGroup::CFaceGroup(VOID)
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
 	mVertCapacity = mIndexCapacity = 4;
-	mVerts = (VERTEX*)malloc(mVertCapacity * sizeof(VERTEX));
-	mIndices = (SHORT*)malloc(mIndexCapacity * sizeof(SHORT));
+	mVerts = (VERTEX*)neon_malloc(mVertCapacity * sizeof(VERTEX));
+	mIndices = (SHORT*)neon_malloc(mIndexCapacity * sizeof(SHORT));
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
 	mIsDirty = FALSE;
 }
@@ -36,7 +36,7 @@ VOID CFaceGroup::AddVertex(const VERTEX& vertex)
     {
         mVertCapacity += 4;
 
-        mVerts = (VERTEX*)realloc(mVerts, mVertCapacity * sizeof(VERTEX));
+        mVerts = (VERTEX*)neon_realloc(mVerts, mVertCapacity * sizeof(VERTEX));
         
         if (!mVerts)
         {
@@ -56,7 +56,7 @@ VOID CFaceGroup::AddIndex(SHORT index)
     {
         mIndexCapacity += 4;
 
-        mIndices = (SHORT*)realloc(mIndices, mIndexCapacity * sizeof(SHORT));
+        mIndices = (SHORT*)neon_realloc(mIndices, mIndexCapacity * sizeof(SHORT));
 
         if (!mVerts)
         {
@@ -149,6 +149,6 @@ VOID CFaceGroup::Clear(VOID)
     mVertCapacity = mIndexCapacity = 4;
     SAFE_FREE(mVerts);
     SAFE_FREE(mIndices);
-    mVerts = (VERTEX*)malloc(mVertCapacity * sizeof(VERTEX));
-    mIndices = (SHORT*)malloc(mIndexCapacity * sizeof(SHORT));
+    mVerts = (VERTEX*)neon_malloc(mVertCapacity * sizeof(VERTEX));
+    mIndices = (SHORT*)neon_malloc(mIndexCapacity * sizeof(SHORT));
 }

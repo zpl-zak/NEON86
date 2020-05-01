@@ -22,3 +22,45 @@ FLOAT GetTime(BOOL flush)
 
 	return (counter.QuadPart - perf_counter.QuadPart) / (FLOAT)(perf_freq.QuadPart);
 }
+
+#include <unordered_map>
+static std::unordered_map<LPVOID, DWORD> gMemoryMap;
+
+LPVOID neon_malloc(DWORD size)
+{
+	gMemUsed += size;
+	gMemPeak = gMemUsed;
+
+	LPVOID mem = malloc(size);
+	gMemoryMap[mem] = size;
+	return mem;
+}
+
+LPVOID neon_realloc(LPVOID mem, DWORD newSize)
+{
+	if (gMemoryMap.find(mem) != gMemoryMap.end())
+	{	
+		gMemUsed += (newSize - gMemoryMap[mem]);
+		gMemPeak = gMemUsed;
+		gMemoryMap.erase(mem);
+	}
+
+	LPVOID newMem = realloc(mem, newSize);
+	
+	gMemoryMap[newMem] = newSize;
+	return newMem;
+}
+
+VOID neon_free(LPVOID mem)
+{
+    if (gMemoryMap.find(mem) != gMemoryMap.end())
+    {
+        gMemUsed += gMemoryMap[mem];
+        gMemoryMap.erase(mem);
+    }
+
+	free(mem);
+}
+
+DWORD gMemUsed = 0;
+DWORD gMemPeak = 0;

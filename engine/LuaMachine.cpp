@@ -222,11 +222,30 @@ static VOID _lua_openlibs(lua_State *L) {
 	}
 }
 
+
+LPVOID ENGINE_API neon_luamem(LPVOID ud, LPVOID ptr, size_t osize, size_t nsize)
+{
+    (void)ud;  (void)osize;  /* not used */
+    if (nsize == 0) {
+        neon_free(ptr);
+        return NULL;
+    }
+    else
+        return neon_realloc(ptr, nsize);
+}
+
+static INT neon_luapanic(lua_State* L) {
+    lua_writestringerror("PANIC: unprotected error in call to Lua API (%s)\n",
+        lua_tostring(L, -1));
+    return 0;  /* return to Lua to abort */
+}
+
 VOID CLuaMachine::InitVM(VOID)
 {
 	INT result;
-	mLuaVM = luaL_newstate();
-
+    mLuaVM = lua_newstate(neon_luamem, NULL);
+    if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);
+	
 	_lua_openlibs(mLuaVM);
 	
 	/// Bindings
