@@ -16,31 +16,31 @@ struct lua_State;
 class ENGINE_API CLuaMachine
 {
 public:
-	CLuaMachine(void);
-	VOID Release(void);
+	CLuaMachine(VOID);
+	VOID Release(VOID);
 
 	/// States
-	VOID Play(void);
-	VOID Pause(void);
-	VOID Stop(void);
-	VOID Restart(void);
+	VOID Play(VOID);
+	VOID Pause(VOID);
+	VOID Stop(VOID);
+	VOID Restart(VOID);
 
 	/// Events
-	VOID Init(void);
-	VOID Destroy(void);
+	VOID Init(VOID);
+	VOID Destroy(VOID);
 	VOID Update(FLOAT dt);
-	VOID Render(void);
-	VOID Render2D(void);
+	VOID Render(VOID);
+	VOID Render2D(VOID);
 	VOID Resize(RECT res);
 
-	inline void CheckVMErrors(INT);
+	inline VOID CheckVMErrors(INT);
 private:
 	UCHAR mPlayKind;
 	UCHAR mScheduledTermination;
 	UCHAR *mMainScript;
 	lua_State* mLuaVM;
 
-	VOID InitVM(void);
-	VOID DestroyVM(void);
-	inline void PrintVMError();
+	VOID InitVM(VOID);
+	VOID DestroyVM(VOID);
+	inline VOID PrintVMError();
 };

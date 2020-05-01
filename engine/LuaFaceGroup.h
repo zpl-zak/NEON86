@@ -68,7 +68,7 @@ static INT facegroup_getmaterial(lua_State* L)
 {
     CFaceGroup* fgroup = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
     CMaterial* mat = fgroup->GetMaterial();
-	lua_pushlightuserdata(L, (void*)mat);
+	lua_pushlightuserdata(L, (VOID*)mat);
 	luaL_setmetatable(L, L_MATERIAL);
 
     return 1;
@@ -141,7 +141,7 @@ static INT facegroup_getvertices(lua_State* L)
 	{
 		VERTEX* vert = (mesh->GetVertices() + i);
 		lua_pushinteger(L, i + 1ULL);
-		lua_pushlightuserdata(L, (void*)vert);
+		lua_pushlightuserdata(L, (VOID*)vert);
 		luaL_setmetatable(L, L_VERTEX);
 		lua_settable(L, -3);
 	}

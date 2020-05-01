@@ -14,5 +14,5 @@ public:
     static CFaceGroup* LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials);
 
 private:
-    static void LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType);
+    static VOID LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType);
 };

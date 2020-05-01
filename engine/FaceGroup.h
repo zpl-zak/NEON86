@@ -9,16 +9,16 @@ class CMaterial;
 class CFaceGroup: public CReference<CFaceGroup>
 {
 public:
-	CFaceGroup(void);
+	CFaceGroup(VOID);
 
-	VOID Release(void);
+	VOID Release(VOID);
 	VOID SetMaterial(DWORD stage, CMaterial* tex);
 	VOID AddVertex(const VERTEX& vertex);
 	VOID AddIndex(SHORT index);
 	VOID Draw(D3DXMATRIX*);
 	VOID CalculateNormals();
-	VOID Build(void);
-	VOID Clear(void);
+	VOID Build(VOID);
+	VOID Clear(VOID);
 
 	inline UINT GetNumVertices() { return mData.vertCount; }
 	inline VERTEX* GetVertices() { return mVerts; }

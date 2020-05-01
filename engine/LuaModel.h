@@ -37,7 +37,7 @@ static INT model_getmeshes(lua_State* L)
     {
         CMesh* mesh = model->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (void*)mesh);
+        lua_pushlightuserdata(L, (VOID*)mesh);
         luaL_setmetatable(L, L_MESH);
         lua_settable(L, -3);
     }
@@ -80,7 +80,7 @@ static INT model_findmesh(lua_State* L)
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (void*)mg);
+        lua_pushlightuserdata(L, (VOID*)mg);
         luaL_setmetatable(L, L_MESH);
     }
     else lua_pushnil(L);

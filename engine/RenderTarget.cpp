@@ -13,7 +13,7 @@ CRenderTarget::CRenderTarget(UINT w, UINT h, BOOL depth)
     CreateRenderTarget(w, h, depth);
 }
 
-void CRenderTarget::Release(void)
+VOID CRenderTarget::Release(VOID)
 {
     LPDIRECT3DSURFACE9 surf;
     RENDERER->GetDevice()->GetRenderTarget(0, &surf);
@@ -28,12 +28,12 @@ void CRenderTarget::Release(void)
     mSurfaceHandle = NULL;
 }
 
-void CRenderTarget::Bind()
+VOID CRenderTarget::Bind()
 {
     RENDERER->SetRenderTarget(this, mDepth);
 }
 
-void CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
+VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
 {
     mDepth = depth;
     mTextureHandle = NULL;

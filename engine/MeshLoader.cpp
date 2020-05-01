@@ -113,7 +113,7 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
     return newFGroup;
 }
 
-void CMeshLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
+VOID CMeshLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
 {
     aiString path;
     mat->GetTexture((aiTextureType)texType, 0, &path);

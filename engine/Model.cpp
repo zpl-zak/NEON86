@@ -21,7 +21,7 @@ CModel::CModel(LPSTR modelPath)
         LoadModel(modelPath);
 }
 
-void CModel::Release()
+VOID CModel::Release()
 {
     SAFE_FREE(mMeshes);
     mCount = 0;
@@ -36,7 +36,7 @@ void CModel::Release()
     aiProcess_JoinIdenticalVertices |\
     aiProcess_PreTransformVertices
 
-void CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
+VOID CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
 {
     Assimp::Importer imp;
 
@@ -74,7 +74,7 @@ void CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
     AddMesh(mesh);
 }
 
-void CModel::Draw(const D3DXMATRIX& wmat)
+VOID CModel::Draw(const D3DXMATRIX& wmat)
 {
     if (!mMeshes)
         return;
@@ -96,7 +96,7 @@ CMesh* CModel::FindMesh(LPCSTR name)
     return NULL;
 }
 
-void CModel::AddMesh(CMesh* mg)
+VOID CModel::AddMesh(CMesh* mg)
 {
     if (!mg)
         return;

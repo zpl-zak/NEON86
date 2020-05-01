@@ -11,7 +11,7 @@ public:
     CFrustum();
     VOID Release();
 
-    VOID Build(void);
+    VOID Build(VOID);
     
     BOOL IsPointVisible(D3DXVECTOR3 pos);
     BOOL IsBoxVisible(D3DXVECTOR3 pos, RENDERBOUNDS bounds);

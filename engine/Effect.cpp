@@ -104,7 +104,7 @@ CEffect::CEffect(LPCSTR effectPath)
         errors->Release();
 }
 
-void CEffect::Release()
+VOID CEffect::Release()
 {
     SAFE_RELEASE(mEffect);
 }
@@ -169,12 +169,12 @@ HRESULT CEffect::CommitChanges()
     return mEffect->CommitChanges();
 }
 
-void CEffect::SetFloat(LPCSTR name, FLOAT value)
+VOID CEffect::SetFloat(LPCSTR name, FLOAT value)
 {
     mEffect->SetFloat(name, value);
 }
 
-void CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose)
+VOID CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose)
 {
     if (transpose)
         mEffect->SetMatrixTranspose(name, &value);
@@ -182,33 +182,33 @@ void CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose)
         mEffect->SetMatrix(name, &value);
 }
 
-void CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value)
+VOID CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value)
 {
     mEffect->SetValue(name, &value, sizeof(value));
 }
 
-void CEffect::SetTexture(LPCSTR name, IDirect3DTexture9* value)
+VOID CEffect::SetTexture(LPCSTR name, IDirect3DTexture9* value)
 {
     mEffect->SetTexture(name, value);
 }
 
-void CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value)
+VOID CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value)
 {
     D3DXVECTOR4 vec4 = D3DXVECTOR4(value, 1.0f);
     mEffect->SetVector(name, &vec4);
 }
 
-void CEffect::SetVector4(LPCSTR name, D3DXVECTOR4 value)
+VOID CEffect::SetVector4(LPCSTR name, D3DXVECTOR4 value)
 {
     mEffect->SetVector(name, &value);
 }
 
-void CEffect::SetBool(LPCSTR name, BOOL value)
+VOID CEffect::SetBool(LPCSTR name, BOOL value)
 {
     mEffect->SetBool(name, value);
 }
 
-void CEffect::SetDefaults()
+VOID CEffect::SetDefaults()
 {
     D3DXMATRIX p = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);
     D3DXMATRIX v = RENDERER->GetDeviceMatrix(MATRIXKIND_VIEW);

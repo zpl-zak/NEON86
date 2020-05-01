@@ -9,7 +9,7 @@
 
 #include <lua/lua.hpp>
 
-CLuaMachine::CLuaMachine(void)
+CLuaMachine::CLuaMachine(VOID)
 {
 	mPlayKind = PLAYKIND_STOPPED;
 	mMainScript = NULL;
@@ -17,7 +17,7 @@ CLuaMachine::CLuaMachine(void)
 	mScheduledTermination = FALSE;
 }
 
-VOID CLuaMachine::Release(void)
+VOID CLuaMachine::Release(VOID)
 {
 	CReferenceManager::Release();
 	FILESYSTEM->FreeResource(mMainScript);
@@ -26,7 +26,7 @@ VOID CLuaMachine::Release(void)
 }
 
 /// States
-VOID CLuaMachine::Play(void)
+VOID CLuaMachine::Play(VOID)
 {
 	if (mScheduledTermination)
 	{
@@ -64,7 +64,7 @@ VOID CLuaMachine::Play(void)
 	Init();
 }
 
-VOID CLuaMachine::Pause(void)
+VOID CLuaMachine::Pause(VOID)
 {
 	if (mPlayKind == PLAYKIND_PLAYING)
 		mPlayKind = PLAYKIND_PAUSED;
@@ -72,7 +72,7 @@ VOID CLuaMachine::Pause(void)
 		mPlayKind = PLAYKIND_PLAYING;
 }
 
-VOID CLuaMachine::Stop(void)
+VOID CLuaMachine::Stop(VOID)
 {
 	if (mPlayKind == PLAYKIND_STOPPED)
 		return;
@@ -81,7 +81,7 @@ VOID CLuaMachine::Stop(void)
 	mPlayKind = PLAYKIND_STOPPED;
 }
 
-VOID CLuaMachine::Restart(void)
+VOID CLuaMachine::Restart(VOID)
 {
 	if (mPlayKind != PLAYKIND_STOPPED)
         Stop();
@@ -91,7 +91,7 @@ VOID CLuaMachine::Restart(void)
 }
 
 /// Events
-VOID CLuaMachine::Init(void)
+VOID CLuaMachine::Init(VOID)
 {
     if (!mLuaVM)
         return;
@@ -107,7 +107,7 @@ VOID CLuaMachine::Init(void)
 	CheckVMErrors(r);
 }
 
-VOID CLuaMachine::Destroy(void)
+VOID CLuaMachine::Destroy(VOID)
 {
     if (!mLuaVM)
         return;
@@ -151,7 +151,7 @@ VOID CLuaMachine::Update(FLOAT dt)
 	CheckVMErrors(r);
 }
 
-VOID CLuaMachine::Render(void)
+VOID CLuaMachine::Render(VOID)
 {
 	if (!mLuaVM)
 		return;
@@ -165,7 +165,7 @@ VOID CLuaMachine::Render(void)
 	CheckVMErrors(r);
 }
 
-VOID CLuaMachine::Render2D(void)
+VOID CLuaMachine::Render2D(VOID)
 {
     if (!mLuaVM)
         return;
@@ -213,7 +213,7 @@ static const luaL_Reg loadedlibs[] = {
 	{NULL, NULL}
 };
 
-static void _lua_openlibs(lua_State *L) {
+static VOID _lua_openlibs(lua_State *L) {
 	const luaL_Reg *lib;
 
 	for (lib = loadedlibs; lib->func; lib++) {
@@ -222,7 +222,7 @@ static void _lua_openlibs(lua_State *L) {
 	}
 }
 
-VOID CLuaMachine::InitVM(void)
+VOID CLuaMachine::InitVM(VOID)
 {
 	INT result;
 	mLuaVM = luaL_newstate();
@@ -243,7 +243,7 @@ VOID CLuaMachine::InitVM(void)
 	CheckVMErrors(result);
 }
 
-VOID CLuaMachine::DestroyVM(void)
+VOID CLuaMachine::DestroyVM(VOID)
 {
 	if (!mLuaVM)
 		return;
@@ -252,14 +252,14 @@ VOID CLuaMachine::DestroyVM(void)
 	mLuaVM = NULL;
 }
 
-void CLuaMachine::PrintVMError()
+VOID CLuaMachine::PrintVMError()
 {
 	const char* msg = lua_tostring(mLuaVM, -1);
 	MessageBoxA(NULL, msg, "Lua error", MB_OK);
 	ENGINE->Shutdown();
 }
 
-void CLuaMachine::CheckVMErrors(INT result)
+VOID CLuaMachine::CheckVMErrors(INT result)
 {
 	if (result != LUA_OK)
 	{

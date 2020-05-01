@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-CFileSystem::CFileSystem(void)
+CFileSystem::CFileSystem(VOID)
 {
 	mLoadKind = LOADKIND_FOLDER;
 	mGamePath = "";
@@ -272,7 +272,7 @@ VOID CFileSystem::FreeResource(VOID* data)
 	}
 }
 
-VOID CFileSystem::Release(void)
+VOID CFileSystem::Release(VOID)
 {
 	if (mLoadDone)
 		SAFE_DELETE(mGamePath);

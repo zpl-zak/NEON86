@@ -32,7 +32,7 @@ static INT rtt_gethandle(lua_State* L)
 {
     CRenderTarget* rtt  = (CRenderTarget*)luaL_checkudata(L, 1, L_RENDERTARGET);
 
-    lua_pushlightuserdata(L, (void*)rtt->GetTextureHandle());
+    lua_pushlightuserdata(L, (VOID*)rtt->GetTextureHandle());
     return 1;
 }
 

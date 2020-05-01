@@ -12,14 +12,14 @@ template<typename T>
 class CReference
 {
 public:
-    void Release();
-    void TrackRef(T*);
+    VOID Release();
+    VOID TrackRef(T*);
 private:
     T* mSelf;
 };
 
 template<typename T>
-inline void CReference<T>::Release()
+inline VOID CReference<T>::Release()
 {
     mSelf->Release();
 }
@@ -28,8 +28,8 @@ template<typename T>
 class CReferenceContainer
 {
 public:
-    void AddRef(CReference<T> m);
-    void Release();
+    VOID AddRef(CReference<T> m);
+    VOID Release();
 
 private:
     std::vector<CReference<T>> mRefs;
@@ -38,10 +38,10 @@ private:
 class CReferenceManager
 {
 public:
-    static void Release();
+    static VOID Release();
 
     template<typename T>
-    inline static void TrackRef(CReference<T>* t) {
+    inline static VOID TrackRef(CReference<T>* t) {
         t->TrackRef((T*)t);
     }
 
@@ -51,13 +51,13 @@ public:
 };
 
 template<typename T>
-inline void CReferenceContainer<T>::AddRef(CReference<T> m)
+inline VOID CReferenceContainer<T>::AddRef(CReference<T> m)
 {
     mRefs.push_back(m);
 }
 
 template<typename T>
-inline void CReferenceContainer<T>::Release()
+inline VOID CReferenceContainer<T>::Release()
 {
     for (auto r : mRefs)
         r.Release();
@@ -65,19 +65,19 @@ inline void CReferenceContainer<T>::Release()
     mRefs.clear();
 }
 
-inline void CReference<CFaceGroup>::TrackRef(CFaceGroup* self)
+inline VOID CReference<CFaceGroup>::TrackRef(CFaceGroup* self)
 {
     mSelf = self;
     CReferenceManager::faceGroups.AddRef(*this);
 }
 
-inline void CReference<CMaterial>::TrackRef(CMaterial* self)
+inline VOID CReference<CMaterial>::TrackRef(CMaterial* self)
 {
     mSelf = self;
     CReferenceManager::materials.AddRef(*this);
 }
 
-inline void CReference<CMesh>::TrackRef(CMesh* self)
+inline VOID CReference<CMesh>::TrackRef(CMesh* self)
 {
     mSelf = self;
     CReferenceManager::meshes.AddRef(*this);

@@ -6,7 +6,7 @@
 #include "Material.h"
 #include "Frustum.h"
 
-CFaceGroup::CFaceGroup(void)
+CFaceGroup::CFaceGroup(VOID)
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
 	mVertCapacity = mIndexCapacity = 4;
@@ -16,7 +16,7 @@ CFaceGroup::CFaceGroup(void)
 	mIsDirty = FALSE;
 }
 
-VOID CFaceGroup::Release(void)
+VOID CFaceGroup::Release(VOID)
 {
 	SAFE_FREE(mVerts);
 	SAFE_FREE(mIndices);
@@ -100,7 +100,7 @@ VOID CFaceGroup::CalculateNormals()
 	D3DXComputeNormals(mData.mesh, NULL);
 }
 
-VOID CFaceGroup::Build(void)
+VOID CFaceGroup::Build(VOID)
 {
 	LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 	VOID *vidMem = NULL;
@@ -139,7 +139,7 @@ VOID CFaceGroup::Build(void)
 	mIsDirty = FALSE;
 }
 
-VOID CFaceGroup::Clear(void)
+VOID CFaceGroup::Clear(VOID)
 {
 	Release();
 	mData.vertCount = mData.primCount = mData.indexCount = 0;

@@ -10,7 +10,7 @@ CReferenceContainer<CFaceGroup> CReferenceManager::faceGroups;
 CReferenceContainer<CMaterial> CReferenceManager::materials;
 CReferenceContainer<CMesh> CReferenceManager::meshes;
 
-void CReferenceManager::Release()
+VOID CReferenceManager::Release()
 {
     faceGroups.Release();
     materials.Release();

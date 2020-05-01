@@ -11,33 +11,33 @@ class CMaterial: public CReference<CMaterial>
 public:
     CMaterial(UINT slot, LPSTR texName);
     CMaterial(UINT slot, UINT w, UINT h);
-    CMaterial(UINT slot, void* data, UINT size = 1);
+    CMaterial(UINT slot, VOID* data, UINT size = 1);
     CMaterial();
 
-    void DefaultMaterial();
-    void Release(void);
+    VOID DefaultMaterial();
+    VOID Release(VOID);
 
-    void CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);
-    void CreateEmbeddedTextureForSlot(UINT slot, void* data, UINT size);
+    VOID CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);
+    VOID CreateEmbeddedTextureForSlot(UINT slot, VOID* data, UINT size);
     
-    inline void SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
+    inline VOID SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
     inline UINT GetSamplerState(UINT state) const { return mStats[state]; }
     inline LPDIRECT3DTEXTURE9 GetTextureHandle(UINT slot=TEXTURESLOT_ALBEDO) { return mTextureHandle[slot]; }
     inline LPDIRECT3DTEXTURE9 GetUserTextureHandle(UINT userSlot) { return mTextureHandle[userSlot]; }
 
-    void SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
-    void Bind(DWORD stage);
-    void Unbind(DWORD stage);
-    void* Lock(UINT slot=TEXTURESLOT_ALBEDO);
-    void UploadARGB(UINT slot, void* data, UINT size);
-    void Unlock(UINT slot = TEXTURESLOT_ALBEDO);
+    VOID SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
+    VOID Bind(DWORD stage);
+    VOID Unbind(DWORD stage);
+    VOID* Lock(UINT slot=TEXTURESLOT_ALBEDO);
+    VOID UploadARGB(UINT slot, VOID* data, UINT size);
+    VOID Unlock(UINT slot = TEXTURESLOT_ALBEDO);
 
-    void SetAmbient(D3DCOLORVALUE color);
-    void SetDiffuse(D3DCOLORVALUE color);
-    void SetSpecular(D3DCOLORVALUE color);
-    void SetEmission(D3DCOLORVALUE color);
-    void SetPower(FLOAT val);
-    void SetOpacity(FLOAT val);
+    VOID SetAmbient(D3DCOLORVALUE color);
+    VOID SetDiffuse(D3DCOLORVALUE color);
+    VOID SetSpecular(D3DCOLORVALUE color);
+    VOID SetEmission(D3DCOLORVALUE color);
+    VOID SetPower(FLOAT val);
+    VOID SetOpacity(FLOAT val);
 
     inline MATERIAL GetMaterialData() const { return mMaterialData; }
 

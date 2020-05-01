@@ -9,10 +9,10 @@ class CModel
 {
 public:
     CModel(LPSTR modelPath=NULL);
-    void Release();
+    VOID Release();
 
-    void LoadModel(LPCSTR modelPath, BOOL loadMaterials = TRUE);
-    void Draw(const D3DXMATRIX& wmat);
+    VOID LoadModel(LPCSTR modelPath, BOOL loadMaterials = TRUE);
+    VOID Draw(const D3DXMATRIX& wmat);
 
     inline UINT GetNumMeshes() { return mCount; }
     inline CMesh** GetMeshes() { return mMeshes; }
@@ -24,5 +24,5 @@ private:
 
     static D3DXMATRIX identityMat;
 
-    void AddMesh(CMesh* mg);
+    VOID AddMesh(CMesh* mg);
 };

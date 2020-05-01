@@ -30,7 +30,7 @@ struct FDATA
 #define _FILE_DEFINED
 typedef struct _iobuf
 {
-    void* _Placeholder;
+    VOID* _Placeholder;
 } FILE;
 #endif
 
@@ -39,7 +39,7 @@ typedef struct _iobuf
 class ENGINE_API CFileSystem
 {
 public:
-	CFileSystem(void);
+	CFileSystem(VOID);
 	BOOL LoadGame(LPSTR gamePath, UCHAR loadKind = LOADKIND_FOLDER);
 	FDATA GetResource(UCHAR kind, LPCSTR resName=NULL);
 	FILE* OpenResource(UCHAR kind, LPCSTR resName = NULL);
@@ -47,7 +47,7 @@ public:
 	LPSTR ResourcePath(UCHAR kind, LPCSTR resName = NULL);
 	BOOL Exists(UCHAR kind, LPCSTR resName);
 	VOID FreeResource(VOID* data);
-	VOID Release(void);
+	VOID Release(VOID);
 
 private:
 	UCHAR mLoadKind;

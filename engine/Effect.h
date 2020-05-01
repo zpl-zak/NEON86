@@ -7,7 +7,7 @@ class CEffect
 {
 public:
     CEffect(LPCSTR effectPath);
-    void Release();
+    VOID Release();
 
     UINT Begin(LPCSTR technique);
     HRESULT End();
@@ -18,15 +18,15 @@ public:
     HRESULT CommitChanges();
 
     // Uniforms
-    void SetFloat(LPCSTR name, FLOAT value);
-    void SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose=FALSE);
-    void SetColor(LPCSTR name, D3DCOLORVALUE value);
-    void SetTexture(LPCSTR name, IDirect3DTexture9* value);
-    void SetVector3(LPCSTR name, D3DXVECTOR3 value);
-    void SetVector4(LPCSTR name, D3DXVECTOR4 value);
-    void SetBool(LPCSTR name, BOOL value);
+    VOID SetFloat(LPCSTR name, FLOAT value);
+    VOID SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose=FALSE);
+    VOID SetColor(LPCSTR name, D3DCOLORVALUE value);
+    VOID SetTexture(LPCSTR name, IDirect3DTexture9* value);
+    VOID SetVector3(LPCSTR name, D3DXVECTOR3 value);
+    VOID SetVector4(LPCSTR name, D3DXVECTOR4 value);
+    VOID SetBool(LPCSTR name, BOOL value);
 private:
     ID3DXEffect* mEffect;
 
-    void SetDefaults();
+    VOID SetDefaults();
 };

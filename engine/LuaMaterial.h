@@ -130,7 +130,7 @@ static INT material_gethandle(lua_State* L)
     CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
     UINT slot = (UINT)luaL_checkinteger(L, 2) - 1;
 
-    lua_pushlightuserdata(L, (void*)mat->GetTextureHandle(slot));
+    lua_pushlightuserdata(L, (VOID*)mat->GetTextureHandle(slot));
     return 1;
 }
 

@@ -13,8 +13,8 @@ enum {
 class ENGINE_API CInput
 {
 public:
-	CInput(void);
-	VOID Release(void);
+	CInput(VOID);
+	VOID Release(VOID);
 
 	inline BOOL GetKey(DWORD code) const { return mKeys[code]; }
 	inline BOOL GetKeyDown(DWORD code) const { return mKeysDown[code]; }
@@ -22,12 +22,12 @@ public:
 	inline BOOL GetMouse(DWORD code) const { return mMouseInputs[code]; }
 	inline BOOL GetMouseDown(DWORD code) const { return mMouseDown[code]; }
 	inline BOOL GetMouseUp(DWORD code) const { return mMouseUp[code]; }
-	inline BOOL GetLastKey(void) const { return mLastKey; }
-	POINT GetMouseXY(void) const;
-	inline POINT GetMouseDelta(void) const { return mMouseDelta; };
+	inline BOOL GetLastKey(VOID) const { return mLastKey; }
+	POINT GetMouseXY(VOID) const;
+	inline POINT GetMouseDelta(VOID) const { return mMouseDelta; };
 
 	VOID SetCursor(BOOL state);
-	BOOL GetCursor(void);
+	BOOL GetCursor(VOID);
 	inline UCHAR GetCursorMode() { return mCursorMode; }
 	VOID SetCursorMode(UCHAR mode);
 	
@@ -40,8 +40,8 @@ public:
 	inline VOID SetMouseUp(DWORD code, BOOL state) { mMouseUp[code] = state; }
 	VOID SetMouseXY(SHORT x, SHORT y);
 
-	inline VOID ClearKey(void) { mLastKey = -1; }
-	VOID Update(void);
+	inline VOID ClearKey(VOID) { mLastKey = -1; }
+	VOID Update(VOID);
 
     enum
     {

@@ -30,7 +30,7 @@ CRenderer::CRenderer()
 	ZeroMemory(&mParams, sizeof(mParams));
 }
 
-void CRenderer::BuildParams()
+VOID CRenderer::BuildParams()
 {
 	ZeroMemory(&mParams, sizeof(mParams));
 	mParams.Windowed = TRUE;
@@ -115,7 +115,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 	return res;
 }
 
-void CRenderer::ResetDevice(void)
+VOID CRenderer::ResetDevice(VOID)
 {
 	if (!mDevice)
 		return;
@@ -126,13 +126,13 @@ void CRenderer::ResetDevice(void)
 	SetDefaultRenderStates();
 }
 
-void CRenderer::SetVSYNC(BOOL state)
+VOID CRenderer::SetVSYNC(BOOL state)
 {
 	mVsync = state;
 	ResetDevice();
 }
 
-void CRenderer::Blit()
+VOID CRenderer::Blit()
 {
 	DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 255));
     IDirect3DSurface9* bbuf = NULL;
@@ -146,7 +146,7 @@ void CRenderer::Blit()
 	bbuf->Release();
 }
 
-void CRenderer::Clear()
+VOID CRenderer::Clear()
 {
 
 }
@@ -161,7 +161,7 @@ BOOL CRenderer::Release()
 	return TRUE;
 }
 
-void CRenderer::Resize(RECT res)
+VOID CRenderer::Resize(RECT res)
 {
 	if (!mDevice)
 		return;
@@ -186,7 +186,7 @@ void CRenderer::Resize(RECT res)
 }
 
 /// Render commands
-void CRenderer::DrawMesh(const RENDERDATA& data)
+VOID CRenderer::DrawMesh(const RENDERDATA& data)
 {
 	if (data.usesMatrix)
 		SetMatrix(MATRIXKIND_WORLD, data.matrix);
@@ -215,7 +215,7 @@ void CRenderer::DrawMesh(const RENDERDATA& data)
 	data.mesh->DrawSubset(0);
 }
 
-void CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY)
+VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY)
 {
 	VERTEX_2D verts[] = 
 	{
@@ -235,16 +235,16 @@ void CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
 
 	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
 	mDevice->SetVertexDeclaration(vertsDecl);
-	mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6, (void*)verts, sizeof(VERTEX_2D));
+	mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6, (VOID*)verts, sizeof(VERTEX_2D));
 	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 }
 
-void CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
+VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 {
 	mDevice->Clear(0, NULL, flags, color, 1.0f, 1);
 }
 
-void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
+VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 {
     if (GetActiveEffect() && mat)
     {
@@ -292,13 +292,13 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 	}
 }
 
-void CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
+VOID CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
 {
     mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, handle);
 }
 
-void CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
+VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
 {
     mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind,
         &mat);
@@ -307,7 +307,7 @@ void CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
         GetFrustum()->Build();
 }
 
-void CRenderer::ResetMatrices()
+VOID CRenderer::ResetMatrices()
 {
 	D3DXMATRIX mat;
 	D3DXMatrixIdentity(&mat);
@@ -317,7 +317,7 @@ void CRenderer::ResetMatrices()
 	mDevice->SetTransform(D3DTS_PROJECTION, &mat);
 }
 
-void CRenderer::SetRenderTarget(CRenderTarget* target, BOOL depth)
+VOID CRenderer::SetRenderTarget(CRenderTarget* target, BOOL depth)
 {
 	if (target && target->GetSurfaceHandle())
 	{
@@ -333,17 +333,17 @@ void CRenderer::SetRenderTarget(CRenderTarget* target, BOOL depth)
 	}
 }
 
-void CRenderer::SetRenderState(DWORD kind, DWORD value)
+VOID CRenderer::SetRenderState(DWORD kind, DWORD value)
 {
 	mDevice->SetRenderState((D3DRENDERSTATETYPE)kind, (DWORD)value);
 }
 
-void CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
+VOID CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
 {
 	mDevice->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)kind, value);
 }
 
-void CRenderer::SetDefaultRenderStates()
+VOID CRenderer::SetDefaultRenderStates()
 {
     mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);

@@ -98,7 +98,7 @@ VOID CEngine::Think()
         Sleep(1); // Let CPU sleep a bit
 }
 
-void CEngine::ResetApplicationTime()
+VOID CEngine::ResetApplicationTime()
 {
     mLastTime = GetTime(TRUE);
 }

@@ -21,27 +21,27 @@ public:
     CRenderer();
 
     LRESULT CreateDevice(HWND window, RECT winres);
-    void ResetDevice(void);
+    VOID ResetDevice(VOID);
     BOOL Release();
-    void Resize(RECT res);
-    void SetVSYNC(BOOL state);
-    void Blit();
+    VOID Resize(RECT res);
+    VOID SetVSYNC(BOOL state);
+    VOID Blit();
 
     /// Render commands
-    void DrawMesh(const RENDERDATA& data);
-    void DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY = FALSE);
-    void ClearBuffer(D3DCOLOR color, UINT flags = CLEARFLAG_STANDARD);
-    void SetMaterial(DWORD stage, CMaterial* mat);
-    void SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
-    void SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
-    void ResetMatrices();
-    void SetRenderTarget(CRenderTarget* target, BOOL depth = FALSE);
-    void SetRenderState(DWORD kind, DWORD value);
-    void SetSamplerState(DWORD stage, DWORD kind, DWORD value);
+    VOID DrawMesh(const RENDERDATA& data);
+    VOID DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY = FALSE);
+    VOID ClearBuffer(D3DCOLOR color, UINT flags = CLEARFLAG_STANDARD);
+    VOID SetMaterial(DWORD stage, CMaterial* mat);
+    VOID SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
+    VOID SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
+    VOID ResetMatrices();
+    VOID SetRenderTarget(CRenderTarget* target, BOOL depth = FALSE);
+    VOID SetRenderState(DWORD kind, DWORD value);
+    VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
 
-    inline void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
+    inline VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
-    void SetDefaultRenderStates();
+    VOID SetDefaultRenderStates();
 
     /// Accessors
     inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
@@ -67,6 +67,6 @@ protected:
     BOOL mVsync;
     BOOL mFullscreen;
 
-    void Clear(void);
-    void BuildParams(void);
+    VOID Clear(VOID);
+    VOID BuildParams(VOID);
 };

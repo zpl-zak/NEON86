@@ -10,7 +10,7 @@ class CUserInterface;
 
 class ENGINE_API CEngine {
 public:
-	CEngine(void);
+	CEngine(VOID);
 
 	static CEngine* the();
 
@@ -19,7 +19,7 @@ public:
 	VOID Shutdown();
 	VOID Resize(RECT resolution);
 	VOID Think();
-	void ResetApplicationTime();
+	VOID ResetApplicationTime();
 
 	CRenderer* GetRenderer() { return mRenderer; }
 	CInput* GetInput() { return mInput; }

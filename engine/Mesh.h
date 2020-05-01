@@ -11,20 +11,20 @@ class CFaceGroup;
 class CMesh: public CReference<CMesh>
 {
 public:
-    CMesh(void);
+    CMesh(VOID);
      
-    VOID Release(void);
+    VOID Release(VOID);
     VOID AddMesh(CFaceGroup*, const D3DXMATRIX&);
     
     VOID Draw(const D3DXMATRIX& wmat);
-    VOID Clear(void);
+    VOID Clear(VOID);
 
     inline UINT GetNumFGroups() const { return mCount; }
     inline CFaceGroup** GetFGroups() { return mFaceGroups; }
     inline D3DXMATRIX* GetTransforms() { return mTransforms; }
 
     inline aiString GetName() { return mName; }
-    inline void SetName(aiString name) { mName = name; }
+    inline VOID SetName(aiString name) { mName = name; }
 
 private:
     CFaceGroup** mFaceGroups;

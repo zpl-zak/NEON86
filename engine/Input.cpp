@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "Renderer.h"
 
-CInput::CInput(void)
+CInput::CInput(VOID)
 {
     ZeroMemory(mKeys, NUM_KEYS * sizeof(BOOL));
     ZeroMemory(mKeysDown, NUM_KEYS * sizeof(BOOL));
@@ -19,12 +19,12 @@ CInput::CInput(void)
     mLastMousePos = GetMouseXY();
 }
 
-VOID CInput::Release(void)
+VOID CInput::Release(VOID)
 {
 
 }
 
-POINT CInput::GetMouseXY(void) const
+POINT CInput::GetMouseXY(VOID) const
 {
     POINT newPos = { 0 };
     GetCursorPos(&newPos);
@@ -38,7 +38,7 @@ VOID CInput::SetCursor(BOOL state)
     ShowCursor(state);
 }
 
-BOOL CInput::GetCursor(void)
+BOOL CInput::GetCursor(VOID)
 {
     CURSORINFO pci = { 0 };
     pci.cbSize = sizeof(CURSORINFO);
@@ -66,7 +66,7 @@ VOID CInput::SetMouseXY(SHORT x, SHORT y)
     SetCursorPos(pos.x, pos.y);
 }
 
-VOID CInput::Update(void)
+VOID CInput::Update(VOID)
 {
     for (UINT i = 0; i < NUM_MOUSEBUTTONS; i++)
     {

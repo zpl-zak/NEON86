@@ -10,7 +10,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-CMesh::CMesh(void)
+CMesh::CMesh(VOID)
 {
     mCount = 0;
     mCapacity = 4;
@@ -18,7 +18,7 @@ CMesh::CMesh(void)
     mTransforms = (D3DXMATRIX*)malloc(mCapacity * sizeof(D3DXMATRIX));
 }
 
-VOID CMesh::Release(void)
+VOID CMesh::Release(VOID)
 {
     SAFE_FREE(mFaceGroups);
     SAFE_FREE(mTransforms);
@@ -62,7 +62,7 @@ VOID CMesh::Draw(const D3DXMATRIX& wmat)
     }
 }
 
-VOID CMesh::Clear(void)
+VOID CMesh::Clear(VOID)
 {
     mCount = 0;
 }
