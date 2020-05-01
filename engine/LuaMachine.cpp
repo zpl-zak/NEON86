@@ -228,13 +228,14 @@ LPVOID ENGINE_API neon_luamem(LPVOID ud, LPVOID ptr, size_t osize, size_t nsize)
     (void)ud;  /* not used */
 
     if (nsize == 0) {
-		gMemUsed -= osize;
+		gMemUsedLua -= osize;
         free(ptr);
         return NULL;
     }
 	else
 	{
-		gMemUsed += (nsize - osize);
+		gMemUsedLua += (nsize - osize);
+		neon_mempeak_update();
 		return realloc(ptr, nsize);
 	}
 }
@@ -274,7 +275,6 @@ VOID CLuaMachine::DestroyVM(VOID)
 
 	lua_close(mLuaVM);
 	mLuaVM = NULL;
-	//neon_memreset();
 }
 
 VOID CLuaMachine::PrintVMError()

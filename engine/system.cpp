@@ -28,15 +28,8 @@ static std::unordered_map<LPVOID, DWORD> gMemoryMap;
 
 VOID neon_mempeak_update()
 {
-	if (gMemUsed > gMemPeak)
-		gMemPeak = gMemUsed;
-}
-
-VOID neon_memreset()
-{
-	// todo: avoid doing this
-	gMemUsed = gMemPeak = 0;
-	gMemoryMap.clear();
+	if ((gMemUsed+gMemUsedLua) > gMemPeak)
+		gMemPeak = (gMemUsed + gMemUsedLua);
 }
 
 LPVOID neon_malloc(DWORD size)
@@ -76,4 +69,5 @@ VOID neon_free(LPVOID mem)
 }
 
 DWORD gMemUsed = 0;
+DWORD gMemUsedLua = 0;
 DWORD gMemPeak = 0;

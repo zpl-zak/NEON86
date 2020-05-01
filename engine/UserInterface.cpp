@@ -64,7 +64,7 @@ VOID CUserInterface::DebugPanel(VOID)
         ImGui::Separator();
         ImGui::Text("TIME: %.2fs", GetTime());
         ImGui::Separator();
-        ImGui::Text("MEM: %d bytes PEAK: %d bytes", gMemUsed, gMemPeak);
+        ImGui::Text("MEM ENGINE: %.3f kb LUA: %.3f kb TOTAL: %.3f kb PEAK: %.3f kb", gMemUsed/1024.0, gMemUsedLua / 1024.0, (gMemUsed+gMemUsedLua) / 1024.0, gMemPeak / 1024.0);
         ImGui::Separator();
 
         if (ImGui::Button("Restart VM"))
