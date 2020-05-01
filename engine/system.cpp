@@ -26,10 +26,23 @@ FLOAT GetTime(BOOL flush)
 #include <unordered_map>
 static std::unordered_map<LPVOID, DWORD> gMemoryMap;
 
+VOID neon_mempeak_update()
+{
+	if (gMemUsed > gMemPeak)
+		gMemPeak = gMemUsed;
+}
+
+VOID neon_memreset()
+{
+	// todo: avoid doing this
+	gMemUsed = gMemPeak = 0;
+	gMemoryMap.clear();
+}
+
 LPVOID neon_malloc(DWORD size)
 {
 	gMemUsed += size;
-	gMemPeak = gMemUsed;
+	neon_mempeak_update();
 
 	LPVOID mem = malloc(size);
 	gMemoryMap[mem] = size;
@@ -41,7 +54,7 @@ LPVOID neon_realloc(LPVOID mem, DWORD newSize)
 	if (gMemoryMap.find(mem) != gMemoryMap.end())
 	{	
 		gMemUsed += (newSize - gMemoryMap[mem]);
-		gMemPeak = gMemUsed;
+		neon_mempeak_update();
 		gMemoryMap.erase(mem);
 	}
 
@@ -55,7 +68,7 @@ VOID neon_free(LPVOID mem)
 {
     if (gMemoryMap.find(mem) != gMemoryMap.end())
     {
-        gMemUsed += gMemoryMap[mem];
+        gMemUsed -= gMemoryMap[mem];
         gMemoryMap.erase(mem);
     }
 

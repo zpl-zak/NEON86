@@ -225,13 +225,18 @@ static VOID _lua_openlibs(lua_State *L) {
 
 LPVOID ENGINE_API neon_luamem(LPVOID ud, LPVOID ptr, size_t osize, size_t nsize)
 {
-    (void)ud;  (void)osize;  /* not used */
+    (void)ud;  /* not used */
+
     if (nsize == 0) {
-        neon_free(ptr);
+		gMemUsed -= osize;
+        free(ptr);
         return NULL;
     }
-    else
-        return neon_realloc(ptr, nsize);
+	else
+	{
+		gMemUsed += (nsize - osize);
+		return realloc(ptr, nsize);
+	}
 }
 
 static INT neon_luapanic(lua_State* L) {
@@ -269,6 +274,7 @@ VOID CLuaMachine::DestroyVM(VOID)
 
 	lua_close(mLuaVM);
 	mLuaVM = NULL;
+	//neon_memreset();
 }
 
 VOID CLuaMachine::PrintVMError()

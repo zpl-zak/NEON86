@@ -15,6 +15,7 @@ extern FLOAT GetTime(BOOL flush = FALSE);
 
 
 extern DWORD gMemUsed, gMemPeak;
+extern VOID neon_memreset();
 extern LPVOID neon_malloc(DWORD size);
 extern LPVOID neon_realloc(LPVOID mem, DWORD newSize);
 extern VOID neon_free(LPVOID mem);
