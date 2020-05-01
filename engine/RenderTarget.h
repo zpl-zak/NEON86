@@ -19,7 +19,7 @@ public:
     inline LPDIRECT3DTEXTURE9 GetDepthTextureHandle() { return mDepthTextureHandle; }
     inline LPDIRECT3DSURFACE9 GetDepthSurfaceHandle() { return mDepthSurfaceHandle; }
 
-    VOID Bind();
+    VOID Bind(VOID);
     
 private:
     BOOL mDepth;

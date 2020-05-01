@@ -9,7 +9,7 @@ class CFrustum
 {
 public:
     CFrustum();
-    VOID Release();
+    VOID Release(VOID);
 
     VOID Build(VOID);
     

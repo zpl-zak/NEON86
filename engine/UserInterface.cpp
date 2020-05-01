@@ -6,7 +6,7 @@ CUserInterface::CUserInterface()
 
 }
 
-BOOL CUserInterface::Release()
+BOOL CUserInterface::Release(VOID)
 {
     return TRUE;
 }

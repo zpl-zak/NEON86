@@ -8,12 +8,12 @@ CFrustum::CFrustum()
     
 }
 
-VOID CFrustum::Release()
+VOID CFrustum::Release(VOID)
 {
 
 }
 
-VOID CFrustum::Build()
+VOID CFrustum::Build(VOID)
 {
     //FLOAT zmin, r;
     D3DXMATRIX mat;

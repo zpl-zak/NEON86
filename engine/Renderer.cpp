@@ -30,7 +30,7 @@ CRenderer::CRenderer()
 	ZeroMemory(&mParams, sizeof(mParams));
 }
 
-VOID CRenderer::BuildParams()
+VOID CRenderer::BuildParams(VOID)
 {
 	ZeroMemory(&mParams, sizeof(mParams));
 	mParams.Windowed = TRUE;
@@ -132,7 +132,7 @@ VOID CRenderer::SetVSYNC(BOOL state)
 	ResetDevice();
 }
 
-VOID CRenderer::Blit()
+VOID CRenderer::Blit(VOID)
 {
 	DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 255));
     IDirect3DSurface9* bbuf = NULL;
@@ -146,12 +146,12 @@ VOID CRenderer::Blit()
 	bbuf->Release();
 }
 
-VOID CRenderer::Clear()
+VOID CRenderer::Clear(VOID)
 {
 
 }
 
-BOOL CRenderer::Release()
+BOOL CRenderer::Release(VOID)
 {
 	SAFE_RELEASE(mMainTarget);
 	SAFE_RELEASE(mFrustum);
@@ -365,7 +365,7 @@ D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
 	return mat;
 }
 
-RECT CRenderer::GetLocalCoordinates() const
+RECT CRenderer::GetLocalCoordinates(VOID) const
 {
     RECT Rect;
     GetWindowRect(mWindow, &Rect);

@@ -14,7 +14,7 @@ public:
     CMaterial(UINT slot, VOID* data, UINT size = 1);
     CMaterial();
 
-    VOID DefaultMaterial();
+    VOID DefaultMaterial(VOID);
     VOID Release(VOID);
 
     VOID CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);

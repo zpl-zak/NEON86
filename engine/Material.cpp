@@ -34,7 +34,7 @@ CMaterial::CMaterial(UINT slot, VOID* data, UINT size)
     DefaultMaterial();
 }
 
-VOID CMaterial::DefaultMaterial()
+VOID CMaterial::DefaultMaterial(VOID)
 {
     ZeroMemory(&mMaterialData, sizeof(mMaterialData));
 

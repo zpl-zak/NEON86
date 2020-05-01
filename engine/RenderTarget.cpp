@@ -28,7 +28,7 @@ VOID CRenderTarget::Release(VOID)
     mSurfaceHandle = NULL;
 }
 
-VOID CRenderTarget::Bind()
+VOID CRenderTarget::Bind(VOID)
 {
     RENDERER->SetRenderTarget(this, mDepth);
 }
