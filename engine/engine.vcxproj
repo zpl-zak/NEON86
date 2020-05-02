@@ -294,6 +294,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
@@ -302,7 +303,6 @@
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
     <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="engine.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LuaBindings.cpp" />
@@ -326,6 +326,7 @@
   <ItemGroup>
     <ClInclude Include="BuiltinShaders.h" />
     <ClInclude Include="Effect.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
@@ -341,7 +342,6 @@
     <ClInclude Include="LuaModel.h" />
     <ClInclude Include="LuaRenderTarget.h" />
     <ClInclude Include="Mesh.h" />
-    <ClInclude Include="engine.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LuaBindings.h" />
