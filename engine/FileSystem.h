@@ -46,7 +46,7 @@ public:
 	VOID CloseResource(FILE* handle);
 	LPCSTR ResourcePath(UCHAR kind, LPCSTR resName = NULL);
 	BOOL Exists(UCHAR kind, LPCSTR resName);
-	VOID FreeResource(VOID* data);
+	VOID FreeResource(LPVOID data);
 	VOID Release(VOID);
 
 private:

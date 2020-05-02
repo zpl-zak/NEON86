@@ -259,7 +259,7 @@ BOOL CFileSystem::Exists(UCHAR kind, LPCSTR resName)
     return FALSE;
 }
 
-VOID CFileSystem::FreeResource(VOID* data)
+VOID CFileSystem::FreeResource(LPVOID data)
 {
 	switch (mLoadKind)
 	{
