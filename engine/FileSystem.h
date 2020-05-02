@@ -19,7 +19,7 @@ enum RESOURCEKIND
 
 struct FDATA
 {
-	VOID* data;
+	LPVOID data;
 	UINT size;
 };
 
@@ -44,7 +44,7 @@ public:
 	FDATA GetResource(UCHAR kind, LPCSTR resName=NULL);
 	FILE* OpenResource(UCHAR kind, LPCSTR resName = NULL);
 	VOID CloseResource(FILE* handle);
-	LPSTR ResourcePath(UCHAR kind, LPCSTR resName = NULL);
+	LPCSTR ResourcePath(UCHAR kind, LPCSTR resName = NULL);
 	BOOL Exists(UCHAR kind, LPCSTR resName);
 	VOID FreeResource(VOID* data);
 	VOID Release(VOID);

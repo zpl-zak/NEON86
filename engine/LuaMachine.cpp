@@ -228,13 +228,15 @@ LPVOID ENGINE_API neon_luamem(LPVOID ud, LPVOID ptr, size_t osize, size_t nsize)
     (void)ud;  /* not used */
 
     if (nsize == 0) {
-		gMemUsedLua -= osize;
+      if (gMemUsedLua - osize >= 0)
+			gMemUsedLua -= osize;
         free(ptr);
         return NULL;
     }
 	else
 	{
 		gMemUsedLua += (nsize - osize);
+
 		neon_mempeak_update();
 		return realloc(ptr, nsize);
 	}

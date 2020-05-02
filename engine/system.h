@@ -20,6 +20,12 @@ extern LPVOID neon_malloc(DWORD size);
 extern LPVOID neon_realloc(LPVOID mem, DWORD newSize);
 extern VOID neon_free(LPVOID mem);
 
+/// panic handling
+#define NEON_PANIC_FN(name) VOID name(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
+typedef NEON_PANIC_FN(neon_panic_ptr);
+extern neon_panic_ptr* gPanicHandler;
+extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
+
 /// zpl
 #include "zpl_macros.h"
 

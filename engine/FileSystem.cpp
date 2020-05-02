@@ -221,7 +221,7 @@ VOID CFileSystem::CloseResource(FILE* handle)
 		fclose(handle);
 }
 
-LPSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
+LPCSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
 {
     if (!mLoadDone)
         return NULL;
@@ -234,7 +234,7 @@ LPSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
         {
             static CHAR path[MAX_PATH] = { 0 };
             sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
-			return (LPSTR)path;
+			return path;
         }
         break;
         case LOADKIND_PAK:

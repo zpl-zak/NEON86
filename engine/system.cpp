@@ -68,6 +68,18 @@ VOID neon_free(LPVOID mem)
 	free(mem);
 }
 
+void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style)
+{
+	if (!gPanicHandler)
+	{
+		MessageBoxA(window, text, caption, style);
+		return;
+	}
+
+	gPanicHandler(window, text, caption, style);
+}
+
 DWORD gMemUsed = 0;
 DWORD gMemUsedLua = 0;
 DWORD gMemPeak = 0;
+neon_panic_ptr* gPanicHandler = NULL;
