@@ -34,7 +34,9 @@ VOID CModel::Release()
     aiProcess_CalcTangentSpace |\
     aiProcess_FlipUVs |\
     aiProcess_JoinIdenticalVertices |\
-    aiProcess_PreTransformVertices
+    aiProcess_PreTransformVertices |\
+    aiProcess_Debone |\
+    aiProcess_OptimizeMeshes
 
 VOID CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
 {
