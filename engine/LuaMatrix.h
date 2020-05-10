@@ -53,6 +53,33 @@ static INT matrix_scale(lua_State* L)
 	return 1;
 }
 
+static INT matrix_reflect(lua_State* L)
+{
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    D3DXVECTOR4 vec = luaH_getcomps(L);
+    D3DXMATRIX t;
+	D3DXPLANE plane(vec.x, vec.y, vec.z, vec.w);
+	D3DXMatrixReflect(&t, &plane);
+    *mat *= t;
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static INT matrix_shadow(lua_State* L)
+{
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    D3DXVECTOR4 vec = luaH_getcomps(L);
+	D3DXVECTOR4 lit = luaH_getcomps(L, 1);
+    D3DXMATRIX t;
+    D3DXPLANE plane(vec.x, vec.y, vec.z, vec.w);
+    D3DXMatrixShadow(&t, &lit, &plane);
+    *mat *= t;
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
 static INT matrix_mul(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
@@ -167,6 +194,8 @@ static VOID LuaMatrix_register(lua_State* L)
 	REGC("__mul", matrix_mul);
 	REGC("m", matrix_getfield);
 	REGC("inverse", matrix_inverse);
+	REGC("reflect", matrix_reflect);
+	REGC("shadow", matrix_shadow);
 	REGC("row", matrix_getrow);
 	REGC("col", matrix_getcol);
 

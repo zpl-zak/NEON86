@@ -4,24 +4,29 @@
 
 #include <lua/lua.hpp>
 
-static D3DXVECTOR3 luaH_getcomps(lua_State* L)
+static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
 {
-    if (lua_gettop(L) == 2 && (luaL_testudata(L, 2, L_VECTOR)))
+    if (luaL_testudata(L, 2+offset, L_VECTOR))
     {
-        return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
+        return *(D3DXVECTOR4*)luaL_checkudata(L, 2+offset, L_VECTOR);
     }
 
-    FLOAT x = (FLOAT)lua_tonumber(L, 2);
-    FLOAT y = (FLOAT)lua_tonumber(L, 3);
-    FLOAT z = (FLOAT)lua_tonumber(L, 4);
+    FLOAT x = (FLOAT)lua_tonumber(L, 2+offset);
+    FLOAT y = (FLOAT)lua_tonumber(L, 3+offset);
+    FLOAT z = (FLOAT)lua_tonumber(L, 4+offset);
+	FLOAT w = (FLOAT)lua_tonumber(L, 5+offset);
 
-    if (lua_gettop(L) == 2)
-        y = z = x;
 
-    if (lua_gettop(L) == 3)
-        z = x;
+    if (lua_gettop(L) == 2+offset)
+        w = y = z = x;
 
-    return D3DXVECTOR3(x, y, z);
+    if (lua_gettop(L) == 3+offset)
+        w = z = x;
+
+	if (lua_gettop(L) == 4 + offset)
+		w = 0;
+
+    return D3DXVECTOR4(x, y, z, w);
 }
 
 #include "LuaMatrix.h"
