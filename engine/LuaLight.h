@@ -164,6 +164,8 @@ static VOID LuaLight_register(lua_State* L)
     REGC("setRange", light_setrange);
     REGC("setFalloff", light_setfalloff);
     REGC("setAttenuation", light_setatten);
+    REGC("setInnerAngle", light_setinnerangle);
+    REGC("setOuterAngle", light_setouterangle);
     REGC("setType", light_settype);
     REGC("setSlot", light_setslot);
 
