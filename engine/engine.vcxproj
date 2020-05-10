@@ -309,8 +309,8 @@
     <ClCompile Include="LuaBindings.cpp" />
     <ClCompile Include="LuaMachine.cpp" />
     <ClCompile Include="FaceGroup.cpp" />
-    <ClCompile Include="MeshLoader.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="SceneLoader.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ReferenceManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
@@ -342,7 +342,7 @@
     <ClInclude Include="LuaEffect.h" />
     <ClInclude Include="LuaLight.h" />
     <ClInclude Include="LuaMesh.h" />
-    <ClInclude Include="LuaModel.h" />
+    <ClInclude Include="LuaScene.h" />
     <ClInclude Include="LuaRenderTarget.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="FileSystem.h" />
@@ -356,8 +356,8 @@
     <ClInclude Include="LuaVertex.h" />
     <ClInclude Include="lua_macros.h" />
     <ClInclude Include="FaceGroup.h" />
-    <ClInclude Include="MeshLoader.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="SceneLoader.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="NeonEngine.h" />
     <ClInclude Include="ReferenceManager.h" />
     <ClInclude Include="RenderData.h" />

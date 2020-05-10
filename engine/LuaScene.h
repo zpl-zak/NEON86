@@ -4,9 +4,9 @@
 
 #include <lua/lua.hpp>
 
-#include "Model.h"
+#include "Scene.h"
 
-static INT model_new(lua_State* L)
+static INT scene_new(lua_State* L)
 {
     LPCSTR modelPath = NULL;
     BOOL loadMaterials = TRUE;
@@ -17,19 +17,19 @@ static INT model_new(lua_State* L)
     if (lua_gettop(L) == 2)
         loadMaterials = (UINT)lua_toboolean(L, 2);
 
-    CModel* model = (CModel*)lua_newuserdata(L, sizeof(CModel));
-    *model = CModel();
+    CScene* model = (CScene*)lua_newuserdata(L, sizeof(CScene));
+    *model = CScene();
 
     if (modelPath)
         model->LoadModel(modelPath, loadMaterials);
 
-    luaL_setmetatable(L, L_MODEL);
+    luaL_setmetatable(L, L_SCENE);
     return 1;
 }
 
-static INT model_getmeshes(lua_State* L)
+static INT scene_getmeshes(lua_State* L)
 {
-    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
 
     lua_newtable(L);
 
@@ -45,9 +45,9 @@ static INT model_getmeshes(lua_State* L)
     return 1;
 }
 
-static INT model_draw(lua_State* L)
+static INT scene_draw(lua_State* L)
 {
-    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
     model->Draw(*mat);
@@ -56,9 +56,9 @@ static INT model_draw(lua_State* L)
     return 1;
 }
 
-static INT model_drawsubset(lua_State* L)
+static INT scene_drawsubset(lua_State* L)
 {
-    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
     UINT subset = (UINT)luaL_checkinteger(L, 2) - 1;
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
 
@@ -68,9 +68,9 @@ static INT model_drawsubset(lua_State* L)
     return 1;
 }
 
-static INT model_loadmodel(lua_State* L)
+static INT scene_loadmodel(lua_State* L)
 {
-    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     BOOL loadMaterials = TRUE;
 
@@ -83,9 +83,9 @@ static INT model_loadmodel(lua_State* L)
     return 1;
 }
 
-static INT model_findmesh(lua_State* L)
+static INT scene_findmesh(lua_State* L)
 {
-    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     
     CMesh* mg = model->FindMesh(meshName);
@@ -100,9 +100,9 @@ static INT model_findmesh(lua_State* L)
     return 1;
 }
 
-static INT model_delete(lua_State* L)
+static INT scene_delete(lua_State* L)
 {
-    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
 
     model->Release();
 
@@ -110,18 +110,19 @@ static INT model_delete(lua_State* L)
 }
 
 
-static VOID LuaModel_register(lua_State* L)
+static VOID LuaScene_register(lua_State* L)
 {
-    lua_register(L, L_MODEL, model_new);
-    luaL_newmetatable(L, L_MODEL);
+    lua_register(L, L_SCENE, scene_new);
+    lua_register(L, "Model", scene_new);
+    luaL_newmetatable(L, L_SCENE);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
-    REGC("draw", model_draw);
-    REGC("drawSubset", model_drawsubset);
-    REGC("loadModel", model_loadmodel);
-    REGC("getMeshes", model_getmeshes);
-    REGC("findMesh", model_findmesh);
-    REGC("__gc", model_delete);
+    REGC("draw", scene_draw);
+    REGC("drawSubset", scene_drawsubset);
+    REGC("loadModel", scene_loadmodel);
+    REGC("getMeshes", scene_getmeshes);
+    REGC("findMesh", scene_findmesh);
+    REGC("__gc", scene_delete);
 
     lua_pop(L, 1);
 }

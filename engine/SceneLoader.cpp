@@ -1,13 +1,47 @@
 #include "StdAfx.h"
-#include "MeshLoader.h"
+#include "SceneLoader.h"
 #include "FaceGroup.h"
+#include "Scene.h"
 #include "Material.h"
+#include "Mesh.h"
+#include "ReferenceManager.h"
 #include "NeonEngine.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
+#include <assimp/matrix4x4.h>
 
-CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)
+VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, BOOL loadMaterials)
+{
+    // Load meshes
+    if (impNode->mNumMeshes > 0)
+    {
+        CMesh* mesh = new CMesh();
+        CReferenceManager::TrackRef(mesh);
+        aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Inverse();
+
+        for (UINT i = 0; i < impNode->mNumMeshes; i++)
+        {
+            const aiMesh* impMesh = impScene->mMeshes[impNode->mMeshes[i]];
+            mesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *(D3DMATRIX*)&mat);
+        }
+
+        mesh->SetName(impNode->mName);
+        scene->AddMesh(mesh);
+    }
+
+    for (UINT i = 0; i < impNode->mNumChildren; i++)
+    {
+        LoadNodesRecursively(impScene, impNode->mChildren[i], scene, loadMaterials);
+    }
+}
+
+VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials)
+{
+    LoadNodesRecursively(impScene, impScene->mRootNode, scene, loadMaterials);
+}
+
+CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)
 {
     CFaceGroup* newFGroup = new CFaceGroup();
     CReferenceManager::TrackRef(newFGroup);
@@ -113,7 +147,15 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
     return newFGroup;
 }
 
-VOID CMeshLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
+aiMatrix4x4 CSceneLoader::ComputeFinalTransformation(const aiNode* node)
+{
+    if (!node->mParent)
+        return aiMatrix4x4();
+
+    return node->mTransformation * ComputeFinalTransformation(node->mParent);
+}
+
+VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
 {
     aiString path;
     mat->GetTexture((aiTextureType)texType, 0, &path);

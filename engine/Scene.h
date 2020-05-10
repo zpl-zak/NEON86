@@ -5,10 +5,10 @@
 
 class CMesh;
 
-class CModel
+class CScene
 {
 public:
-    CModel(LPSTR modelPath=NULL);
+    CScene(LPSTR modelPath=NULL);
     VOID Release();
 
     VOID LoadModel(LPCSTR modelPath, BOOL loadMaterials = TRUE);
@@ -18,12 +18,12 @@ public:
     inline UINT GetNumMeshes() { return mCount; }
     inline CMesh** GetMeshes() { return mMeshes; }
     CMesh* FindMesh(LPCSTR name);
+    VOID AddMesh(CMesh* mg);
+
 private:
     CMesh** mMeshes;
     UINT mCapacity;
     UINT mCount;
 
     static D3DXMATRIX identityMat;
-
-    VOID AddMesh(CMesh* mg);
 };

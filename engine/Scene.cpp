@@ -1,8 +1,8 @@
 #include "StdAfx.h"
-#include "Model.h"
+#include "Scene.h"
 
 #include "Mesh.h"
-#include "MeshLoader.h"
+#include "SceneLoader.h"
 #include "NeonEngine.h"
 #include "FileSystem.h"
 
@@ -10,7 +10,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-CModel::CModel(LPSTR modelPath)
+CScene::CScene(LPSTR modelPath)
 {
     mCapacity = 4;
     mCount = 0;
@@ -21,7 +21,7 @@ CModel::CModel(LPSTR modelPath)
         LoadModel(modelPath);
 }
 
-VOID CModel::Release()
+VOID CScene::Release()
 {
     SAFE_FREE(mMeshes);
     mCount = 0;
@@ -32,13 +32,9 @@ VOID CModel::Release()
     aiProcess_ConvertToLeftHanded |\
     aiProcess_Triangulate |\
     aiProcess_CalcTangentSpace |\
-    aiProcess_FlipUVs |\
-    aiProcess_JoinIdenticalVertices |\
-    aiProcess_PreTransformVertices |\
-    aiProcess_Debone |\
-    aiProcess_OptimizeMeshes
+    aiProcess_FlipUVs
 
-VOID CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
+VOID CScene::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
 {
     Assimp::Importer imp;
 
@@ -51,7 +47,9 @@ VOID CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
         return;
     }
 
-    CMesh* mesh = NULL;
+    CSceneLoader::LoadScene(model, this, loadMaterials);
+
+    /*CMesh* mesh = NULL;
     aiString meshName;
 
     for (UINT i = 0; i < model->mNumMeshes; i++)
@@ -69,14 +67,14 @@ VOID CModel::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
             mesh->SetName(meshName);
         }
 
-        CFaceGroup* node = CMeshLoader::LoadNode(model, m, loadMaterials);
-        mesh->AddMesh(node, identityMat);
+        CFaceGroup* node = CSceneLoader::LoadNode(model, m, loadMaterials);
+        mesh->AddMesh(node, *(D3DMATRIX*)&model->mRootNode->mTransformation);
     }
 
-    AddMesh(mesh);
+    AddMesh(mesh);*/
 }
 
-VOID CModel::Draw(const D3DXMATRIX& wmat)
+VOID CScene::Draw(const D3DXMATRIX& wmat)
 {
     if (!mMeshes)
         return;
@@ -87,7 +85,7 @@ VOID CModel::Draw(const D3DXMATRIX& wmat)
     }
 }
 
-VOID CModel::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
+VOID CScene::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
 {
     if (!mMeshes)
         return;
@@ -98,7 +96,7 @@ VOID CModel::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
     mMeshes[subset]->Draw(wmat);
 }
 
-CMesh* CModel::FindMesh(LPCSTR name)
+CMesh* CScene::FindMesh(LPCSTR name)
 {
     for (UINT i = 0; i < mCount; i++)
     {
@@ -109,7 +107,7 @@ CMesh* CModel::FindMesh(LPCSTR name)
     return NULL;
 }
 
-VOID CModel::AddMesh(CMesh* mg)
+VOID CScene::AddMesh(CMesh* mg)
 {
     if (!mg)
         return;
@@ -131,4 +129,4 @@ VOID CModel::AddMesh(CMesh* mg)
     mMeshes[mCount++] = mg;
 }
 
-D3DXMATRIX CModel::identityMat;
+D3DXMATRIX CScene::identityMat;

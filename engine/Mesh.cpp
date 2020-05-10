@@ -2,7 +2,7 @@
 
 #include "Mesh.h"
 #include "FaceGroup.h"
-#include "MeshLoader.h"
+#include "SceneLoader.h"
 #include "NeonEngine.h"
 #include "FileSystem.h"
 
@@ -25,7 +25,7 @@ VOID CMesh::Release(VOID)
     mCount = mCapacity = 0;
 }
 
-VOID CMesh::AddMesh(CFaceGroup* mesh, const D3DXMATRIX& mat)
+VOID CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
 {
     if (!mesh)
         return;

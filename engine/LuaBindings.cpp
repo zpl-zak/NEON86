@@ -31,7 +31,7 @@ static D3DXVECTOR3 luaH_getcomps(lua_State* L)
 #include "LuaLight.h"
 #include "LuaFaceGroup.h"
 #include "LuaMesh.h"
-#include "LuaModel.h"
+#include "LuaScene.h"
 #include "LuaRenderTarget.h"
 #include "LuaEffect.h"
 
@@ -346,7 +346,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaLight_register(L);
 	LuaMesh_register(L);
 	LuaMeshGroup_register(L);
-	LuaModel_register(L);
+	LuaScene_register(L);
 	LuaEffect_register(L);
 	LuaRenderTarget_register(L);
 

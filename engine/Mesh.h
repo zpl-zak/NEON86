@@ -14,7 +14,7 @@ public:
     CMesh(VOID);
      
     VOID Release(VOID);
-    VOID AddMesh(CFaceGroup*, const D3DXMATRIX&);
+    VOID AddFaceGroup(CFaceGroup*, const D3DXMATRIX&);
     
     VOID Draw(const D3DXMATRIX& wmat);
     VOID Clear(VOID);
