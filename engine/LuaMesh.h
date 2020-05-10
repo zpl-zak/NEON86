@@ -97,8 +97,10 @@ static VOID LuaMeshGroup_register(lua_State* L)
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
     REGC("addFGroup", mesh_addfgroup);
+    REGC("addPart", mesh_addfgroup);
     REGC("draw", mesh_draw);
     REGC("getFGroups", mesh_getfgroups);
+    REGC("getParts", mesh_getfgroups);
     REGC("clear", mesh_clear);
     REGC("setName", mesh_setname);
     REGC("getName", mesh_getname);

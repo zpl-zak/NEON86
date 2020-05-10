@@ -56,6 +56,18 @@ static INT model_draw(lua_State* L)
     return 1;
 }
 
+static INT model_drawsubset(lua_State* L)
+{
+    CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
+    UINT subset = (UINT)luaL_checkinteger(L, 2) - 1;
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+
+    model->DrawSubset(subset, *mat);
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
 static INT model_loadmodel(lua_State* L)
 {
     CModel* model = (CModel*)luaL_checkudata(L, 1, L_MODEL);
@@ -105,6 +117,7 @@ static VOID LuaModel_register(lua_State* L)
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
     REGC("draw", model_draw);
+    REGC("drawSubset", model_drawsubset);
     REGC("loadModel", model_loadmodel);
     REGC("getMeshes", model_getmeshes);
     REGC("findMesh", model_findmesh);

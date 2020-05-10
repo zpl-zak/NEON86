@@ -13,6 +13,7 @@ public:
 
     VOID LoadModel(LPCSTR modelPath, BOOL loadMaterials = TRUE);
     VOID Draw(const D3DXMATRIX& wmat);
+    VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
 
     inline UINT GetNumMeshes() { return mCount; }
     inline CMesh** GetMeshes() { return mMeshes; }

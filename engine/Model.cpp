@@ -87,6 +87,17 @@ VOID CModel::Draw(const D3DXMATRIX& wmat)
     }
 }
 
+VOID CModel::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
+{
+    if (!mMeshes)
+        return;
+
+    if (subset >= mCount)
+        return;
+
+    mMeshes[subset]->Draw(wmat);
+}
+
 CMesh* CModel::FindMesh(LPCSTR name)
 {
     for (UINT i = 0; i < mCount; i++)
