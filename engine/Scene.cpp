@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "Mesh.h"
+#include "Light.h"
 #include "SceneLoader.h"
 #include "NeonEngine.h"
 #include "FileSystem.h"
@@ -12,20 +13,16 @@
 
 CScene::CScene(LPSTR modelPath)
 {
-    mCapacity = 4;
-    mCount = 0;
-    mMeshes = (CMesh**)neon_malloc(mCapacity * sizeof(CMesh*));
-    D3DXMatrixIdentity(&identityMat);
+    mMeshes.Release();
+    mLights.Release();
 
     if (modelPath)
-        LoadModel(modelPath);
+        LoadScene(modelPath);
 }
 
 VOID CScene::Release()
 {
-    SAFE_FREE(mMeshes);
-    mCount = 0;
-    mCapacity = 0;
+
 }
 
 #define MESHIMPORT_FLAGS \
@@ -34,7 +31,7 @@ VOID CScene::Release()
     aiProcess_CalcTangentSpace |\
     aiProcess_FlipUVs
 
-VOID CScene::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
+VOID CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
 {
     Assimp::Importer imp;
 
@@ -48,38 +45,11 @@ VOID CScene::LoadModel(LPCSTR modelPath, BOOL loadMaterials)
     }
 
     CSceneLoader::LoadScene(model, this, loadMaterials);
-
-    /*CMesh* mesh = NULL;
-    aiString meshName;
-
-    for (UINT i = 0; i < model->mNumMeshes; i++)
-    {
-        aiMesh* m = model->mMeshes[i];
-        if (!mesh || strcmp(meshName.C_Str(), m->mName.C_Str()))
-        {
-            if (mesh)
-                AddMesh(mesh);
-
-            mesh = new CMesh();
-            CReferenceManager::TrackRef(mesh);
-            
-            meshName = m->mName;
-            mesh->SetName(meshName);
-        }
-
-        CFaceGroup* node = CSceneLoader::LoadNode(model, m, loadMaterials);
-        mesh->AddMesh(node, *(D3DMATRIX*)&model->mRootNode->mTransformation);
-    }
-
-    AddMesh(mesh);*/
 }
 
 VOID CScene::Draw(const D3DXMATRIX& wmat)
 {
-    if (!mMeshes)
-        return;
-
-    for (UINT i=0; i<mCount;i++)
+    for (UINT i=0; i<mMeshes.GetCount();i++)
     {
         mMeshes[i]->Draw(wmat);
     }
@@ -87,10 +57,7 @@ VOID CScene::Draw(const D3DXMATRIX& wmat)
 
 VOID CScene::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
 {
-    if (!mMeshes)
-        return;
-
-    if (subset >= mCount)
+    if (subset >= mMeshes.GetCount())
         return;
 
     mMeshes[subset]->Draw(wmat);
@@ -98,13 +65,7 @@ VOID CScene::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
 
 CMesh* CScene::FindMesh(LPCSTR name)
 {
-    for (UINT i = 0; i < mCount; i++)
-    {
-        if (!strcmp(name, mMeshes[i]->GetName().C_Str()))
-            return mMeshes[i];
-    }
-
-    return NULL;
+    return mMeshes.Find(name);
 }
 
 VOID CScene::AddMesh(CMesh* mg)
@@ -112,21 +73,28 @@ VOID CScene::AddMesh(CMesh* mg)
     if (!mg)
         return;
 
-    if (mCount >= mCapacity)
+    if (FAILED(mMeshes.Push(mg)))
     {
-        mCapacity += 4;
-
-        mMeshes = (CMesh**)neon_realloc(mMeshes, mCapacity * sizeof(CMesh*));
-        
-        if (!mMeshes)
-        {
-            MessageBoxA(NULL, "Can't add mesh group to model!", "Out of memory error", MB_OK);
-            ENGINE->Shutdown();
-            return;
-        }
+        MessageBoxA(NULL, "Can't push mesh into a scene!", "Out of memory error", MB_OK);
+        ENGINE->Shutdown();
+        return;
     }
-
-    mMeshes[mCount++] = mg;
 }
 
-D3DXMATRIX CScene::identityMat;
+CLight* CScene::FindLight(LPCSTR name)
+{
+    return mLights.Find(name);
+}
+
+VOID CScene::AddLight(CLight* lit)
+{
+    if (!lit)
+        return;
+
+    if (FAILED(mLights.Push(lit)))
+    {
+        MessageBoxA(NULL, "Can't push light into a scene!", "Out of memory error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
+}

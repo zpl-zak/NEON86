@@ -12,17 +12,13 @@
 
 CMesh::CMesh(VOID)
 {
-    mCount = 0;
-    mCapacity = 4;
-    mFaceGroups = (CFaceGroup**)neon_malloc(mCapacity * sizeof(CFaceGroup*));
-    mTransforms = (D3DXMATRIX*)neon_malloc(mCapacity * sizeof(D3DXMATRIX));
+    mFaceGroups.Release();
+    mTransforms.Release();
 }
 
 VOID CMesh::Release(VOID)
 {
-    SAFE_FREE(mFaceGroups);
-    SAFE_FREE(mTransforms);
-    mCount = mCapacity = 0;
+
 }
 
 VOID CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
@@ -30,32 +26,24 @@ VOID CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
     if (!mesh)
         return;
 
-    if (mCount >= mCapacity)
+    if (FAILED(mFaceGroups.Push(mesh)))
     {
-        mCapacity += 4;
-
-        mFaceGroups = (CFaceGroup**)neon_realloc(mFaceGroups, mCapacity * sizeof(CFaceGroup*));
-        mTransforms = (D3DXMATRIX*)neon_realloc(mTransforms, mCapacity * sizeof(D3DXMATRIX));
-
-        if (!mFaceGroups || !mTransforms)
-        {
-            MessageBoxA(NULL, "Can't add mesh to mesh group!", "Out of memory error", MB_OK);
-            ENGINE->Shutdown();
-            return;
-        }
+        MessageBoxA(NULL, "Can't add face group to mesh!", "Out of memory error", MB_OK);
+        ENGINE->Shutdown();
+        return;
     }
 
-    mFaceGroups[mCount] = mesh;
-    mTransforms[mCount] = mat;
-    mCount++;
+    if (FAILED(mTransforms.Push(mat)))
+    {
+        MessageBoxA(NULL, "Can't add transform to mesh!", "Out of memory error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
 }
 
 VOID CMesh::Draw(const D3DXMATRIX& wmat)
 {
-    if (!mCount)
-        return;
-
-    for (UINT i = 0; i < mCount; i++)
+    for (UINT i = 0; i < mFaceGroups.GetCount(); i++)
     {
         D3DXMATRIX mat = mTransforms[i] * wmat;
         mFaceGroups[i]->Draw(&mat);
@@ -64,5 +52,6 @@ VOID CMesh::Draw(const D3DXMATRIX& wmat)
 
 VOID CMesh::Clear(VOID)
 {
-    mCount = 0;
+    mFaceGroups.Clear();
+    mTransforms.Clear();
 }

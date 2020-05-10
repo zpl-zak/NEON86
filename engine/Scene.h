@@ -4,6 +4,7 @@
 #include "RenderData.h"
 
 class CMesh;
+class CLight;
 
 class CScene
 {
@@ -11,19 +12,21 @@ public:
     CScene(LPSTR modelPath=NULL);
     VOID Release();
 
-    VOID LoadModel(LPCSTR modelPath, BOOL loadMaterials = TRUE);
+    VOID LoadScene(LPCSTR modelPath, BOOL loadMaterials = TRUE);
     VOID Draw(const D3DXMATRIX& wmat);
     VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
 
-    inline UINT GetNumMeshes() { return mCount; }
-    inline CMesh** GetMeshes() { return mMeshes; }
+    inline UINT GetNumMeshes() { return mMeshes.GetCount(); }
+    inline CMesh** GetMeshes() { return mMeshes.GetData(); }
     CMesh* FindMesh(LPCSTR name);
     VOID AddMesh(CMesh* mg);
 
-private:
-    CMesh** mMeshes;
-    UINT mCapacity;
-    UINT mCount;
+    inline UINT GetNumLights() { return mLights.GetCount(); }
+    inline CLight** GetLights() { return mLights.GetData(); }
+    CLight* FindLight(LPCSTR name);
+    VOID AddLight(CLight* lit);
 
-    static D3DXMATRIX identityMat;
+private:
+    CArray<CMesh*> mMeshes;
+    CArray<CLight*> mLights;
 };

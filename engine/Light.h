@@ -1,8 +1,10 @@
 #pragma once
 
 #include "RenderData.h"
+#include "ReferenceManager.h"
+#include "Node.h"
 
-class CLight
+class CLight : public CReference<CLight>, public CNode
 {
 public:
     CLight(UINT slot=0);

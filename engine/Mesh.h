@@ -3,12 +3,11 @@
 #include "system.h"
 #include "RenderData.h"
 #include "ReferenceManager.h"
-
-#include <Assimp/Importer.hpp>
+#include "Node.h"
 
 class CFaceGroup;
 
-class CMesh: public CReference<CMesh>
+class CMesh: public CReference<CMesh>, public CNode
 {
 public:
     CMesh(VOID);
@@ -19,17 +18,10 @@ public:
     VOID Draw(const D3DXMATRIX& wmat);
     VOID Clear(VOID);
 
-    inline UINT GetNumFGroups() const { return mCount; }
-    inline CFaceGroup** GetFGroups() { return mFaceGroups; }
-    inline D3DXMATRIX* GetTransforms() { return mTransforms; }
-
-    inline aiString GetName() { return mName; }
-    inline VOID SetName(aiString name) { mName = name; }
-
+    inline UINT GetNumFGroups() { return mFaceGroups.GetCount(); }
+    inline CFaceGroup** GetFGroups() { return mFaceGroups.GetData(); }
+    inline D3DXMATRIX* GetTransforms() { return mTransforms.GetData(); }
 private:
-    CFaceGroup** mFaceGroups;
-    D3DXMATRIX* mTransforms;
-    UINT mCount;
-    UINT mCapacity;
-    aiString mName;
+    CArray<CFaceGroup*> mFaceGroups;
+    CArray<D3DXMATRIX> mTransforms;
 };

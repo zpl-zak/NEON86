@@ -31,3 +31,73 @@ extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
 /// lua
 #include "lua_macros.h"
+
+
+/// helpers
+template <typename T>
+class CArray
+{
+public:
+    CArray()
+    {
+        mCapacity = 4;
+        mCount = 0;
+        mData = (T*)neon_malloc(mCapacity * sizeof(T));
+    }
+
+    ~CArray()
+    {
+        Release();
+    }
+
+    inline VOID Release()
+    {
+        SAFE_FREE(mData);
+        mCapacity = 4;
+        mCount = 0;
+    }
+
+    inline HRESULT Push(T elem)
+    {
+        if (!mData)
+            mData = (T*)neon_realloc(mData, mCapacity * sizeof(T));
+
+        if (mCount >= mCapacity)
+        {
+            mCapacity += 4;
+            mData = (T*)neon_realloc(mData, mCapacity * sizeof(T));
+
+            if (!mData)
+            {
+                return E_OUTOFMEMORY;
+            }
+        }
+
+        mData[mCount++] = elem;
+        return ERROR_SUCCESS;
+    }
+
+    inline T Find(LPCSTR name)
+    {
+        for (UINT i = 0; i < mCount; i++)
+        {
+            if (!strcmp(name, mData[i]->GetName().C_Str()))
+                return mData[i];
+        }
+
+        return T();
+    }
+
+    inline VOID Clear() { mCount = 0; }
+
+    inline UINT GetCount() { return mCount; }
+    inline UINT GetCapacity() { return mCapacity; }
+
+    inline T operator[] (UINT index) { return mData[index]; }
+    inline T* GetData() { return mData; }
+
+private:
+    T* mData;
+    UINT mCapacity;
+    UINT mCount;
+};

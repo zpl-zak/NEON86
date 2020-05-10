@@ -356,6 +356,7 @@
     <ClInclude Include="LuaVertex.h" />
     <ClInclude Include="lua_macros.h" />
     <ClInclude Include="FaceGroup.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="NeonEngine.h" />

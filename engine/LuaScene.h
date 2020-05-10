@@ -5,6 +5,7 @@
 #include <lua/lua.hpp>
 
 #include "Scene.h"
+#include "Light.h"
 
 static INT scene_new(lua_State* L)
 {
@@ -21,7 +22,7 @@ static INT scene_new(lua_State* L)
     *model = CScene();
 
     if (modelPath)
-        model->LoadModel(modelPath, loadMaterials);
+        model->LoadScene(modelPath, loadMaterials);
 
     luaL_setmetatable(L, L_SCENE);
     return 1;
@@ -39,6 +40,24 @@ static INT scene_getmeshes(lua_State* L)
         lua_pushinteger(L, i + 1ULL);
         lua_pushlightuserdata(L, (VOID*)mesh);
         luaL_setmetatable(L, L_MESH);
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
+static INT scene_getlights(lua_State* L)
+{
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+
+    lua_newtable(L);
+
+    for (UINT i = 0; i < model->GetNumLights(); i++)
+    {
+        CLight* lit = model->GetLights()[i];
+        lua_pushinteger(L, i + 1ULL);
+        lua_pushlightuserdata(L, (VOID*)lit);
+        luaL_setmetatable(L, L_LIGHT);
         lua_settable(L, -3);
     }
 
@@ -77,7 +96,7 @@ static INT scene_loadmodel(lua_State* L)
     if (lua_gettop(L) == 3)
         loadMaterials = (UINT)luaL_checkinteger(L, 3);
 
-    model->LoadModel(meshName, loadMaterials);
+    model->LoadScene(meshName, loadMaterials);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -94,6 +113,23 @@ static INT scene_findmesh(lua_State* L)
     {
         lua_pushlightuserdata(L, (VOID*)mg);
         luaL_setmetatable(L, L_MESH);
+    }
+    else lua_pushnil(L);
+
+    return 1;
+}
+
+static INT scene_findlight(lua_State* L)
+{
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    LPSTR lightName = (LPSTR)luaL_checkstring(L, 2);
+
+    CLight* mg = model->FindLight(lightName);
+
+    if (mg)
+    {
+        lua_pushlightuserdata(L, (VOID*)mg);
+        luaL_setmetatable(L, L_LIGHT);
     }
     else lua_pushnil(L);
 
@@ -120,8 +156,11 @@ static VOID LuaScene_register(lua_State* L)
     REGC("draw", scene_draw);
     REGC("drawSubset", scene_drawsubset);
     REGC("loadModel", scene_loadmodel);
+    REGC("loadScene", scene_loadmodel);
     REGC("getMeshes", scene_getmeshes);
+    REGC("getLights", scene_getlights);
     REGC("findMesh", scene_findmesh);
+    REGC("findLight", scene_findlight);
     REGC("__gc", scene_delete);
 
     lua_pop(L, 1);
