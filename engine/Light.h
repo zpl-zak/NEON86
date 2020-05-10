@@ -24,6 +24,7 @@ public:
     VOID SetOuterAngle(FLOAT phi);
 
     inline D3DLIGHT9 GetLightData() { return mLightData; }
+    inline UINT GetSlot() { return mSlot; }
 
 private:
     UINT mSlot;

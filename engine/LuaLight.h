@@ -149,6 +149,23 @@ static INT light_enable(lua_State* L)
     return 0;
 }
 
+
+static INT light_getslot(lua_State* L)
+{
+    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    lua_pushinteger(L, lit->GetSlot());
+
+    return 1;
+}
+
+static INT light_gettype(lua_State* L)
+{
+    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    lua_pushinteger(L, lit->GetLightData().Type);
+
+    return 1;
+}
+
 static VOID LuaLight_register(lua_State* L)
 {
     lua_register(L, L_LIGHT, light_new);
@@ -168,6 +185,8 @@ static VOID LuaLight_register(lua_State* L)
     REGC("setOuterAngle", light_setouterangle);
     REGC("setType", light_settype);
     REGC("setSlot", light_setslot);
+    REGC("getType", light_gettype);
+    REGC("getSlot", light_getslot);
 
     REGC("__gc", light_delete);
 
