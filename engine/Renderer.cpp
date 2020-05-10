@@ -26,6 +26,7 @@ CRenderer::CRenderer()
 	mActiveEffect = NULL;
 	mVsync = TRUE;
 	mFullscreen = FALSE;
+	mEnableLighting = FALSE;
 	ZeroMemory(&mLastRes, sizeof(mLastRes));
 	ZeroMemory(&mParams, sizeof(mParams));
 }
@@ -292,19 +293,19 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 	else
 	{
 		SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
+		if (mat) mDevice->SetMaterial(&mat->GetMaterialData());
 	}
 }
 
 VOID CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
 {
-    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_SELECTARG1 : D3DTOP_SELECTARG2);
+    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, handle);
 }
 
 VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
 {
-    mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind,
-        &mat);
+    mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind, &mat);
 
     if (kind == MATRIXKIND_PROJECTION || kind == MATRIXKIND_VIEW)
         GetFrustum()->Build();
@@ -348,7 +349,11 @@ VOID CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
 
 VOID CRenderer::SetDefaultRenderStates()
 {
-    mDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	mDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
+	mDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
+	mDevice->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, D3DMCS_MATERIAL);
+	
+	mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);

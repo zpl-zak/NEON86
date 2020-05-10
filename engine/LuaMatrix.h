@@ -13,30 +13,10 @@ static INT matrix_new(lua_State* L)
 	return 1;
 }
 
-static D3DXVECTOR3 matrix_getcomps(lua_State* L)
-{
-    if (lua_gettop(L) == 2 && (luaL_testudata(L, 2, L_VECTOR)))
-    {
-        return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
-    }
-	
-	FLOAT x = (FLOAT)lua_tonumber(L, 2);
-	FLOAT y = (FLOAT)lua_tonumber(L, 3);
-	FLOAT z = (FLOAT)lua_tonumber(L, 4);
-
-	if (lua_gettop(L) == 2)
-		y = z = x;
-
-	if (lua_gettop(L) == 3)
-		z = x;
-
-	return D3DXVECTOR3(x,y,z);
-}
-
 static INT matrix_translate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	D3DXVECTOR3 vec = matrix_getcomps(L);
+	D3DXVECTOR3 vec = luaH_getcomps(L);
 	
 	D3DXMATRIX t;
 	D3DXMatrixTranslation(&t, vec.x, vec.y, vec.z);
@@ -50,7 +30,7 @@ static INT matrix_translate(lua_State* L)
 static INT matrix_rotate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	D3DXVECTOR3 vec = matrix_getcomps(L);
+	D3DXVECTOR3 vec = luaH_getcomps(L);
 
 	D3DXMATRIX t;
 	D3DXMatrixRotationYawPitchRoll(&t, vec.x, vec.y, vec.z);
@@ -64,7 +44,7 @@ static INT matrix_rotate(lua_State* L)
 static INT matrix_scale(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-	D3DXVECTOR3 vec = matrix_getcomps(L);
+	D3DXVECTOR3 vec = luaH_getcomps(L);
 	D3DXMATRIX t;
 	D3DXMatrixScaling(&t, vec.x, vec.y, vec.z);
 	*mat *= t;

@@ -4,10 +4,31 @@
 
 #include <lua/lua.hpp>
 
+static D3DXVECTOR3 luaH_getcomps(lua_State* L)
+{
+    if (lua_gettop(L) == 2 && (luaL_testudata(L, 2, L_VECTOR)))
+    {
+        return *(D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
+    }
+
+    FLOAT x = (FLOAT)lua_tonumber(L, 2);
+    FLOAT y = (FLOAT)lua_tonumber(L, 3);
+    FLOAT z = (FLOAT)lua_tonumber(L, 4);
+
+    if (lua_gettop(L) == 2)
+        y = z = x;
+
+    if (lua_gettop(L) == 3)
+        z = x;
+
+    return D3DXVECTOR3(x, y, z);
+}
+
 #include "LuaMatrix.h"
 #include "LuaVector4.h"
 #include "LuaVertex.h"
 #include "LuaMaterial.h"
+#include "LuaLight.h"
 #include "LuaFaceGroup.h"
 #include "LuaMesh.h"
 #include "LuaModel.h"
@@ -256,11 +277,18 @@ LUAF(Rend, RenderState)
 }
 LUAF(Rend, SamplerState)
 {
-	DWORD stage = (DWORD)luaL_checkinteger(L, 1);
+    DWORD stage = (DWORD)luaL_checkinteger(L, 1);
     DWORD kind = (DWORD)luaL_checkinteger(L, 2);
     BOOL state = (BOOL)lua_toboolean(L, 3);
 
     RENDERER->SetSamplerState(stage, kind, state);
+    return 0;
+}
+LUAF(Rend, EnableLighting)
+{
+    BOOL state = (BOOL)lua_toboolean(L, 1);
+
+    RENDERER->EnableLighting(state);
     return 0;
 }
 LUAF(Rend, ClearTarget)
@@ -306,6 +334,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, GetResolution);
 	REGF(Rend, RenderState);
 	REGF(Rend, SamplerState);
+	REGF(Rend, EnableLighting);
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawQuad);
 	REGF(Rend, FillScreen);
@@ -314,6 +343,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 
 	LuaVertex_register(L);
 	LuaMaterial_register(L);
+	LuaLight_register(L);
 	LuaMesh_register(L);
 	LuaMeshGroup_register(L);
 	LuaModel_register(L);
@@ -363,6 +393,11 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 #define _X(NAME, VALUE) REGN(NAME, VALUE);
 #include "RenderStates.h"
 #undef _X
+
+		// light types
+		REGN(LIGHTKIND_DIRECTIONAL, D3DLIGHT_DIRECTIONAL);
+		REGN(LIGHTKIND_POINT, D3DLIGHT_POINT);
+		REGN(LIGHTKIND_SPOT, D3DLIGHT_SPOT);
 	}
 }
 

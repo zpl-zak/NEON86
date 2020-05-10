@@ -40,7 +40,11 @@ viewMat = Matrix():lookAt(
 time = 0
 
 -- Simple switch to toggle between FFP and shader system
-shaderDisabled = false
+shaderDisabled = true
+
+-- Create a sunlight
+sun = Light(0)
+sun:setDiffuse(34.2, 1.2, 1.2)
 
 function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
@@ -72,6 +76,7 @@ function drawSceneUsingShader()
     -- Set up global shader variables and commit changes to the GPU
     mainShader:setVector4("ambience", Vector(1,0.05,0.05,1))
     mainShader:setFloat("time", time)
+    mainShader:setLight("sun", sun)
     mainShader:commit()
 
     -- Draw the scene
@@ -85,6 +90,7 @@ end
 
 function drawSceneUsingFFP()
     mainRT:bind()
+    sun:enable(true)
     ClearScene(20,20,20)
     CameraPerspective(62, 2, 10)
     drawScene()

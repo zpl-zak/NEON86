@@ -38,5 +38,6 @@ static INT NAME(lua_State* L) {\
 #define L_MODEL "Model"
 #define L_EFFECT "Effect"
 #define L_RENDERTARGET "RenderTarget"
+#define L_LIGHT "Light"
 
 #define ENDF {0,0}

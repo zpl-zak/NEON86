@@ -204,6 +204,7 @@ VOID CEngine::Update(FLOAT deltaTime)
 
 VOID CEngine::Render()
 {
+    mRenderer->GetDevice()->SetRenderState(D3DRS_LIGHTING, (DWORD)mRenderer->IsLightingEnabled());
     mRenderer->GetDevice()->BeginScene();
     mRenderer->ClearBuffer(0xFF000000);
     mLuaMachine->Render();

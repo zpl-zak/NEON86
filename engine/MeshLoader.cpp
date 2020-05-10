@@ -98,9 +98,9 @@ CFaceGroup* CMeshLoader::LoadNode(const aiScene* scene, const aiMesh* mesh, BOOL
         newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
         newMaterial->SetPower(power * 5.0f);
 
-        aiColor4D ambient;
+       /* aiColor4D ambient;
         mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-        newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });
+        newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });*/
 
         aiColor4D emissive;
         mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);

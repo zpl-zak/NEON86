@@ -302,6 +302,7 @@
     <ClCompile Include="imgui_impl_dx9.cpp" />
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -337,7 +338,9 @@
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="InputCodes.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="LuaEffect.h" />
+    <ClInclude Include="LuaLight.h" />
     <ClInclude Include="LuaMesh.h" />
     <ClInclude Include="LuaModel.h" />
     <ClInclude Include="LuaRenderTarget.h" />

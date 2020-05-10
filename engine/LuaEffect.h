@@ -104,6 +104,30 @@ static INT effect_setvector3(lua_State* L)
     return 0;
 }
 
+static INT effect_setinteger(lua_State* L)
+{
+    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    LPCSTR name = luaL_checkstring(L, 2);
+    DWORD value = (DWORD)luaL_checkinteger(L, 3);
+
+    fx->SetInteger(name, value);
+    return 0;
+}
+
+static INT effect_setlight(lua_State* L)
+{
+    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    LPCSTR name = luaL_checkstring(L, 2);
+    CLight* value = NULL;
+
+    if (lua_gettop(L) == 3 && luaL_testudata(L, 3, L_LIGHT)) {
+        value = (CLight*)lua_touserdata(L, 3);
+    }
+
+    fx->SetLight(name, value);
+    return 0;
+}
+
 static INT effect_setvector4(lua_State* L)
 {
     CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
@@ -180,10 +204,12 @@ static VOID LuaEffect_register(lua_State* L)
 
     REGC("setBool", effect_setbool);
     REGC("setFloat", effect_setfloat);
+    REGC("setInt", effect_setinteger);
     REGC("setMatrix", effect_setmatrix);
     REGC("setVector3", effect_setvector3);
     REGC("setVector4", effect_setvector4);
     REGC("setTexture", effect_settexture);
+    REGC("setLight", effect_setlight);
 
     REGC("__gc", effect_delete);
 

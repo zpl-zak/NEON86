@@ -4,9 +4,9 @@
 
 // Global variables / uniforms
 // These can be set up from Lua as well
-float3 sunDir = float3(4.0f, 3.0f, -5.0f);
-float4 ambience = float4(0.05,0.05,0.05,1);
 float time;
+
+TLIGHT sun;
 
 // Our global sampler state for the diffuse texture
 sampler2D colorMap = sampler_state
@@ -54,21 +54,13 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float4 OUT;
 
     float3 n = normalize(IN.normal);
-    float3 l = normalize(sunDir);
+    float3 l = normalize(-sun.Direction);
     float diffuse = saturate(dot(n, l));
 
-    OUT = ambience + MAT.Diffuse * diffuse;
-    OUT *= IN.color * tex2D(colorMap, IN.texCoord);
+    OUT = sun.Ambient + MAT.Diffuse * normalize(sun.Diffuse) * diffuse;
 
-    if (hasSpecularTex)
-    {
-        float4 sn = tex2D(glowMap, IN.texCoord);
-
-        if (sn.r < 0.5f)
-        {
-            OUT = float4(0,255,0,255);
-        }
-    }
+    if (hasDiffuseTex)
+        OUT *= tex2D(colorMap, IN.texCoord);
 
     return OUT;
 }

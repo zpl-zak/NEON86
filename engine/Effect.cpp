@@ -1,8 +1,10 @@
 #include "StdAfx.h"
 #include "Effect.h"
+#include "Light.h"
 #include "NeonEngine.h"
 
 #include "BuiltinShaders.h"
+#include <cstdio>
 
 class CD3DIncludeImpl: ID3DXInclude
 {
@@ -169,6 +171,11 @@ HRESULT CEffect::CommitChanges()
     return mEffect->CommitChanges();
 }
 
+VOID CEffect::SetInteger(LPCSTR name, DWORD value)
+{
+    mEffect->SetInt(name, value);
+}
+
 VOID CEffect::SetFloat(LPCSTR name, FLOAT value)
 {
     mEffect->SetFloat(name, value);
@@ -190,6 +197,40 @@ VOID CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value)
 VOID CEffect::SetTexture(LPCSTR name, IDirect3DTexture9* value)
 {
     mEffect->SetTexture(name, value);
+}
+
+VOID CEffect::SetLight(LPCSTR name, CLight* value)
+{
+    if (value) {
+        SetBool(GetUniformName(name, "IsEnabled"), TRUE);
+        SetInteger(GetUniformName(name, "Type"), value->GetLightData().Type);
+        SetVector3(GetUniformName(name, "Position"), value->GetLightData().Position);
+        SetVector3(GetUniformName(name, "Direction"), value->GetLightData().Direction);
+        SetColor(GetUniformName(name, "Diffuse"), value->GetLightData().Diffuse);
+        SetColor(GetUniformName(name, "Ambient"), value->GetLightData().Ambient);
+        SetColor(GetUniformName(name, "Specular"), value->GetLightData().Specular);
+        SetFloat(GetUniformName(name, "Falloff"), value->GetLightData().Falloff);
+        SetFloat(GetUniformName(name, "Range"), value->GetLightData().Range);
+        SetFloat(GetUniformName(name, "ConstantAtten"), value->GetLightData().Attenuation0);
+        SetFloat(GetUniformName(name, "LinearAtten"), value->GetLightData().Attenuation1);
+        SetFloat(GetUniformName(name, "QuadraticAtten"), value->GetLightData().Attenuation2);
+    }
+    else {
+        SetBool(GetUniformName(name, "IsEnabled"), FALSE);
+    }
+    /*int Type;
+    float3 Position;
+    float3 Direction;
+    float4 Diffuse;
+    float4 Ambient;
+    float4 Specular;
+
+    float Falloff;
+    float Range;
+
+    float ConstantAtten;
+    float LinearAtten;
+    float QuadraticAtten;*/
 }
 
 VOID CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value)
@@ -222,4 +263,12 @@ VOID CEffect::SetDefaults()
     SetMatrix("NEON.MVP", mvp);
 
     RENDERER->SetDefaultRenderStates();
+}
+
+LPCSTR CEffect::GetUniformName(LPCSTR base, LPCSTR field)
+{
+    static char buffer[512] = { 0 };
+
+    sprintf_s(buffer, 512, "%s.%s", base, field);
+    return (LPCSTR)buffer;
 }

@@ -25,6 +25,28 @@ static LPCSTR _shader_common = _M(
         float Opacity;
     };
 
+    const int LightType_Directional = 3;
+    const int LightType_Spot = 2;
+    const int LightType_Point = 1;
+
+    struct TLIGHT
+    {
+        bool IsEnabled;
+        int Type;
+        float3 Position;
+        float3 Direction;
+        float4 Diffuse;
+        float4 Ambient;
+        float4 Specular;
+
+        float Falloff;
+        float Range;
+
+        float ConstantAtten;
+        float LinearAtten;
+        float QuadraticAtten;
+    };
+
     TNEON NEON;
     TMATERIAL MAT;
 

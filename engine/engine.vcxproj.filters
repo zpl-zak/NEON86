@@ -114,6 +114,9 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -241,6 +244,12 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaLight.h">
+      <Filter>Header Files\Lua\Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

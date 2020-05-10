@@ -38,7 +38,8 @@ public:
     VOID SetRenderTarget(CRenderTarget* target, BOOL depth = FALSE);
     VOID SetRenderState(DWORD kind, DWORD value);
     VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
-
+    
+    inline VOID EnableLighting(BOOL state) { mEnableLighting = state; }
     inline VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
     VOID SetDefaultRenderStates();
@@ -52,6 +53,7 @@ public:
     inline CFrustum* GetFrustum() { return mFrustum; }
     inline CEffect* GetActiveEffect() { return mActiveEffect; }
     inline D3DSURFACE_DESC GetDisplayDesc() { return mDisplayDesc; }
+    inline BOOL IsLightingEnabled() { return mEnableLighting; }
 
 protected:
     LPDIRECT3D9 mDirect9;
@@ -66,6 +68,7 @@ protected:
     D3DSURFACE_DESC mDisplayDesc;
     BOOL mVsync;
     BOOL mFullscreen;
+    BOOL mEnableLighting;
 
     VOID Clear(VOID);
     VOID BuildParams(VOID);
