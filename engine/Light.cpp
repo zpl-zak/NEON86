@@ -96,7 +96,7 @@ VOID CLight::SetDefaults()
     mLightData.Direction = D3DXVECTOR3(-1.0f, -0.3f, -1.0f);
     mLightData.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
-    mLightData.Range = 1000;
+    mLightData.Range = 0;
     mLightData.Falloff = 0;
     mLightData.Attenuation0 = 1;
     mLightData.Attenuation1 = 0;
