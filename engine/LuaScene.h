@@ -6,6 +6,7 @@
 
 #include "Scene.h"
 #include "Light.h"
+#include "Target.h"
 
 static INT scene_new(lua_State* L)
 {
@@ -38,7 +39,7 @@ static INT scene_getmeshes(lua_State* L)
     {
         CMesh* mesh = model->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (VOID*)mesh);
+        lua_pushlightuserdata(L, (LPVOID)mesh);
         luaL_setmetatable(L, L_MESH);
         lua_settable(L, -3);
     }
@@ -56,8 +57,26 @@ static INT scene_getlights(lua_State* L)
     {
         CLight* lit = model->GetLights()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (VOID*)lit);
+        lua_pushlightuserdata(L, (LPVOID)lit);
         luaL_setmetatable(L, L_LIGHT);
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
+static INT scene_gettargets(lua_State* L)
+{
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+
+    lua_newtable(L);
+
+    for (UINT i = 0; i < model->GetNumTargets(); i++)
+    {
+        CTarget* tgt = model->GetTargets()[i];
+        lua_pushstring(L, tgt->GetName().C_Str());
+        matrix_new(L);
+        *(D3DXMATRIX*)lua_touserdata(L, 2) = tgt->GetTransform();
         lua_settable(L, -3);
     }
 
@@ -111,7 +130,7 @@ static INT scene_findmesh(lua_State* L)
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (VOID*)mg);
+        lua_pushlightuserdata(L, (LPVOID)mg);
         luaL_setmetatable(L, L_MESH);
     }
     else lua_pushnil(L);
@@ -128,10 +147,26 @@ static INT scene_findlight(lua_State* L)
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (VOID*)mg);
+        lua_pushlightuserdata(L, (LPVOID)mg);
         luaL_setmetatable(L, L_LIGHT);
     }
     else lua_pushnil(L);
+
+    return 1;
+}
+
+static INT scene_findtarget(lua_State* L)
+{
+    CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    LPSTR targetName = (LPSTR)luaL_checkstring(L, 2);
+
+    CTarget* mg = model->FindTarget(targetName);
+
+    if (mg) {
+        matrix_new(L);
+        *(D3DXMATRIX*)lua_touserdata(L, 3) = mg->GetTransform();
+    }
+    else    lua_pushnil(L);
 
     return 1;
 }
@@ -159,8 +194,10 @@ static VOID LuaScene_register(lua_State* L)
     REGC("loadScene", scene_loadmodel);
     REGC("getMeshes", scene_getmeshes);
     REGC("getLights", scene_getlights);
+    REGC("getTargets", scene_gettargets);
     REGC("findMesh", scene_findmesh);
     REGC("findLight", scene_findlight);
+    REGC("findTarget", scene_findtarget);
     REGC("__gc", scene_delete);
 
     lua_pop(L, 1);

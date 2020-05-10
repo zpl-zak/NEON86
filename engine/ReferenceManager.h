@@ -8,6 +8,7 @@ class CFaceGroup;
 class CMesh;
 class CMaterial;
 class CLight;
+class CTarget;
 
 template<typename T>
 class CReference
@@ -50,6 +51,7 @@ public:
     static CReferenceContainer<CMaterial> materials;
     static CReferenceContainer<CMesh> meshes;
     static CReferenceContainer<CLight> lights;
+    static CReferenceContainer<CTarget> targets;
 };
 
 template<typename T>
@@ -89,4 +91,10 @@ inline VOID CReference<CLight>::TrackRef(CLight* self)
 {
     mSelf = self;
     CReferenceManager::lights.AddRef(*this);
+}
+
+inline VOID CReference<CTarget>::TrackRef(CTarget* self)
+{
+    mSelf = self;
+    CReferenceManager::targets.AddRef(*this);
 }

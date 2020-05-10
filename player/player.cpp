@@ -24,8 +24,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     rect.right = 1280;
     rect.bottom = 800;
 
-    if (!lpCmdLine)
-        lpCmdLine = "data";
+    /*if (lpCmdLine)
+        SetWorkingD*/
+
+
 
     hWnd = BuildWindow(hInstance, nCmdShow, L"NeonClass", L"NEON 86 | PLAYER", rect);
     CenterWindow(hWnd);

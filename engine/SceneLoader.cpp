@@ -19,7 +19,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     {
         CMesh* mesh = new CMesh();
         CReferenceManager::TrackRef(mesh);
-        aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Inverse();
+        aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
 
         for (UINT i = 0; i < impNode->mNumMeshes; i++)
         {
@@ -39,6 +39,16 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         {
             scene->AddLight(LoadLight(impNode, impLight));
         }
+    }
+
+    // Add target if node is empty
+    if (impNode->mNumMeshes == 0 && impNode->mNumChildren == 0)
+    {
+        aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
+        CTarget* tgt = new CTarget(mat, impNode->mName);
+        CReferenceManager::TrackRef(tgt);
+
+        scene->AddTarget(tgt);
     }
 
     // Iterate over children

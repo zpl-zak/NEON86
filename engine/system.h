@@ -90,7 +90,7 @@ public:
                 return mData[i];
         }
 
-        return T();
+        return NULL;
     }
 
     inline VOID Clear() { mCount = 0; }

@@ -45,6 +45,8 @@ public:
 	FILE* OpenResource(UCHAR kind, LPCSTR resName = NULL);
 	VOID CloseResource(FILE* handle);
 	LPCSTR ResourcePath(UCHAR kind, LPCSTR resName = NULL);
+	LPCSTR GetGamePath() { return mGamePath; }
+	LPCSTR GetCanonicalGamePath();
 	BOOL Exists(UCHAR kind, LPCSTR resName);
 	VOID FreeResource(LPVOID data);
 	VOID Release(VOID);

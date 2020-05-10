@@ -8,6 +8,7 @@
 #include "ReferenceManager.h"
 
 #include <lua/lua.hpp>
+#include <cstdio>
 
 CLuaMachine::CLuaMachine(VOID)
 {
@@ -198,7 +199,7 @@ VOID CLuaMachine::Resize(RECT res)
 
 static const luaL_Reg loadedlibs[] = {
 	{"_G", luaopen_base},
-	//{LUA_LOADLIBNAME, luaopen_package},
+	{LUA_LOADLIBNAME, luaopen_package},
 	{LUA_COLIBNAME, luaopen_coroutine},
 	{LUA_TABLIBNAME, luaopen_table},
 	//{LUA_IOLIBNAME, luaopen_io},
@@ -220,6 +221,12 @@ static VOID _lua_openlibs(lua_State *L) {
 		luaL_requiref(L, lib->name, lib->func, 1);
 		lua_pop(L, 1);
 	}
+	
+	static char path[MAX_PATH] = { 0 };
+	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua'", FILESYSTEM->GetCanonicalGamePath());
+	luaL_dostring(L, path);
+    sprintf_s(path, MAX_PATH, "package.cpath = '%s/?.dll'", FILESYSTEM->GetCanonicalGamePath());
+    luaL_dostring(L, path);
 }
 
 

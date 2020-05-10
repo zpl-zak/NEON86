@@ -368,6 +368,7 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Target.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 
 #include "system.h"
 #include "RenderData.h"
+#include "Target.h"
 
 class CMesh;
 class CLight;
@@ -25,8 +26,13 @@ public:
     inline CLight** GetLights() { return mLights.GetData(); }
     CLight* FindLight(LPCSTR name);
     VOID AddLight(CLight* lit);
-
+    
+    inline UINT GetNumTargets() { return mTargets.GetCount(); }
+    inline CTarget** GetTargets() { return mTargets.GetData(); }
+    CTarget* FindTarget(LPCSTR name);
+    VOID AddTarget(CTarget* tgt);
 private:
     CArray<CMesh*> mMeshes;
     CArray<CLight*> mLights;
+    CArray<CTarget*> mTargets;
 };

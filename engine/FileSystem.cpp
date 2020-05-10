@@ -246,6 +246,22 @@ LPCSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
     return NULL;
 }
 
+LPCSTR CFileSystem::GetCanonicalGamePath()
+{
+	static char path[MAX_PATH] = { 0 };
+	LPCSTR p = mGamePath;
+	LPSTR s = path;
+
+	while (*p != NULL)
+	{
+		if (*p == '\\') *s++ = '/';
+		else			*s++ = *p;
+		++p;
+	}
+
+	return path;
+}
+
 BOOL CFileSystem::Exists(UCHAR kind, LPCSTR resName)
 {
 	FILE* res = OpenResource(kind, resName);

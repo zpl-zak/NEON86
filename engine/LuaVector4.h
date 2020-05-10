@@ -219,6 +219,7 @@ static VOID LuaVector_register(lua_State* L)
     REGC("x", vector4_x);
     REGC("y", vector4_y);
     REGC("z", vector4_z);
+	REGC("w", vector4_w);
 
 	lua_pop(L, 1);
 }

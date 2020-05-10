@@ -15,6 +15,7 @@ CScene::CScene(LPSTR modelPath)
 {
     mMeshes.Release();
     mLights.Release();
+    mTargets.Release();
 
     if (modelPath)
         LoadScene(modelPath);
@@ -97,4 +98,17 @@ VOID CScene::AddLight(CLight* lit)
         ENGINE->Shutdown();
         return;
     }
+}
+
+CTarget* CScene::FindTarget(LPCSTR name)
+{
+    if (!name)
+        return NULL;
+
+    return mTargets.Find(name);
+}
+
+VOID CScene::AddTarget(CTarget* tgt)
+{
+    mTargets.Push(tgt);
 }
