@@ -92,7 +92,7 @@ VOID CLight::SetDefaults()
     mLightData.Type = D3DLIGHT_DIRECTIONAL;
 
     mLightData.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-    mLightData.Ambient = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
+    mLightData.Ambient = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
     mLightData.Direction = D3DXVECTOR3(-1.0f, -0.3f, -1.0f);
     mLightData.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 

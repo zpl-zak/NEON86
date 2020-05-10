@@ -291,6 +291,20 @@ LUAF(Rend, EnableLighting)
     RENDERER->EnableLighting(state);
     return 0;
 }
+LUAF(Rend, AmbientColor)
+{
+    UINT r = 0, g = 0, b = 0;
+
+    if (lua_gettop(L) >= 3)
+    {
+        r = (UINT)luaL_checknumber(L, 1);
+        g = (UINT)luaL_checknumber(L, 2);
+        b = (UINT)luaL_checknumber(L, 3);
+    }
+
+	RENDERER->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(r, g, b));
+    return 0;
+}
 LUAF(Rend, ClearTarget)
 {
 	RENDERER->SetRenderTarget(NULL);
@@ -335,6 +349,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, RenderState);
 	REGF(Rend, SamplerState);
 	REGF(Rend, EnableLighting);
+	REGF(Rend, AmbientColor);
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawQuad);
 	REGF(Rend, FillScreen);

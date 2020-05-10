@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "Light.h"
 #include "ReferenceManager.h"
 #include "NeonEngine.h"
 
@@ -30,6 +31,17 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         scene->AddMesh(mesh);
     }
 
+    // Load light
+    for (UINT i = 0; i < impScene->mNumLights; i++)
+    {
+        const aiLight* impLight = impScene->mLights[i];
+        if (!strcmp(impNode->mName.C_Str(), impLight->mName.C_Str()))
+        {
+            scene->AddLight(LoadLight(impNode, impLight));
+        }
+    }
+
+    // Iterate over children
     for (UINT i = 0; i < impNode->mNumChildren; i++)
     {
         LoadNodesRecursively(impScene, impNode->mChildren[i], scene, loadMaterials);
@@ -145,6 +157,49 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
     }
 
     return newFGroup;
+}
+
+CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
+{
+    CLight* lit = new CLight();
+    CReferenceManager::TrackRef(lit);
+
+    aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Inverse();
+
+    aiVector3D pos;
+    aiVector3D dir;
+    aiQuaternion rot;
+    mat.DecomposeNoScaling(rot, pos);
+
+    pos = impLight->mPosition + pos;
+    dir = rot.GetMatrix() * impLight->mDirection;
+
+    lit->SetPosition(EXPAND_VEC(pos));
+    lit->SetDirection(EXPAND_VEC(dir));
+
+    lit->SetDiffuse(EXPAND_COLX(impLight->mColorDiffuse));
+    lit->SetSpecular(EXPAND_COLX(impLight->mColorSpecular));
+    lit->SetAttenuation(impLight->mAttenuationConstant,
+        impLight->mAttenuationLinear,
+        impLight->mAttenuationQuadratic);
+    lit->SetInnerAngle(impLight->mAngleInnerCone);
+    lit->SetOuterAngle(impLight->mAngleOuterCone);
+    
+    switch (impLight->mType)
+    {
+    case aiLightSource_POINT:
+        lit->SetType(D3DLIGHT_POINT);
+    break; 
+    case aiLightSource_DIRECTIONAL:
+        lit->SetType(D3DLIGHT_DIRECTIONAL);
+    break; 
+    case aiLightSource_SPOT:
+        lit->SetType(D3DLIGHT_SPOT);
+        break;
+    }
+
+    lit->SetName(impNode->mName);
+    return lit;
 }
 
 aiMatrix4x4 CSceneLoader::ComputeFinalTransformation(const aiNode* node)

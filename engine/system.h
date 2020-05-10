@@ -10,6 +10,11 @@
 #define SAFE_DELETE_ARRAY(memory) if(memory) { delete[] memory; memory = NULL; }
 #define SAFE_FREE(memory) if(memory) { neon_free(memory); memory = NULL; }
 #define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = NULL; } }
+#define EXPAND_VEC(q) { q.x, q.y, q.z }
+#define EXPAND_VECX(q) { q.x, q.y, q.z, 1.0f }
+#define EXPAND_VEC4(q) { q.x, q.y, q.z, q.w }
+#define EXPAND_COL4(q) { q.r, q.g, q.b, q.a }
+#define EXPAND_COLX(q) { q.r, q.g, q.b, 1.0f }
 
 extern FLOAT GetTime(BOOL flush = FALSE);
 
