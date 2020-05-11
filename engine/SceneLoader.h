@@ -7,6 +7,7 @@
 class CFaceGroup;
 class CMaterial;
 class CScene;
+class CNode;
 class CLight;
 struct aiScene;
 struct aiMesh;
@@ -17,7 +18,7 @@ struct aiMaterial;
 class CSceneLoader 
 {
 public:
-    static VOID LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, BOOL loadMaterials);
+    static VOID LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials);
     static VOID LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials);
     static CFaceGroup* LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials);
     static CLight* LoadLight(const aiNode* impNode, const aiLight* impLight);

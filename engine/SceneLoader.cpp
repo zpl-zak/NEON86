@@ -12,14 +12,20 @@
 #include <assimp/scene.h>
 #include <assimp/matrix4x4.h>
 
-VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, BOOL loadMaterials)
+VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials)
 {
+    aiMatrix4x4 mat = impNode->mTransformation;
+    mat = mat.Transpose();
+
+    CNode* newNode = new CNode(mat, impNode->mName);
+    newNode->SetParent(node);
+    scene->AddNode(newNode);
+    
     // Load meshes
     if (impNode->mNumMeshes > 0)
     {
         CMesh* mesh = new CMesh();
-        aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
-
+        
         for (UINT i = 0; i < impNode->mNumMeshes; i++)
         {
             const aiMesh* impMesh = impScene->mMeshes[impNode->mMeshes[i]];
@@ -28,6 +34,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
 
         mesh->SetName(impNode->mName);
         scene->AddMesh(mesh);
+        newNode->AddMesh(mesh);
     }
 
     // Load light
@@ -36,29 +43,22 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         const aiLight* impLight = impScene->mLights[i];
         if (!strcmp(impNode->mName.C_Str(), impLight->mName.C_Str()))
         {
-            scene->AddLight(LoadLight(impNode, impLight));
+            CLight* lit = LoadLight(impNode, impLight);
+            scene->AddLight(lit);
+            newNode->AddLight(lit);
         }
-    }
-
-    // Add target if node is empty
-    if (impNode->mNumMeshes == 0 && impNode->mNumChildren == 0)
-    {
-        aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
-        CTarget* tgt = new CTarget(mat, impNode->mName);
-
-        scene->AddTarget(tgt);
     }
 
     // Iterate over children
     for (UINT i = 0; i < impNode->mNumChildren; i++)
     {
-        LoadNodesRecursively(impScene, impNode->mChildren[i], scene, loadMaterials);
+        LoadNodesRecursively(impScene, impNode->mChildren[i], scene, newNode, loadMaterials);
     }
 }
 
 VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials)
 {
-    LoadNodesRecursively(impScene, impScene->mRootNode, scene, loadMaterials);
+    LoadNodesRecursively(impScene, impScene->mRootNode, scene, NULL, loadMaterials);
 }
 
 CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)

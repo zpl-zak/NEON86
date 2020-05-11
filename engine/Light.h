@@ -2,9 +2,9 @@
 
 #include "RenderData.h"
 #include "ReferenceManager.h"
-#include "Node.h"
+#include "NodeComponent.h"
 
-class CLight : public CReferenceCounter, public CNode
+class CLight : public CReferenceCounter, public CNodeComponent
 {
 public:
     CLight(UINT slot=0);

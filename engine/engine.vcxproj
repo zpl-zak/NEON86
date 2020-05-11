@@ -309,6 +309,7 @@
     <ClCompile Include="LuaBindings.cpp" />
     <ClCompile Include="LuaMachine.cpp" />
     <ClCompile Include="FaceGroup.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ReferenceManager.cpp" />
@@ -356,7 +357,7 @@
     <ClInclude Include="LuaVertex.h" />
     <ClInclude Include="lua_macros.h" />
     <ClInclude Include="FaceGroup.h" />
-    <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeComponent.h" />
     <ClInclude Include="SceneLoader.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="NeonEngine.h" />
@@ -368,7 +369,7 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="Target.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>

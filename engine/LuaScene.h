@@ -6,7 +6,7 @@
 
 #include "Scene.h"
 #include "Light.h"
-#include "Target.h"
+#include "Node.h"
 
 static INT scene_new(lua_State* L)
 {
@@ -71,9 +71,9 @@ static INT scene_gettargets(lua_State* L)
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < model->GetNumTargets(); i++)
+    for (UINT i = 0; i < model->GetNumNodes(); i++)
     {
-        CTarget* tgt = model->GetTargets()[i];
+        CNode* tgt = model->GetNodes()[i];
         lua_pushstring(L, tgt->GetName().C_Str());
         matrix_new(L);
         *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetTransform();
@@ -160,7 +160,7 @@ static INT scene_findtarget(lua_State* L)
     CScene* model = (CScene*)luaL_checkudata(L, 1, L_SCENE);
     LPSTR targetName = (LPSTR)luaL_checkstring(L, 2);
 
-    CTarget* mg = model->FindTarget(targetName);
+    CNode* mg = model->FindNode(targetName);
 
     if (mg) {
         matrix_new(L);

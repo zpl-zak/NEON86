@@ -3,11 +3,11 @@
 #include "system.h"
 #include "RenderData.h"
 #include "ReferenceManager.h"
-#include "Node.h"
+#include "NodeComponent.h"
 
 class CFaceGroup;
 
-class CMesh: public CReferenceCounter, public CNode
+class CMesh: public CReferenceCounter, public CNodeComponent
 {
 public:
     CMesh(VOID);

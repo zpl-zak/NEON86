@@ -117,6 +117,9 @@
     <ClCompile Include="SceneLoader.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -254,7 +257,7 @@
     <ClInclude Include="Node.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Target.h">
+    <ClInclude Include="NodeComponent.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
   </ItemGroup>

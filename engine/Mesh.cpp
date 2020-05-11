@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Mesh.h"
+#include "Node.h"
 #include "FaceGroup.h"
 #include "SceneLoader.h"
 #include "NeonEngine.h"
@@ -45,7 +46,7 @@ VOID CMesh::Draw(const D3DXMATRIX& wmat)
 {
     for (UINT i = 0; i < mFaceGroups.GetCount(); i++)
     {
-        D3DXMATRIX mat = mTransforms[i] * wmat;
+        D3DXMATRIX mat = (GetOwner() ? GetOwner()->GetFinalTransform() : mTransforms[i]) * wmat;
         mFaceGroups[i]->Draw(&mat);
     }
 }

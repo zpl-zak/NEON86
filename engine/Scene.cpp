@@ -13,9 +13,7 @@
 
 CScene::CScene(LPSTR modelPath)
 {
-    mMeshes.Release();
-    mLights.Release();
-    mTargets.Release();
+    Release();
 
     if (modelPath)
         LoadScene(modelPath);
@@ -23,7 +21,10 @@ CScene::CScene(LPSTR modelPath)
 
 VOID CScene::Release()
 {
-
+    mMeshes.Release();
+    mLights.Release();
+    mNodes.Release();
+    mRootNode = NULL;
 }
 
 #define MESHIMPORT_FLAGS \
@@ -62,53 +63,4 @@ VOID CScene::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
         return;
 
     mMeshes[subset]->Draw(wmat);
-}
-
-CMesh* CScene::FindMesh(LPCSTR name)
-{
-    return mMeshes.Find(name);
-}
-
-VOID CScene::AddMesh(CMesh* mg)
-{
-    if (!mg)
-        return;
-
-    if (FAILED(mMeshes.Push(mg)))
-    {
-        MessageBoxA(NULL, "Can't push mesh into a scene!", "Out of memory error", MB_OK);
-        ENGINE->Shutdown();
-        return;
-    }
-}
-
-CLight* CScene::FindLight(LPCSTR name)
-{
-    return mLights.Find(name);
-}
-
-VOID CScene::AddLight(CLight* lit)
-{
-    if (!lit)
-        return;
-
-    if (FAILED(mLights.Push(lit)))
-    {
-        MessageBoxA(NULL, "Can't push light into a scene!", "Out of memory error", MB_OK);
-        ENGINE->Shutdown();
-        return;
-    }
-}
-
-CTarget* CScene::FindTarget(LPCSTR name)
-{
-    if (!name)
-        return NULL;
-
-    return mTargets.Find(name);
-}
-
-VOID CScene::AddTarget(CTarget* tgt)
-{
-    mTargets.Push(tgt);
 }
