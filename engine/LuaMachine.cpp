@@ -101,7 +101,6 @@ VOID CLuaMachine::Init(VOID)
     if (!mLuaVM)
         return;
 
-	ENGINE->ResetApplicationTime();
 	mRunTime = 0.0f;
 
 	lua_getglobal(mLuaVM, "_init");
@@ -146,8 +145,6 @@ VOID CLuaMachine::Update(FLOAT dt)
 	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
 		return;
 
-	mRunTime += dt;
-
 	lua_getglobal(mLuaVM, "_update");
 
 	if (!lua_isfunction(mLuaVM, -1))
@@ -157,6 +154,8 @@ VOID CLuaMachine::Update(FLOAT dt)
 
 	int r = lua_pcall(mLuaVM, 1, 0, 0);
 	CheckVMErrors(r);
+
+	mRunTime += dt;
 }
 
 VOID CLuaMachine::Render(VOID)

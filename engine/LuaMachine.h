@@ -34,7 +34,7 @@ public:
 	VOID Resize(RECT res);
 
 	inline VOID CheckVMErrors(INT);
-	inline FLOAT GetTime() { return mRunTime; }
+	inline FLOAT GetRunTime() { return mRunTime; }
 private:
 	UCHAR mPlayKind;
 	UCHAR mScheduledTermination;

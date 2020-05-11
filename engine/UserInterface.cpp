@@ -62,7 +62,7 @@ VOID CUserInterface::DebugPanel(VOID)
     {
         ImGui::Text("CPU %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Separator();
-        ImGui::Text("TIME: %.2fs", GetTime());
+        ImGui::Text("TIME: %.2fs", VM->GetRunTime());
         ImGui::Separator();
         ImGui::Text("MEM ENGINE: %.3f kb LUA: %.3f kb TOTAL: %.3f kb PEAK: %.3f kb", gMemUsed/1024.0, gMemUsedLua / 1024.0, (gMemUsed+gMemUsedLua) / 1024.0, gMemPeak / 1024.0);
         ImGui::Separator();

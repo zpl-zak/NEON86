@@ -99,11 +99,6 @@ VOID CEngine::Think()
         Sleep(1); // Let CPU sleep a bit
 }
 
-VOID CEngine::ResetApplicationTime()
-{
-    mLastTime = GetTime(TRUE);
-}
-
 LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (mUserInterface->ProcessEvents(hWnd, message, wParam, lParam))

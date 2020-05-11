@@ -16,7 +16,7 @@
 #define EXPAND_COL4(q) { q.r, q.g, q.b, q.a }
 #define EXPAND_COLX(q) { q.r, q.g, q.b, 1.0f }
 
-extern FLOAT GetTime(BOOL flush = FALSE);
+extern FLOAT GetTime();
 
 
 extern DWORD gMemUsed, gMemUsedLua, gMemPeak;
