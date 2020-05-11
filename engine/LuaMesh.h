@@ -90,7 +90,25 @@ static INT mesh_getname(lua_State* L)
     return 1;
 }
 
-static VOID LuaMeshGroup_register(lua_State* L)
+static INT mesh_setmaterial(lua_State* L)
+{
+    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    DWORD stage = (DWORD)luaL_checkinteger(L, 2);
+    CMaterial* mat = NULL;
+
+    if (lua_gettop(L) == 3)
+        mat = (CMaterial*)luaL_checkudata(L, 3, L_MATERIAL);
+
+    for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
+    {
+        mesh->GetFGroups()[i]->SetMaterial(stage, mat ? mat : NULL);
+    }
+    
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static VOID LuaMesh_register(lua_State* L)
 {
     lua_register(L, L_MESH, mesh_new);
     luaL_newmetatable(L, L_MESH);
@@ -103,6 +121,7 @@ static VOID LuaMeshGroup_register(lua_State* L)
     REGC("getParts", mesh_getfgroups);
     REGC("clear", mesh_clear);
     REGC("setName", mesh_setname);
+    REGC("setMaterial", mesh_setmaterial);
     REGC("getName", mesh_getname);
     REGC("__gc", mesh_delete);
     

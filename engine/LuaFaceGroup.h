@@ -166,7 +166,7 @@ static INT facegroup_getindices(lua_State* L)
     return 1;
 }
 
-static VOID LuaMesh_register(lua_State* L)
+static VOID LuaFaceGroup_register(lua_State* L)
 {
 	lua_register(L, L_FACEGROUP, facegroup_new);
 	luaL_newmetatable(L, L_FACEGROUP);

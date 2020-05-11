@@ -365,7 +365,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaMaterial_register(L);
 	LuaLight_register(L);
 	LuaMesh_register(L);
-	LuaMeshGroup_register(L);
+	LuaFaceGroup_register(L);
 	LuaScene_register(L);
 	LuaEffect_register(L);
 	LuaRenderTarget_register(L);
