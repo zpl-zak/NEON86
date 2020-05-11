@@ -4,7 +4,7 @@
 #include "ReferenceManager.h"
 #include "Node.h"
 
-class CLight : public CReference<CLight>, public CNode
+class CLight : public CReferenceCounter, public CNode
 {
 public:
     CLight(UINT slot=0);

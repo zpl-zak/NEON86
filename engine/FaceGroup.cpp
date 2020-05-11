@@ -18,15 +18,23 @@ CFaceGroup::CFaceGroup(VOID)
 
 VOID CFaceGroup::Release(VOID)
 {
-	SAFE_FREE(mVerts);
-	SAFE_FREE(mIndices);
-	SAFE_RELEASE(mData.mesh);
+	if (DelRef())
+	{
+        SAFE_FREE(mVerts);
+        SAFE_FREE(mIndices);
+        SAFE_RELEASE(mData.mesh);
+	}
 }
 
 VOID CFaceGroup::SetMaterial(DWORD stage, CMaterial* tex)
 {
 	mData.stage = stage;
 	mData.mat = tex;
+
+    if (tex)
+    {
+        tex->AddRef();
+    }
 }
 
 VOID CFaceGroup::AddVertex(const VERTEX& vertex)

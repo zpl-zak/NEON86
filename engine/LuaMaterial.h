@@ -26,7 +26,7 @@ static INT material_new(lua_State* L)
         *mat = CMaterial(TEXTURESLOT_ALBEDO, w, h);
     else
         *mat = CMaterial();
-	
+
 	luaL_setmetatable(L, L_MATERIAL);
 	return 1;
 }
@@ -211,6 +211,7 @@ static VOID LuaMaterial_register(lua_State* L)
 	lua_register(L, L_MATERIAL, material_new);
 	luaL_newmetatable(L, L_MATERIAL);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
+    luaN_setid(L);
 	
     REGC("setSamplerState", material_setsampler);
     REGC("getSamplerState", material_getsampler);

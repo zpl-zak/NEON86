@@ -76,7 +76,7 @@ static INT scene_gettargets(lua_State* L)
         CTarget* tgt = model->GetTargets()[i];
         lua_pushstring(L, tgt->GetName().C_Str());
         matrix_new(L);
-        *(D3DXMATRIX*)lua_touserdata(L, 2) = tgt->GetTransform();
+        *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetTransform();
         lua_settable(L, -3);
     }
 
@@ -187,6 +187,7 @@ static VOID LuaScene_register(lua_State* L)
     lua_register(L, "Model", scene_new);
     luaL_newmetatable(L, L_SCENE);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
+    luaN_setid(L);
 
     REGC("draw", scene_draw);
     REGC("drawSubset", scene_drawsubset);

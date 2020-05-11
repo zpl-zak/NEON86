@@ -7,7 +7,7 @@
 
 #include <d3dx9.h>
 
-class CTarget: public CNode, public CReference<CTarget>
+class CTarget: public CNode, public CReferenceCounter
 {
 public:
     CTarget(aiMatrix4x4 mat, aiString name)

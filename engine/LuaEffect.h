@@ -190,6 +190,7 @@ static VOID LuaEffect_register(lua_State* L)
     lua_register(L, L_EFFECT, effect_new);
     luaL_newmetatable(L, L_EFFECT);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
+    luaN_setid(L);
 
     REGC("start", effect_begin);
     REGC("finish", effect_end);

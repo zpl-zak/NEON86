@@ -20,7 +20,6 @@ CLuaMachine::CLuaMachine(VOID)
 
 VOID CLuaMachine::Release(VOID)
 {
-	CReferenceManager::Release();
 	FILESYSTEM->FreeResource(mMainScript);
 	mMainScript = NULL;
 	DestroyVM();

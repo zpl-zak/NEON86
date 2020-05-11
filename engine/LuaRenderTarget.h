@@ -57,6 +57,7 @@ static VOID LuaRenderTarget_register(lua_State* L)
     lua_register(L, L_RENDERTARGET, rtt_new);
     luaL_newmetatable(L, L_RENDERTARGET);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
+    luaN_setid(L);
 
     REGC("getHandle", rtt_gethandle);
     REGC("bind", rtt_bind);

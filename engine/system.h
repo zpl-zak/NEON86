@@ -40,7 +40,7 @@ extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
 /// helpers
 template <typename T>
-class CArray
+class CArray: public CReferenceCounter
 {
 public:
     CArray()
@@ -57,9 +57,12 @@ public:
 
     inline VOID Release()
     {
-        SAFE_FREE(mData);
-        mCapacity = 4;
-        mCount = 0;
+        if (DelRef())
+        {
+            SAFE_FREE(mData);
+            mCapacity = 4;
+            mCount = 0;
+        }
     }
 
     inline HRESULT Push(T elem)

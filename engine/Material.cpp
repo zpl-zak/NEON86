@@ -47,9 +47,14 @@ VOID CMaterial::DefaultMaterial(VOID)
 
 VOID CMaterial::Release(VOID)
 {
-    for (UINT i=0; i<MAX_TEXTURE_SLOTS;i++)
+    if (DelRef())
     {
-        SAFE_RELEASE(mTextureHandle[i]);
+        for (UINT i = 0; i < MAX_TEXTURE_SLOTS; i++)
+        {
+            SAFE_RELEASE(mTextureHandle[i]);
+        }
+
+        delete this;
     }
 }
 

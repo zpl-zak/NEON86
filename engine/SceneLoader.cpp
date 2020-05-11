@@ -18,7 +18,6 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     if (impNode->mNumMeshes > 0)
     {
         CMesh* mesh = new CMesh();
-        CReferenceManager::TrackRef(mesh);
         aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
 
         for (UINT i = 0; i < impNode->mNumMeshes; i++)
@@ -46,7 +45,6 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     {
         aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
         CTarget* tgt = new CTarget(mat, impNode->mName);
-        CReferenceManager::TrackRef(tgt);
 
         scene->AddTarget(tgt);
     }
@@ -66,7 +64,6 @@ VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMa
 CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)
 {
     CFaceGroup* newFGroup = new CFaceGroup();
-    CReferenceManager::TrackRef(newFGroup);
 
     for (UINT i = 0; i < mesh->mNumVertices; i++)
     {
@@ -162,7 +159,6 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
         newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
 
-        CReferenceManager::TrackRef(newMaterial);
         newFGroup->SetMaterial(0, newMaterial);
     }
 
@@ -172,7 +168,6 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
 CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
 {
     CLight* lit = new CLight();
-    CReferenceManager::TrackRef(lit);
 
     aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Inverse();
 
