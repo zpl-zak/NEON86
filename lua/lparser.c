@@ -1143,6 +1143,39 @@ static void check_conflict (LexState *ls, struct LHS_assign *lh, expdesc *v) {
   }
 }
 
+static void compound (LexState* ls, expdesc* v) {
+    int i, line, extra;
+    FuncState* fs = ls->fs;
+    expdesc e1 = *v, e2;
+
+    BinOpr op =
+        ls->t.token == TK_ADDE ? OPR_ADD :
+        ls->t.token == TK_SUBE ? OPR_SUB :
+        ls->t.token == TK_MULE ? OPR_MUL :
+        ls->t.token == TK_DIVE ? OPR_DIV :
+        ls->t.token == TK_MODE ? OPR_MOD :
+        OPR_NOBINOPR;
+    extra = fs->freereg - fs->nactvar;
+
+    for (i = 0; i < extra; ++i)
+        new_localvarliteral(ls, "(for compound)");
+    adjustlocalvars(ls, extra);
+
+    luaX_next(ls);
+    line = ls->linenumber;
+
+    enterlevel(ls);
+    {
+        luaK_infix(fs, op, &e1);
+        expr(ls, &e2);
+        luaK_posfix(fs, op, &e1, &e2, line);
+    }
+    leavelevel(ls);
+
+    luaK_exp2nextreg(fs, &e1);
+    luaK_setoneret(ls->fs, &e1);
+    luaK_storevar(ls->fs, v, &e1);
+}
 
 static void assignment (LexState *ls, struct LHS_assign *lh, int nvars) {
   expdesc e;
@@ -1486,11 +1519,17 @@ static void funcstat (LexState *ls, int line) {
 
 
 static void exprstat (LexState *ls) {
-  /* stat -> func | assignment */
+  /* stat -> func | compound | assignment */
   FuncState *fs = ls->fs;
   struct LHS_assign v;
   suffixedexp(ls, &v.v);
-  if (ls->t.token == '=' || ls->t.token == ',') { /* stat -> assignment ? */
+  if (ls->t.token == TK_ADDE || ls->t.token == TK_SUBE ||
+      ls->t.token == TK_MULE || ls->t.token == TK_DIVE ||
+      ls->t.token == TK_MODE) {
+      v.prev = NULL;
+      compound(ls, &v.v);
+  }
+  else if (ls->t.token == '=' || ls->t.token == ',') { /* stat -> assignment ? */
     v.prev = NULL;
     assignment(ls, &v, 1);
   }

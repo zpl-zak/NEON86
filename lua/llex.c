@@ -43,7 +43,7 @@ static const char *const luaX_tokens [] = {
     "in", "local", "nil", "not", "or", "repeat",
     "return", "then", "true", "until", "while",
     "//", "..", "...", "==", ">=", "<=", "~=",
-    "<<", ">>", "::", "<eof>",
+    "+=", "-=", "*=", "/=", "%=", "<<", ">>", "::", "<eof>",
     "<number>", "<integer>", "<name>", "<string>"
 };
 
@@ -438,9 +438,10 @@ static int llex (LexState *ls, SemInfo *seminfo) {
         next(ls);
         break;
       }
-      case '-': {  /* '-' or '--' (comment) */
+      case '-': {  /* '-' or '-=' or '--' (comment) */
         next(ls);
-        if (ls->current != '-') return '-';
+        if (ls->current == '=') { next(ls); return TK_SUBE; }
+        else if (ls->current != '-') return '-';
         /* else is a comment */
         next(ls);
         if (ls->current == '[') {  /* long comment? */
@@ -456,6 +457,15 @@ static int llex (LexState *ls, SemInfo *seminfo) {
         while (!currIsNewline(ls) && ls->current != EOZ)
           next(ls);  /* skip until end of line (or end of file) */
         break;
+      }
+      case '+': case '*': case '%': {
+          int c = ls->current;
+          next(ls);
+          if (ls->current != '=') return c;
+          else {
+              next(ls);
+              return c == '+' ? TK_ADDE : c == '*' ? TK_MULE : TK_MODE;
+          }
       }
       case '[': {  /* long string or simply '[' */
         int sep = skip_sep(ls);
