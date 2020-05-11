@@ -10,12 +10,9 @@ local enemies = {}
 
 function _init()
     humanModel = Model("human.fbx")
-    scene = Model("scene.fbx")
+    scene = Scene("scene.fbx")
     floor = scene:findMesh("Plane")
-    
-    local mat = Material("textures/cube_albedo.png")
-    mat:setOpacity(0.5)
-    floor:setMaterial(0, mat)
+    floor:getParts()[1]:getMaterial():setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
 
     for name, tgt in pairs(scene:getTargets()) do
         if string.find(name, "enemy_spawn") ~= nil then
@@ -31,10 +28,6 @@ end
 function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
-    end
-
-    if GetKeyDown("m") then
-        shaderDisabled = not shaderDisabled
     end
 
     for i, enemy in ipairs(enemies) do
@@ -58,9 +51,10 @@ function _render()
 
     ClearScene(20,20,69)
     AmbientColor(128,128,128)
-    CameraPerspective(62, 2, 40)
+    CameraPerspective(62, 2, 80)
     
     floor:draw(Matrix():translate(0,-2,0))
+    scene:findMesh("Suzanne"):draw(Matrix())
 
     for _, m in ipairs(enemies) do
         m.model:draw(Matrix():scale(2,2,2):translate(m.pos):translate(0,-2,0))
