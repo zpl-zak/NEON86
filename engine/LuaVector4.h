@@ -154,6 +154,17 @@ static INT vector4_get(lua_State* L)
 	return 1;
 }
 
+static INT vector4_color(lua_State* L)
+{
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+	lua_pushnumber(L, vec->x);
+	lua_pushnumber(L, vec->y);
+	lua_pushnumber(L, vec->z);
+	lua_pushnumber(L, vec->w);
+
+    return 4;
+}
+
 static INT vector4_mag(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
@@ -207,6 +218,7 @@ static VOID LuaVector_register(lua_State* L)
 
     REGC("cross", vector4_cross);
     REGC("get", vector4_get);
+	REGC("color", vector4_color);
 	REGC("mag", vector4_mag);
 	REGC("magSq", vector4_magsq);
 	REGC("lerp", vector4_lerp);
