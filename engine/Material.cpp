@@ -43,6 +43,11 @@ VOID CMaterial::DefaultMaterial(VOID)
     mMaterialData.Diffuse.r = mMaterialData.Diffuse.g = mMaterialData.Diffuse.b = mMaterialData.Diffuse.a = 1.0f;
     mMaterialData.Opacity = 1.0f;
     mMaterialData.Power = 1.0f;
+
+    SetSamplerState(D3DSAMP_MINFILTER, TEXF_ANISOTROPIC);
+    SetSamplerState(D3DSAMP_MIPFILTER, TEXF_ANISOTROPIC);
+    SetSamplerState(D3DSAMP_MAGFILTER, TEXF_ANISOTROPIC);
+    SetSamplerState(D3DSAMP_MAXANISOTROPY, 16);
 }
 
 VOID CMaterial::Release(VOID)
