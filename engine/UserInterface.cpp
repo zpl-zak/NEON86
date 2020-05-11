@@ -70,6 +70,8 @@ VOID CUserInterface::DebugPanel(VOID)
         if (ImGui::Button("Restart VM"))
             VM->Restart();
 
+        if (ImGui::Button("Pause VM"))
+            VM->Pause();
     }
     ImGui::EndMainMenuBar();
     

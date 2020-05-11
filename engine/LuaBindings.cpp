@@ -146,7 +146,7 @@ LUAF(Base, loadfile)
 }
 LUAF(Base, getTime)
 {
-	lua_pushnumber(L, GetTime());
+	lua_pushnumber(L, VM->GetTime());
     return 1;
 }
 ///<END

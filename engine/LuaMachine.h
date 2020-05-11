@@ -34,11 +34,13 @@ public:
 	VOID Resize(RECT res);
 
 	inline VOID CheckVMErrors(INT);
+	inline FLOAT GetTime() { return mRunTime; }
 private:
 	UCHAR mPlayKind;
 	UCHAR mScheduledTermination;
 	UCHAR *mMainScript;
 	lua_State* mLuaVM;
+	FLOAT mRunTime;
 
 	VOID InitVM(VOID);
 	VOID DestroyVM(VOID);

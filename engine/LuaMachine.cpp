@@ -16,6 +16,7 @@ CLuaMachine::CLuaMachine(VOID)
 	mMainScript = NULL;
 	mLuaVM = NULL;
 	mScheduledTermination = FALSE;
+	mRunTime = 0.0f;
 }
 
 VOID CLuaMachine::Release(VOID)
@@ -67,9 +68,13 @@ VOID CLuaMachine::Play(VOID)
 VOID CLuaMachine::Pause(VOID)
 {
 	if (mPlayKind == PLAYKIND_PLAYING)
+	{
 		mPlayKind = PLAYKIND_PAUSED;
+	}
 	else if (mPlayKind == PLAYKIND_PAUSED)
+	{
 		mPlayKind = PLAYKIND_PLAYING;
+	}
 }
 
 VOID CLuaMachine::Stop(VOID)
@@ -97,6 +102,7 @@ VOID CLuaMachine::Init(VOID)
         return;
 
 	ENGINE->ResetApplicationTime();
+	mRunTime = 0.0f;
 
 	lua_getglobal(mLuaVM, "_init");
 
@@ -139,6 +145,8 @@ VOID CLuaMachine::Update(FLOAT dt)
 
 	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
 		return;
+
+	mRunTime += dt;
 
 	lua_getglobal(mLuaVM, "_update");
 
