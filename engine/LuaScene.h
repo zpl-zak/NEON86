@@ -76,7 +76,7 @@ static INT scene_gettargets(lua_State* L)
         CNode* tgt = model->GetNodes()[i];
         lua_pushstring(L, tgt->GetName().C_Str());
         matrix_new(L);
-        *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetTransform();
+        *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetFinalTransform();
         lua_settable(L, -3);
     }
 
@@ -164,7 +164,7 @@ static INT scene_findtarget(lua_State* L)
 
     if (mg) {
         matrix_new(L);
-        *(D3DXMATRIX*)lua_touserdata(L, 3) = mg->GetTransform();
+        *(D3DXMATRIX*)lua_touserdata(L, 3) = mg->GetFinalTransform();
     }
     else    lua_pushnil(L);
 
