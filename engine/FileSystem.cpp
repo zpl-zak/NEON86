@@ -120,10 +120,27 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 	if (!gamePath)
 		return FALSE;
 
+	LPSTR p = gamePath;
+	UINT vdD = 0;
+
+	while (*p != 0)
+	{
+		if (!isspace(*p))
+			vdD++;
+
+		++p;
+	}
+
+	if (!vdD)
+	{
+		// path is empty, default to data
+		gamePath = "data";
+	}
+
 	if (gamePath == mGamePath && mLoadDone)
 		return TRUE;
 
-	LPSTR p = gamePath;
+	p = gamePath;
 	while (!isspace(*p) && *p != 0)
 		p++;
 

@@ -160,8 +160,8 @@ VOID CLuaMachine::Update(FLOAT dt)
 
 VOID CLuaMachine::Render(VOID)
 {
-	if (!mLuaVM)
-		return;
+    if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
+        return;
 
 	lua_getglobal(mLuaVM, "_render");
 
@@ -174,7 +174,7 @@ VOID CLuaMachine::Render(VOID)
 
 VOID CLuaMachine::Render2D(VOID)
 {
-    if (!mLuaVM)
+    if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
 
     lua_getglobal(mLuaVM, "_render2d");
@@ -188,7 +188,7 @@ VOID CLuaMachine::Render2D(VOID)
 
 VOID CLuaMachine::Resize(RECT res)
 {
-    if (!mLuaVM)
+    if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
 
 	lua_getglobal(mLuaVM, "_resizeScreen");

@@ -5,6 +5,7 @@
 
 #include <windowsx.h>
 #include <strsafe.h>
+#include <shobjidl.h>
 
 #include "NeonEngine.h"
 
@@ -23,11 +24,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     rect.top = CW_USEDEFAULT;
     rect.right = 1280;
     rect.bottom = 800;
-
-    /*if (lpCmdLine)
-        SetWorkingD*/
-
-
 
     hWnd = BuildWindow(hInstance, nCmdShow, L"NeonClass", L"NEON 86 | PLAYER", rect);
     CenterWindow(hWnd);
@@ -163,4 +159,3 @@ BOOL CenterWindow(HWND hwndWindow)
 
     return TRUE;
 }
-

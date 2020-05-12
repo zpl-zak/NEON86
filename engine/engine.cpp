@@ -201,7 +201,6 @@ VOID CEngine::Render()
 {
     mRenderer->SetDefaultRenderStates();
     mRenderer->GetDevice()->BeginScene();
-    mRenderer->ClearBuffer(0xFF000000);
     mLuaMachine->Render();
     mUserInterface->Render();
     mRenderer->Blit();
