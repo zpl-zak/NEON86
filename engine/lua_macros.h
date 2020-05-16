@@ -36,6 +36,7 @@ static INT NAME(lua_State* L) {\
 #define L_FACEGROUP "FaceGroup"
 #define L_MESH "Mesh"
 #define L_SCENE "Scene"
+#define L_NODE "Node"
 #define L_EFFECT "Effect"
 #define L_RENDERTARGET "RenderTarget"
 #define L_LIGHT "Light"

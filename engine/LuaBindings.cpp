@@ -39,6 +39,17 @@ VOID luaN_unref(lua_State* L, INT id)
 	}
 }
 
+VOID luaN_unrefall(lua_State* L)
+{
+	for (auto refs : luaWeakRefMap)
+	{
+		for (auto r : refs.second)
+		{
+			luaN_unref(L, r);
+		}
+	}
+}
+
 static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
 {
     if (luaL_testudata(L, 2+offset, L_VECTOR))
@@ -71,6 +82,7 @@ static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
 #include "LuaLight.h"
 #include "LuaFaceGroup.h"
 #include "LuaMesh.h"
+#include "LuaNode.h"
 #include "LuaScene.h"
 #include "LuaRenderTarget.h"
 #include "LuaEffect.h"
@@ -402,6 +414,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaMesh_register(L);
 	LuaFaceGroup_register(L);
 	LuaScene_register(L);
+	LuaNode_register(L);
 	LuaEffect_register(L);
 	LuaRenderTarget_register(L);
 
