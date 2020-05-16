@@ -18,8 +18,12 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     mat = mat.Transpose();
 
     CNode* newNode = new CNode(mat, impNode->mName);
+    node->AddNode(newNode);
+
+    if (node != scene)
+        scene->AddNode(newNode);
+
     newNode->SetParent(node);
-    scene->AddNode(newNode);
     
     // Load meshes
     if (impNode->mNumMeshes > 0)
@@ -58,7 +62,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
 
 VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials)
 {
-    LoadNodesRecursively(impScene, impScene->mRootNode, scene, NULL, loadMaterials);
+    LoadNodesRecursively(impScene, impScene->mRootNode, scene, scene, loadMaterials);
 }
 
 CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)

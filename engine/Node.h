@@ -16,7 +16,14 @@ public:
     CNode() 
     {
         D3DXMatrixIdentity(&mTransform);
-        SetName(aiString("(Imported scene)"));
+        D3DXMatrixIdentity(&mCachedTransform);
+        SetName(aiString("(unknown)"));
+        mIsTransformDirty = TRUE;
+        mParent = NULL;
+
+        mMeshes.Release();
+        mLights.Release();
+        mNodes.Release();
     }
 
     CNode(aiMatrix4x4 mat, aiString name)
@@ -36,6 +43,9 @@ public:
 
     ~CNode() {}
 
+    VOID Draw(const D3DXMATRIX& wmat);
+    VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
+
     inline UINT GetNumMeshes() { return mMeshes.GetCount(); }
     inline CMesh** GetMeshes() { return mMeshes.GetData(); }
     CMesh* FindMesh(LPCSTR name);
@@ -51,6 +61,7 @@ public:
     CNode* FindNode(LPCSTR name);
     VOID AddNode(CNode* tgt);
 
+    inline VOID SetTransform(D3DXMATRIX transform) { mTransform = transform; }
     inline D3DXMATRIX GetTransform() { return mTransform; }
 
     inline VOID SetParent(CNode* node) { mParent = node; }

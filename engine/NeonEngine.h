@@ -6,5 +6,5 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "FileSystem.h"
-#include "LuaMachine.h"
+#include "VM.h"
 #include "RenderData.h"

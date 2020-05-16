@@ -7,7 +7,7 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "FileSystem.h"
-#include "LuaMachine.h"
+#include "VM.h"
 #include "UserInterface.h"
 #include <ctime>
 
@@ -62,7 +62,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
     mRenderer = new CRenderer();
     mInput = new CInput();
     mFileSystem = new CFileSystem();
-    mLuaMachine = new CLuaMachine();
+    mLuaMachine = new CVirtualMachine();
 
     if (mRenderer->CreateDevice(window, resolution) != ERROR_SUCCESS)
     {

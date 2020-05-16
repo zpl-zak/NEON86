@@ -72,7 +72,7 @@ D3DXMATRIX CNode::GetFinalTransform()
     if (GetParent() == NULL)
         return mTransform;
 
-    mCachedTransform = mTransform * GetParent()->GetTransform();
+    mCachedTransform = mTransform * GetParent()->GetFinalTransform();
     mIsTransformDirty = FALSE;
 
     return mCachedTransform;
@@ -86,4 +86,25 @@ VOID CNode::InvalidateTransformRecursively()
     {
         mNodes[i]->InvalidateTransformRecursively();
     }
+}
+
+VOID CNode::Draw(const D3DXMATRIX& wmat)
+{
+    for (UINT i = 0; i < mMeshes.GetCount(); i++)
+    {
+        mMeshes[i]->Draw(wmat);
+    }
+
+    for (UINT i = 0; i < mNodes.GetCount(); i++)
+    {
+        mNodes[i]->Draw(wmat);
+    }
+}
+
+VOID CNode::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
+{
+    if (subset >= mMeshes.GetCount())
+        return;
+
+    mMeshes[subset]->Draw(wmat);
 }

@@ -307,7 +307,7 @@
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LuaBindings.cpp" />
-    <ClCompile Include="LuaMachine.cpp" />
+    <ClCompile Include="VM.cpp" />
     <ClCompile Include="FaceGroup.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
@@ -343,13 +343,14 @@
     <ClInclude Include="LuaEffect.h" />
     <ClInclude Include="LuaLight.h" />
     <ClInclude Include="LuaMesh.h" />
+    <ClInclude Include="LuaNode.h" />
     <ClInclude Include="LuaScene.h" />
     <ClInclude Include="LuaRenderTarget.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LuaBindings.h" />
-    <ClInclude Include="LuaMachine.h" />
+    <ClInclude Include="VM.h" />
     <ClInclude Include="LuaMatrix.h" />
     <ClInclude Include="LuaFaceGroup.h" />
     <ClInclude Include="LuaMaterial.h" />

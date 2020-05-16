@@ -31,7 +31,8 @@ VOID CScene::Release()
     aiProcess_ConvertToLeftHanded |\
     aiProcess_Triangulate |\
     aiProcess_CalcTangentSpace |\
-    aiProcess_FlipUVs
+    aiProcess_FlipUVs |\
+    0
 
 VOID CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
 {
@@ -47,6 +48,8 @@ VOID CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
     }
 
     CSceneLoader::LoadScene(model, this, loadMaterials);
+
+    mRootNode = mNodes[0];
 }
 
 VOID CScene::Draw(const D3DXMATRIX& wmat)
