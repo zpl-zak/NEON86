@@ -21,6 +21,8 @@ public:
 	VOID Build(VOID);
 	VOID Clear(VOID);
 
+	CFaceGroup* Clone();
+
 	inline UINT GetNumVertices() { return mVerts.GetCount(); }
 	inline VERTEX* GetVertices() { return mVerts.GetData(); }
 

@@ -61,7 +61,7 @@ function _update(dt)
 end
 
 function _render()
-    viewMat = Matrix()
+    Matrix()
         :rotate(time/4, 0, 0)
         :rotate(0, math.rad(-35), 0)
         :translate(0,-2,20)

@@ -22,7 +22,7 @@ VOID CMesh::Release(VOID)
     if (DelRef())
     {
         for (auto& a : mFaceGroups)
-            delete a;
+            a->Release();
 
         mFaceGroups.Release();
         mTransforms.Release();
@@ -47,6 +47,17 @@ VOID CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
         ENGINE->Shutdown();
         return;
     }
+}
+
+CMesh* CMesh::Clone()
+{
+    CMesh* clonedMesh = new CMesh();
+    UINT i = 0;
+
+    for (auto fg : mFaceGroups)
+        clonedMesh->AddFaceGroup(fg->Clone(), mTransforms[i++]);
+
+    return clonedMesh;
 }
 
 VOID CMesh::Draw(const D3DXMATRIX& wmat)

@@ -169,6 +169,15 @@ static INT node_gettransform(lua_State* L)
     return 1;
 }
 
+static INT node_settransform(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+    D3DXMATRIX mat = *(D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+
+    node->SetTransform(mat);
+    return 0;
+}
+
 static INT node_getfinaltransform(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
@@ -185,6 +194,30 @@ static INT node_draw(lua_State* L)
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
     node->Draw(*mat);
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static INT node_addnode(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+    CNode* child = *(CNode**)luaL_checkudata(L, 2, L_NODE);
+
+    child->AddRef();
+    child->SetParent(node);
+    node->AddNode(child);
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static INT node_addmesh(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 2, L_MESH);
+
+    node->AddMesh(mesh->Clone());
 
     lua_pushvalue(L, 1);
     return 1;
@@ -237,7 +270,10 @@ static VOID LuaNode_register(lua_State* L)
 
     REGC("getName", node_getname);
     REGC("getTransform", node_gettransform);
+    REGC("setTransform", node_settransform);
     REGC("getFinalTransform", node_getfinaltransform);
+    REGC("addNode", node_addnode);
+    REGC("addMesh", node_addmesh);
     REGC("draw", node_draw);
     REGC("drawSubset", node_drawsubset);
     REGC("getMeshes", node_getmeshes);

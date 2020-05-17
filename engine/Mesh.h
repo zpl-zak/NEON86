@@ -15,6 +15,7 @@ public:
      
     VOID Release(VOID);
     VOID AddFaceGroup(CFaceGroup*, const D3DXMATRIX&);
+    CMesh* Clone();
     
     VOID Draw(const D3DXMATRIX& wmat);
     VOID Clear(VOID);

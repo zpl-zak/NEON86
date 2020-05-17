@@ -14,6 +14,15 @@ static INT facegroup_new(lua_State* L)
 	return 1;
 }
 
+static INT facegroup_clone(lua_State* L)
+{
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
+    *(CFaceGroup**)lua_newuserdata(L, sizeof(CFaceGroup*)) = mesh->Clone();
+
+    luaL_setmetatable(L, L_FACEGROUP);
+    return 1;
+}
+
 static INT facegroup_addvertex(lua_State* L)
 {
 	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
@@ -178,6 +187,7 @@ static VOID LuaFaceGroup_register(lua_State* L)
 	luaL_newmetatable(L, L_FACEGROUP);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
+	REGC("clone", facegroup_clone);
     REGC("addVertex", facegroup_addvertex);
     REGC("addIndex", facegroup_addindex);
     REGC("addTriangle", facegroup_addtriangle);

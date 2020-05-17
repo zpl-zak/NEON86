@@ -92,10 +92,10 @@ public:
 
     BOOL IsEmpty();
 
-    inline VOID SetTransform(D3DXMATRIX transform) { mTransform = transform; }
+    inline VOID SetTransform(D3DXMATRIX transform) { mTransform = transform; InvalidateTransformRecursively(); }
     inline D3DXMATRIX GetTransform() { return mTransform; }
 
-    inline VOID SetParent(CNode* node) { mParent = node; }
+    inline VOID SetParent(CNode* node) { if (node != this) mParent = node; }
     inline CNode* GetParent() { return mParent; }
 
     D3DXMATRIX GetFinalTransform();

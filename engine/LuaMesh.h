@@ -14,13 +14,22 @@ static INT mesh_new(lua_State* L)
     return 1;
 }
 
+static INT mesh_clone(lua_State* L)
+{
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    *(CMesh**)lua_newuserdata(L, sizeof(CMesh*)) = mesh->Clone();
+
+    luaL_setmetatable(L, L_MESH);
+    return 1;
+}
+
 static INT mesh_addfgroup(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
     D3DMATRIX* mat = (D3DMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
-    fg->AddRef();
-    mesh->AddFaceGroup(fg, *mat);
+
+    mesh->AddFaceGroup(fg->Clone(), *mat);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -59,6 +68,9 @@ static INT mesh_delete(lua_State* L)
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
 
     mesh->Release();
+
+    if (mesh->GetRefCount() == 0)
+        delete mesh;
 
     return 0;
 }
@@ -139,6 +151,7 @@ static VOID LuaMesh_register(lua_State* L)
     REGC("addFGroup", mesh_addfgroup);
     REGC("addPart", mesh_addfgroup);
     REGC("draw", mesh_draw);
+    REGC("clone", mesh_clone);
     REGC("getFGroups", mesh_getfgroups);
     REGC("getParts", mesh_getfgroups);
     REGC("clear", mesh_clear);

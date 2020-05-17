@@ -133,3 +133,18 @@ VOID CFaceGroup::Clear(VOID)
     SAFE_RELEASE(mData.mat);
 	mIsDirty = FALSE;
 }
+
+CFaceGroup* CFaceGroup::Clone()
+{
+	CFaceGroup* clonedFG = new CFaceGroup();
+	clonedFG->SetMaterial(mData.stage, mData.mat); // TODO: Clone material
+	mData.mat->AddRef();
+
+	for (auto v : mVerts)
+		clonedFG->AddVertex(v);
+
+	for (auto i : mIndices)
+		clonedFG->AddIndex(i);
+
+	return clonedFG;
+}

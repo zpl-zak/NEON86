@@ -98,13 +98,17 @@ VOID CNode::Release()
     if (DelRef())
     {
         for (auto& a : mMeshes)
-            delete a;
+            a->Release();
 
         for (auto& a : mLights)
-            delete a;
+            a->Release();
 
         for (auto& a : mNodes)
-            delete a;
+            a->Release();
+
+        mMeshes.Release();
+        mLights.Release();
+        mNodes.Release();
     }
 }
 
