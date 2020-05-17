@@ -37,7 +37,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
             switch (e->mType)
             {
             case aiMetadataType::AI_AISTRING:
-                data = (LPSTR)e->mData;
+                data = (*(aiString*)e->mData).C_Str();
                 break;
 
             case aiMetadataType::AI_BOOL:

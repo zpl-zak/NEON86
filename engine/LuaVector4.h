@@ -121,6 +121,28 @@ static INT vector4_cross(lua_State* L)
 	return 1;
 }
 
+static INT vector4_div(lua_State* L)
+{
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+    FLOAT scalarRHS = (FLOAT)luaL_checknumber(L, 2);
+
+	if (scalarRHS == 0.0f)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	vec->x /= scalarRHS;
+	vec->y /= scalarRHS;
+	vec->z /= scalarRHS;
+	vec->w /= scalarRHS;
+
+    vector4_new(L);
+    D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
+    *out = *vec;
+    return 1;
+}
+
 static INT vector4_dot(lua_State* L)
 {
 	D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
@@ -246,6 +268,7 @@ static VOID LuaVector_register(lua_State* L)
     REGC("__add", vector4_add);
     REGC("__sub", vector4_sub);
     REGC("__mul", vector4_dot);
+	REGC("__div", vector4_div);
 
     REGC("x", vector4_x);
     REGC("y", vector4_y);

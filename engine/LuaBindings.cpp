@@ -3,6 +3,7 @@
 #include "NeonEngine.h"
 
 #include <lua/lua.hpp>
+#include <sstream>
 
 static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
 {
@@ -159,6 +160,43 @@ LUAF(Math, ColorLinear)
 	lua_pushnumber(L, a);
     return 4;
 }
+LUAF(Math, str2vec)
+{
+	std::string str = std::string(luaL_checkstring(L, 1));
+	FLOAT nums[4] = { 0.0f };
+	UINT i = 0;
+
+	// HACK
+	if (str.find("vec(") != std::string::npos)
+	{
+		str = str.substr(4, str.size() - 5);
+	}
+
+	auto comps = split(str, ",");
+
+	while (i < 4)
+	{
+		if (i >= comps.size())
+			break;
+
+		nums[i] = (FLOAT)::atof(comps.at(i).c_str());
+		i++;
+	}
+	
+	vector4_new(L);
+	*(D3DXVECTOR4*)lua_touserdata(L, -1) = D3DXVECTOR4(nums[0], nums[1], nums[2], nums[3]);
+	return 1;
+}
+LUAF(Math, vec2str)
+{
+	D3DXVECTOR4 v = *(D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+
+	std::stringstream ss;
+	ss << v.x << "," << v.y << "," << v.z;
+
+	lua_pushstring(L, (LPCSTR)ss.str().c_str());
+	return 1;
+}
 ///<END
 
 VOID CLuaBindings::BindMath(lua_State* L)
@@ -168,6 +206,8 @@ VOID CLuaBindings::BindMath(lua_State* L)
 
 	REGF(Math, Color);
 	REGF(Math, ColorLinear);
+	REGF(Math, str2vec);
+	REGF(Math, vec2str);
 }
 
 /// RENDERER METHODS
