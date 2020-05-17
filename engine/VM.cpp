@@ -264,8 +264,8 @@ static INT neon_luapanic(lua_State* L) {
 VOID CVirtualMachine::InitVM(VOID)
 {
 	INT result;
-	mLuaVM = luaL_newstate();/* lua_newstate(neon_luamem, NULL);
-    if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);*/
+	mLuaVM = lua_newstate(neon_luamem, NULL);
+    if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);
 	
 	_lua_openlibs(mLuaVM);
 	
