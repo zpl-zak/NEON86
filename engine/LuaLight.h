@@ -144,6 +144,10 @@ static INT light_enable(lua_State* L)
 {
     CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     BOOL val = (BOOL)lua_toboolean(L, 2);
+
+    if (lua_gettop(L) == 3)
+        lit->SetSlot((UINT)luaL_checkinteger(L, 3));
+
     lit->Enable(val);
 
     return 0;
