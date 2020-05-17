@@ -10,6 +10,7 @@ class CRenderTarget
 public:
     CRenderTarget();
     CRenderTarget(UINT w, UINT h, BOOL depth=FALSE);
+    ~CRenderTarget() { Release(); }
 
     VOID Release(VOID);
 

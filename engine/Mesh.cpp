@@ -22,7 +22,7 @@ VOID CMesh::Release(VOID)
     if (DelRef())
     {
         for (auto& a : mFaceGroups)
-            a->Release();
+            delete a;
 
         mFaceGroups.Release();
         mTransforms.Release();

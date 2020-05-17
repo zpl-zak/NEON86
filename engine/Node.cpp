@@ -93,13 +93,13 @@ VOID CNode::Release()
     if (DelRef())
     {
         for (auto& a : mMeshes)
-            a->Release();
+            delete a;
 
         for (auto& a : mLights)
-            a->Release();
+            delete a;
 
         for (auto& a : mNodes)
-            a->Release();
+            delete a;
     }
 }
 
