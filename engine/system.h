@@ -43,6 +43,8 @@ template <typename T>
 class CArray: public CReferenceCounter
 {
 public:
+    typedef T* iterator;
+
     CArray()
     {
         mCapacity = 4;
@@ -54,6 +56,9 @@ public:
     {
         Release();
     }
+
+    iterator begin() { return &mData[0]; }
+    iterator end() { return &mData[mCount]; }
 
     inline VOID Release()
     {

@@ -13,7 +13,7 @@
 
 CScene::CScene(LPSTR modelPath)
 {
-    Release();
+    mRootNode = NULL;
 
     if (modelPath)
         LoadScene(modelPath);
@@ -23,10 +23,11 @@ VOID CScene::Release()
 {
     if (DelRef())
     {
+        SAFE_RELEASE(mRootNode);
+
         mMeshes.Release();
         mLights.Release();
         mNodes.Release();
-        mRootNode = NULL;
     }
 }
 

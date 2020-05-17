@@ -58,8 +58,6 @@ VOID CMaterial::Release(VOID)
         {
             SAFE_RELEASE(mTextureHandle[i]);
         }
-
-        delete this;
     }
 }
 

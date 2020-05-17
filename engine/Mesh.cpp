@@ -19,7 +19,14 @@ CMesh::CMesh(VOID)
 
 VOID CMesh::Release(VOID)
 {
+    if (DelRef())
+    {
+        for (auto& a : mFaceGroups)
+            a->Release();
 
+        mFaceGroups.Release();
+        mTransforms.Release();
+    }
 }
 
 VOID CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)

@@ -10,6 +10,7 @@ class CFaceGroup: public CReferenceCounter
 {
 public:
 	CFaceGroup(VOID);
+	~CFaceGroup() { Release(); }
 
 	VOID Release(VOID);
 	VOID SetMaterial(DWORD stage, CMaterial* tex);

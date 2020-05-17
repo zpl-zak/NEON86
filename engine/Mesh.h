@@ -11,6 +11,7 @@ class CMesh: public CReferenceCounter, public CNodeComponent
 {
 public:
     CMesh(VOID);
+    ~CMesh() { Release(); }
      
     VOID Release(VOID);
     VOID AddFaceGroup(CFaceGroup*, const D3DXMATRIX&);

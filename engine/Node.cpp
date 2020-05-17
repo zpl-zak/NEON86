@@ -88,6 +88,21 @@ VOID CNode::InvalidateTransformRecursively()
     }
 }
 
+VOID CNode::Release()
+{
+    if (DelRef())
+    {
+        for (auto& a : mMeshes)
+            a->Release();
+
+        for (auto& a : mLights)
+            a->Release();
+
+        for (auto& a : mNodes)
+            a->Release();
+    }
+}
+
 VOID CNode::Draw(const D3DXMATRIX& wmat)
 {
     for (UINT i = 0; i < mMeshes.GetCount(); i++)

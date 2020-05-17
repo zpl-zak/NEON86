@@ -39,9 +39,9 @@ public:
         mIsTransformDirty = TRUE;
     }
 
-    VOID Release() {}
+    VOID Release();
 
-    ~CNode() {}
+    ~CNode() { Release(); }
 
     VOID Draw(const D3DXMATRIX& wmat);
     VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);

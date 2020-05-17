@@ -13,6 +13,7 @@ public:
     CMaterial(UINT slot, UINT w, UINT h);
     CMaterial(UINT slot, VOID* data, UINT size = 1);
     CMaterial();
+    ~CMaterial() { Release(); }
 
     VOID DefaultMaterial(VOID);
     VOID Release(VOID);

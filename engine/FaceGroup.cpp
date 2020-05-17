@@ -23,6 +23,7 @@ VOID CFaceGroup::Release(VOID)
         SAFE_FREE(mVerts);
         SAFE_FREE(mIndices);
         SAFE_RELEASE(mData.mesh);
+        SAFE_RELEASE(mData.mat);
 	}
 }
 
@@ -30,11 +31,6 @@ VOID CFaceGroup::SetMaterial(DWORD stage, CMaterial* tex)
 {
 	mData.stage = stage;
 	mData.mat = tex;
-
-    if (tex)
-    {
-        tex->AddRef();
-    }
 }
 
 VOID CFaceGroup::AddVertex(const VERTEX& vertex)

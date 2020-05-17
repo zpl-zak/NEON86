@@ -31,7 +31,7 @@ static INT scene_new(lua_State* L)
 
 static INT scene_getmeshes(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
 
     lua_newtable(L);
 
@@ -48,7 +48,7 @@ static INT scene_getmeshes(lua_State* L)
 
 static INT scene_getlights(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
 
     lua_newtable(L);
 
@@ -65,7 +65,7 @@ static INT scene_getlights(lua_State* L)
 
 static INT scene_gettargets(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
 
     lua_newtable(L);
 
@@ -83,7 +83,7 @@ static INT scene_gettargets(lua_State* L)
 
 static INT scene_getflattennodes(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
 
     lua_newtable(L);
 
@@ -100,7 +100,7 @@ static INT scene_getflattennodes(lua_State* L)
 
 static INT scene_draw(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
     scene->Draw(*mat);
@@ -111,7 +111,7 @@ static INT scene_draw(lua_State* L)
 
 static INT scene_drawsubset(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     UINT subset = (UINT)luaL_checkinteger(L, 2) - 1;
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
 
@@ -123,7 +123,7 @@ static INT scene_drawsubset(lua_State* L)
 
 static INT scene_loadmodel(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     BOOL loadMaterials = TRUE;
 
@@ -138,7 +138,7 @@ static INT scene_loadmodel(lua_State* L)
 
 static INT scene_findmesh(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     
     CMesh* mg = scene->FindMesh(meshName);
@@ -154,7 +154,7 @@ static INT scene_findmesh(lua_State* L)
 
 static INT scene_findlight(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     LPSTR lightName = (LPSTR)luaL_checkstring(L, 2);
 
     CLight* mg = scene->FindLight(lightName);
@@ -170,7 +170,7 @@ static INT scene_findlight(lua_State* L)
 
 static INT scene_findtarget(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     LPSTR targetName = (LPSTR)luaL_checkstring(L, 2);
 
     CNode* mg = scene->FindNode(targetName);
@@ -200,7 +200,7 @@ static INT scene_getrootnode(lua_State* L)
 
 static INT scene_delete(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
 
     scene->Release();
 
