@@ -4,52 +4,6 @@
 
 #include <lua/lua.hpp>
 
-#include <unordered_map>
-#include <vector>
-
-INT luaObjectIndex = 0;
-
-std::unordered_map<INT, std::vector<INT>> luaWeakRefMap;
-
-VOID luaN_setid(lua_State* L)
-{
-	lua_pushinteger(L, luaObjectIndex++);
-	lua_setfield(L, -2, "___ID");
-}
-
-INT luaN_getid(lua_State* L, INT id)
-{
-	INT slot = lua_getfield(L, id, "___ID");
-	return (INT)lua_tointeger(L, slot);
-}
-
-VOID luaN_ref(lua_State* L, INT id, INT refid)
-{
-	lua_pushvalue(L, refid);
-	INT ref = luaL_ref(L, LUA_REGISTRYINDEX);
-	
-	luaWeakRefMap[luaN_getid(L, id)].push_back(ref);
-}
-
-VOID luaN_unref(lua_State* L, INT id)
-{
-	for (auto ref : luaWeakRefMap[luaN_getid(L, id)])
-	{
-		luaL_unref(L, LUA_REGISTRYINDEX, ref);
-	}
-}
-
-VOID luaN_unrefall(lua_State* L)
-{
-	for (auto refs : luaWeakRefMap)
-	{
-		for (auto r : refs.second)
-		{
-			luaN_unref(L, r);
-		}
-	}
-}
-
 static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
 {
     if (luaL_testudata(L, 2+offset, L_VECTOR))

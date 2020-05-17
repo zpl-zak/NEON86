@@ -213,7 +213,6 @@ static VOID LuaNode_register(lua_State* L)
     lua_register(L, L_NODE, node_new);
     luaL_newmetatable(L, L_NODE);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-    luaN_setid(L);
 
     REGC("getName", node_getname);
     REGC("getTransform", node_gettransform);

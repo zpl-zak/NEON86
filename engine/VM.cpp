@@ -283,14 +283,11 @@ VOID CVirtualMachine::InitVM(VOID)
 	CheckVMErrors(result);
 }
 
-VOID luaN_unrefall(lua_State* L);
-
 VOID CVirtualMachine::DestroyVM(VOID)
 {
 	if (!mLuaVM)
 		return;
 
-	luaN_unrefall(mLuaVM);
 	lua_close(mLuaVM);
 	mLuaVM = NULL;
 }

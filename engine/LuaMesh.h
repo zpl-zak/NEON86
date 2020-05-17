@@ -17,9 +17,8 @@ static INT mesh_new(lua_State* L)
 static INT mesh_addfgroup(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    CFaceGroup* fg = (CFaceGroup*)luaL_checkudata(L, 2, L_FACEGROUP);
+    CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
     D3DMATRIX* mat = (D3DMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
-    luaN_ref(L, 1, 2);
     mesh->AddFaceGroup(fg, *mat);
 
     lua_pushvalue(L, 1);
@@ -57,8 +56,6 @@ static INT mesh_draw(lua_State* L)
 static INT mesh_delete(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-
-    luaN_unref(L, 1);
 
     mesh->Release();
 
@@ -101,7 +98,6 @@ static INT mesh_setmaterial(lua_State* L)
     if (lua_gettop(L) == 3)
     {
         mat = *(CMaterial**)luaL_checkudata(L, 3, L_MATERIAL);
-        luaN_ref(L, 1, 3);
     }
 
     for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
@@ -118,7 +114,6 @@ static VOID LuaMesh_register(lua_State* L)
     lua_register(L, L_MESH, mesh_new);
     luaL_newmetatable(L, L_MESH);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-    luaN_setid(L);
 
     REGC("addFGroup", mesh_addfgroup);
     REGC("addPart", mesh_addfgroup);

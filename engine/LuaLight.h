@@ -171,7 +171,6 @@ static VOID LuaLight_register(lua_State* L)
     lua_register(L, L_LIGHT, light_new);
     luaL_newmetatable(L, L_LIGHT);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-    luaN_setid(L);
 
     REGC("enable", light_enable);
     REGC("setDiffuse", light_setdiffuse);

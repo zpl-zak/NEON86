@@ -58,7 +58,6 @@ static INT facegroup_setmaterial(lua_State* L)
 	if (lua_gettop(L) == 3)
 	{
 		mat = *(CMaterial**)luaL_checkudata(L, 3, L_MATERIAL);
-		luaN_ref(L, 1, 3);
 	}
 
 	mesh->SetMaterial(stage, mat ? mat : NULL);
@@ -130,7 +129,6 @@ static INT facegroup_delete(lua_State* L)
 {
     CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
-	luaN_unref(L, 1);
     mesh->Release();
 
     return 0;
@@ -175,7 +173,6 @@ static VOID LuaFaceGroup_register(lua_State* L)
 	lua_register(L, L_FACEGROUP, facegroup_new);
 	luaL_newmetatable(L, L_FACEGROUP);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-	luaN_setid(L);
 
     REGC("addVertex", facegroup_addvertex);
     REGC("addIndex", facegroup_addindex);

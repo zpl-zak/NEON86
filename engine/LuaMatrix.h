@@ -185,7 +185,6 @@ static VOID LuaMatrix_register(lua_State* L)
 	lua_register(L, L_MATRIX, matrix_new);
 	luaL_newmetatable(L, L_MATRIX);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-	luaN_setid(L);
 
 	REGC("translate", matrix_translate);
 	REGC("rotate", matrix_rotate);

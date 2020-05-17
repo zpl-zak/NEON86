@@ -215,7 +215,6 @@ static VOID LuaVector_register(lua_State* L)
 	lua_register(L, L_VECTOR, vector4_new);
 	luaL_newmetatable(L, L_VECTOR);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-	luaN_setid(L);
 
     REGC("cross", vector4_cross);
     REGC("get", vector4_get);
