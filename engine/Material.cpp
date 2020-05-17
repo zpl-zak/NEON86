@@ -43,6 +43,7 @@ VOID CMaterial::DefaultMaterial(VOID)
     mMaterialData.Diffuse.r = mMaterialData.Diffuse.g = mMaterialData.Diffuse.b = mMaterialData.Diffuse.a = 1.0f;
     mMaterialData.Opacity = 1.0f;
     mMaterialData.Power = 1.0f;
+    mMaterialData.Shaded = TRUE;
 
     SetSamplerState(D3DSAMP_MINFILTER, TEXF_ANISOTROPIC);
     SetSamplerState(D3DSAMP_MIPFILTER, TEXF_ANISOTROPIC);
@@ -174,4 +175,9 @@ VOID CMaterial::SetPower(FLOAT val)
 VOID CMaterial::SetOpacity(FLOAT val)
 {
     mMaterialData.Opacity = val;
+}
+
+VOID CMaterial::SetShaded(BOOL state)
+{
+    mMaterialData.Shaded = state;
 }

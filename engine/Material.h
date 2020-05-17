@@ -39,6 +39,7 @@ public:
     VOID SetEmission(D3DCOLORVALUE color);
     VOID SetPower(FLOAT val);
     VOID SetOpacity(FLOAT val);
+    VOID SetShaded(BOOL state);
 
     inline MATERIAL GetMaterialData() const { return mMaterialData; }
 

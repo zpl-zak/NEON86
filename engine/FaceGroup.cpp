@@ -78,10 +78,6 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 	if (!mData.mesh || mIsDirty)
 		Build();
 
-    RENDERER->SetDefaultRenderStates();
-
-	mData.mat->Bind(mData.stage);
-
 	if (mat)
 	{
 		mData.usesMatrix = TRUE;
@@ -89,7 +85,18 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 	}
 	else mData.usesMatrix = FALSE;
 
+    BOOL isGlobalShadingEnabled = RENDERER->GetLightingState();
+
+    if (isGlobalShadingEnabled)
+        RENDERER->EnableLighting(mData.mat->GetMaterialData().Shaded);
+
+    RENDERER->SetDefaultRenderStates();
+
+    mData.mat->Bind(mData.stage);
+
 	RENDERER->DrawMesh(mData);
+
+    RENDERER->EnableLighting(isGlobalShadingEnabled);
 
 	mData.mat->Unbind(mData.stage);
 }

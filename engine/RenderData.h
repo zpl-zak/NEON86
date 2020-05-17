@@ -116,6 +116,7 @@ struct RENDERBOUNDS {
 struct MATERIAL : D3DMATERIAL9
 {
 	FLOAT Opacity;
+	BOOL Shaded;
 };
 
 struct RENDERDATA

@@ -40,6 +40,7 @@ public:
     VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
     
     inline VOID EnableLighting(BOOL state) { mEnableLighting = state; }
+    inline BOOL GetLightingState() { return mEnableLighting; }
     inline VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
     VOID SetDefaultRenderStates();

@@ -206,6 +206,15 @@ static INT material_setopacity(lua_State* L)
     return 0;
 }
 
+static INT material_setshaded(lua_State* L)
+{
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
+    BOOL val = (BOOL)lua_toboolean(L, 2);
+    mat->SetShaded(val);
+
+    return 0;
+}
+
 static VOID LuaMaterial_register(lua_State* L)
 {
 	lua_register(L, L_MATERIAL, material_new);
@@ -228,6 +237,7 @@ static VOID LuaMaterial_register(lua_State* L)
     REGC("setEmission", material_setemission);
     REGC("setPower", material_setpower);
     REGC("setOpacity", material_setopacity);
+    REGC("setShaded", material_setshaded);
 
     REGC("__gc", material_delete);
 
