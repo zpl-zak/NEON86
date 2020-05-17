@@ -294,6 +294,13 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 	{
 		SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
 		if (mat) mDevice->SetMaterial(&mat->GetMaterialData());
+
+        mDevice->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+        mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+        mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_CONSTANT);
+
+		DWORD alphaColor = D3DCOLOR_ARGB(mat ? (DWORD)(mat->GetMaterialData().Opacity * 255.0f) : 255, 255, 255, 255);
+        mDevice->SetTextureStageState(stage, D3DTSS_CONSTANT, alphaColor);
 	}
 }
 

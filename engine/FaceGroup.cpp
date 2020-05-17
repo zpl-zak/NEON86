@@ -82,6 +82,8 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 	if (!mData.mesh || mIsDirty)
 		Build();
 
+    RENDERER->SetDefaultRenderStates();
+
 	mData.mat->Bind(mData.stage);
 
 	if (mat)
