@@ -72,6 +72,10 @@ static INT scene_gettargets(lua_State* L)
     for (UINT i = 0; i < scene->GetNumNodes(); i++)
     {
         CNode* tgt = scene->GetNodes()[i];
+
+        if (!tgt->IsEmpty())
+            continue;
+
         lua_pushstring(L, tgt->GetName().C_Str());
         matrix_new(L);
         *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetFinalTransform();
@@ -175,7 +179,7 @@ static INT scene_findtarget(lua_State* L)
 
     CNode* mg = scene->FindNode(targetName);
 
-    if (mg) {
+    if (mg && mg->IsEmpty()) {
         matrix_new(L);
         *(D3DXMATRIX*)lua_touserdata(L, 3) = mg->GetFinalTransform();
     }

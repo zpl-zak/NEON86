@@ -64,6 +64,11 @@ VOID CNode::AddNode(CNode* tgt)
     tgt->SetOwner(this);
 }
 
+BOOL CNode::IsEmpty()
+{
+    return (mMeshes.GetCount() == mLights.GetCount() == mNodes.GetCount() == 0);
+}
+
 D3DXMATRIX CNode::GetFinalTransform()
 {
     if (!mIsTransformDirty)

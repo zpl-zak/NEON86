@@ -61,6 +61,8 @@ public:
     CNode* FindNode(LPCSTR name);
     VOID AddNode(CNode* tgt);
 
+    BOOL IsEmpty();
+
     inline VOID SetTransform(D3DXMATRIX transform) { mTransform = transform; }
     inline D3DXMATRIX GetTransform() { return mTransform; }
 
