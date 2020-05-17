@@ -9,7 +9,12 @@ class CNode;
 class CNodeComponent
 {
 public:
-    CNodeComponent() {}
+    CNodeComponent() 
+    {
+        mName = aiString("(unknown)");
+        mOwner = NULL;
+    }
+
     virtual ~CNodeComponent() {}
 
     inline VOID SetName(aiString name) { mName = name; }

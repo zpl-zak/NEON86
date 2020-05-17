@@ -112,7 +112,7 @@ static INT mesh_setmaterial(lua_State* L)
 static INT mesh_getmaterial(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    DWORD matid = (DWORD)luaL_checkinteger(L, 2);
+    DWORD matid = (DWORD)luaL_checkinteger(L, 2) - 1;
     
     if (matid < 0 || matid >= mesh->GetNumFGroups())
         lua_pushnil(L);
