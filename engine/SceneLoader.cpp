@@ -25,6 +25,18 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
 
     newNode->SetParent(node);
 
+    if (impNode->mMetaData)
+    {
+        for (UINT i = 0; i < impNode->mMetaData->mNumProperties; ++i)
+        {
+            aiString k = impNode->mMetaData->mKeys[i];
+            const aiMetadataEntry* e = &impNode->mMetaData->mValues[i];
+
+            if (e->mType != aiMetadataType::AI_AISTRING && e->mType != aiMetadataType::AI_AIVECTOR3D)
+                newNode->SetMetadata((LPCSTR)k.C_Str(), *(FLOAT*)e->mData);
+        }
+    }
+
     aiString lastMeshName = aiString("(unknown)");
     CMesh* lastMesh = NULL;
 

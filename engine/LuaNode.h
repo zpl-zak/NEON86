@@ -202,6 +202,20 @@ static INT node_drawsubset(lua_State* L)
     return 1;
 }
 
+static INT node_getmeta(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+    LPCSTR meta = (LPCSTR)luaL_checkstring(L, 2);
+
+    METADATA_RESULT res = node->GetMetadata(meta);
+
+    if (res.Found)
+        lua_pushnumber(L, res.Value);
+    else lua_pushnil(L);
+
+    return 1;
+}
+
 static INT node_delete(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
@@ -234,6 +248,7 @@ static VOID LuaNode_register(lua_State* L)
     REGC("findLight", node_findlight);
     REGC("findTarget", node_findtarget);
     REGC("findNode", node_findnode);
+    REGC("getMeta", node_getmeta);
     REGC("__gc", node_delete);
 
     lua_pop(L, 1);

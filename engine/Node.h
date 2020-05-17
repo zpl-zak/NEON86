@@ -7,8 +7,17 @@
 
 #include <d3dx9.h>
 
+#include <unordered_map>
+#include <string>
+
 class CMesh;
 class CLight;
+
+struct METADATA_RESULT
+{
+    BOOL Found;
+    FLOAT Value;
+};
 
 class CNode: public CNodeComponent, public CReferenceCounter
 {
@@ -46,6 +55,26 @@ public:
     VOID Draw(const D3DXMATRIX& wmat);
     VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
 
+    inline VOID SetMetadata(LPCSTR name, FLOAT value) { mMetadata[name] = value; }
+    inline METADATA_RESULT GetMetadata(LPCSTR name) 
+    {
+        METADATA_RESULT res = { 0 };
+        auto e = mMetadata.find(name);
+
+        if (e == mMetadata.end())
+        {
+            res.Found = FALSE;
+            res.Value = -1;
+        }
+        else
+        {
+            res.Found = TRUE;
+            res.Value = e->second;
+        }
+
+        return res;
+    }
+
     inline UINT GetNumMeshes() { return mMeshes.GetCount(); }
     inline CMesh** GetMeshes() { return mMeshes.GetData(); }
     CMesh* FindMesh(LPCSTR name);
@@ -82,4 +111,5 @@ protected:
 private:
     BOOL mIsTransformDirty;
     D3DXMATRIX mTransform, mCachedTransform;
+    std::unordered_map<std::string, FLOAT> mMetadata;
 };
