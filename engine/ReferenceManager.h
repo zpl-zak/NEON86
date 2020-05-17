@@ -13,11 +13,11 @@ public:
 
     }
 
-    inline UINT GetRefCount() { return mRefCount; }
+    inline INT GetRefCount() { return mRefCount; }
 
     inline VOID AddRef() { mRefCount++; }
     inline BOOL DelRef() { mRefCount--; return mRefCount == 0; }
     
 private:
-    UINT mRefCount;
+    INT mRefCount;
 };

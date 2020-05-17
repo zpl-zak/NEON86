@@ -58,6 +58,7 @@ static INT facegroup_setmaterial(lua_State* L)
 	if (lua_gettop(L) == 3)
 	{
 		mat = *(CMaterial**)luaL_checkudata(L, 3, L_MATERIAL);
+		mat->AddRef();
 	}
 
 	mesh->SetMaterial(stage, mat ? mat : NULL);
@@ -130,6 +131,9 @@ static INT facegroup_delete(lua_State* L)
     CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
     mesh->Release();
+
+	if (mesh->GetRefCount() == 0)
+		delete mesh;
 
     return 0;
 }

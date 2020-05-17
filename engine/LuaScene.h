@@ -204,6 +204,9 @@ static INT scene_delete(lua_State* L)
 
     scene->Release();
 
+    if (scene->GetRefCount())
+        delete scene;
+
     return 0;
 }
 

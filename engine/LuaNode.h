@@ -204,6 +204,9 @@ static INT node_delete(lua_State* L)
 
     node->Release();
 
+    if (node->GetRefCount() == 0)
+        delete node;
+
     return 0;
 }
 

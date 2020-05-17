@@ -19,6 +19,7 @@ static INT mesh_addfgroup(lua_State* L)
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
     D3DMATRIX* mat = (D3DMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+    fg->AddRef();
     mesh->AddFaceGroup(fg, *mat);
 
     lua_pushvalue(L, 1);
@@ -103,6 +104,7 @@ static INT mesh_setmaterial(lua_State* L)
     for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
     {
         mesh->GetFGroups()[i]->SetMaterial(stage, mat ? mat : NULL);
+        mat->AddRef();
     }
     
     lua_pushvalue(L, 1);

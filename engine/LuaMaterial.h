@@ -149,6 +149,10 @@ static INT material_delete(lua_State* L)
 	CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
 
 	mat->Release();
+
+    if (mat->GetRefCount() == 0)
+        delete mat;
+
 	return 0;
 }
 
