@@ -21,20 +21,18 @@ public:
 	VOID Build(VOID);
 	VOID Clear(VOID);
 
-	inline UINT GetNumVertices() { return mData.vertCount; }
-	inline VERTEX* GetVertices() { return mVerts; }
+	inline UINT GetNumVertices() { return mVerts.GetCount(); }
+	inline VERTEX* GetVertices() { return mVerts.GetData(); }
 
-	inline UINT GetNumIndices() { return mData.indexCount; }
-	inline SHORT* GetIndices() { return mIndices; }
+	inline UINT GetNumIndices() { return mIndices.GetCount(); }
+	inline SHORT* GetIndices() { return mIndices.GetData(); }
 
 	inline CMaterial* GetMaterial() { return mData.mat; }
 	inline DWORD GetMaterialStage() { return mData.stage; }
 private:
 	RENDERDATA mData;
-	 
-	UINT mVertCapacity;
-	UINT mIndexCapacity;
-	VERTEX* mVerts;
-	SHORT* mIndices; 
+	
+	CArray<VERTEX> mVerts;
+	CArray<SHORT> mIndices;
 	BOOL mIsDirty;
 };

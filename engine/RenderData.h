@@ -131,17 +131,7 @@ struct RENDERDATA
 	
     UINT kind;
 
-	union
-	{
-		struct  
-		{
-			UINT vertCount;
-			UINT indexCount;
-			UINT primCount;
-			RENDERBOUNDS bounds;
-		};
-	};
-
+	RENDERBOUNDS bounds;
 	BOOL usesMatrix;
 	D3DMATRIX matrix;
 

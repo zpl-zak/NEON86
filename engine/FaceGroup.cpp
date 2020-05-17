@@ -9,9 +9,8 @@
 CFaceGroup::CFaceGroup(VOID)
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
-	mVertCapacity = mIndexCapacity = 4;
-	mVerts = (VERTEX*)neon_malloc(mVertCapacity * sizeof(VERTEX));
-	mIndices = (SHORT*)neon_malloc(mIndexCapacity * sizeof(SHORT));
+    mVerts.Release();
+    mIndices.Release();
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
 	mIsDirty = FALSE;
 }
@@ -20,8 +19,8 @@ VOID CFaceGroup::Release(VOID)
 {
 	if (DelRef())
 	{
-        SAFE_FREE(mVerts);
-        SAFE_FREE(mIndices);
+        mVerts.Release();
+        mIndices.Release();
         SAFE_RELEASE(mData.mesh);
         SAFE_RELEASE(mData.mat);
 	}
@@ -36,41 +35,13 @@ VOID CFaceGroup::SetMaterial(DWORD stage, CMaterial* tex)
 VOID CFaceGroup::AddVertex(const VERTEX& vertex)
 {
 	mIsDirty = TRUE;
-    if (mData.vertCount >= mVertCapacity)
-    {
-        mVertCapacity += 4;
-
-        mVerts = (VERTEX*)neon_realloc(mVerts, mVertCapacity * sizeof(VERTEX));
-        
-        if (!mVerts)
-        {
-            MessageBoxA(NULL, "Can't add vertex to mesh!", "Out of memory error", MB_OK);
-            ENGINE->Shutdown();
-            return;
-        }
-    }
-
-	mVerts[mData.vertCount++] = vertex;
+    mVerts.Push(vertex);
 }
 
 VOID CFaceGroup::AddIndex(SHORT index)
 {
 	mIsDirty = TRUE;
-    if (mData.indexCount >= mIndexCapacity)
-    {
-        mIndexCapacity += 4;
-
-        mIndices = (SHORT*)neon_realloc(mIndices, mIndexCapacity * sizeof(SHORT));
-
-        if (!mVerts)
-        {
-            MessageBoxA(NULL, "Can't add index to mesh!", "Out of memory error", MB_OK);
-            ENGINE->Shutdown();
-            return;
-        }
-    }
-
-	mIndices[mData.indexCount++] = index;
+	mIndices.Push(index);
 }
 
 VOID CFaceGroup::Draw(D3DXMATRIX* mat)
@@ -119,33 +90,33 @@ VOID CFaceGroup::Build(VOID)
 	VOID *vidMem = NULL;
 	SAFE_RELEASE(mData.mesh);
 
-	if (mData.vertCount == 0)
+	if (mVerts.GetCount() == 0)
 		return;
 
-	mData.primCount = ((mData.indexCount > 0) ? mData.indexCount : mData.vertCount)/3;
+	DWORD numFaces = ((mIndices.GetCount() > 0) ? mIndices.GetCount() : mVerts.GetCount())/3;
 	
-	D3DXCreateMesh(mData.primCount,
-		mData.vertCount,
+	D3DXCreateMesh(numFaces,
+		mVerts.GetCount(),
 		D3DXMESH_MANAGED,
 		meshVertexFormat,
 		dev,
 		&mData.mesh);
 	
     mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
-    memcpy(vidMem, mVerts, mData.vertCount * sizeof(VERTEX));
+    memcpy(vidMem, mVerts.GetData(), mVerts.GetCount() * sizeof(VERTEX));
 
-    D3DXComputeBoundingSphere((D3DXVECTOR3*)mVerts,
-        mData.vertCount,
+    D3DXComputeBoundingSphere((D3DXVECTOR3*)mVerts.GetData(),
+        mVerts.GetCount(),
         sizeof(VERTEX),
         &mData.meshOrigin,
         &mData.meshRadius);
 
 	mData.mesh->UnlockVertexBuffer();
 
-    if (mData.indexCount > 0)
+    if (mIndices.GetCount() > 0)
     {
         mData.mesh->LockIndexBuffer(0, (VOID**)&vidMem);
-        memcpy(vidMem, mIndices, mData.indexCount * sizeof(SHORT));
+        memcpy(vidMem, mIndices.GetData(), mIndices.GetCount() * sizeof(SHORT));
 		mData.mesh->UnlockIndexBuffer();
     }
 
@@ -154,14 +125,11 @@ VOID CFaceGroup::Build(VOID)
 
 VOID CFaceGroup::Clear(VOID)
 {
-	Release();
-	mData.vertCount = mData.primCount = mData.indexCount = 0;
 	ZeroMemory(&mData, sizeof(RENDERDATA));
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
+    mVerts.Release();
+    mIndices.Release();
+    SAFE_RELEASE(mData.mesh);
+    SAFE_RELEASE(mData.mat);
 	mIsDirty = FALSE;
-    mVertCapacity = mIndexCapacity = 4;
-    SAFE_FREE(mVerts);
-    SAFE_FREE(mIndices);
-    mVerts = (VERTEX*)neon_malloc(mVertCapacity * sizeof(VERTEX));
-    mIndices = (SHORT*)neon_malloc(mIndexCapacity * sizeof(SHORT));
 }
