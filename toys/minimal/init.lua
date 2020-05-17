@@ -1,26 +1,45 @@
-local humanFactory = require "human"
-local humanModel
 local scene
-local floor
+local world
 local time = 0
-local viewMat
+local globe
+local rootNode
 
 local lights = {}
 local enemies = {}
 
 function _init()
-    humanModel = Model("human.fbx")
     scene = Scene("scene.fbx")
-    floor = scene:findMesh("Plane")
-    floor:getParts()[1]:getMaterial():setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
+    rootNode = scene:getRootNode()
+    world = rootNode:findNode("World")
+    globe = rootNode:findNode("Planet")
 
-    for name, tgt in pairs(scene:getTargets()) do
-        if string.find(name, "enemy_spawn") ~= nil then
-            addEnemy(tgt, humanModel)
+    -- globe:getMeshes()[1]:getMaterial(1):setShaded(false)
+
+    for _, n in pairs(scene:getFlattenNodes()) do
+        local shaded = n:getMeta("shaded")
+
+        if shaded ~= nil then
+            for _, m in pairs(n:getMeshes()[1]:getParts()) do
+                m:getMaterial():setShaded(shaded == "true")
+            end
         end
     end
 
-    addLight(0, LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.3, -1.0), Vector3(4,1,1,1))
+    addLight(0, LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.8, -1.0), Vector3(0.6,0.6,0.2,1))
+
+    local lightsNode = rootNode:findNode("Lights")
+
+    for _, l in pairs(lightsNode:getNodes()) do
+        local c = VectorRGBA(240,240,240)
+
+        local p = l:getMeta("color")
+        
+        if p ~= nil then
+            c = str2vec(p) / 0xFF
+        end
+
+        addLight(0, LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
+    end
     
     EnableLighting(true)
 end
@@ -28,6 +47,10 @@ end
 function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
+    end
+    
+    if GetKeyDown("r") then
+        RestartGame()
     end
 
     for i, enemy in ipairs(enemies) do
@@ -40,32 +63,22 @@ end
 function _render()
     viewMat = Matrix()
         :rotate(time/4, 0, 0)
-        :rotate(0, math.rad(-25), 0)
-        :translate(0,3,15)
+        :rotate(0, math.rad(-35), 0)
+        :translate(0,-2,20)
         :bind(VIEW)
 
     for i, l in ipairs(lights) do
-        l:setSlot(i)
-        l:enable(true)
+        l:enable(true, i-1)
     end
 
     ClearScene(20,20,69)
-    AmbientColor(128,128,128)
+    AmbientColor(16,16,16)
     CameraPerspective(62, 2, 80)
-    
-    floor:draw(Matrix():translate(0,-2,0))
-    scene:findMesh("Suzanne"):draw(Matrix())
 
-    for _, m in ipairs(enemies) do
-        m.model:draw(Matrix():scale(2,2,2):translate(m.pos):translate(0,-2,0))
-    end
-end
+    world:draw(Matrix())
+    scene:getRootNode():findNode("Enemies posing"):draw(Matrix())
 
-function addEnemy(mat, model)
-    table.insert(enemies, {
-        model = humanFactory(model),
-        pos = mat:row(4)
-    })
+    globe:draw(Matrix():rotate(-time/4 + math.rad(45), 0, 0))
 end
 
 function addLight(slot, kind, pos, dir, diffuse)
@@ -73,7 +86,13 @@ function addLight(slot, kind, pos, dir, diffuse)
     l:setType(kind)
     l:setPosition(pos)
     l:setDirection(dir)
+    l:setSpecular(0.12,0.12,0.12,1)
     l:setDiffuse(diffuse:color())
+    
+    if kind == LIGHTKIND_POINT then
+        l:setRange(50)
+        l:setAttenuation(0,0.2,0)
+    end
 
     table.insert(lights, l)
 end
