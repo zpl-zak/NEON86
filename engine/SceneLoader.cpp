@@ -55,22 +55,6 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         newNode->AddMesh(lastMesh);
     }
     
-    // Load meshes
-    /*if (impNode->mNumMeshes > 0)
-    {
-        CMesh* mesh = new CMesh();
-        
-        for (UINT i = 0; i < impNode->mNumMeshes; i++)
-        {
-            const aiMesh* impMesh = impScene->mMeshes[impNode->mMeshes[i]];
-            mesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *(D3DMATRIX*)&mat);
-        }
-
-        mesh->SetName(impNode->mName);
-        scene->AddMesh(mesh);
-        newNode->AddMesh(mesh);
-    }*/
-
     // Load light
     for (UINT i = 0; i < impScene->mNumLights; i++)
     {
@@ -207,7 +191,7 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
 {
     CLight* lit = new CLight();
 
-    aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Inverse();
+    aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
 
     aiVector3D pos;
     aiVector3D dir;
