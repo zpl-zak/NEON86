@@ -23,6 +23,7 @@ static LPCSTR _shader_common = _M(
         float4 Emissive;
         float Power;
         float Opacity;
+        bool IsShaded;
     };
 
     const int LightType_Directional = 3;

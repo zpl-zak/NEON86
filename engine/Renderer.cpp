@@ -253,13 +253,15 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
     if (GetActiveEffect() && mat)
     {
         CEffect* fx = GetActiveEffect();
+		MATERIAL matData = mat->GetMaterialData();
 
-        fx->SetColor("MAT.Diffuse", mat->GetMaterialData().Diffuse);
-        fx->SetColor("MAT.Ambient", mat->GetMaterialData().Ambient);
-        fx->SetColor("MAT.Specular", mat->GetMaterialData().Specular);
-        fx->SetColor("MAT.Emissive", mat->GetMaterialData().Emissive);
-        fx->SetFloat("MAT.Power", mat->GetMaterialData().Power);
-        fx->SetFloat("MAT.Opacity", mat->GetMaterialData().Opacity);
+        fx->SetColor("MAT.Diffuse", matData.Diffuse);
+        fx->SetColor("MAT.Ambient", matData.Ambient);
+        fx->SetColor("MAT.Specular", matData.Specular);
+        fx->SetColor("MAT.Emissive", matData.Emissive);
+        fx->SetFloat("MAT.Power", matData.Power);
+        fx->SetFloat("MAT.Opacity", matData.Opacity);
+		fx->SetBool("MAT.IsShaded", matData.Shaded);
 
 		fx->SetTexture("diffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO));
 		fx->SetBool("hasDiffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO) != NULL);
