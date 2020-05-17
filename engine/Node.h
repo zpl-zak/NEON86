@@ -16,7 +16,7 @@ class CLight;
 struct METADATA_RESULT
 {
     BOOL Found;
-    FLOAT Value;
+    std::string Value;
 };
 
 class CNode: public CNodeComponent, public CReferenceCounter
@@ -55,7 +55,7 @@ public:
     VOID Draw(const D3DXMATRIX& wmat);
     VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
 
-    inline VOID SetMetadata(LPCSTR name, FLOAT value) { mMetadata[name] = value; }
+    inline VOID SetMetadata(LPCSTR name, LPCSTR value) { mMetadata[name] = value; }
     inline METADATA_RESULT GetMetadata(LPCSTR name) 
     {
         METADATA_RESULT res = { 0 };
@@ -64,7 +64,7 @@ public:
         if (e == mMetadata.end())
         {
             res.Found = FALSE;
-            res.Value = -1;
+            res.Value = "";
         }
         else
         {
@@ -111,5 +111,5 @@ protected:
 private:
     BOOL mIsTransformDirty;
     D3DXMATRIX mTransform, mCachedTransform;
-    std::unordered_map<std::string, FLOAT> mMetadata;
+    std::unordered_map<std::string, std::string> mMetadata;
 };

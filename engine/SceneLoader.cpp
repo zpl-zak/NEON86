@@ -11,6 +11,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/matrix4x4.h>
+#include <sstream>
 
 VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials)
 {
@@ -31,9 +32,32 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         {
             aiString k = impNode->mMetaData->mKeys[i];
             const aiMetadataEntry* e = &impNode->mMetaData->mValues[i];
+            std::string data;
 
-            if (e->mType != aiMetadataType::AI_AISTRING && e->mType != aiMetadataType::AI_AIVECTOR3D)
-                newNode->SetMetadata((LPCSTR)k.C_Str(), *(FLOAT*)e->mData);
+            switch (e->mType)
+            {
+            case aiMetadataType::AI_AISTRING:
+                data = (LPSTR)e->mData;
+                break;
+
+            case aiMetadataType::AI_BOOL:
+            case aiMetadataType::AI_DOUBLE:
+            case aiMetadataType::AI_FLOAT:
+            case aiMetadataType::AI_INT32:
+            case aiMetadataType::AI_UINT64:
+                data = std::to_string(*(DOUBLE*)e->mData);
+                break;
+
+            case aiMetadataType::AI_AIVECTOR3D:
+            {
+                aiVector3D a = *(aiVector3D*)e->mData;
+                std::stringstream ss;
+                ss << a.x << "," << a.y << "," << a.z;
+                data = ss.str();
+            } break;
+            }
+            
+            newNode->SetMetadata((LPCSTR)k.C_Str(), data.c_str());
         }
     }
 

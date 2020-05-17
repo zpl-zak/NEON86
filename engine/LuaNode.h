@@ -210,7 +210,7 @@ static INT node_getmeta(lua_State* L)
     METADATA_RESULT res = node->GetMetadata(meta);
 
     if (res.Found)
-        lua_pushnumber(L, res.Value);
+        lua_pushstring(L, res.Value.c_str());
     else lua_pushnil(L);
 
     return 1;
