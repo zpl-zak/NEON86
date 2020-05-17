@@ -8,7 +8,7 @@
 
 static INT mesh_new(lua_State* L)
 {
-    *(CMesh*)lua_newuserdata(L, sizeof(CMesh)) = CMesh();
+    *(CMesh**)lua_newuserdata(L, sizeof(CMesh*)) = new CMesh();
 
     luaL_setmetatable(L, L_MESH);
     return 1;
@@ -16,7 +16,7 @@ static INT mesh_new(lua_State* L)
 
 static INT mesh_addfgroup(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     CFaceGroup* fg = (CFaceGroup*)luaL_checkudata(L, 2, L_FACEGROUP);
     D3DMATRIX* mat = (D3DMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
     luaN_ref(L, 1, 2);
@@ -28,7 +28,7 @@ static INT mesh_addfgroup(lua_State* L)
 
 static INT mesh_getfgroups(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
 
     lua_newtable(L);
 
@@ -36,8 +36,7 @@ static INT mesh_getfgroups(lua_State* L)
     {
         CFaceGroup* fg = mesh->GetFGroups()[i];
         lua_pushinteger(L, i+1ULL);
-        lua_pushlightuserdata(L, (VOID*)fg);
-        luaL_setmetatable(L, L_FACEGROUP);
+        LUAP(L, L_FACEGROUP, CFaceGroup, fg);
         lua_settable(L, -3);
     }
 
@@ -46,7 +45,7 @@ static INT mesh_getfgroups(lua_State* L)
 
 static INT mesh_draw(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
     mesh->Draw(*mat);
@@ -57,7 +56,7 @@ static INT mesh_draw(lua_State* L)
 
 static INT mesh_delete(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
 
     luaN_unref(L, 1);
 
@@ -68,7 +67,7 @@ static INT mesh_delete(lua_State* L)
 
 static INT mesh_clear(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
 
     mesh->Clear();
 
@@ -77,7 +76,7 @@ static INT mesh_clear(lua_State* L)
 
 static INT mesh_setname(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     LPCSTR meshName = luaL_checkstring(L, 2);
 
     mesh->SetName(aiString(meshName));
@@ -87,7 +86,7 @@ static INT mesh_setname(lua_State* L)
 
 static INT mesh_getname(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
 
     lua_pushstring(L, mesh->GetName().C_Str());
     return 1;
@@ -95,13 +94,13 @@ static INT mesh_getname(lua_State* L)
 
 static INT mesh_setmaterial(lua_State* L)
 {
-    CMesh* mesh = (CMesh*)luaL_checkudata(L, 1, L_MESH);
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     DWORD stage = (DWORD)luaL_checkinteger(L, 2);
     CMaterial* mat = NULL;
 
     if (lua_gettop(L) == 3)
     {
-        mat = (CMaterial*)luaL_checkudata(L, 3, L_MATERIAL);
+        mat = *(CMaterial**)luaL_checkudata(L, 3, L_MATERIAL);
         luaN_ref(L, 1, 3);
     }
 

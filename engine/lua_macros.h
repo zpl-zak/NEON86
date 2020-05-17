@@ -28,6 +28,20 @@ static INT NAME(lua_State* L) {\
 	lua_pushnumber(L, x->FIELD); \
 	return 1; }
 
+#define LUAP(L, M, T, O) \
+	do { \
+		T** wptr = (T**)lua_newuserdata(L, sizeof(T*)); \
+		*wptr = O; \
+		(*wptr)->AddRef(); \
+		luaL_setmetatable(L, M); \
+	} while (0);
+
+#define LUAPT(L, M, T, O) \
+	do { \
+		T* wptr = (T*)lua_newuserdata(L, sizeof(T)); \
+		*wptr = *O; \
+		luaL_setmetatable(L, M); \
+	} while (0);
 
 #define L_MATRIX "Matrix"
 #define L_VECTOR "Vector"

@@ -18,14 +18,14 @@ static INT material_new(lua_State* L)
 		h = (UINT)luaL_checkinteger(L, 2);
 	}
 
-	CMaterial* mat = (CMaterial*)lua_newuserdata(L, sizeof(CMaterial));
+	CMaterial** mat = (CMaterial**)lua_newuserdata(L, sizeof(CMaterial*));
 
     if (matName)
-        *mat = CMaterial(TEXTURESLOT_ALBEDO, matName);
+        *mat = new CMaterial(TEXTURESLOT_ALBEDO, matName);
     else if (lua_gettop(L) == 2)
-        *mat = CMaterial(TEXTURESLOT_ALBEDO, w, h);
+        *mat = new CMaterial(TEXTURESLOT_ALBEDO, w, h);
     else
-        *mat = CMaterial();
+        *mat = new CMaterial();
 
 	luaL_setmetatable(L, L_MATERIAL);
 	return 1;
@@ -33,7 +33,7 @@ static INT material_new(lua_State* L)
 
 static INT material_loadfile(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     LPCSTR texName = (LPCSTR)luaL_checkstring(L, 2);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
 
@@ -44,7 +44,7 @@ static INT material_loadfile(lua_State* L)
 
 static INT material_getres(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     LPDIRECT3DTEXTURE9 h = mat->GetUserTextureHandle(userSlot);
     D3DSURFACE_DESC a;
@@ -68,7 +68,7 @@ static INT material_getres(lua_State* L)
 
 static INT material_loaddata(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     UINT width = (UINT)luaL_checkinteger(L, 4);
     UINT height = (UINT)luaL_checkinteger(L, 5);
@@ -81,7 +81,7 @@ static INT material_loaddata(lua_State* L)
 
 static INT material_getdata(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     mat->GetUserTextureHandle(userSlot);
     D3DSURFACE_DESC a;
@@ -107,7 +107,7 @@ static INT material_getdata(lua_State* L)
 
 static INT material_setsampler(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
 	UINT sampler = (UINT)luaL_checkinteger(L, 2);
 	UINT val = (UINT)luaL_checkinteger(L, 3);
 
@@ -118,7 +118,7 @@ static INT material_setsampler(lua_State* L)
 
 static INT material_getsampler(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT sampler = (UINT)luaL_checkinteger(L, 2);
     
     lua_pushinteger(L, mat->GetSamplerState(sampler));
@@ -127,7 +127,7 @@ static INT material_getsampler(lua_State* L)
 
 static INT material_gethandle(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT slot = (UINT)luaL_checkinteger(L, 2) - 1;
 
     lua_pushlightuserdata(L, (VOID*)mat->GetTextureHandle(slot));
@@ -136,7 +136,7 @@ static INT material_gethandle(lua_State* L)
 
 static INT material_sethandle(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT slot = (UINT)luaL_checkinteger(L, 2) - 1;
     LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 3);
 
@@ -146,7 +146,7 @@ static INT material_sethandle(lua_State* L)
 
 static INT material_delete(lua_State* L)
 {
-	CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+	CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
 
 	mat->Release();
 	return 0;
@@ -154,7 +154,7 @@ static INT material_delete(lua_State* L)
 
 static INT material_setdiffuse(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
     mat->SetDiffuse(color);
 
@@ -163,7 +163,7 @@ static INT material_setdiffuse(lua_State* L)
 
 static INT material_setambient(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
     mat->SetAmbient(color);
 
@@ -172,7 +172,7 @@ static INT material_setambient(lua_State* L)
 
 static INT material_setemission(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
     mat->SetEmission(color);
 
@@ -181,7 +181,7 @@ static INT material_setemission(lua_State* L)
 
 static INT material_setspecular(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
     mat->SetSpecular(color);
 
@@ -190,7 +190,7 @@ static INT material_setspecular(lua_State* L)
 
 static INT material_setpower(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     FLOAT val = (FLOAT)luaL_checknumber(L, 2);
     mat->SetPower(val);
 
@@ -199,7 +199,7 @@ static INT material_setpower(lua_State* L)
 
 static INT material_setopacity(lua_State* L)
 {
-    CMaterial* mat = (CMaterial*)luaL_checkudata(L, 1, L_MATERIAL);
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     FLOAT val = (FLOAT)luaL_checknumber(L, 2);
     mat->SetOpacity(val);
 

@@ -9,7 +9,7 @@ static INT effect_new(lua_State* L)
 {
     LPCSTR effectPath = luaL_checkstring(L, 1);
     
-    *(CEffect*)lua_newuserdata(L, sizeof(CEffect)) = CEffect(effectPath);
+    *(CEffect**)lua_newuserdata(L, sizeof(CEffect*)) = new CEffect(effectPath);
 
     luaL_setmetatable(L, L_EFFECT);
     return 1;
@@ -17,7 +17,7 @@ static INT effect_new(lua_State* L)
 
 static INT effect_begin(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR technique = luaL_checkstring(L, 2);
     
     lua_pushinteger(L, fx->Begin(technique));
@@ -26,7 +26,7 @@ static INT effect_begin(lua_State* L)
 
 static INT effect_end(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
 
     lua_pushinteger(L, fx->End());
     return 1;
@@ -34,7 +34,7 @@ static INT effect_end(lua_State* L)
 
 static INT effect_beginpass(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     UINT pass = -1;
 
     if (lua_isstring(L, 2))
@@ -50,7 +50,7 @@ static INT effect_beginpass(lua_State* L)
 
 static INT effect_endpass(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
 
     lua_pushinteger(L, fx->EndPass());
     return 1;
@@ -58,7 +58,7 @@ static INT effect_endpass(lua_State* L)
 
 static INT effect_commit(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
 
     lua_pushinteger(L, fx->CommitChanges());
     return 1;
@@ -66,7 +66,7 @@ static INT effect_commit(lua_State* L)
 
 static INT effect_setbool(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     FLOAT value = (FLOAT)lua_toboolean(L, 3);
 
@@ -76,7 +76,7 @@ static INT effect_setbool(lua_State* L)
 
 static INT effect_setfloat(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     FLOAT value = (FLOAT)luaL_checknumber(L, 3);
 
@@ -86,7 +86,7 @@ static INT effect_setfloat(lua_State* L)
 
 static INT effect_setmatrix(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     D3DXMATRIX* value = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
 
@@ -96,7 +96,7 @@ static INT effect_setmatrix(lua_State* L)
 
 static INT effect_setvector3(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     D3DXVECTOR3* value = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR);
 
@@ -106,7 +106,7 @@ static INT effect_setvector3(lua_State* L)
 
 static INT effect_setinteger(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     DWORD value = (DWORD)luaL_checkinteger(L, 3);
 
@@ -116,12 +116,12 @@ static INT effect_setinteger(lua_State* L)
 
 static INT effect_setlight(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     CLight* value = NULL;
 
     if (lua_gettop(L) == 3 && luaL_testudata(L, 3, L_LIGHT)) {
-        value = (CLight*)lua_touserdata(L, 3);
+        value = *(CLight**)lua_touserdata(L, 3);
     }
 
     fx->SetLight(name, value);
@@ -130,7 +130,7 @@ static INT effect_setlight(lua_State* L)
 
 static INT effect_setvector4(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     
     if (lua_gettop(L) == 4)
@@ -151,18 +151,18 @@ static INT effect_setvector4(lua_State* L)
 
 static INT effect_settexture(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
     
     if (luaL_testudata(L, 3, L_RENDERTARGET))
     {
-        CRenderTarget* rtt = (CRenderTarget*)lua_touserdata(L, 3);
+        CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 3);
         fx->SetTexture(name, rtt->GetTextureHandle());
     }
     else if (luaL_testudata(L, 3, L_MATERIAL))
     {
         UINT slot = TEXTURESLOT_ALBEDO;
-        CMaterial* mat = (CMaterial*)lua_touserdata(L, 3);
+        CMaterial* mat = *(CMaterial**)lua_touserdata(L, 3);
 
         if (lua_gettop(L) == 4)
             slot = (UINT)luaL_checkinteger(L, 4) - 1;
@@ -179,7 +179,7 @@ static INT effect_settexture(lua_State* L)
 
 static INT effect_delete(lua_State* L)
 {
-    CEffect* fx = (CEffect*)luaL_checkudata(L, 1, L_EFFECT);
+    CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     
     fx->Release();
     return 0;

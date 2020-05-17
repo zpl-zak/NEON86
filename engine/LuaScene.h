@@ -19,11 +19,11 @@ static INT scene_new(lua_State* L)
     if (lua_gettop(L) == 2)
         loadMaterials = (UINT)lua_toboolean(L, 2);
 
-    CScene* scene = (CScene*)lua_newuserdata(L, sizeof(CScene));
-    *scene = CScene();
+    CScene** scene = (CScene**)lua_newuserdata(L, sizeof(CScene*));
+    *scene = new CScene();
 
     if (modelPath)
-        scene->LoadScene(modelPath, loadMaterials);
+        (*scene)->LoadScene(modelPath, loadMaterials);
 
     luaL_setmetatable(L, L_SCENE);
     return 1;
@@ -39,7 +39,7 @@ static INT scene_getmeshes(lua_State* L)
     {
         CMesh* mesh = scene->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (LPVOID)mesh);
+        LUAP(L, L_MESH, CMesh, mesh);
         lua_settable(L, -3);
     }
 
@@ -56,7 +56,7 @@ static INT scene_getlights(lua_State* L)
     {
         CLight* lit = scene->GetLights()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (LPVOID)lit);
+        LUAP(L, L_LIGHT, CLight, lit);
         lua_settable(L, -3);
     }
 
@@ -91,8 +91,7 @@ static INT scene_getflattennodes(lua_State* L)
     {
         CNode* tgt = scene->GetNodes()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (LPVOID)tgt);
-
+        LUAP(L, L_NODE, CNode, tgt);
         lua_settable(L, -3);
     }
 
@@ -146,8 +145,7 @@ static INT scene_findmesh(lua_State* L)
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (LPVOID)mg);
-        luaL_setmetatable(L, L_MESH);
+        LUAP(L, L_MESH, CMesh, mg);
     }
     else lua_pushnil(L);
 
@@ -163,8 +161,7 @@ static INT scene_findlight(lua_State* L)
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (LPVOID)mg);
-        luaL_setmetatable(L, L_LIGHT);
+        LUAP(L, L_LIGHT, CLight, mg);
     }
     else lua_pushnil(L);
 
@@ -189,13 +186,12 @@ static INT scene_findtarget(lua_State* L)
 
 static INT scene_getrootnode(lua_State* L)
 {
-    CScene* scene = (CScene*)luaL_checkudata(L, 1, L_SCENE);
+    CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     
     CNode* mg = scene->GetRootNode();
 
     if (mg) {
-        lua_pushlightuserdata(L, (LPVOID)mg);
-        luaL_setmetatable(L, L_NODE);
+        LUAP(L, L_NODE, CNode, mg);
     }
     else lua_pushnil(L);
 

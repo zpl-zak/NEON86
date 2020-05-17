@@ -14,9 +14,9 @@ static INT light_new(lua_State* L)
         slot = (UINT)luaL_checkinteger(L, 1);
     }
 
-    CLight* lit = (CLight*)lua_newuserdata(L, sizeof(CLight));
+    CLight** lit = (CLight**)lua_newuserdata(L, sizeof(CLight*));
 
-    *lit = CLight(slot);
+    *lit = new CLight(slot);
 
     luaL_setmetatable(L, L_LIGHT);
     return 1;
@@ -25,7 +25,7 @@ static INT light_new(lua_State* L)
 
 static INT light_delete(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
 
     lit->Release();
     return 0;
@@ -33,7 +33,7 @@ static INT light_delete(lua_State* L)
 
 static INT light_setdiffuse(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4), 1.0f };
     lit->SetDiffuse(color);
 
@@ -42,7 +42,7 @@ static INT light_setdiffuse(lua_State* L)
 
 static INT light_setambient(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4), 1.0f };
     lit->SetAmbient(color);
 
@@ -51,7 +51,7 @@ static INT light_setambient(lua_State* L)
 
 static INT light_setspecular(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4), 1.0f };
     lit->SetSpecular(color);
 
@@ -60,7 +60,7 @@ static INT light_setspecular(lua_State* L)
 
 static INT light_setposition(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     D3DXVECTOR3 pos = luaH_getcomps(L);
     lit->SetPosition(pos);
 
@@ -69,7 +69,7 @@ static INT light_setposition(lua_State* L)
 
 static INT light_setdirection(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     D3DXVECTOR3 dir = luaH_getcomps(L);
     lit->SetDirection(dir);
 
@@ -78,7 +78,7 @@ static INT light_setdirection(lua_State* L)
 
 static INT light_setatten(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     D3DCOLORVALUE atten = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
     lit->SetAttenuation(atten.r, atten.g, atten.b);
 
@@ -88,7 +88,7 @@ static INT light_setatten(lua_State* L)
 
 static INT light_setrange(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     FLOAT val = (FLOAT)luaL_checknumber(L, 2);
     lit->SetRange(val);
 
@@ -97,7 +97,7 @@ static INT light_setrange(lua_State* L)
 
 static INT light_setfalloff(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     FLOAT val = (FLOAT)luaL_checknumber(L, 2);
     lit->SetFalloff(val);
 
@@ -106,7 +106,7 @@ static INT light_setfalloff(lua_State* L)
 
 static INT light_setinnerangle(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     FLOAT val = (FLOAT)luaL_checknumber(L, 2);
     lit->SetInnerAngle(val);
 
@@ -115,7 +115,7 @@ static INT light_setinnerangle(lua_State* L)
 
 static INT light_setouterangle(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     FLOAT val = (FLOAT)luaL_checknumber(L, 2);
     lit->SetOuterAngle(val);
 
@@ -124,7 +124,7 @@ static INT light_setouterangle(lua_State* L)
 
 static INT light_settype(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     DWORD val = (DWORD)luaL_checkinteger(L, 2);
     lit->SetType(val);
 
@@ -133,7 +133,7 @@ static INT light_settype(lua_State* L)
 
 static INT light_setslot(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     DWORD val = (DWORD)luaL_checkinteger(L, 2);
     lit->SetSlot(val);
 
@@ -142,7 +142,7 @@ static INT light_setslot(lua_State* L)
 
 static INT light_enable(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     BOOL val = (BOOL)lua_toboolean(L, 2);
     lit->Enable(val);
 
@@ -152,7 +152,7 @@ static INT light_enable(lua_State* L)
 
 static INT light_getslot(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     lua_pushinteger(L, lit->GetSlot());
 
     return 1;
@@ -160,7 +160,7 @@ static INT light_getslot(lua_State* L)
 
 static INT light_gettype(lua_State* L)
 {
-    CLight* lit = (CLight*)luaL_checkudata(L, 1, L_LIGHT);
+    CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
     lua_pushinteger(L, lit->GetLightData().Type);
 
     return 1;

@@ -21,10 +21,13 @@ CScene::CScene(LPSTR modelPath)
 
 VOID CScene::Release()
 {
-    mMeshes.Release();
-    mLights.Release();
-    mNodes.Release();
-    mRootNode = NULL;
+    if (DelRef())
+    {
+        mMeshes.Release();
+        mLights.Release();
+        mNodes.Release();
+        mRootNode = NULL;
+    }
 }
 
 #define MESHIMPORT_FLAGS \

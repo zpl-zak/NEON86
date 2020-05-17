@@ -8,7 +8,7 @@
 
 static INT facegroup_new(lua_State* L)
 {
-	*(CFaceGroup*)lua_newuserdata(L, sizeof(CFaceGroup)) = CFaceGroup();
+	*(CFaceGroup**)lua_newuserdata(L, sizeof(CFaceGroup*)) = new CFaceGroup();
 
 	luaL_setmetatable(L, L_FACEGROUP);
 	return 1;
@@ -16,7 +16,7 @@ static INT facegroup_new(lua_State* L)
 
 static INT facegroup_addvertex(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	VERTEX* vert = (VERTEX*)luaL_checkudata(L, 2, L_VERTEX);
 	mesh->AddVertex(*vert);
 
@@ -26,7 +26,7 @@ static INT facegroup_addvertex(lua_State* L)
 
 static INT facegroup_addindex(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	SHORT index = (SHORT)luaL_checkinteger(L, 2);
 	mesh->AddIndex(index);
 
@@ -36,7 +36,7 @@ static INT facegroup_addindex(lua_State* L)
 
 static INT facegroup_addtriangle(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	SHORT i1 = (SHORT)luaL_checkinteger(L, 2);
 	SHORT i2 = (SHORT)luaL_checkinteger(L, 3);
 	SHORT i3 = (SHORT)luaL_checkinteger(L, 4);
@@ -51,13 +51,13 @@ static INT facegroup_addtriangle(lua_State* L)
 
 static INT facegroup_setmaterial(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	DWORD stage = (DWORD)luaL_checkinteger(L, 2);
 	CMaterial* mat = NULL;
 
 	if (lua_gettop(L) == 3)
 	{
-		mat = (CMaterial*)luaL_checkudata(L, 3, L_MATERIAL);
+		mat = *(CMaterial**)luaL_checkudata(L, 3, L_MATERIAL);
 		luaN_ref(L, 1, 3);
 	}
 
@@ -69,10 +69,11 @@ static INT facegroup_setmaterial(lua_State* L)
 
 static INT facegroup_getmaterial(lua_State* L)
 {
-    CFaceGroup* fgroup = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+    CFaceGroup* fgroup = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
     CMaterial* mat = fgroup->GetMaterial();
-	lua_pushlightuserdata(L, (VOID*)mat);
-	luaL_setmetatable(L, L_MATERIAL);
+
+	if (mat) { LUAP(L, L_MATERIAL, CMaterial, mat); }
+	else lua_pushnil(L);
 
     return 1;
 }
@@ -80,7 +81,7 @@ static INT facegroup_getmaterial(lua_State* L)
 
 static INT facegroup_getmaterialstage(lua_State* L)
 {
-    CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+    CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
     DWORD stage = mesh->GetMaterialStage();
 	lua_pushinteger(L, stage);
 
@@ -89,7 +90,7 @@ static INT facegroup_getmaterialstage(lua_State* L)
 
 static INT facegroup_draw(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	
 	mesh->Draw(NULL);
 
@@ -99,7 +100,7 @@ static INT facegroup_draw(lua_State* L)
 
 static INT facegroup_build(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
 	mesh->Build();
 
@@ -109,7 +110,7 @@ static INT facegroup_build(lua_State* L)
 
 static INT facegroup_clear(lua_State* L)
 {
-    CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+    CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
     mesh->Clear();
 
@@ -118,7 +119,7 @@ static INT facegroup_clear(lua_State* L)
 
 static INT facegroup_calcnormals(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
 	mesh->CalculateNormals();
 	
@@ -127,7 +128,7 @@ static INT facegroup_calcnormals(lua_State* L)
 
 static INT facegroup_delete(lua_State* L)
 {
-    CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+    CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
 	luaN_unref(L, 1);
     mesh->Release();
@@ -137,7 +138,7 @@ static INT facegroup_delete(lua_State* L)
 
 static INT facegroup_getvertices(lua_State* L)
 {
-	CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
 	lua_newtable(L);
 
@@ -145,8 +146,7 @@ static INT facegroup_getvertices(lua_State* L)
 	{
 		VERTEX* vert = (mesh->GetVertices() + i);
 		lua_pushinteger(L, i + 1ULL);
-		lua_pushlightuserdata(L, (VOID*)vert);
-		luaL_setmetatable(L, L_VERTEX);
+		LUAPT(L, L_VERTEX, VERTEX, vert);
 		lua_settable(L, -3);
 	}
 
@@ -155,7 +155,7 @@ static INT facegroup_getvertices(lua_State* L)
 
 static INT facegroup_getindices(lua_State* L)
 {
-    CFaceGroup* mesh = (CFaceGroup*)luaL_checkudata(L, 1, L_FACEGROUP);
+    CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
     lua_newtable(L);
 

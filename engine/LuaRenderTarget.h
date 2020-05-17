@@ -8,7 +8,7 @@
 static INT rtt_new(lua_State* L)
 {
     UINT w = 0, h = 0;
-    CRenderTarget* rtt = (CRenderTarget*)lua_newuserdata(L, sizeof(CRenderTarget));
+    CRenderTarget** rtt = (CRenderTarget**)lua_newuserdata(L, sizeof(CRenderTarget*));
 
     if (lua_gettop(L) >= 2)
     {
@@ -19,18 +19,18 @@ static INT rtt_new(lua_State* L)
         if (lua_gettop(L) >= 3)
             depth = (BOOL)lua_toboolean(L, 3);
 
-        *rtt = CRenderTarget(w, h, depth);
+        *rtt = new CRenderTarget(w, h, depth);
     } else {
-        *rtt = CRenderTarget();
+        *rtt = new CRenderTarget();
     }
 
     luaL_setmetatable(L, L_RENDERTARGET);
-    return rtt->GetSurfaceHandle() != NULL;
+    return (*rtt)->GetSurfaceHandle() != NULL;
 }
 
 static INT rtt_gethandle(lua_State* L)
 {
-    CRenderTarget* rtt  = (CRenderTarget*)luaL_checkudata(L, 1, L_RENDERTARGET);
+    CRenderTarget* rtt  = *(CRenderTarget**)luaL_checkudata(L, 1, L_RENDERTARGET);
 
     lua_pushlightuserdata(L, (VOID*)rtt->GetTextureHandle());
     return 1;

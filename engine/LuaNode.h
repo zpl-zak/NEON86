@@ -9,14 +9,14 @@
 
 static INT node_new(lua_State* L)
 {
-    *(CNode*)lua_newuserdata(L, sizeof(CNode)) = CNode();
+    *(CNode**)lua_newuserdata(L, sizeof(CNode*)) = new CNode();
     luaL_setmetatable(L, L_NODE);
     return 1;
 }
 
 static INT node_getname(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     lua_pushstring(L, node->GetName().C_Str());
 
     return 1;
@@ -24,7 +24,7 @@ static INT node_getname(lua_State* L)
 
 static INT node_getmeshes(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
 
     lua_newtable(L);
 
@@ -32,7 +32,7 @@ static INT node_getmeshes(lua_State* L)
     {
         CMesh* mesh = node->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (LPVOID)mesh);
+        LUAP(L, L_MESH, CMesh, mesh);
         lua_settable(L, -3);
     }
 
@@ -41,7 +41,7 @@ static INT node_getmeshes(lua_State* L)
 
 static INT node_getlights(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
 
     lua_newtable(L);
 
@@ -49,7 +49,7 @@ static INT node_getlights(lua_State* L)
     {
         CLight* lit = node->GetLights()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (LPVOID)lit);
+        LUAP(L, L_LIGHT, CLight, lit);
         lua_settable(L, -3);
     }
 
@@ -58,7 +58,7 @@ static INT node_getlights(lua_State* L)
 
 static INT node_getnodes(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
 
     lua_newtable(L);
 
@@ -66,7 +66,7 @@ static INT node_getnodes(lua_State* L)
     {
         CNode* mg = node->GetNodes()[i];
         lua_pushinteger(L, i + 1ULL);
-        lua_pushlightuserdata(L, (LPVOID)mg);
+        LUAP(L, L_NODE, CNode, mg);
         lua_settable(L, -3);
     }
 
@@ -75,7 +75,7 @@ static INT node_getnodes(lua_State* L)
 
 static INT node_gettargets(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
 
     lua_newtable(L);
 
@@ -93,15 +93,14 @@ static INT node_gettargets(lua_State* L)
 
 static INT node_findmesh(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
 
     CMesh* mg = node->FindMesh(meshName);
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (LPVOID)mg);
-        luaL_setmetatable(L, L_MESH);
+        LUAP(L, L_MESH, CMesh, mg);
     }
     else lua_pushnil(L);
 
@@ -110,15 +109,14 @@ static INT node_findmesh(lua_State* L)
 
 static INT node_findlight(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     LPSTR lightName = (LPSTR)luaL_checkstring(L, 2);
 
     CLight* mg = node->FindLight(lightName);
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (LPVOID)mg);
-        luaL_setmetatable(L, L_LIGHT);
+        LUAP(L, L_LIGHT, CLight, mg);
     }
     else lua_pushnil(L);
 
@@ -127,15 +125,14 @@ static INT node_findlight(lua_State* L)
 
 static INT node_findnode(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     LPSTR childName = (LPSTR)luaL_checkstring(L, 2);
 
     CNode* mg = node->FindNode(childName);
 
     if (mg)
     {
-        lua_pushlightuserdata(L, (LPVOID)mg);
-        luaL_setmetatable(L, L_NODE);
+        LUAP(L, L_NODE, CNode, mg);
     }
     else lua_pushnil(L);
 
@@ -144,7 +141,7 @@ static INT node_findnode(lua_State* L)
 
 static INT node_findtarget(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     LPSTR targetName = (LPSTR)luaL_checkstring(L, 2);
 
     CNode* mg = node->FindNode(targetName);
@@ -160,7 +157,7 @@ static INT node_findtarget(lua_State* L)
 
 static INT node_gettransform(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     
     matrix_new(L);
     *(D3DXMATRIX*)lua_touserdata(L, 2) = node->GetTransform();
@@ -170,7 +167,7 @@ static INT node_gettransform(lua_State* L)
 
 static INT node_getfinaltransform(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
 
     matrix_new(L);
     *(D3DXMATRIX*)lua_touserdata(L, 2) = node->GetFinalTransform();
@@ -180,7 +177,7 @@ static INT node_getfinaltransform(lua_State* L)
 
 static INT node_draw(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
     node->Draw(*mat);
@@ -191,7 +188,7 @@ static INT node_draw(lua_State* L)
 
 static INT node_drawsubset(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     UINT subset = (UINT)luaL_checkinteger(L, 2) - 1;
     D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
 
@@ -203,7 +200,7 @@ static INT node_drawsubset(lua_State* L)
 
 static INT node_delete(lua_State* L)
 {
-    CNode* node = (CNode*)luaL_checkudata(L, 1, L_NODE);
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
 
     node->Release();
 
