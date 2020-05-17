@@ -33,6 +33,24 @@ static INT vector4_new(lua_State* L)
 	return 1;
 }
 
+
+static INT vector4_newrgba(lua_State* L)
+{
+    FLOAT r = (FLOAT)luaL_checknumber(L, 1) / (FLOAT)0xFF;
+    FLOAT g = (FLOAT)luaL_checknumber(L, 2) / (FLOAT)0xFF;
+    FLOAT b = (FLOAT)luaL_checknumber(L, 3) / (FLOAT)0xFF;
+    FLOAT a = 0xFF;
+
+    if (lua_gettop(L) == 4)
+        a = (FLOAT)luaL_checknumber(L, 4) / (FLOAT)0xFF;
+
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
+    *vec = D3DXVECTOR4(r,g,b,a);
+ 
+    luaL_setmetatable(L, L_VECTOR);
+    return 1;
+}
+
 static INT vector4_add(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
@@ -211,6 +229,7 @@ static VOID LuaVector_register(lua_State* L)
 	// compat
 	lua_register(L, "Vector3", vector4_new);
 	lua_register(L, "Vector4", vector4_new);
+	lua_register(L, "VectorRGBA", vector4_newrgba);
 	//<
 	lua_register(L, L_VECTOR, vector4_new);
 	luaL_newmetatable(L, L_VECTOR);

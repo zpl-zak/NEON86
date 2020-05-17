@@ -143,6 +143,22 @@ LUAF(Math, Color)
 	lua_pushnumber(L, D3DCOLOR_ARGB(a,r,g,b));
 	return 1;
 }
+LUAF(Math, ColorLinear)
+{
+    FLOAT r = (FLOAT)luaL_checknumber(L, 1) / (FLOAT)0xFF;
+    FLOAT g = (FLOAT)luaL_checknumber(L, 2) / (FLOAT)0xFF;
+    FLOAT b = (FLOAT)luaL_checknumber(L, 3) / (FLOAT)0xFF;
+    FLOAT a = 0xFF;
+
+    if (lua_gettop(L) == 4)
+        a = (FLOAT)luaL_checknumber(L, 4) / (FLOAT)0xFF;
+
+    lua_pushnumber(L, r);
+	lua_pushnumber(L, g);
+	lua_pushnumber(L, b);
+	lua_pushnumber(L, a);
+    return 4;
+}
 ///<END
 
 VOID CLuaBindings::BindMath(lua_State* L)
@@ -151,6 +167,7 @@ VOID CLuaBindings::BindMath(lua_State* L)
 	LuaVector_register(L);
 
 	REGF(Math, Color);
+	REGF(Math, ColorLinear);
 }
 
 /// RENDERER METHODS
