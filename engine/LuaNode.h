@@ -14,6 +14,14 @@ static INT node_new(lua_State* L)
     return 1;
 }
 
+static INT node_clone(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+    *(CNode**)lua_newuserdata(L, sizeof(CNode*)) = node->Clone();
+    luaL_setmetatable(L, L_NODE);
+    return 1;
+}
+
 static INT node_getname(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
@@ -268,6 +276,7 @@ static VOID LuaNode_register(lua_State* L)
     luaL_newmetatable(L, L_NODE);
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
+    REGC("clone", node_clone);
     REGC("getName", node_getname);
     REGC("getTransform", node_gettransform);
     REGC("setTransform", node_settransform);

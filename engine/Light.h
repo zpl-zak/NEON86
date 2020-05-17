@@ -12,6 +12,7 @@ public:
 
     VOID Enable(BOOL state);
     VOID SetSlot(UINT slot);
+    CLight* Clone();
 
     VOID SetType(UINT type);
     VOID SetAmbient(D3DCOLORVALUE color);

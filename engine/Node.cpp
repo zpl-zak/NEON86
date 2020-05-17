@@ -64,6 +64,31 @@ VOID CNode::AddNode(CNode* tgt)
     tgt->SetOwner(this);
 }
 
+CNode* CNode::Clone()
+{
+    CNode* clonedNode = new CNode();
+
+    clonedNode->mMetadata = mMetadata;
+    clonedNode->SetName(GetName());
+
+    for (auto a : mMeshes)
+        clonedNode->AddMesh(a->Clone());
+
+    for (auto a : mLights)
+        clonedNode->AddLight(a->Clone());
+
+    for (auto a : mNodes)
+    {
+        auto b = a->Clone();
+        b->SetParent(clonedNode);
+        clonedNode->AddNode(b);
+    }
+
+    clonedNode->SetTransform(mTransform);
+
+    return clonedNode;
+}
+
 BOOL CNode::IsEmpty()
 {
     return (mMeshes.GetCount() == mLights.GetCount() == mNodes.GetCount() == 0);

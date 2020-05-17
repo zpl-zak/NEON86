@@ -89,6 +89,7 @@ public:
     inline CNode** GetNodes() { return mNodes.GetData(); }
     CNode* FindNode(LPCSTR name);
     VOID AddNode(CNode* tgt);
+    CNode* Clone();
 
     BOOL IsEmpty();
 

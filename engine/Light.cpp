@@ -28,6 +28,16 @@ VOID CLight::SetSlot(UINT slot)
     mSlot = slot;
 }
 
+CLight* CLight::Clone()
+{
+    CLight* lit = new CLight();
+
+    lit->mSlot = mSlot;
+    lit->mLightData = mLightData;
+
+    return lit;
+}
+
 VOID CLight::SetType(UINT type)
 {
     mLightData.Type = (D3DLIGHTTYPE)type;
