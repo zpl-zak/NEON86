@@ -132,14 +132,9 @@ static INT vector4_div(lua_State* L)
 		return 1;
 	}
 
-	vec->x /= scalarRHS;
-	vec->y /= scalarRHS;
-	vec->z /= scalarRHS;
-	vec->w /= scalarRHS;
-
     vector4_new(L);
     D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
-    *out = *vec;
+    *out = *vec / scalarRHS;
     return 1;
 }
 
