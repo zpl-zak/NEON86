@@ -24,9 +24,39 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         scene->AddNode(newNode);
 
     newNode->SetParent(node);
+
+    aiString lastMeshName = aiString("(unknown)");
+    CMesh* lastMesh = NULL;
+
+    for (UINT i = 0; i < impNode->mNumMeshes; ++i)
+    {
+        const aiMesh* impMesh = impScene->mMeshes[impNode->mMeshes[i]];
+
+        if (!lastMesh || lastMeshName != impMesh->mName)
+        {
+            if (lastMesh)
+            {
+                lastMesh->SetName(lastMeshName);
+                scene->AddMesh(lastMesh);
+                newNode->AddMesh(lastMesh);
+            }
+
+            lastMesh = new CMesh();
+            lastMeshName = impMesh->mName;
+        }
+
+        lastMesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *(D3DMATRIX*)&mat);
+    }
+
+    if (lastMesh)
+    {
+        lastMesh->SetName(lastMeshName);
+        scene->AddMesh(lastMesh);
+        newNode->AddMesh(lastMesh);
+    }
     
     // Load meshes
-    if (impNode->mNumMeshes > 0)
+    /*if (impNode->mNumMeshes > 0)
     {
         CMesh* mesh = new CMesh();
         
@@ -39,7 +69,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         mesh->SetName(impNode->mName);
         scene->AddMesh(mesh);
         newNode->AddMesh(mesh);
-    }
+    }*/
 
     // Load light
     for (UINT i = 0; i < impScene->mNumLights; i++)

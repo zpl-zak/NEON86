@@ -109,6 +109,25 @@ static INT mesh_setmaterial(lua_State* L)
     return 1;
 }
 
+static INT mesh_getmaterial(lua_State* L)
+{
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    DWORD matid = (DWORD)luaL_checkinteger(L, 2);
+    
+    if (matid < 0 || matid >= mesh->GetNumFGroups())
+        lua_pushnil(L);
+    else 
+    {
+        CFaceGroup* fg = mesh->GetFGroups()[matid];
+
+        if (!fg->GetMaterial())
+            lua_pushnil(L);
+        else LUAP(L, L_MATERIAL, CMaterial, fg->GetMaterial());
+    }
+
+    return 1;
+}
+
 static VOID LuaMesh_register(lua_State* L)
 {
     lua_register(L, L_MESH, mesh_new);
@@ -123,6 +142,7 @@ static VOID LuaMesh_register(lua_State* L)
     REGC("clear", mesh_clear);
     REGC("setName", mesh_setname);
     REGC("setMaterial", mesh_setmaterial);
+    REGC("getMaterial", mesh_getmaterial);
     REGC("getName", mesh_getname);
     REGC("__gc", mesh_delete);
     
