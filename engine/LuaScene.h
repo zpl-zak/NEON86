@@ -54,7 +54,7 @@ static INT scene_getlights(lua_State* L)
 
     for (UINT i = 0; i < scene->GetNumLights(); i++)
     {
-        CLight* lit = scene->GetLights()[i];
+        CLight* lit = scene->GetLightData()[i];
         lua_pushinteger(L, i + 1ULL);
         LUAP(L, L_LIGHT, CLight, lit);
         lua_settable(L, -3);
@@ -71,7 +71,7 @@ static INT scene_gettargets(lua_State* L)
 
     for (UINT i = 0; i < scene->GetNumNodes(); i++)
     {
-        CNode* tgt = scene->GetNodes()[i];
+        CNode* tgt = scene->GetNodeData()[i];
 
         if (!tgt->IsEmpty())
             continue;
@@ -93,7 +93,7 @@ static INT scene_getflattennodes(lua_State* L)
 
     for (UINT i = 0; i < scene->GetNumNodes(); i++)
     {
-        CNode* tgt = scene->GetNodes()[i];
+        CNode* tgt = scene->GetNodeData()[i];
         lua_pushinteger(L, i + 1ULL);
         LUAP(L, L_NODE, CNode, tgt);
         lua_settable(L, -3);

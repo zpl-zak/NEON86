@@ -76,17 +76,18 @@ public:
     }
 
     inline UINT GetNumMeshes() { return mMeshes.GetCount(); }
-    inline CMesh** GetMeshes() { return mMeshes.GetData(); }
+    inline CArray<CMesh*> GetMeshes() { return mMeshes; }
+    inline CMesh** GetMeshData() { return mMeshes.GetData(); }
     CMesh* FindMesh(LPCSTR name);
     VOID AddMesh(CMesh* mg);
 
     inline UINT GetNumLights() { return mLights.GetCount(); }
-    inline CLight** GetLights() { return mLights.GetData(); }
+    inline CLight** GetLightData() { return mLights.GetData(); }
     CLight* FindLight(LPCSTR name);
     VOID AddLight(CLight* lit);
 
     inline UINT GetNumNodes() { return mNodes.GetCount(); }
-    inline CNode** GetNodes() { return mNodes.GetData(); }
+    inline CNode** GetNodeData() { return mNodes.GetData(); }
     CNode* FindNode(LPCSTR name);
     VOID AddNode(CNode* tgt);
     CNode* Clone();

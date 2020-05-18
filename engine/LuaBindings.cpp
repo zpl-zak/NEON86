@@ -262,8 +262,11 @@ LUAF(Rend, CameraOrthographic)
 	RECT res = RENDERER->GetResolution();
 	FLOAT w=(FLOAT)res.right, h=(FLOAT)res.bottom;
 
-	w = (FLOAT)luaL_checknumber(L, 1) * ((FLOAT)res.right / (FLOAT)res.bottom);
-	h = (FLOAT)luaL_checknumber(L, 2);
+	if (lua_gettop(L) >= 2)
+	{
+        w = (FLOAT)luaL_checknumber(L, 1) * ((FLOAT)res.right / (FLOAT)res.bottom);
+        h = (FLOAT)luaL_checknumber(L, 2);
+	}
 
 	FLOAT zNear=1.0f, zFar=100.0f;
 

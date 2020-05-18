@@ -6,6 +6,7 @@
 
 #include "Light.h"
 #include "Node.h"
+#include "Scene.h"
 
 static INT node_new(lua_State* L)
 {
@@ -55,7 +56,7 @@ static INT node_getlights(lua_State* L)
 
     for (UINT i = 0; i < node->GetNumLights(); i++)
     {
-        CLight* lit = node->GetLights()[i];
+        CLight* lit = node->GetLightData()[i];
         lua_pushinteger(L, i + 1ULL);
         LUAP(L, L_LIGHT, CLight, lit);
         lua_settable(L, -3);
@@ -72,7 +73,7 @@ static INT node_getnodes(lua_State* L)
 
     for (UINT i = 0; i < node->GetNumNodes(); i++)
     {
-        CNode* mg = node->GetNodes()[i];
+        CNode* mg = node->GetNodeData()[i];
         lua_pushinteger(L, i + 1ULL);
         LUAP(L, L_NODE, CNode, mg);
         lua_settable(L, -3);
@@ -89,7 +90,7 @@ static INT node_gettargets(lua_State* L)
 
     for (UINT i = 0; i < node->GetNumNodes(); i++)
     {
-        CNode* tgt = node->GetNodes()[i];
+        CNode* tgt = node->GetNodeData()[i];
 
         if (!tgt->IsEmpty())
             continue;
@@ -223,9 +224,20 @@ static INT node_addnode(lua_State* L)
 static INT node_addmesh(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 2, L_MESH);
 
-    node->AddMesh(mesh->Clone());
+    if (luaL_testudata(L, 2, L_MESH))
+    {
+        CMesh* mesh = *(CMesh**)luaL_checkudata(L, 2, L_MESH);
+        node->AddMesh(mesh->Clone());
+    }
+
+    if (luaL_testudata(L, 2, L_SCENE))
+    {
+        CScene* child = *(CScene**)luaL_checkudata(L, 2, L_SCENE);
+
+        for (auto& m : child->GetMeshes())
+            node->AddMesh(m->Clone());
+    }
 
     lua_pushvalue(L, 1);
     return 1;
