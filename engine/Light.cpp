@@ -13,8 +13,12 @@ CLight::CLight(UINT slot)
 
 VOID CLight::Release()
 {
-    SetDefaults();
-    Enable(FALSE);
+    if (DelRef())
+    {
+        SetDefaults();
+        Enable(FALSE);
+        delete this;
+    }
 }
 
 VOID CLight::Enable(BOOL state)

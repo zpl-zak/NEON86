@@ -40,16 +40,17 @@ extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
 /// helpers
 template <typename T>
-class CArray: public CReferenceCounter
+class CArray
 {
 public:
     typedef T* iterator;
 
-    CArray():CReferenceCounter()
+    CArray()
     {
         mCapacity = 4;
         mCount = 0;
         mData = (T*)neon_malloc(mCapacity * sizeof(T));
+        mIsOwned = TRUE;
     }
 
     CArray(const CArray<T>& rhs)
@@ -57,7 +58,7 @@ public:
         mData = rhs.mData;
         mCount = rhs.mCount;
         mCapacity = rhs.mCapacity;
-        AddRef();
+        mIsOwned = FALSE;
     }
 
     ~CArray()
@@ -70,7 +71,7 @@ public:
 
     inline VOID Release()
     {
-        if (DelRef())
+        if (mIsOwned)
         {
             SAFE_FREE(mData);
             mCapacity = 4;
@@ -121,6 +122,7 @@ private:
     T* mData;
     UINT mCapacity;
     UINT mCount;
+    BOOL mIsOwned;
 };
 
 #include <vector>

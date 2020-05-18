@@ -32,7 +32,7 @@ LPVOID neon_malloc(DWORD size)
 	neon_mempeak_update();
 
 	LPVOID mem = malloc(size);
-	gMemoryMap[mem] = size;
+	//gMemoryMap[mem] = size;
 	return mem;
 }
 
@@ -47,7 +47,7 @@ LPVOID neon_realloc(LPVOID mem, DWORD newSize)
 
 	LPVOID newMem = realloc(mem, newSize);
 	
-	gMemoryMap[newMem] = newSize;
+	//gMemoryMap[newMem] = newSize;
 	return newMem;
 }
 

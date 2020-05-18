@@ -43,6 +43,7 @@ public:
         mMeshes.Release();
         mLights.Release();
         mNodes.Release();
+        mMetadata.clear();
 
         mParent = NULL;
         mIsTransformDirty = TRUE;

@@ -141,9 +141,6 @@ static INT facegroup_delete(lua_State* L)
 
     mesh->Release();
 
-	if (mesh->GetRefCount() == 0)
-		delete mesh;
-
     return 0;
 }
 

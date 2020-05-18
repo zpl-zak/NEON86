@@ -150,9 +150,6 @@ static INT material_delete(lua_State* L)
 
 	mat->Release();
 
-    if (mat->GetRefCount() == 0)
-        delete mat;
-
 	return 0;
 }
 
