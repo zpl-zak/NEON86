@@ -43,7 +43,7 @@ static INT mesh_getfgroups(lua_State* L)
 
     for (UINT i=0; i<mesh->GetNumFGroups(); i++)
     {
-        CFaceGroup* fg = mesh->GetFGroups()[i];
+        CFaceGroup* fg = mesh->GetFGroupData()[i];
         lua_pushinteger(L, i+1ULL);
         LUAP(L, L_FACEGROUP, CFaceGroup, fg);
         lua_settable(L, -3);
@@ -112,7 +112,7 @@ static INT mesh_setmaterial(lua_State* L)
 
     for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
     {
-        mesh->GetFGroups()[i]->SetMaterial(stage, mat ? mat : NULL);
+        mesh->GetFGroupData()[i]->SetMaterial(stage, mat ? mat : NULL);
         mat->AddRef();
     }
     
@@ -129,7 +129,7 @@ static INT mesh_getmaterial(lua_State* L)
         lua_pushnil(L);
     else 
     {
-        CFaceGroup* fg = mesh->GetFGroups()[matid];
+        CFaceGroup* fg = mesh->GetFGroupData()[matid];
 
         if (!fg->GetMaterial())
             lua_pushnil(L);

@@ -66,7 +66,7 @@ VOID CMesh::Draw(const D3DXMATRIX& wmat)
 {
     for (UINT i = 0; i < mFaceGroups.GetCount(); i++)
     {
-        D3DXMATRIX mat = (GetOwner() ? GetOwner()->GetFinalTransform() : mTransforms[i]) * wmat;
+        D3DXMATRIX mat = (GetOwner() ? mTransforms[i] * GetOwner()->GetFinalTransform() : mTransforms[i]) * wmat;
         mFaceGroups[i]->Draw(&mat);
     }
 }

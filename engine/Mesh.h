@@ -21,8 +21,9 @@ public:
     VOID Clear(VOID);
 
     inline UINT GetNumFGroups() { return mFaceGroups.GetCount(); }
-    inline CFaceGroup** GetFGroups() { return mFaceGroups.GetData(); }
-    inline D3DXMATRIX* GetTransforms() { return mTransforms.GetData(); }
+    inline CFaceGroup** GetFGroupData() { return mFaceGroups.GetData(); }
+    inline D3DXMATRIX* GetTransformData() { return mTransforms.GetData(); }
+    inline CArray<D3DXMATRIX> GetTransforms() { return mTransforms; }
 private:
     CArray<CFaceGroup*> mFaceGroups;
     CArray<D3DXMATRIX> mTransforms;

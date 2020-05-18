@@ -228,7 +228,17 @@ static INT node_addmesh(lua_State* L)
     if (luaL_testudata(L, 2, L_MESH))
     {
         CMesh* mesh = *(CMesh**)luaL_checkudata(L, 2, L_MESH);
-        node->AddMesh(mesh->Clone());
+        CMesh* clonedMesh = mesh->Clone();
+
+        if (mesh->GetOwner())
+        {
+            for (auto& t : clonedMesh->GetTransforms())
+            {
+                t = mesh->GetOwner()->GetFinalTransform();
+            }
+        }
+
+        node->AddMesh(clonedMesh);
     }
 
     if (luaL_testudata(L, 2, L_SCENE))
@@ -236,7 +246,16 @@ static INT node_addmesh(lua_State* L)
         CScene* child = *(CScene**)luaL_checkudata(L, 2, L_SCENE);
 
         for (auto& m : child->GetMeshes())
-            node->AddMesh(m->Clone());
+        {
+            CMesh* clonedMesh = m->Clone();
+
+            for (auto& t : clonedMesh->GetTransforms())
+            {
+                t = m->GetOwner()->GetFinalTransform();
+            }
+
+            node->AddMesh(clonedMesh);
+        }
     }
 
     lua_pushvalue(L, 1);

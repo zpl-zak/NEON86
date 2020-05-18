@@ -83,7 +83,10 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
             lastMeshName = impMesh->mName;
         }
 
-        lastMesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *(D3DMATRIX*)&mat);
+        static D3DXMATRIX identityMat;
+        D3DXMatrixIdentity(&identityMat);
+
+        lastMesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *(D3DMATRIX*)&identityMat);
     }
 
     if (lastMesh)
