@@ -5,19 +5,13 @@
 #include "Renderer.h"
 #include "FileSystem.h"
 
-CMaterial::CMaterial(UINT slot, LPSTR texName)
+CMaterial::CMaterial(UINT slot, LPSTR texName): CMaterial()
 {
-    ZeroMemory(mTextureHandle, sizeof(mTextureHandle));
-    ZeroMemory(mStats, sizeof(mStats));
-
     CreateTextureForSlot(slot, texName);
-    DefaultMaterial();
 }
 
-CMaterial::CMaterial(UINT slot, UINT w, UINT h)
+CMaterial::CMaterial(UINT slot, UINT w, UINT h): CMaterial()
 {
-    CMaterial::CMaterial();
-
     CreateTextureForSlot(slot, NULL, w, h);
 }
 
@@ -28,12 +22,9 @@ CMaterial::CMaterial()
     DefaultMaterial();
 }
 
-CMaterial::CMaterial(UINT slot, VOID* data, UINT size)
+CMaterial::CMaterial(UINT slot, VOID* data, UINT size): CMaterial()
 {
-    CMaterial::CMaterial();
-
     CreateEmbeddedTextureForSlot(slot, data, size);
-    DefaultMaterial();
 }
 
 VOID CMaterial::DefaultMaterial(VOID)
