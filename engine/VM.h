@@ -2,6 +2,8 @@
 
 #include "system.h"
 
+#include <string>
+
 #define VM CEngine::the()->GetVM()
 
 enum PLAYKIND
@@ -33,7 +35,9 @@ public:
 	VOID Render2D(VOID);
 	VOID Resize(RECT res);
 
-	inline VOID CheckVMErrors(INT);
+	inline BOOL CheckVMErrors(INT, BOOL canFail=FALSE);
+	inline VOID PostError(LPCSTR err);
+	inline VOID PostError(std::string err);
 	inline FLOAT GetRunTime() { return mRunTime; }
 private:
 	UCHAR mPlayKind;

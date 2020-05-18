@@ -5,6 +5,7 @@
 
 #include "Engine.h"
 #include "FileSystem.h"
+#include "UserInterface.h"
 
 #include "LuaBindings.h"
 
@@ -50,6 +51,8 @@ VOID CVirtualMachine::Play(VOID)
 
 	if (mPlayKind != PLAYKIND_STOPPED)
 		return;
+
+	UI->ClearErrorWindow();
 
 	FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_SCRIPT);
 
@@ -244,8 +247,7 @@ LPVOID ENGINE_API neon_luamem(LPVOID ud, LPVOID ptr, size_t osize, size_t nsize)
     (void)ud;  /* not used */
 
     if (nsize == 0) {
-      if (gMemUsedLua - osize >= 0)
-			gMemUsedLua -= osize;
+		gMemUsedLua -= osize;
         free(ptr);
         return NULL;
     }
@@ -280,10 +282,10 @@ VOID CVirtualMachine::InitVM(VOID)
 
 	// Load script
 	result = luaL_loadstring(mLuaVM, (const char*)mMainScript);
-	CheckVMErrors(result);
+	CheckVMErrors(result, TRUE);
 
 	result = lua_pcall(mLuaVM, 0, 0, 0);
-	CheckVMErrors(result);
+	if (CheckVMErrors(result)) return;
 }
 
 VOID CVirtualMachine::DestroyVM(VOID)
@@ -298,14 +300,45 @@ VOID CVirtualMachine::DestroyVM(VOID)
 VOID CVirtualMachine::PrintVMError()
 {
 	const char* msg = lua_tostring(mLuaVM, -1);
-	MessageBoxA(NULL, msg, "Lua error", MB_OK);
-	ENGINE->Shutdown();
+#ifdef _DEBUG
+	UI->PushErrorMessage(msg);
+#else
+    MessageBoxA(NULL, msg, "Lua error", MB_OK);
+    ENGINE->Shutdown();
+#endif	
 }
 
-VOID CVirtualMachine::CheckVMErrors(INT result)
+BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)
 {
 	if (result != LUA_OK)
 	{
 		PrintVMError();
+
+#ifdef _DEBUG
+		if (!canFail)
+		{
+			VM->Stop();
+			VM->Release();
+		}
+#endif
+		return TRUE;
 	}
+
+	return FALSE;
+}
+
+inline VOID CVirtualMachine::PostError(LPCSTR err)
+{
+#ifdef _DEBUG
+    UI->PushErrorMessage(err);
+	lua_error(mLuaVM);
+#else
+    MessageBoxA(NULL, err, "Engine error", MB_OK);
+    ENGINE->Shutdown();
+#endif
+}
+
+inline VOID CVirtualMachine::PostError(std::string err)
+{
+	PostError(err.c_str());
 }

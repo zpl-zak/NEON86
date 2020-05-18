@@ -4,7 +4,9 @@
 #include "Mesh.h"
 #include "Light.h"
 #include "SceneLoader.h"
+
 #include "Engine.h"
+#include "VM.h"
 #include "Renderer.h"
 #include "FileSystem.h"
 
@@ -41,7 +43,7 @@ VOID CScene::Release()
     aiProcess_FlipUVs |\
     0
 
-VOID CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
+BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
 {
     Assimp::Importer imp;
 
@@ -49,14 +51,14 @@ VOID CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
 
     if (!model)
     {
-        MessageBoxA(NULL, "Mesh import failed!", "Mesh error", MB_OK);
-        ENGINE->Shutdown();
-        return;
+        VM->PostError(std::string("Could not load model file: ") + modelPath);
+        return FALSE;
     }
 
     CSceneLoader::LoadScene(model, this, loadMaterials);
 
     mRootNode = mNodes[0];
+    return TRUE;
 }
 
 VOID CScene::Draw(const D3DXMATRIX& wmat)

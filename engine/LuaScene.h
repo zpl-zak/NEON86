@@ -23,7 +23,8 @@ static INT scene_new(lua_State* L)
     *scene = new CScene();
 
     if (modelPath)
-        (*scene)->LoadScene(modelPath, loadMaterials);
+        if (!(*scene)->LoadScene(modelPath, loadMaterials))
+            return 0;
 
     luaL_setmetatable(L, L_SCENE);
     return 1;

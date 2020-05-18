@@ -2,6 +2,7 @@
 #include "Material.h"
 
 #include "Engine.h"
+#include "VM.h"
 #include "Renderer.h"
 #include "FileSystem.h"
 
@@ -68,8 +69,7 @@ VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
         FDATA img = FILESYSTEM->GetResource(RESOURCEKIND_IMAGE, texName);
         if (!img.data)
         {
-            MessageBoxA(NULL, "Image not found!", "Resource error", MB_OK);
-            ENGINE->Shutdown();
+            VM->PostError(std::string("Image not found: ") + texName);
             return;
         }
         D3DXCreateTextureFromFileInMemory(dev, img.data, img.size, &mTextureHandle[slot]);
@@ -82,7 +82,7 @@ VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, VOID* data, UINT size)
     
     if (!data)
     {
-        MessageBoxA(NULL, "Embedded image is empty!", "Texture error", MB_OK);
+        VM->PostError(std::string("Embedded image is empty!"));
         ENGINE->Shutdown();
         return;
     }
@@ -94,8 +94,7 @@ VOID CMaterial::SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle)
 {
     if (userSlot >= (MAX_TEXTURE_SLOTS))
     {
-        MessageBoxA(NULL, "User slot is invalid!", "Texture error", MB_OK);
-        ENGINE->Shutdown();
+        VM->PostError(std::string("User slot is invalid!"));
         return;
     }
 

@@ -3,6 +3,7 @@
 #include "Light.h"
 
 #include "engine.h"
+#include "VM.h"
 #include "FileSystem.h"
 #include "Renderer.h"
 
@@ -69,8 +70,7 @@ CEffect::CEffect(LPCSTR effectPath): CAllocable()
 
     if (!f.data)
     {
-        MessageBoxA(NULL, "No effect found!", "Resource error", MB_OK);
-        ENGINE->Shutdown();
+        VM->PostError(std::string("No effect found:") + effectPath);
         return;
     }
 
