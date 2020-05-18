@@ -16,6 +16,7 @@ public:
 
 	BOOL Init(HWND window, RECT resolution);
 	BOOL Release();
+	VOID Run();
 	VOID Shutdown();
 	VOID Resize(RECT resolution);
 	VOID Think();

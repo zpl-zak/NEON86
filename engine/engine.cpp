@@ -41,6 +41,25 @@ BOOL CEngine::Release()
     return TRUE;
 }
 
+VOID CEngine::Run()
+{
+    MSG msg;
+
+    while (IsRunning())
+    {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+
+        Think();
+    }
+
+    mLuaMachine->Stop();
+    Release();
+}
+
 VOID CEngine::Shutdown()
 {
     mIsRunning = FALSE;

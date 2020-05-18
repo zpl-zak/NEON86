@@ -43,22 +43,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     }
 
     VM->Play();
-
-    MSG msg;
-
-    while(ENGINE->IsRunning())
-    {
-        while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-
-        ENGINE->Think();
-    }
-
-    VM->Stop();
-    ENGINE->Release();
+    ENGINE->Run();
 
     return 0;
 }

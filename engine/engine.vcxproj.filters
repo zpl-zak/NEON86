@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Renderer">
       <UniqueIdentifier>{28d2ee0b-f4dd-40c2-bc18-f89814e506a2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Lua">
-      <UniqueIdentifier>{be28eed9-9922-42f6-aa8f-0a32bee9c6a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\UI">
       <UniqueIdentifier>{a893a98a-4f4a-477a-afd7-713fce3e9b45}</UniqueIdentifier>
     </Filter>
@@ -39,6 +36,9 @@
     </Filter>
     <Filter Include="Header Files\Lua\Modules">
       <UniqueIdentifier>{9e8a8e3b-25e4-4891-ae8c-c5f1a9fdd858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lua">
+      <UniqueIdentifier>{be28eed9-9922-42f6-aa8f-0a32bee9c6a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
