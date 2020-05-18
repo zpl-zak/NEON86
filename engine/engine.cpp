@@ -20,7 +20,7 @@ CEngine::CEngine(VOID)
     mRenderer = NULL;
     mInput = NULL;
     mFileSystem = NULL;
-    mLuaMachine = NULL;
+    mVirtualMachine = NULL;
     mUserInterface = NULL;
     
     SetFPS(60.0f);
@@ -32,7 +32,7 @@ CEngine::CEngine(VOID)
 
 BOOL CEngine::Release()
 {
-    SAFE_RELEASE(mLuaMachine);
+    SAFE_RELEASE(mVirtualMachine);
     SAFE_RELEASE(mFileSystem);
     SAFE_RELEASE(mUserInterface);
     SAFE_RELEASE(mRenderer);
@@ -56,7 +56,7 @@ VOID CEngine::Run()
         Think();
     }
 
-    mLuaMachine->Stop();
+    mVirtualMachine->Stop();
     Release();
 }
 
@@ -81,7 +81,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
     mRenderer = new CRenderer();
     mInput = new CInput();
     mFileSystem = new CFileSystem();
-    mLuaMachine = new CVirtualMachine();
+    mVirtualMachine = new CVirtualMachine();
 
     if (mRenderer->CreateDevice(window, resolution) != ERROR_SUCCESS)
     {
@@ -211,27 +211,24 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 VOID CEngine::Update(FLOAT deltaTime)
 {
-    mLuaMachine->Update(deltaTime);
+    mVirtualMachine->Update(deltaTime);
     mUserInterface->Update(deltaTime);
     mInput->Update();
 }
 
 VOID CEngine::Render()
 {
-    mRenderer->SetDefaultRenderStates();
-    mRenderer->GetDevice()->BeginScene();
-    mLuaMachine->Render();
+    mRenderer->BeginRender();
+    mVirtualMachine->Render();
     mUserInterface->Render();
-    mRenderer->Blit();
-    mRenderer->GetDevice()->EndScene();
-    mRenderer->GetDevice()->Present(NULL, NULL, NULL, NULL);
+    mRenderer->EndRender();
 }
 
 VOID CEngine::Resize(RECT resolution)
 {
     if (!mIsInitialised)
         return;
-    mLuaMachine->Resize(resolution);
+    mVirtualMachine->Resize(resolution);
     mRenderer->Resize(resolution);
 }
 

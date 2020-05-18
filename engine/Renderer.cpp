@@ -150,6 +150,19 @@ VOID CRenderer::Blit(VOID)
 	bbuf->Release();
 }
 
+VOID CRenderer::BeginRender(VOID)
+{
+    SetDefaultRenderStates();
+    GetDevice()->BeginScene();
+}
+
+VOID CRenderer::EndRender(VOID)
+{
+    Blit();
+    GetDevice()->EndScene();
+    GetDevice()->Present(NULL, NULL, NULL, NULL);
+}
+
 VOID CRenderer::Clear(VOID)
 {
 

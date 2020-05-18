@@ -25,7 +25,7 @@ public:
 	CRenderer* GetRenderer() { return mRenderer; }
 	CInput* GetInput() { return mInput; }
 	CFileSystem* GetFileSystem() { return mFileSystem; }
-	CVirtualMachine* GetVM() { return mLuaMachine; }
+	CVirtualMachine* GetVM() { return mVirtualMachine; }
 	CUserInterface* GetUI() { return mUserInterface; }
 
 	BOOL IsRunning() const { return mIsRunning; }
@@ -36,7 +36,7 @@ protected:
 	CRenderer* mRenderer;
 	CInput* mInput;
 	CFileSystem* mFileSystem;
-	CVirtualMachine* mLuaMachine;
+	CVirtualMachine* mVirtualMachine;
 	CUserInterface* mUserInterface;
 private:
 	VOID Update(FLOAT deltaTime);

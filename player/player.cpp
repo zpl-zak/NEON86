@@ -80,9 +80,6 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titl
         instance,
         NULL);
 
-    RECT pica;
-    GetClientRect(hWnd, &pica);
-
     if (!hWnd)
     {
         int errcode = GetLastError();

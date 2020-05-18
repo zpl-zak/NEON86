@@ -26,6 +26,8 @@ public:
     VOID Resize(RECT res);
     VOID SetVSYNC(BOOL state);
     VOID Blit(VOID);
+    VOID BeginRender(VOID);
+    VOID EndRender(VOID);
 
     /// Render commands
     VOID DrawMesh(const RENDERDATA& data);
