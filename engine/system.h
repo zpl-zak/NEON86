@@ -45,11 +45,19 @@ class CArray: public CReferenceCounter
 public:
     typedef T* iterator;
 
-    CArray()
+    CArray():CReferenceCounter()
     {
         mCapacity = 4;
         mCount = 0;
         mData = (T*)neon_malloc(mCapacity * sizeof(T));
+    }
+
+    CArray(const CArray<T>& rhs)
+    {
+        mData = rhs.mData;
+        mCount = rhs.mCount;
+        mCapacity = rhs.mCapacity;
+        AddRef();
     }
 
     ~CArray()
