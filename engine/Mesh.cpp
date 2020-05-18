@@ -3,9 +3,9 @@
 #include "Mesh.h"
 #include "Node.h"
 #include "FaceGroup.h"
-#include "SceneLoader.h"
-#include "NeonEngine.h"
-#include "FileSystem.h"
+
+#include "Engine.h"
+#include "Renderer.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

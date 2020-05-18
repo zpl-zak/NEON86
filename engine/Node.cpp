@@ -2,7 +2,9 @@
 #include "Node.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "NeonEngine.h"
+
+#include "Engine.h"
+#include "Renderer.h"
 
 CMesh* CNode::FindMesh(LPCSTR name)
 {

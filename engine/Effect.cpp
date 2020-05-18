@@ -1,7 +1,10 @@
 #include "StdAfx.h"
 #include "Effect.h"
 #include "Light.h"
-#include "NeonEngine.h"
+
+#include "engine.h"
+#include "FileSystem.h"
+#include "Renderer.h"
 
 #include "BuiltinShaders.h"
 #include <cstdio>

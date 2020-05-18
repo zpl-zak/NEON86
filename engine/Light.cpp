@@ -1,7 +1,9 @@
 #include "StdAfx.h"
 
 #include "Light.h"
-#include "NeonEngine.h"
+
+#include "Engine.h"
+#include "Renderer.h"
 
 CLight::CLight(UINT slot)
 {

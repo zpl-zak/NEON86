@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "LuaBindings.h"
-#include "NeonEngine.h"
+
+#include "Engine.h"
+#include "VM.h"
+#include "Renderer.h"
+#include "Input.h"
+#include "FileSystem.h"
 
 #include <lua/lua.hpp>
 #include <sstream>

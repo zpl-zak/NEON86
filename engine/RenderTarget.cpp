@@ -1,7 +1,9 @@
 #include "StdAfx.h"
 
 #include "RenderTarget.h"
-#include "NeonEngine.h"
+
+#include "Engine.h"
+#include "Renderer.h"
 
 CRenderTarget::CRenderTarget()
 {

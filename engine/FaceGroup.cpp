@@ -1,7 +1,9 @@
 #include "stdafx.h"
 
 #include "FaceGroup.h"
-#include "NeonEngine.h"
+
+#include "Engine.h"
+#include "Renderer.h"
 
 #include "Material.h"
 #include "Frustum.h"

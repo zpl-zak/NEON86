@@ -2,7 +2,10 @@
 #include "VM.h"
 
 #include "StdAfx.h"
-#include "NeonEngine.h"
+
+#include "Engine.h"
+#include "FileSystem.h"
+
 #include "LuaBindings.h"
 
 #include "ReferenceManager.h"

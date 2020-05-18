@@ -4,7 +4,8 @@
 #include "Mesh.h"
 #include "Light.h"
 #include "SceneLoader.h"
-#include "NeonEngine.h"
+#include "Engine.h"
+#include "Renderer.h"
 #include "FileSystem.h"
 
 #include <assimp/Importer.hpp>

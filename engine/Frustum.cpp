@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "Frustum.h"
 
-#include "NeonEngine.h"
+#include "Engine.h"
+#include "Renderer.h"
 
 CFrustum::CFrustum()
 {

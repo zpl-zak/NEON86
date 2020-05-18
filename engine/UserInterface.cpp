@@ -6,7 +6,9 @@
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
 
-#include "NeonEngine.h"
+#include "Engine.h"
+#include "Renderer.h"
+#include "VM.h"
 
 CUserInterface::CUserInterface()
 {
