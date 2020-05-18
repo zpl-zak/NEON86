@@ -9,6 +9,7 @@
 #include "Engine.h"
 #include "Renderer.h"
 #include "VM.h"
+#include "ReferenceManager.h"
 
 CUserInterface::CUserInterface()
 {
@@ -66,7 +67,7 @@ VOID CUserInterface::DebugPanel(VOID)
         ImGui::Separator();
         ImGui::Text("TIME: %.2fs", VM->GetRunTime());
         ImGui::Separator();
-        ImGui::Text("RESOURCES: %d MEM ENGINE: %.3f kb LUA: %.3f kb TOTAL: %.3f kb PEAK: %.3f kb", CAllocable::GetResourceCount(), gMemUsed/1024.0, gMemUsedLua / 1024.0, (gMemUsed+gMemUsedLua) / 1024.0, gMemPeak / 1024.0);
+        ImGui::Text("RESOURCES: %d MEM ENGINE: %.3f kb LUA: %.3f kb TOTAL: %.3f kb PEAK: %.3f kb", gResourceCount, gMemUsed/1024.0, gMemUsedLua / 1024.0, (gMemUsed+gMemUsedLua) / 1024.0, gMemPeak / 1024.0);
         ImGui::Separator();
 
         if (ImGui::Button("Restart VM"))

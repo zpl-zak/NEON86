@@ -233,5 +233,3 @@ VOID CEngine::Resize(RECT resolution)
 }
 
 CEngine *CEngine::sInstance = NULL;
-
-UINT CAllocable::sResourceCount;

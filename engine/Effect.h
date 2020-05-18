@@ -2,10 +2,11 @@
 
 #include "system.h"
 #include "RenderData.h"
+#include "ReferenceManager.h"
 
 class CLight;
 
-class CEffect: public CAllocable
+class CEffect: public CAllocable<CEffect>
 {
 public:
     CEffect(LPCSTR effectPath);

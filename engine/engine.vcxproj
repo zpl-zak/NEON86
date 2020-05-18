@@ -312,7 +312,6 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="SceneLoader.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="ReferenceManager.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
     <ClCompile Include="StdAfx.cpp">

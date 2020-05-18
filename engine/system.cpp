@@ -76,4 +76,5 @@ void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style)
 DWORD gMemUsed = 0;
 DWORD gMemUsedLua = 0;
 DWORD gMemPeak = 0;
+DWORD gResourceCount = 0;
 neon_panic_ptr* gPanicHandler = NULL;

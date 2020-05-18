@@ -21,3 +21,11 @@ public:
 private:
     INT mRefCount;
 };
+
+template <typename T>
+class CAllocable
+{
+public:
+    CAllocable() { ++gResourceCount; gMemUsed += sizeof(T); neon_mempeak_update(); }
+    ~CAllocable() { --gResourceCount; gMemUsed -= sizeof(T); }
+};

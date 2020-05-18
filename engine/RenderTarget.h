@@ -2,10 +2,11 @@
 
 #include "system.h"
 #include "StdAfx.h"
+#include "ReferenceManager.h"
 
 #include "RenderData.h"
 
-class CRenderTarget: public CAllocable
+class CRenderTarget: public CAllocable<CRenderTarget>
 {
 public:
     CRenderTarget();

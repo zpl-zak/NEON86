@@ -63,9 +63,6 @@
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="ReferenceManager.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>

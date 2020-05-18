@@ -19,7 +19,7 @@ struct METADATA_RESULT
     std::string Value;
 };
 
-class CNode: public CNodeComponent, public CReferenceCounter, CAllocable
+class CNode: public CNodeComponent, public CReferenceCounter, CAllocable<CNode>
 {
 public:
     CNode(): CAllocable()

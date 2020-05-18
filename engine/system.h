@@ -19,7 +19,7 @@
 extern FLOAT GetTime();
 
 
-extern DWORD gMemUsed, gMemUsedLua, gMemPeak;
+extern DWORD gMemUsed, gMemUsedLua, gMemPeak, gResourceCount;
 extern VOID neon_mempeak_update();
 extern LPVOID neon_malloc(DWORD size);
 extern LPVOID neon_realloc(LPVOID mem, DWORD newSize);
@@ -132,14 +132,3 @@ inline std::vector<std::string> split(const std::string& str, const std::string&
     } while (pos < str.length() && prev < str.length());
     return tokens;
 }
-
-class CAllocable
-{
-public:
-    CAllocable() { ++sResourceCount; }
-    ~CAllocable() { --sResourceCount; }
-
-    static UINT GetResourceCount() { return sResourceCount; }
-private:
-    static UINT sResourceCount;
-};
