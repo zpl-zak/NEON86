@@ -132,3 +132,14 @@ inline std::vector<std::string> split(const std::string& str, const std::string&
     } while (pos < str.length() && prev < str.length());
     return tokens;
 }
+
+class CAllocable
+{
+public:
+    CAllocable() { ++sResourceCount; }
+    ~CAllocable() { --sResourceCount; }
+
+    static UINT GetResourceCount() { return sResourceCount; }
+private:
+    static UINT sResourceCount;
+};

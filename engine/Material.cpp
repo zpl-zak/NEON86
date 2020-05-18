@@ -15,7 +15,7 @@ CMaterial::CMaterial(UINT slot, UINT w, UINT h): CMaterial()
     CreateTextureForSlot(slot, NULL, w, h);
 }
 
-CMaterial::CMaterial()
+CMaterial::CMaterial(): CAllocable()
 {
     ZeroMemory(mTextureHandle, sizeof(mTextureHandle));
     ZeroMemory(mStats, sizeof(mStats));
@@ -52,6 +52,8 @@ VOID CMaterial::Release(VOID)
         {
             SAFE_RELEASE(mTextureHandle[i]);
         }
+
+        delete this;
     }
 }
 

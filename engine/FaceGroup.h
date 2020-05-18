@@ -6,7 +6,7 @@
 
 class CMaterial;
 
-class CFaceGroup: public CReferenceCounter
+class CFaceGroup: public CReferenceCounter, CAllocable
 {
 public:
 	CFaceGroup(VOID);

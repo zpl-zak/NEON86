@@ -5,12 +5,12 @@
 #include "Engine.h"
 #include "Renderer.h"
 
-CRenderTarget::CRenderTarget()
+CRenderTarget::CRenderTarget(): CAllocable()
 {
     CreateRenderTarget(0,0, FALSE);
 }
 
-CRenderTarget::CRenderTarget(UINT w, UINT h, BOOL depth)
+CRenderTarget::CRenderTarget(UINT w, UINT h, BOOL depth): CAllocable()
 {
     CreateRenderTarget(w, h, depth);
 }

@@ -7,7 +7,7 @@
 
 class CFaceGroup;
 
-class CMesh: public CReferenceCounter, public CNodeComponent
+class CMesh: public CReferenceCounter, public CNodeComponent, CAllocable
 {
 public:
     CMesh(VOID);

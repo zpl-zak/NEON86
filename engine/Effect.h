@@ -1,10 +1,11 @@
 #pragma once
 
+#include "system.h"
 #include "RenderData.h"
 
 class CLight;
 
-class CEffect
+class CEffect: public CAllocable
 {
 public:
     CEffect(LPCSTR effectPath);

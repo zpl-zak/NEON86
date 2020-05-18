@@ -61,7 +61,7 @@ HRESULT CD3DIncludeImpl::Close(LPCVOID pData)
     return S_OK;
 }
 
-CEffect::CEffect(LPCSTR effectPath)
+CEffect::CEffect(LPCSTR effectPath): CAllocable()
 {
     mEffect = NULL;
 

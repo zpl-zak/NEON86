@@ -5,7 +5,7 @@
 
 #include "RenderData.h"
 
-class CRenderTarget
+class CRenderTarget: public CAllocable
 {
 public:
     CRenderTarget();

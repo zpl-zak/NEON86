@@ -8,7 +8,7 @@
 #include "Material.h"
 #include "Frustum.h"
 
-CFaceGroup::CFaceGroup(VOID)
+CFaceGroup::CFaceGroup(VOID): CAllocable()
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
     mVerts.Release();
@@ -25,6 +25,7 @@ VOID CFaceGroup::Release(VOID)
         mIndices.Release();
         SAFE_RELEASE(mData.mesh);
         SAFE_RELEASE(mData.mat);
+		delete this;
 	}
 }
 

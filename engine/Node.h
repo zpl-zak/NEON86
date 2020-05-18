@@ -19,10 +19,10 @@ struct METADATA_RESULT
     std::string Value;
 };
 
-class CNode: public CNodeComponent, public CReferenceCounter
+class CNode: public CNodeComponent, public CReferenceCounter, CAllocable
 {
 public:
-    CNode() 
+    CNode(): CAllocable()
     {
         D3DXMatrixIdentity(&mTransform);
         D3DXMatrixIdentity(&mCachedTransform);
@@ -35,7 +35,7 @@ public:
         mNodes.Release();
     }
 
-    CNode(aiMatrix4x4 mat, aiString name)
+    CNode(aiMatrix4x4 mat, aiString name): CAllocable()
     {
         SetName(name);
         mTransform = *(D3DXMATRIX*)&mat;

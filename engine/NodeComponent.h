@@ -17,6 +17,8 @@ public:
 
     virtual ~CNodeComponent() {}
 
+    virtual LPCSTR GetKind() { return "Unknown"; }
+
     inline VOID SetName(aiString name) { mName = name; }
     inline aiString GetName() { return mName; }
 

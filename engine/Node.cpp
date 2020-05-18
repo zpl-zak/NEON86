@@ -136,6 +136,8 @@ VOID CNode::Release()
         mMeshes.Release();
         mLights.Release();
         mNodes.Release();
+
+        delete this;
     }
 }
 

@@ -6,7 +6,7 @@
 #include "RenderData.h"
 #include "ReferenceManager.h"
 
-class CMaterial: public CReferenceCounter
+class CMaterial: public CReferenceCounter, CAllocable
 {
 public:
     CMaterial(UINT slot, LPSTR texName);

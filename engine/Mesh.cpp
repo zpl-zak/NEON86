@@ -11,7 +11,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-CMesh::CMesh(VOID)
+CMesh::CMesh(VOID): CAllocable()
 {
     mFaceGroups.Release();
     mTransforms.Release();
@@ -26,6 +26,8 @@ VOID CMesh::Release(VOID)
 
         mFaceGroups.Release();
         mTransforms.Release();
+
+        delete this;
     }
 }
 

@@ -29,6 +29,8 @@ VOID CScene::Release()
         mMeshes.Release();
         mLights.Release();
         mNodes.Release();
+
+        delete this;
     }
 }
 
