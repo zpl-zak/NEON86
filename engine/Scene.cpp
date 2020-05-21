@@ -43,11 +43,18 @@ VOID CScene::Release()
     aiProcess_FlipUVs |\
     0
 
-BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials)
+BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
 {
     Assimp::Importer imp;
 
-    const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), MESHIMPORT_FLAGS);
+    DWORD meshFlags = MESHIMPORT_FLAGS;
+
+    if (optimizeMesh)
+    {
+        meshFlags |= aiProcess_PreTransformVertices | aiProcess_JoinIdenticalVertices;
+    }
+
+    const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), meshFlags);
 
     if (!model)
     {

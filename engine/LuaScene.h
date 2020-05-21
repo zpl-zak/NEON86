@@ -12,18 +12,22 @@ static INT scene_new(lua_State* L)
 {
     LPCSTR modelPath = NULL;
     BOOL loadMaterials = TRUE;
+    BOOL optimizeMesh = FALSE;
 
     if (lua_gettop(L) >= 1)
         modelPath = lua_tostring(L, 1);
 
-    if (lua_gettop(L) == 2)
+    if (lua_gettop(L) >= 2)
         loadMaterials = (UINT)lua_toboolean(L, 2);
+
+    if (lua_gettop(L) >= 3)
+        optimizeMesh = (UINT)lua_toboolean(L, 3);
 
     CScene** scene = (CScene**)lua_newuserdata(L, sizeof(CScene*));
     *scene = new CScene();
 
     if (modelPath)
-        if (!(*scene)->LoadScene(modelPath, loadMaterials))
+        if (!(*scene)->LoadScene(modelPath, loadMaterials, optimizeMesh))
             return 0;
 
     luaL_setmetatable(L, L_SCENE);
@@ -131,11 +135,15 @@ static INT scene_loadmodel(lua_State* L)
     CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
     BOOL loadMaterials = TRUE;
+    BOOL optimizeMesh = FALSE;
 
-    if (lua_gettop(L) == 3)
+    if (lua_gettop(L) >= 3)
         loadMaterials = (UINT)luaL_checkinteger(L, 3);
 
-    scene->LoadScene(meshName, loadMaterials);
+    if (lua_gettop(L) >= 4)
+        optimizeMesh = (UINT)lua_toboolean(L, 4);
+
+    scene->LoadScene(meshName, loadMaterials, optimizeMesh);
 
     lua_pushvalue(L, 1);
     return 1;
