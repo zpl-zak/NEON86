@@ -5,24 +5,46 @@ set msbuild_cmd=msbuild.exe
 where /q msbuild.exe
 if not %errorlevel%==0 set msbuild_cmd="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
 
+set devenv_cmd=devenv.exe
+where /q devenv.exe
+if not %errorlevel%==0 set devenv_cmd="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"
+
+set "proj=basic"
+
+if not exist build mkdir build
+if exist build\.proj (
+	set /p proj=<build\.proj
+	
+	if not exist "toys\%proj%" (
+		set "proj=basic"
+		echo %proj% > build\.proj
+	)
+) else (
+	echo %proj% > build\.proj
+)
 
 :begin
 	cls
 	
 	echo NEON86
+	echo Active Project: %proj%
 	echo =======================
-	echo    1. Exit
-	echo    2. Build
-	echo    3. Debug
-	echo    4. Deploy (itch.io)
-	echo    5. Open in VS
-	echo    6. Open in VS Code
-	echo    7. Open in lite
-	echo    8. Pull upstream
-	echo    9. itch.io build log
-	echo    A. Open shell
+	echo  1. Exit
+	echo  2. Build
+	echo  3. Debug
+	echo  4. Deploy (itch.io)
+	echo  5. Open in VS
+	echo  6. Open in VS Code
+	echo  7. Open in lite
+	echo  8. Pull upstream
+	echo  9. itch.io build log
+	echo  A. Open shell
+	echo  B. Change project
+	echo  C. Open In VS (minimal)
+	echo  D. Run production
+	echo  E. Run unit tests
 	echo =======================
-	choice /C 123456789A /N /M "Your choice:"
+	choice /C 123456789ABCDE /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -35,6 +57,10 @@ if not %errorlevel%==0 set msbuild_cmd="C:\Program Files (x86)\Microsoft Visual 
 	if %errorlevel%==8 call :git_pull
 	if %errorlevel%==9 call :butler_builds
 	if %errorlevel%==10 call :shell
+	if %errorlevel%==11 call :change_project
+	if %errorlevel%==12 call :open_in_vs_minimal
+	if %errorlevel%==13 call :run_release
+	if %errorlevel%==14 call :tests
 goto :begin
 
 :build
@@ -55,19 +81,35 @@ exit /B 0
 	if %errorlevel%==1 exit /B 1
 exit /B 0
 
-
 :debug
 	if not exist build\debug\player.exe call :build
-	build\debug\player.exe data
+	build\debug\player.exe toys\%proj%
+exit /B 0
+
+:run_release
+	if not exist build\release\player.exe call :build_release
+	if %errorlevel%==0 exit /B 0
+	build\release\player.exe toys\%proj%
+exit /B 0
+
+:tests
+	echo Never!
+	pause
+exit /B 0
+
+:open_in_vs_minimal
+	if not exist build\debug\player.exe call :build
+	call %devenv_cmd% build\debug\player.exe
 exit /B 0
 
 :package
-	echo Deploying to itch.io ...
+	echo Packaging files ...
 	rem Package release files
-	if not exist build\deploy mkdir build\deploy
+	if exist build\deploy rmdir /S /Q build\deploy
+	mkdir build\deploy
 	xcopy /Y build\release\*.dll build\deploy\
 	xcopy /Y build\release\player.exe build\deploy\
-	xcopy /Y /E toys\basic\ build\deploy\data
+	xcopy /Y /E toys\%toy%\ build\deploy\data\
 	xcopy /Y LICENSE build\deploy\
 	xcopy /Y README.md build\deploy\
 	echo.
@@ -77,8 +119,9 @@ exit /B 0
 		echo  1. Upload to itch.io
 		echo  2. Cancel deployment
 		echo  3. Test it first
+		echo  4. Back to deploy menu
 		echo =======================
-		choice /C 123 /N /M "Your choice:"
+		choice /C 1234 /N /M "Your choice:"
 		echo.
 		if %errorlevel%==1 exit /B 1
 		if %errorlevel%==2 exit /B 0
@@ -87,19 +130,64 @@ exit /B 0
 				player.exe data
 			popd
 		)
+		if %errorlevel%==4 exit /B 2
 	cls
 goto :package_prompt
+
+:display_choices
+	echo =======================
+	echo  1. Back to menu
+	echo  2. Minimal
+	echo  3. Basic
+	echo  4. Terrain view
+	echo  5. Space
+	echo  6. Scene graph
+	echo =======================
+	choice /C 123456 /N /M "Your choice:"
+	echo.
+	
+	if %errorlevel%==1 exit /B 0
+	if %errorlevel%==2 set "proj=minimal"
+	if %errorlevel%==3 set "proj=basic"
+	if %errorlevel%==4 set "proj=terrainview"
+	if %errorlevel%==5 set "proj=space"
+	if %errorlevel%==6 set "proj=hierarchy"
+exit /B 0
+
+:change_project
+	cls
+	echo NEON86 PROJECTS
+	call :display_choices
+	echo %proj% > build\.proj
+exit /B 0
 
 :deploy
 	call :build_release
 	if %errorlevel%==0 exit /B 0
 	
+	:deploy_choices
+	set "toy=basic"
+	cls
+	echo NEON86 TOYS
+	call :display_choices
+	choice /C 123456 /N /M "Your choice:"
+	echo.
+	
+	if %errorlevel%==1 exit /B 0
+	if %errorlevel%==2 set "toy=minimal"
+	if %errorlevel%==3 set "toy=basic"
+	if %errorlevel%==4 set "toy=terrainview"
+	if %errorlevel%==5 set "toy=space"
+	if %errorlevel%==6 set "toy=hierarchy"
+	
 	call :package
 	if %errorlevel%==0 exit /B 0
+	if %errorlevel%==2 goto :deploy_choices
 	
 	rem Upload process
 	pushd build\
-		butler push deploy zaklaus/neon-86:win32-minimal-demo
+		echo Deploying to itch.io ...
+		butler push deploy zaklaus/neon-86:win32-%toy%-demo
 	popd
 	pause
 exit /B 0
@@ -115,12 +203,12 @@ exit /B 0
 
 
 :open_in_vscode
-	start cmd /C "code.exe ."
+	start cmd /C "code.exe toys\%proj%"
 exit /B 0
 
 
 :open_in_lite
-	start lite data
+	start lite toys\%proj%
 exit /B 0
 
 :git_pull

@@ -1,0 +1,1 @@
+return {["type"]="leaf",["active_view"]=2,["views"]={[1]={["scroll"]={["x"]=0,["y"]=1160.0276110444},["selection"]={[1]=1,[2]=1,[3]=1,[4]=1},["filename"]=".\\init.lua"},[2]={["scroll"]={["x"]=0,["y"]=229.71232876712},["selection"]={[1]=1,[2]=1,[3]=1,[4]=1},["filename"]=".\\space.fx"}}}

@@ -1,4 +1,4 @@
-terrain = Model("mountains.obj")
+terrain = Model("mountains.obj", true, true)
 
 time = 0.0
 
@@ -16,12 +16,12 @@ lookAt = Matrix():lookAt(
 )
 
 function _init()
-	
+
 end
 
 function _update(dt)
 	if GetKeyDown(KEY_ESCAPE) then
-		ExitGame()	
+		ExitGame()
 	end
 
 	if GetKeyDown(KEY_F3) then
@@ -50,7 +50,7 @@ end
 function _render()
 	ClearScene(20,20,20)
 	CameraPerspective(70)
-	
+
 	lookAt:bind(VIEW)
 
 	terrainEffect:start(renderMode)

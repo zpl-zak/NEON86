@@ -1,4 +1,4 @@
-bodyModel = Model("body.fbx")
+bodyModel = Model("body.fbx", true, true)
 rotSpeed = 0.1
 
 bodymats={
