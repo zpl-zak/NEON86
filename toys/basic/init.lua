@@ -43,6 +43,7 @@ time = 0
 
 -- Simple switch to toggle between FFP and shader system
 shaderDisabled = true
+EnableLighting(true)
 
 -- Create a sunlight
 sun = Light()
@@ -57,6 +58,7 @@ function _update(dt)
 
     if GetKeyDown("m") then
         shaderDisabled = not shaderDisabled
+		EnableLighting(shaderDisabled)
     end
 
     if GetKeyDown("r") then
@@ -96,6 +98,7 @@ function drawSceneUsingFFP()
     mainRT:bind()
     sun:enable(true)
     ClearScene(20,20,20)
+	AmbientColor(20,20,20)
     CameraPerspective(62, 2, 10)
     drawScene()
     ClearTarget()
