@@ -101,7 +101,7 @@ goto :package_prompt
 exit /B 0
 
 :butler_builds
-	butler status zaklaus/neon-86:win32-minimal-demo
+	butler status zaklaus/neon-86
 	pause
 exit /B 0
 
