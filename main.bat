@@ -45,8 +45,9 @@ set proj=%proj: =%
 	echo  C. Open In VS (minimal)
 	echo  D. Run production
 	echo  E. Run unit tests
+	echo  F. Create new project
 	echo =======================
-	choice /C 123456789ABCDE /N /M "Your choice:"
+	choice /C 123456789ABCDEF /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -63,6 +64,7 @@ set proj=%proj: =%
 	if %errorlevel%==12 call :open_in_vs_minimal
 	if %errorlevel%==13 call :run_release
 	if %errorlevel%==14 call :tests
+	if %errorlevel%==15 call :new_project
 goto :begin
 
 :build
@@ -146,8 +148,9 @@ goto :package_prompt
 	echo  4. Terrain view
 	echo  5. Space
 	echo  6. Scene graph
+	echo  7. demo1
 	echo =======================
-	choice /C 123456 /N /M "Your choice:"
+	choice /C 1234567 /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 exit /B 0
@@ -156,6 +159,7 @@ goto :package_prompt
 	if %errorlevel%==4 set "proj=terrainview"
 	if %errorlevel%==5 set "proj=space"
 	if %errorlevel%==6 set "proj=hierarchy"
+	if %errorlevel%==7 set "proj=demo1"
 	
 	echo %proj% > build\.proj
 exit /B 0
@@ -205,4 +209,11 @@ exit /B 0
 	echo Enter the EXIT command to get back to main menu.
 	echo.
 	call cmd
+exit /B 0
+
+:new_project
+	set /p a="Enter name: "
+	set proj=%a%
+	
+	xcopy /Y /E toys\base\ toys\%proj%\
 exit /B 0
