@@ -23,6 +23,8 @@ if exist build\.proj (
 	echo %proj% > build\.proj
 )
 
+set proj=%proj: =%
+
 :begin
 	cls
 	
@@ -109,19 +111,20 @@ exit /B 0
 	mkdir build\deploy
 	xcopy /Y build\release\*.dll build\deploy\
 	xcopy /Y build\release\player.exe build\deploy\
-	xcopy /Y /E toys\%toy%\ build\deploy\data\
+	xcopy /Y /E toys\%proj%\ build\deploy\data\
 	xcopy /Y LICENSE build\deploy\
 	xcopy /Y README.md build\deploy\
 	echo.
 	
 	:package_prompt
+		echo NEON86 DEPLOY
+		echo Active Project: %proj%
 		echo =======================
 		echo  1. Upload to itch.io
 		echo  2. Cancel deployment
 		echo  3. Test it first
-		echo  4. Back to deploy menu
 		echo =======================
-		choice /C 1234 /N /M "Your choice:"
+		choice /C 123 /N /M "Your choice:"
 		echo.
 		if %errorlevel%==1 exit /B 1
 		if %errorlevel%==2 exit /B 0
@@ -130,11 +133,12 @@ exit /B 0
 				player.exe data
 			popd
 		)
-		if %errorlevel%==4 exit /B 2
 	cls
 goto :package_prompt
 
-:display_choices
+:change_project
+	cls
+	echo NEON86 PROJECTS
 	echo =======================
 	echo  1. Back to menu
 	echo  2. Minimal
@@ -152,12 +156,7 @@ goto :package_prompt
 	if %errorlevel%==4 set "proj=terrainview"
 	if %errorlevel%==5 set "proj=space"
 	if %errorlevel%==6 set "proj=hierarchy"
-exit /B 0
-
-:change_project
-	cls
-	echo NEON86 PROJECTS
-	call :display_choices
+	
 	echo %proj% > build\.proj
 exit /B 0
 
@@ -165,29 +164,13 @@ exit /B 0
 	call :build_release
 	if %errorlevel%==0 exit /B 0
 	
-	:deploy_choices
-	set "toy=basic"
-	cls
-	echo NEON86 TOYS
-	call :display_choices
-	choice /C 123456 /N /M "Your choice:"
-	echo.
-	
-	if %errorlevel%==1 exit /B 0
-	if %errorlevel%==2 set "toy=minimal"
-	if %errorlevel%==3 set "toy=basic"
-	if %errorlevel%==4 set "toy=terrainview"
-	if %errorlevel%==5 set "toy=space"
-	if %errorlevel%==6 set "toy=hierarchy"
-	
 	call :package
 	if %errorlevel%==0 exit /B 0
-	if %errorlevel%==2 goto :deploy_choices
 	
 	rem Upload process
 	pushd build\
 		echo Deploying to itch.io ...
-		butler push deploy zaklaus/neon-86:win32-%toy%-demo
+		butler push deploy zaklaus/neon-86:win32-%proj%-demo
 	popd
 	pause
 exit /B 0
