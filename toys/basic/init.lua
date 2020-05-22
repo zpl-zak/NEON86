@@ -6,28 +6,30 @@ model = Model("assets/cube.fbx", false)
 cubeMesh = model:findMesh("Cube")
 
 -- 2. Retrieve the first facegroup
-faceGroup = cubeMesh:getFGroups()[1]
+faceGroup = cubeMesh:getParts()[1]
 
 -- 3. Create a basic material for cube
 cubeMaterial = Material()
 
--- 3.1. Load diffuse and specular texture for our material
+-- 3.1. Load diffuse texture for our material
 cubeMaterial:loadFile("assets/cube_albedo.png", 1)
-cubeMaterial:loadFile("assets/cube_albedo.png", 2)
+cubeMaterial:setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
+cubeMaterial:setSamplerState(SAMPLERSTATE_MINFILTER, TEXF_POINT)
+cubeMaterial:setSamplerState(SAMPLERSTATE_MIPFILTER, TEXF_POINT)
 
 -- 4. Assign our material
 faceGroup:setMaterial(0, cubeMaterial)
 
 -- Floor model
 floor = Model("assets/floor.fbx")
-floor:findMesh("Plane"):getFGroups()[1]:setMaterial(0, cubeMaterial)
+floor:findMesh("Plane"):setMaterial(0, cubeMaterial)
 
 -- Create effect for our rendering pipeline
 mainShader = Effect("main.fx")
 
 -- Create our render target for post-processing effect
 winres = GetResolution()
-mainRT = RenderTarget(winres[1]/8, winres[2]/8)
+mainRT = RenderTarget(math.floor(winres[1]), math.floor(winres[2]))
 
 -- Construct the camera view
 viewMat = Matrix():lookAt(
@@ -43,8 +45,10 @@ time = 0
 shaderDisabled = true
 
 -- Create a sunlight
-sun = Light(0)
-sun:setDiffuse(34.2, 1.2, 1.2)
+sun = Light()
+sun:setType(LIGHTKIND_DIRECTIONAL)
+sun:setDirection(Vector(-1,-1,1))
+sun:enable(true, 0)
 
 function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then

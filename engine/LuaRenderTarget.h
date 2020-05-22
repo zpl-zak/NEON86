@@ -38,7 +38,7 @@ static INT rtt_gethandle(lua_State* L)
 
 static INT rtt_delete(lua_State* L)
 {
-    CRenderTarget* rtt = (CRenderTarget*)luaL_checkudata(L, 1, L_RENDERTARGET);
+    CRenderTarget* rtt = *(CRenderTarget**)luaL_checkudata(L, 1, L_RENDERTARGET);
 
     rtt->Release();
     return 0;
@@ -46,7 +46,7 @@ static INT rtt_delete(lua_State* L)
 
 static INT rtt_bind(lua_State* L)
 {
-    CRenderTarget* rtt = (CRenderTarget*)luaL_checkudata(L, 1, L_RENDERTARGET);
+    CRenderTarget* rtt = *(CRenderTarget**)luaL_checkudata(L, 1, L_RENDERTARGET);
 
     rtt->Bind();
     return 0;

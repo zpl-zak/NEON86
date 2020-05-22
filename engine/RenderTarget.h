@@ -6,7 +6,7 @@
 
 #include "RenderData.h"
 
-class CRenderTarget: public CAllocable<CRenderTarget>
+class CRenderTarget: public CAllocable<CRenderTarget>, public CReferenceCounter
 {
 public:
     CRenderTarget();

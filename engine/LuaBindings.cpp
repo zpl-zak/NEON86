@@ -294,12 +294,12 @@ LUAF(Rend, BindTexture)
 
     if (luaL_testudata(L, 2, L_RENDERTARGET))
     {
-        CRenderTarget* rtt = (CRenderTarget*)lua_touserdata(L, 2);
+        CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 2);
 		RENDERER->SetTexture(stage, rtt->GetTextureHandle());
     }
     else if (luaL_testudata(L, 2, L_MATERIAL))
     {
-        CMaterial* mat = (CMaterial*)lua_touserdata(L, 2);
+        CMaterial* mat = *(CMaterial**)lua_touserdata(L, 2);
 		mat->Bind(stage);
     }
     else if (lua_gettop(L) == 2) {

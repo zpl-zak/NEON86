@@ -17,17 +17,20 @@ CRenderTarget::CRenderTarget(UINT w, UINT h, BOOL depth): CAllocable()
 
 VOID CRenderTarget::Release(VOID)
 {
-    LPDIRECT3DSURFACE9 surf;
-    RENDERER->GetDevice()->GetRenderTarget(0, &surf);
+    if (DelRef())
+    {
+        LPDIRECT3DSURFACE9 surf;
+        RENDERER->GetDevice()->GetRenderTarget(0, &surf);
 
-    if (surf == mSurfaceHandle)
-        RENDERER->SetRenderTarget(NULL);
+        if (surf == mSurfaceHandle)
+            RENDERER->SetRenderTarget(NULL);
 
-    SAFE_RELEASE(mTextureHandle);
-    SAFE_RELEASE(mDepthTextureHandle);
-    SAFE_RELEASE(mDepthSurfaceHandle);
+        SAFE_RELEASE(mTextureHandle);
+        SAFE_RELEASE(mDepthTextureHandle);
+        SAFE_RELEASE(mDepthSurfaceHandle);
 
-    mSurfaceHandle = NULL;
+        mSurfaceHandle = NULL;
+    }
 }
 
 VOID CRenderTarget::Bind(VOID)
