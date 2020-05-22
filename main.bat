@@ -20,8 +20,9 @@ if not %errorlevel%==0 set msbuild_cmd="C:\Program Files (x86)\Microsoft Visual 
 	echo    7. Open in lite
 	echo    8. Pull upstream
 	echo    9. itch.io build log
+	echo    A. Open shell
 	echo =======================
-	choice /C 123456789 /N /M "Your choice:"
+	choice /C 123456789A /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -33,6 +34,7 @@ if not %errorlevel%==0 set msbuild_cmd="C:\Program Files (x86)\Microsoft Visual 
 	if %errorlevel%==7 call :open_in_lite
 	if %errorlevel%==8 call :git_pull
 	if %errorlevel%==9 call :butler_builds
+	if %errorlevel%==10 call :shell
 goto :begin
 
 :build
@@ -124,4 +126,12 @@ exit /B 0
 :git_pull
 	git pull
 	pause
+exit /B 0
+
+:shell
+	cls
+	echo NEON86 SHELL
+	echo Enter the EXIT command to get back to main menu.
+	echo.
+	call cmd
 exit /B 0
