@@ -1,6 +1,7 @@
 local root
 local clonedRoot
 local time = 0
+local light
 
 function _init()
     root = Node()
@@ -14,6 +15,12 @@ function _init()
     root:addMesh(model)
 
     clonedRoot = root:clone()
+
+    light = Light()
+    light:setDirection(Vector(-1,-1,1))
+    light:setType(LIGHTKIND_DIRECTIONAL)
+    light:enable(true, 0)
+    EnableLighting(true)
 end
 
 function _update()
@@ -27,7 +34,7 @@ function _update()
 end
 
 function _render()
-    ClearScene(0,128,128)
+    ClearScene(20,20,69)
     AmbientColor(16,16,16)
 
     Matrix():lookAt(
