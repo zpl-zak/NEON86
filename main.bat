@@ -66,6 +66,8 @@ exit /B 0
 	xcopy /Y build\release\*.dll build\deploy\
 	xcopy /Y build\release\player.exe build\deploy\
 	xcopy /Y /E toys\basic\ build\deploy\data
+	xcopy /Y LICENSE build\deploy\
+	xcopy /Y README.md build\deploy\
 	echo.
 	
 	:package_prompt
