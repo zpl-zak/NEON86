@@ -111,8 +111,7 @@ exit /B 0
 
 
 :open_in_vscode
-	start  code.exe .
-	cls
+	start cmd /C "code.exe ."
 exit /B 0
 
 
