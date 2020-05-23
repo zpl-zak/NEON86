@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">
-    <a href="https://discord.gg/eBQ4QHX"><img src="https://img.shields.io/discord/402098213114347520.svg" alt="Discord server" /></a>
+    <a href="https://discord.gg/eBQ4QHX"><img src="https://img.shields.io/badge/NEON86-Download%20on%20itch.io-red" alt="Discord server" /></a>
 </div>
 
 <br />
