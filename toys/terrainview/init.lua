@@ -35,7 +35,7 @@ function _update(dt)
 
 	time = time + dt
 
-	campos = campos * Matrix():rotate(dt/4, 0, 0)
+	campos = campos * Matrix():rotate(math.rad(math.sin(time/4)*0.25), 0, 0)
 
 	lookAt = Matrix():lookAt(
 		campos,
