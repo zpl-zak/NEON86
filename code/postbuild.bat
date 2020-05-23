@@ -4,7 +4,7 @@ SET b=%1
 IF "%b%"=="" (SET "b=Build\Debug")
 
 ECHO Build configuration: %b%
-CD %~dp0
+CD %~dp0\..
 
 IF "%b%"=="Build\Debug" (
 	XCOPY /Y "code\deps\assimp\assimpd.dll" "%b%\"

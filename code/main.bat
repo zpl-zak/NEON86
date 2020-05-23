@@ -1,5 +1,7 @@
 @echo off
 
+cd %~dp0\..
+
 REM detect paths
 set msbuild_cmd=msbuild.exe
 where /q msbuild.exe
@@ -68,12 +70,12 @@ set proj=%proj: =%
 goto :begin
 
 :build
-	%msbuild_cmd% neon86.sln /p:Configuration=Debug /p:Platform=x86 /m
+	%msbuild_cmd% code\neon86.sln /p:Configuration=Debug /p:Platform=x86 /m
 	pause
 exit /B 0
 
 :build_release
-	%msbuild_cmd% neon86.sln /p:Configuration=Release /p:Platform=x86 /m
+	%msbuild_cmd% code\neon86.sln /p:Configuration=Release /p:Platform=x86 /m
 	echo.
 	echo =======================
 	echo  1. Continue with deployment
@@ -192,7 +194,7 @@ exit /B 0
 exit /B 0
 
 :open_in_vs
-	start neon86.sln
+	start code\neon86.sln
 exit /B 0
 
 
