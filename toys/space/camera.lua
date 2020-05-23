@@ -1,4 +1,4 @@
-SPEED = 15.0*scale
+SPEED = 120.0*scale
 SENSITIVITY = 0.15
 
 lookAt = nil
@@ -20,7 +20,7 @@ function updateCamera(dt)
 		mouseDelta = GetMouseDelta()
 		camera.angle[1] = camera.angle[1] + (mouseDelta[1] * dt * SENSITIVITY)
 		camera.angle[2] = camera.angle[2] - (mouseDelta[2] * dt * SENSITIVITY)
-		
+
 		-- camera.angle[2] = math.clamp(-1.52, 1.55, camera.angle[2])
 	end
 
@@ -55,7 +55,7 @@ function handleInput(dt)
 	end
 
 	if GetKey(KEY_SHIFT) then
-		vel = vel * 32
+		vel = vel * 4
 	end
 
 	if vel:mag() ~= 0 then
