@@ -7,9 +7,9 @@ ECHO Build configuration: %b%
 CD %~dp0
 
 IF "%b%"=="Build\Debug" (
-	XCOPY /Y "deps\assimp\assimpd.dll" "%b%\"
+	XCOPY /Y "code\deps\assimp\assimpd.dll" "%b%\"
 ) ELSE (
-	XCOPY /Y "deps\assimp\assimp.dll" "%b%\"
+	XCOPY /Y "code\deps\assimp\assimp.dll" "%b%\"
 )
 
 ECHO Done!
