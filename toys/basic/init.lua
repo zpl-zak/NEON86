@@ -1,9 +1,9 @@
 -- Load model w/o materials
-model = Model("assets/cube.fbx", false)
+model = Model("assets/sphere.fbx", false)
 
 -- Assign albedo texture via Lua
 -- 1. Find our mesh
-cubeMesh = model:findMesh("Cube")
+cubeMesh = model:findMesh("Sphere")
 
 -- 2. Retrieve the first facegroup
 faceGroup = cubeMesh:getParts()[1]
@@ -80,7 +80,7 @@ function drawSceneUsingShader()
     mainShader:beginPass("Default")
 
     -- Set up global shader variables and commit changes to the GPU
-    mainShader:setVector4("ambience", Vector(1,0.05,0.05,1))
+    mainShader:setVector4("ambience", VectorRGBA(20, 20, 20))
     mainShader:setFloat("time", time)
     mainShader:setLight("sun", sun)
     mainShader:commit()
@@ -110,7 +110,7 @@ function _render()
         :translate(0,0,5)
         :bind(VIEW)
 
-    if shaderDisabled then 
+    if shaderDisabled then
         drawSceneUsingFFP()
         blitScreenFFP(mainRT)
     else
@@ -130,7 +130,7 @@ end
 function blitScreen(rt)
     ClearTarget()
     ClearScene(0,0,0)
- 
+
     -- Initialize the shader and load the RTT technique
     mainShader:begin("RTT")
 

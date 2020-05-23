@@ -5,6 +5,7 @@
 // Global variables / uniforms
 // These can be set up from Lua as well
 float time;
+float4 ambience;
 
 TLIGHT sun;
 
@@ -57,7 +58,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float3 l = normalize(-sun.Direction);
     float diffuse = saturate(dot(n, l));
 
-    OUT = sun.Ambient + MAT.Diffuse * normalize(sun.Diffuse) * diffuse;
+    OUT = ambience + MAT.Diffuse * normalize(sun.Diffuse) * diffuse;
 
     if (hasDiffuseTex)
         OUT *= tex2D(colorMap, IN.texCoord);
