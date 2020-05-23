@@ -163,7 +163,9 @@ goto :package_prompt
 	if %errorlevel%==8 set "proj=demo1"
 	
 	if %errorlevel%==2 (
-		set /p proj="Enter name: "
+		set /p a="Enter name: "
+		if "%a%"=="" goto :change_project
+		set "proj=%a%"
 	)
 	
 	echo %proj% > build\.proj
@@ -218,7 +220,7 @@ exit /B 0
 
 :new_project
 	set /p a="Enter name: "
+	if "%a%"=="" exit /B 0
 	set proj=%a%
-	
 	xcopy /Y /E toys\base\ toys\%proj%\
 exit /B 0
