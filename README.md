@@ -14,7 +14,7 @@
 <div align="center">
   <sub>
     Brought to you by <a href="https://github.com/zaklaus">@zaklaus</a>,
-    and <strong>contributors</strong>
+    and <a href="https://github.com/zaklaus/NEON86/graphs/contributors">contributors</a>
   </sub>
 </div>
 
@@ -30,14 +30,6 @@ Engine is DCC-driven and supports model scene graphs and hierarchy manipulations
 
 Engine also provides a hardware lighting support that is very simple to use, it also 
 offers a shader support that is easily expendable and provides rich visuals at low costs.
-
-## Structure
-
-| Name      | Description                                                         |
-|-----------|---------------------------------------------------------------------|
-| code      | The meat of this project, contains the engine and the player itself |
-| toys      | Example prototypes using the engine                                 |
-| deps      | Our dependencies, duh\!                                             |
 
 ## License
 
