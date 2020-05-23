@@ -8,7 +8,7 @@
 
 <br />
 <div align="center">
-  A retro toy game engine written in **VC++98** style!
+  A retro toy game engine written in <strong>VC++98</strong>-like style!
 </div>
 
 <div align="center">
