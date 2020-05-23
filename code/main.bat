@@ -116,7 +116,7 @@ exit /B 0
 	xcopy /Y build\release\*.dll build\deploy\
 	xcopy /Y build\release\player.exe build\deploy\
 	xcopy /Y /E /exclude:.gitignore toys\%proj%\ build\deploy\data\
-	xcopy /Y LICENSE build\deploy\
+	xcopy /Y .github\LICENSE build\deploy\
 	xcopy /Y README.md build\deploy\
 	echo.
 	
