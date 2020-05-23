@@ -1,16 +1,43 @@
-# NEON 86
+<div align="center">
+    <a href="https://github.com/zaklaus/neon86"><img src="https://user-images.githubusercontent.com/9026786/82740331-1db79c80-9d48-11ea-85b4-615d204f030a.png" alt="neon86" /></a>
+</div>
 
-A retro toy game engine written in **VC++98** style!
+<div align="center">
+    <a href="https://discord.gg/2fZVEym"><img src="https://discordapp.com/api/guilds/354670964400848898/embed.png" alt="Discord server" /></a>
+</div>
+
+<br />
+<div align="center">
+  A retro toy game engine written in **VC++98** style!
+</div>
+
+<div align="center">
+  <sub>
+    Brought to you by <a href="https://github.com/zaklaus">@zaklaus</a>,
+    and <strong>contributors</strong>
+  </sub>
+</div>
+
+# Introduction
+
+A toy game engine reflecting on simplicity and 
+retro approach to gamedev. It is currently work in progress.
+
+This game engine runs on Windows as a 32-bit executable. Renderer is backed by 
+Direct3D9 and scripting is powered by Lua 5.3.
+
+Engine is DCC-driven and supports model scene graphs and hierarchy manipulations. 
+
+Engine also provides a hardware lighting support that is very simple to use, it also 
+offers a shader support that is easily expendable and provides rich visuals at low costs.
 
 ## Structure
 
-| Name      | Description                                                      |
-|-----------|------------------------------------------------------------------|
-| engine    | The meat of this project, small library providing the toy engine |
-| editor    | An MFC application used to author new games                      |
-| player    | A sample Win32 application that loads test data                  |
-| toys      | Example prototypes using the engine                              |
-| d3d9, lua | Our dependencies, duh\!                                          |
+| Name      | Description                                                         |
+|-----------|---------------------------------------------------------------------|
+| code      | The meat of this project, contains the engine and the player itself |
+| toys      | Example prototypes using the engine                                 |
+| deps      | Our dependencies, duh\!                                             |
 
 ## License
 
