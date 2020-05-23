@@ -143,23 +143,28 @@ goto :package_prompt
 	echo NEON86 PROJECTS
 	echo =======================
 	echo  1. Back to menu
-	echo  2. Minimal
-	echo  3. Basic
-	echo  4. Terrain view
-	echo  5. Space
-	echo  6. Scene graph
-	echo  7. demo1
+	echo  2. Custom...
+	echo  3. Minimal
+	echo  4. Basic
+	echo  5. Terrain view
+	echo  6. Space
+	echo  7. Scene graph
+	echo  8. demo1
 	echo =======================
-	choice /C 1234567 /N /M "Your choice:"
+	choice /C 12345678 /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 exit /B 0
-	if %errorlevel%==2 set "proj=minimal"
-	if %errorlevel%==3 set "proj=basic"
-	if %errorlevel%==4 set "proj=terrainview"
-	if %errorlevel%==5 set "proj=space"
-	if %errorlevel%==6 set "proj=hierarchy"
-	if %errorlevel%==7 set "proj=demo1"
+	if %errorlevel%==3 set "proj=minimal"
+	if %errorlevel%==4 set "proj=basic"
+	if %errorlevel%==5 set "proj=terrainview"
+	if %errorlevel%==6 set "proj=space"
+	if %errorlevel%==7 set "proj=hierarchy"
+	if %errorlevel%==8 set "proj=demo1"
+	
+	if %errorlevel%==2 (
+		set /p proj="Enter name: "
+	)
 	
 	echo %proj% > build\.proj
 exit /B 0
