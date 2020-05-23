@@ -9,7 +9,7 @@
 
 <br />
 <div align="center">
-  A retro toy game engine written in <strong>VC++98</strong>-like style!
+  A toy game engine reflecting on simplicity and retro approach to gamedev.
 </div>
 
 <div align="center">
