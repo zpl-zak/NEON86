@@ -364,6 +364,14 @@ LUAF(Rend, EnableLighting)
 }
 LUAF(Rend, AmbientColor)
 {
+	if (lua_gettop(L) == 0)
+	{
+		D3DCOLOR col = 0x0;
+		RENDERER->GetDevice()->GetRenderState(D3DRS_AMBIENT, &col);
+		lua_pushinteger(L, col);
+		return 1;
+	}
+
     UINT r = 0, g = 0, b = 0;
 
     if (lua_gettop(L) >= 3)

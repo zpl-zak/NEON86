@@ -3,7 +3,6 @@
 
 /* Uniforms */
 float3 campos;
-float4 globalAmbient;
 float alphaValue;
 float time;
 
@@ -122,7 +121,7 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
         IN.normal = normalize(mul(nm, tx));
     }
 
-    float4 OUT = globalAmbient + CalcSunLight(IN);
+    float4 OUT = NEON.AmbientColor + CalcSunLight(IN);
 
     float4 b = tex2D(colorMap, IN.texCoord);
     float4 wa = tex2D(waterMap, IN.texCoord);

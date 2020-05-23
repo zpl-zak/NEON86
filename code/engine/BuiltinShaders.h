@@ -13,6 +13,7 @@ static LPCSTR _shader_common = _M(
         float4x4 View;
         float4x4 Proj;
         float4x4 MVP;
+        float4 AmbientColor;
     };
 
     struct TMATERIAL

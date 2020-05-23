@@ -8,7 +8,6 @@ useShaders = true
 alphaValue = 1.0
 
 campos = Vector3(-7, 7, -7, 0)
-ambience = VectorRGBA(20,20,69)
 
 lookAt = Matrix():lookAt(
 	campos,
@@ -48,7 +47,7 @@ end
 function _render()
 	ClearScene(20,20,20)
 	CameraPerspective(70)
-	AmbientColor((ambience*0xFF):color())
+	AmbientColor(20,20,69)
 	lookAt:bind(VIEW)
 
 	light:enable(true, 0)
@@ -58,7 +57,6 @@ function _render()
 		terrainEffect:start("PointLighting")
 		terrainEffect:beginPass("main")
 		terrainEffect:setVector3("campos", campos)
-		terrainEffect:setVector4("globalAmbient", ambience)
 		terrainEffect:setFloat("alphaValue", 1)
 		terrainEffect:setFloat("time", time)
 		terrainEffect:commit()

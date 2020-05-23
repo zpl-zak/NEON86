@@ -226,6 +226,11 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
 		GetActiveEffect()->SetMatrix("NEON.InverseWorldView", inverseMV, TRUE);
 		GetActiveEffect()->SetMatrix("NEON.WorldView", mv);
 		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
+
+		D3DCOLOR ambience = 0x0;
+		GetDevice()->GetRenderState(D3DRS_AMBIENT, &ambience);
+		GetActiveEffect()->SetInteger("NEON.AmbientColor", ambience);
+
         GetActiveEffect()->CommitChanges();
 	}
 
