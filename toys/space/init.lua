@@ -26,10 +26,10 @@ function _update(dt)
 	if GetKeyDown(KEY_F2) then
 		ShowCursor(not IsCursorVisible())
 		SetCursorMode(1-GetCursorMode())
-	end 
+	end
 
 	if GetKeyDown(KEY_ESCAPE) then
-		ExitGame()	
+		ExitGame()
 	end
 
 	if GetKeyDown(KEY_F4) then
@@ -58,12 +58,12 @@ end
 function _render()
 	ClearScene(20,20,20)
 	CameraPerspective(62, 0.1, 10000)
-	
+
 	lookAt:bind(VIEW)
 
 	spaceFX:start("Main")
 
-	spaceFX:beginPass(1)
+	spaceFX:beginPass("main")
 
 	spaceFX:setVector3("campos", camera.pos)
 	spaceFX:setVector4("globalAmbient", Vector4(0.01,0.01,0.01))
@@ -71,11 +71,11 @@ function _render()
 	spaceFX:setFloat("time", time)
 
 	drawSystem(demoSystem)
-	
+
 	spaceFX:endPass()
 	spaceFX:finish()
 
 	--[[ unlit ]]
 	skybox:draw(Matrix():scale(scale*20):translate(camera.pos))
-	
+
 end

@@ -1,13 +1,14 @@
-terrain = Model("mountains.obj", true, true)
+local terrain
+local terrainEffect
+local light
 
 time = 0.0
 
-terrainEffect = Effect("terrain.fx")
-
-renderMode = "PointLighting"
+useShaders = true
 alphaValue = 1.0
 
-campos = Vector3(-7, 7, -7)
+campos = Vector3(-7, 7, -7, 0)
+ambience = VectorRGBA(20,20,69)
 
 lookAt = Matrix():lookAt(
 	campos,
@@ -16,7 +17,12 @@ lookAt = Matrix():lookAt(
 )
 
 function _init()
-
+	terrain = Model("mountains.obj", true, true)
+	terrainEffect = Effect("terrain.fx")
+	light = Light(0)
+	light:setType(LIGHTKIND_DIRECTIONAL)
+	light:setDirection(Vector3(4.0, 3.0, -5.0)*-1)
+	light:setDiffuse(Vector3(0.91, 0.58, 0.13):color())
 end
 
 function _update(dt)
@@ -25,20 +31,12 @@ function _update(dt)
 	end
 
 	if GetKeyDown(KEY_F3) then
-		if renderMode == "PointLighting" then
-			renderMode = "AmbientLighting"
-		else
-			renderMode = "PointLighting"
-		end
+		useShaders = not useShaders
 	end
 
 	time = time + dt
 
-	-- campos:x(campos:x() + math.cos(time))
-	-- campos:z(campos:z() - math.tan(time))
-	-- campos:x(campos:x() - math.sin(time))
-
-	campos = campos * Matrix():rotate(0, dt/4, 0)
+	campos = campos * Matrix():rotate(dt/4, 0, 0)
 
 	lookAt = Matrix():lookAt(
 		campos,
@@ -50,22 +48,26 @@ end
 function _render()
 	ClearScene(20,20,20)
 	CameraPerspective(70)
-
+	AmbientColor((ambience*0xFF):color())
 	lookAt:bind(VIEW)
 
-	terrainEffect:start(renderMode)
+	light:enable(true, 0)
+	EnableLighting(not useShaders)
 
-	terrainEffect:beginPass(1)
-
-	terrainEffect:setVector3("campos", campos)
-	terrainEffect:setVector4("globalAmbient", Vector3(0.12), 1.0)
-	terrainEffect:setFloat("alphaValue", 1)
-	terrainEffect:setFloat("time", time)
-	terrainEffect:commit()
+	if useShaders then
+		terrainEffect:start("PointLighting")
+		terrainEffect:beginPass("main")
+		terrainEffect:setVector3("campos", campos)
+		terrainEffect:setVector4("globalAmbient", ambience)
+		terrainEffect:setFloat("alphaValue", 1)
+		terrainEffect:setFloat("time", time)
+		terrainEffect:commit()
+	end
 
 	terrain:draw(Matrix():scale(10,10,10))
 
-	terrainEffect:endPass()
-
-	terrainEffect:finish()
+	if useShaders then
+		terrainEffect:endPass()
+		terrainEffect:finish()
+	end
 end

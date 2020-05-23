@@ -57,28 +57,6 @@ struct VS_OUTPUT
     float3 tangent : TANGENT;
 };
 
-/* Ambient */
-VS_OUTPUT VS_AmbientLighting(VS_INPUT IN)
-{
-    VS_OUTPUT OUT;
-
-    OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
-    OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
-    OUT.viewDir = (campos - OUT.worldPos);
-    OUT.texCoord = IN.texCoord;
-    OUT.normal = IN.normal;
-    OUT.tangent = IN.tangent;
-
-    return OUT;
-}
-
-float4 PS_AmbientLighting(VS_OUTPUT IN) : COLOR
-{
-    float4 outc = tex2D(colorMap, IN.texCoord);
-    outc.a = alphaValue;        
-	return outc;
-}
-
 /* Point TEST */
 VS_OUTPUT VS_PointLighting(VS_INPUT IN)
 {
@@ -109,8 +87,8 @@ float4 CalcSunLight(VS_OUTPUT IN)
     float3 l = sunDir;
     float3 v = normalize(IN.viewDir);
     float4 s = float4(0,0,0,0);
-    
-    l = normalize(l);    
+
+    l = normalize(l);
     float diffuse = saturate(dot(n, l));
     float3 h = normalize(l+v);
     float4 ss = tex2D(specularMap, IN.texCoord);
@@ -129,28 +107,6 @@ float4 CalcSunLight(VS_OUTPUT IN)
             + (sunColor * 4.0f * specular * power * s);
 }
 
-float4 CalcPointLight(VS_OUTPUT IN)
-{
-    float3 n = normalize(IN.normal);
-    float3 v = normalize(IN.viewDir);
-    float4 s = float4(0.0f,0.0f,0.0f,0.0f);
-    
-    float3 l = (campos - IN.worldPos) / 10.0f;
-    float atten = saturate(1.0f - dot(l, l));
-    
-    l = normalize(l);
-    float3 h = normalize(l+v);
-    s = (hasSpecularTex == true) ? tex2D(specularMap, IN.texCoord) : s;
-    
-    float diffuse = saturate(dot(n, l));
-    float specular = saturate(dot(n, h));
-
-    float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
-
-	return (MAT.Diffuse * diffuse * atten) +
-            (MAT.Specular * specular * power * atten * s);
-}
-
 float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
 {
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -166,7 +122,7 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
         IN.normal = normalize(mul(nm, tx));
     }
 
-    float4 OUT = globalAmbient /* + CalcPointLight(IN) */ + CalcSunLight(IN);
+    float4 OUT = globalAmbient + CalcSunLight(IN);
 
     float4 b = tex2D(colorMap, IN.texCoord);
     float4 wa = tex2D(waterMap, IN.texCoord);
@@ -176,23 +132,14 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
     bl *= p;
 
     OUT *= b + bl;
-    OUT.a = alphaValue;        
+    OUT.a = alphaValue;
 	return OUT;
 }
 
 /* Techniques */
-technique AmbientLighting
-{
-    pass
-    {
-        VertexShader = compile vs_3_0 VS_AmbientLighting();
-        PixelShader = compile ps_3_0 PS_AmbientLighting();
-    }
-}
-
 technique PointLighting
 {
-    pass
+    pass main
     {
         VertexShader = compile vs_3_0 VS_PointLighting();
         PixelShader = compile ps_3_0 PS_PointLighting();

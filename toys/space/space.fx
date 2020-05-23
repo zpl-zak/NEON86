@@ -85,12 +85,12 @@ float4 Sunlight(VS_OUTPUT IN)
     float3 n = normalize(IN.normal);
     float3 v = normalize(IN.viewDir);
     float4 s = float4(0.0f,0.0f,0.0f,0.0f);
-    
+
     float3 l = normalize(sunPos - IN.worldPos);
     float3 h = normalize(l+v);
-    
+
     s = (hasSpecularTex == true) ? tex2D(specularMap, IN.texCoord) : s;
-    
+
     float diffuse = saturate(dot(n, l));
     float specular = saturate(dot(n, h));
 
@@ -108,13 +108,13 @@ float2 WarpUV(float2 uv)
     float ws = 100;
     float tm = 1;
 
-    return uv + (uvc/l)*cos(l*ws-time*tm)*dp 
+    return uv + (uvc/l)*cos(l*ws-time*tm)*dp
               + (float2(-uvc.y, uvc.x)/l)*sin(l*ws-time*tm)*dp;
 }
 
 float4 PS_Main(VS_OUTPUT IN) : COLOR
 {
-    float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);    
+    float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
     if (isSun)
     {
@@ -122,7 +122,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     }
 
     if (hasNormalTex)
-    {        
+    {
         float4 nm = tex2D(normalMap, IN.texCoord);
         nm = (2.0f*nm) - 1.0f;
         IN.normal = normalize(mul(nm, IN.tbn));
@@ -134,7 +134,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     {
         OUT = tex2D(colorMap, IN.texCoord);
     }
-    
+
     if (!isSun)
     {
         OUT *= globalAmbient + Sunlight(IN);
@@ -147,7 +147,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
 /* Techniques */
 technique Main
 {
-    pass
+    pass main
     {
         VertexShader = compile vs_3_0 VS_Main();
         PixelShader = compile ps_3_0 PS_Main();
