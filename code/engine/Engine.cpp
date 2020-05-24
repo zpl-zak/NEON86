@@ -123,6 +123,8 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     if (mUserInterface->ProcessEvents(hWnd, message, wParam, lParam))
         return FALSE;
 
+    CInput* input = INPUT;
+
     switch (message)
     {
 #if 0
@@ -147,20 +149,20 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         {
             if (wParam & MK_LBUTTON)
             {
-                INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
-                INPUT->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
+                input->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
+                input->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
             }
 
             if (wParam & MK_MBUTTON)
             {
-                INPUT->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
-                INPUT->SetMouseDown(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
+                input->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
+                input->SetMouseDown(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
             }
 
             if (wParam & MK_RBUTTON)
             {
-                INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, TRUE);
-                INPUT->SetMouseDown(CInput::MOUSE_RIGHT_BUTTON, TRUE);
+                input->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, TRUE);
+                input->SetMouseDown(CInput::MOUSE_RIGHT_BUTTON, TRUE);
             }
         } break;
 
@@ -168,20 +170,20 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         {
             if (wParam & MK_LBUTTON)
             {
-                INPUT->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, FALSE);
-                INPUT->SetMouseUp(CInput::MOUSE_LEFT_BUTTON, TRUE);
+                input->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, FALSE);
+                input->SetMouseUp(CInput::MOUSE_LEFT_BUTTON, TRUE);
             }
 
             if (wParam & MK_MBUTTON)
             {
-                INPUT->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, FALSE);
-                INPUT->SetMouseUp(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
+                input->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, FALSE);
+                input->SetMouseUp(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
             }
 
             if (wParam & MK_RBUTTON)
             {
-                INPUT->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, FALSE);
-                INPUT->SetMouseUp(CInput::MOUSE_RIGHT_BUTTON, TRUE);
+                input->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, FALSE);
+                input->SetMouseUp(CInput::MOUSE_RIGHT_BUTTON, TRUE);
             }
         } break;
 
