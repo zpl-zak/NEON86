@@ -71,18 +71,3 @@ BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
     return TRUE;
 }
 
-VOID CScene::Draw(const D3DXMATRIX& wmat)
-{
-    for (UINT i=0; i<mMeshes.GetCount();i++)
-    {
-        mMeshes[i]->Draw(wmat);
-    }
-}
-
-VOID CScene::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
-{
-    if (subset >= mMeshes.GetCount())
-        return;
-
-    mMeshes[subset]->Draw(wmat);
-}

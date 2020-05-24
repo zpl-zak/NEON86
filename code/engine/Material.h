@@ -40,8 +40,10 @@ public:
     VOID SetPower(FLOAT val);
     VOID SetOpacity(FLOAT val);
     VOID SetShaded(BOOL state);
+    VOID SetTransparent(BOOL state);
 
     inline MATERIAL GetMaterialData() const { return mMaterialData; }
+    inline BOOL IsTransparent() const { return mMaterialData.Opacity < 1.0f || mMaterialData.IsTransparent; }
 
 private:
     LPDIRECT3DTEXTURE9 mTextureHandle[MAX_TEXTURE_SLOTS];

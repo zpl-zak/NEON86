@@ -117,6 +117,7 @@ struct MATERIAL : D3DMATERIAL9
 {
 	FLOAT Opacity;
 	BOOL Shaded;
+	BOOL IsTransparent;
 };
 
 struct RENDERDATA
