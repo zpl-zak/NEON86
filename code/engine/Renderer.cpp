@@ -329,7 +329,7 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 
             mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-            mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)0x00000009);
+            mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)127);
             mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
             mDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 
