@@ -222,9 +222,9 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_OPACITY, opacity);
         newMaterial->SetOpacity(opacity);
 
-        FLOAT transparent = 0.0f;
+        aiColor4D transparent = aiColor4D();
         mat->Get(AI_MATKEY_COLOR_TRANSPARENT, transparent);
-        newMaterial->SetTransparent(transparent == 1.0f);
+        newMaterial->SetTransparent(transparent.a == 1.0f);
 
         newFGroup->SetMaterial(0, newMaterial);
     }
