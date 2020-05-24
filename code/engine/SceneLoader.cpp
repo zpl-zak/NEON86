@@ -301,7 +301,7 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
         newMaterial->CreateTextureForSlot(slot, (LPSTR)path.C_Str());
     }
 
-    if (!newMaterial->GetUserTextureHandle(slot))
+    if (slot != TEXTURESLOT_ALBEDO || !newMaterial->GetUserTextureHandle(slot))
         return;
 
     D3DSURFACE_DESC a;
