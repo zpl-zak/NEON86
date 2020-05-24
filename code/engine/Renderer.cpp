@@ -317,24 +317,29 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 		SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
 		if (mat) mDevice->SetMaterial(matData);
 
-        mDevice->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-        mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-        mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_CONSTANT);
-
-		DWORD alphaColor = D3DCOLOR_ARGB(matData ? (DWORD)(matData->Opacity * 255.0f) : 255, 255, 255, 255);
-        mDevice->SetTextureStageState(stage, D3DTSS_CONSTANT, alphaColor);
-
-        mDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-
 		if (mat && mat->IsTransparent())
 		{
+            mDevice->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+            mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+            mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_CONSTANT);
+
+            DWORD alphaColor = D3DCOLOR_ARGB(matData ? (DWORD)(matData->Opacity * 255.0f) : 255, 255, 255, 255);
+            mDevice->SetTextureStageState(stage, D3DTSS_CONSTANT, alphaColor);
+
+            mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+
+            mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)0x00000009);
+            mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+            mDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+
+			mDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
             mDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
             mDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 		}
 		else
 		{
-            mDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE);
-            mDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ZERO);
+			mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+			mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 		}
 	}
 }
@@ -402,8 +407,7 @@ VOID CRenderer::SetDefaultRenderStates()
 	mDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 	mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-    mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-
+    
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
