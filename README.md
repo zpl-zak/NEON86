@@ -9,12 +9,12 @@
 
 <br />
 <div align="center">
-  A retro toy game engine written in <strong>VC++98</strong>-like style!
+  A toy game engine reflecting on simplicity and retro approach to gamedev.
 </div>
 
 <div align="center">
   <sub>
-    Brought to you by <a href="https://github.com/zaklaus">@zaklaus</a>,
+    Brought to you by <a href="https://github.com/zaklaus">@zaklaus</a>
     and <a href="https://github.com/zaklaus/NEON86/graphs/contributors">contributors</a>
   </sub>
 </div>
