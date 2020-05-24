@@ -329,7 +329,7 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 
             mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-			if (matData->AlphaIsTransparency == FALSE)
+			if (matData && matData->AlphaIsTransparency == TRUE)
 			{
 				mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)127);
 				mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);

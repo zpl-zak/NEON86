@@ -153,7 +153,6 @@ goto :package_prompt
 	echo  5. Terrain view
 	echo  6. Space
 	echo  7. Scene graph
-	echo  8. demo1
 	echo =======================
 	choice /C 12345678 /N /M "Your choice:"
 	echo.
@@ -164,7 +163,6 @@ goto :package_prompt
 	if %errorlevel%==5 set "proj=terrainview"
 	if %errorlevel%==6 set "proj=space"
 	if %errorlevel%==7 set "proj=hierarchy"
-	if %errorlevel%==8 set "proj=demo1"
 	
 	if %errorlevel%==2 (
 		set /p a="Enter name: "

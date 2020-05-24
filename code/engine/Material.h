@@ -40,7 +40,7 @@ public:
     VOID SetPower(FLOAT val);
     VOID SetOpacity(FLOAT val);
     VOID SetShaded(BOOL state);
-    VOID SetTransparent(BOOL state);
+    VOID SetAlphaIsTransparency(BOOL state);
 
     inline MATERIAL GetMaterialData() const { return mMaterialData; }
     inline BOOL IsTransparent() const { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }

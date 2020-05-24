@@ -222,10 +222,6 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_OPACITY, opacity);
         newMaterial->SetOpacity(opacity);
 
-        aiColor4D transparent = aiColor4D();
-        mat->Get(AI_MATKEY_COLOR_TRANSPARENT, transparent);
-        newMaterial->SetTransparent(transparent.a == 1.0f);
-
         newFGroup->SetMaterial(0, newMaterial);
     }
 
@@ -304,4 +300,23 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
     {
         newMaterial->CreateTextureForSlot(slot, (LPSTR)path.C_Str());
     }
+
+    if (!newMaterial->GetUserTextureHandle(slot))
+        return;
+
+    D3DSURFACE_DESC a;
+    newMaterial->GetUserTextureHandle(slot)->GetLevelDesc(0, &a);
+
+    UINT* buf = (UINT*)newMaterial->Lock(slot);
+    
+    for (UINT i = 0; i < (a.Width * a.Height); i++)
+    {
+        if (((buf[i] << 24) & 0xFF) < 1.0f)
+        {
+            newMaterial->SetAlphaIsTransparency(TRUE);
+            break;
+        }
+    }
+
+    newMaterial->Unlock(slot);
 }

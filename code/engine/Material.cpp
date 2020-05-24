@@ -176,7 +176,7 @@ VOID CMaterial::SetShaded(BOOL state)
     mMaterialData.Shaded = state;
 }
 
-VOID CMaterial::SetTransparent(BOOL state)
+VOID CMaterial::SetAlphaIsTransparency(BOOL state)
 {
     mMaterialData.AlphaIsTransparency = state;
 }

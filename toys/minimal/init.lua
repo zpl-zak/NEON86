@@ -13,6 +13,8 @@ function _init()
     world = rootNode:findNode("World")
     globe = rootNode:findNode("Planet")
 
+    globe:getMeshes()[1]:getMaterial(1):alphaIsTransparency(false)
+
     for _, n in pairs(scene:getFlattenNodes()) do
         local shaded = n:getMeta("shaded")
 

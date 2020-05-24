@@ -83,7 +83,6 @@ static INT material_getdata(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
-    mat->GetUserTextureHandle(userSlot);
     D3DSURFACE_DESC a;
     mat->GetUserTextureHandle(userSlot)->GetLevelDesc(0, &a);
 
@@ -207,6 +206,15 @@ static INT material_setopacity(lua_State* L)
     return 0;
 }
 
+static INT material_setalphaistransparency(lua_State* L)
+{
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
+    BOOL val = (BOOL)lua_toboolean(L, 2);
+    mat->SetAlphaIsTransparency(val);
+
+    return 0;
+}
+
 static INT material_setshaded(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
@@ -238,6 +246,7 @@ static VOID LuaMaterial_register(lua_State* L)
     REGC("setEmission", material_setemission);
     REGC("setPower", material_setpower);
     REGC("setOpacity", material_setopacity);
+    REGC("alphaIsTransparency", material_setalphaistransparency);
     REGC("setShaded", material_setshaded);
 
     REGC("__gc", material_delete);
