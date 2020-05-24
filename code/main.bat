@@ -48,8 +48,9 @@ set proj=%proj: =%
 	echo  D. Run production
 	echo  E. Run unit tests
 	echo  F. Create new project
+	echo  G. Open in explorer
 	echo =======================
-	choice /C 123456789ABCDEF /N /M "Your choice:"
+	choice /C 123456789ABCDEFG /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -67,6 +68,7 @@ set proj=%proj: =%
 	if %errorlevel%==13 call :run_release
 	if %errorlevel%==14 call :tests
 	if %errorlevel%==15 call :new_project
+	if %errorlevel%==16 call :open_explorer
 goto :begin
 
 :build
@@ -225,4 +227,8 @@ exit /B 0
 	if "%a%"=="" exit /B 0
 	set proj=%a%
 	xcopy /Y /E toys\base\ toys\%proj%\
+exit /B 0
+
+:open_explorer
+	start explorer.exe toys\%proj%\
 exit /B 0
