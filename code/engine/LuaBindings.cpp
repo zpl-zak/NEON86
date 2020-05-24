@@ -346,6 +346,24 @@ LUAF(Rend, RenderState)
 	RENDERER->SetRenderState(kind, state);
 	return 0;
 }
+LUAF(Rend, SetFog)
+{
+    DWORD color = (DWORD)luaL_checkinteger(L, 1);
+    DWORD mode = (DWORD)luaL_checkinteger(L, 2);
+	FLOAT start = (FLOAT)luaL_checknumber(L, 3);
+	FLOAT end = 0.0f;
+
+	if (mode == D3DFOG_LINEAR)
+		end = (FLOAT)luaL_checknumber(L, 4);
+
+	RENDERER->SetFog(color, mode, start, end);
+    return 0;
+}
+LUAF(Rend, ClearFog)
+{
+	RENDERER->ClearFog();
+    return 0;
+}
 LUAF(Rend, SamplerState)
 {
     DWORD stage = (DWORD)luaL_checkinteger(L, 1);
@@ -426,6 +444,8 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, GetMatrix);
 	REGF(Rend, GetResolution);
 	REGF(Rend, RenderState);
+	REGF(Rend, SetFog);
+	REGF(Rend, ClearFog);
 	REGF(Rend, SamplerState);
 	REGF(Rend, EnableLighting);
 	REGF(Rend, AmbientColor);
@@ -477,6 +497,11 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
         REGN(TEXTURESLOT_DISPLACE, TEXTURESLOT_DISPLACE + 1);
         REGN(TEXTURESLOT_USER_END, TEXTURESLOT_USER_END + 1);
         REGN(MAX_TEXTURE_SLOTS, MAX_TEXTURE_SLOTS + 1);
+
+		REGN(FOGKIND_NONE, 0);
+		REGN(FOGKIND_EXP, 1);
+		REGN(FOGKIND_EXP2, 2);
+		REGN(FOGKIND_LINEAR, 3);
 
 		// helpers
 		REGN(WORLD, MATRIXKIND_WORLD);

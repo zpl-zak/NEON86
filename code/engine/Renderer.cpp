@@ -398,6 +398,29 @@ VOID CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
 	mDevice->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)kind, value);
 }
 
+VOID CRenderer::SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end)
+{
+    mDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
+    mDevice->SetRenderState(D3DRS_FOGTABLEMODE, mode);
+
+	if (mode == D3DFOG_LINEAR)
+	{
+		mDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD*)(&start));
+		mDevice->SetRenderState(D3DRS_FOGEND, *(DWORD*)(&end));
+	}
+	else
+	{
+		mDevice->SetRenderState(D3DRS_FOGDENSITY, *(DWORD*)(&start));
+	}
+
+    mDevice->SetRenderState(D3DRS_FOGCOLOR, color);
+}
+
+VOID CRenderer::ClearFog()
+{
+	mDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+}
+
 VOID CRenderer::SetDefaultRenderStates()
 {
 	mDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
@@ -411,7 +434,7 @@ VOID CRenderer::SetDefaultRenderStates()
 	mDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 	mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
-    
+
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
