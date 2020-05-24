@@ -281,6 +281,7 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
         fx->SetFloat("MAT.Power", matData.Power);
         fx->SetFloat("MAT.Opacity", matData.Opacity);
 		fx->SetBool("MAT.IsShaded", matData.Shaded);
+		fx->SetBool("MAT.IsTransparent", mat->IsTransparent());
 
 		fx->SetTexture("diffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO));
 		fx->SetBool("hasDiffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO) != NULL);
