@@ -192,10 +192,10 @@ static INT vector4_get(lua_State* L)
 static INT vector4_color(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
-	lua_pushnumber(L, vec->x);
-	lua_pushnumber(L, vec->y);
-	lua_pushnumber(L, vec->z);
-	lua_pushnumber(L, vec->w);
+	lua_pushnumber(L, vec->x * 0xFF);
+	lua_pushnumber(L, vec->y * 0xFF);
+	lua_pushnumber(L, vec->z * 0xFF);
+	lua_pushnumber(L, vec->w * 0xFF);
 
     return 4;
 }

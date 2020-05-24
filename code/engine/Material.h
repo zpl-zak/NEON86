@@ -43,7 +43,7 @@ public:
     VOID SetTransparent(BOOL state);
 
     inline MATERIAL GetMaterialData() const { return mMaterialData; }
-    inline BOOL IsTransparent() const { return mMaterialData.Opacity < 1.0f || mMaterialData.IsTransparent; }
+    inline BOOL IsTransparent() const { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }
 
 private:
     LPDIRECT3DTEXTURE9 mTextureHandle[MAX_TEXTURE_SLOTS];

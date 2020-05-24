@@ -25,7 +25,7 @@ static LPCSTR _shader_common = _M(
         float Power;
         float Opacity;
         bool IsShaded;
-        bool IsTransparent;
+        bool AlphaIsTransparency;
     };
 
     const int LightType_Directional = 3;

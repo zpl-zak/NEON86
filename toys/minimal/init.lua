@@ -13,8 +13,6 @@ function _init()
     world = rootNode:findNode("World")
     globe = rootNode:findNode("Planet")
 
-    -- globe:getMeshes()[1]:getMaterial(1):setShaded(false)
-
     for _, n in pairs(scene:getFlattenNodes()) do
         local shaded = n:getMeta("shaded")
 
@@ -33,14 +31,14 @@ function _init()
         local c = VectorRGBA(240,240,240)
 
         local p = l:getMeta("color")
-        
+
         if p ~= nil then
             c = str2vec(p) / 0xFF
         end
 
         addLight(0, LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
     end
-    
+
     EnableLighting(true)
 end
 
@@ -48,7 +46,7 @@ function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
     end
-    
+
     if GetKeyDown("r") then
         RestartGame()
     end
@@ -88,7 +86,7 @@ function addLight(slot, kind, pos, dir, diffuse)
     l:setDirection(dir)
     l:setSpecular(0.12,0.12,0.12,1)
     l:setDiffuse(diffuse:color())
-    
+
     if kind == LIGHTKIND_POINT then
         l:setRange(50)
         l:setAttenuation(0,0.2,0)

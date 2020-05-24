@@ -281,7 +281,7 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
         fx->SetFloat("MAT.Power", matData.Power);
         fx->SetFloat("MAT.Opacity", matData.Opacity);
 		fx->SetBool("MAT.IsShaded", matData.Shaded);
-		fx->SetBool("MAT.IsTransparent", mat->IsTransparent());
+		fx->SetBool("MAT.AlphaIsTransparency", matData.AlphaIsTransparency);
 
 		fx->SetTexture("diffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO));
 		fx->SetBool("hasDiffuseTex", mat->GetTextureHandle(TEXTURESLOT_ALBEDO) != NULL);
@@ -329,9 +329,12 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 
             mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-            mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)127);
-            mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-            mDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+			if (matData->AlphaIsTransparency == FALSE)
+			{
+				mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)127);
+				mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+				mDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+			}
 
 			mDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
             mDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
