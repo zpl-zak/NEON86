@@ -104,6 +104,13 @@ VOID CFaceGroup::Build(VOID)
 		meshVertexFormat,
 		dev,
 		&mData.mesh);
+
+	if (!mData.mesh)
+	{
+        MessageBoxA(NULL, "Failed to allocate mesh!", "Renderer error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+	}
 	
     mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
     memcpy(vidMem, mVerts.GetData(), mVerts.GetCount() * sizeof(VERTEX));

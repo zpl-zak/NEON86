@@ -4,22 +4,12 @@
 .DS_store
 Bin
 Build
-Build_Win
-data
-Shipping
-.lite_workspace.lua
-Vendors/[Cc]ef
-Tools/[Oo]akgen.exe
-Tools/premake/cache
-*.code-workspace
-Code/Server/core/bridge.generated.h
-Code/Plugins/LuaMod/LuaBindings.hpp
-Tools/Oakgen.pdb
-Tools/Oakgen.ilk
-node_modules/
-!.github/actions/*/node_modules/
 Debug/
 Release/
+data
+.lite_workspace.lua
+*.code-workspace
+
 /neon86.ncb
 *.dsp
 *.mak
@@ -28,3 +18,6 @@ Release/
 *.dsw
 *.opt
 *.suo
+
+# private projects
+toys/mafia

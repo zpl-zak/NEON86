@@ -234,7 +234,8 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
         GetActiveEffect()->CommitChanges();
 	}
 
-	data.mesh->DrawSubset(0);
+	if (data.mesh)
+		data.mesh->DrawSubset(0);
 }
 
 VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY)

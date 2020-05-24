@@ -41,17 +41,20 @@ VOID CScene::Release()
     aiProcess_Triangulate |\
     aiProcess_CalcTangentSpace |\
     aiProcess_FlipUVs |\
+    aiProcess_SplitLargeMeshes |\
     0
 
 BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
 {
     Assimp::Importer imp;
+    imp.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 65534);
 
     DWORD meshFlags = MESHIMPORT_FLAGS;
 
     if (optimizeMesh)
     {
-        meshFlags |= aiProcess_PreTransformVertices | aiProcess_JoinIdenticalVertices | aiProcess_OptimizeMeshes;
+        meshFlags |= aiProcess_PreTransformVertices 
+                    | aiProcess_RemoveRedundantMaterials;
     }
 
     const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), meshFlags);
@@ -62,7 +65,7 @@ BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
         return FALSE;
     }
 
-    CSceneLoader::LoadScene(model, this, loadMaterials);
+    CSceneLoader::LoadScene(model, this, loadMaterials, optimizeMesh);
 
     mRootNode = mNodes[0];
     return TRUE;

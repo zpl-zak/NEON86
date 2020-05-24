@@ -115,7 +115,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     }
 }
 
-VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials)
+VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes)
 {
     LoadNodesRecursively(impScene, impScene->mRootNode, scene, scene, loadMaterials);
 }
