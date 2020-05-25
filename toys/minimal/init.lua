@@ -87,7 +87,7 @@ function addLight(slot, kind, pos, dir, diffuse)
     l:setPosition(pos)
     l:setDirection(dir)
     l:setSpecular(0.12,0.12,0.12,1)
-    l:setDiffuse(diffuse:color())
+    l:setDiffuse(diffuse)
 
     if kind == LIGHTKIND_POINT then
         l:setRange(50)

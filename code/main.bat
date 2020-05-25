@@ -49,8 +49,9 @@ set proj=%proj: =%
 	echo  E. Run unit tests
 	echo  F. Create new project
 	echo  G. Open in explorer
+	echo  H. Switch to base template
 	echo =======================
-	choice /C 123456789ABCDEFG /N /M "Your choice:"
+	choice /C 123456789ABCDEFGH /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -69,6 +70,7 @@ set proj=%proj: =%
 	if %errorlevel%==14 call :tests
 	if %errorlevel%==15 call :new_project
 	if %errorlevel%==16 call :open_explorer
+	if %errorlevel%==17 set "proj=base"
 goto :begin
 
 :build

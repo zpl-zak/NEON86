@@ -39,11 +39,17 @@ static DWORD luaH_getcolor(lua_State* L, UINT offset = 0)
 {
     DWORD color = 0x0;
 
-    if (lua_gettop(L) == 1+offset)
+    if (luaL_testudata(L, 1 + offset, L_VECTOR))
+    {
+        D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1+offset, L_VECTOR);
+        BYTE col[4] = { (BYTE)(vec->w * 0xFF), (BYTE)(vec->x * 0xFF), (BYTE)(vec->y * 0xFF), (BYTE)(vec->z * 0xFF) };
+		color = D3DCOLOR_ARGB(col[0], col[1], col[2], col[3]);
+    }
+    else if (lua_gettop(L) == 1+offset)
     {
         color = (DWORD)luaL_checkinteger(L, 1+offset);
     }
-    else if ((UINT)lua_gettop(L) >= 3+offset)
+    else if ((UINT)lua_gettop(L) == 3+offset)
     {
         UINT r = 0, g = 0, b = 0;
 
@@ -51,6 +57,8 @@ static DWORD luaH_getcolor(lua_State* L, UINT offset = 0)
         g = (UINT)luaL_checknumber(L, 2+offset);
         b = (UINT)luaL_checknumber(L, 3+offset);
         color = D3DCOLOR_XRGB(r, g, b);
+        lua_remove(L, 2 + offset);
+        lua_remove(L, 2 + offset);
     }
 
 	return color;
@@ -72,14 +80,16 @@ static D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset = 0)
 		BYTE b = (BYTE)((encodedColor & 0x000000FF) >> 0);
 		color = { (FLOAT)r / 0xFF, (FLOAT)g / 0xFF, (FLOAT)b / 0xFF, 1.0f};
     }
-    else if ((UINT)lua_gettop(L) >= 3+offset)
+    else if ((UINT)lua_gettop(L) == 3+offset)
     {
         UINT r = 0, g = 0, b = 0;
 
         r = (UINT)luaL_checknumber(L, 1 + offset);
         g = (UINT)luaL_checknumber(L, 2 + offset);
         b = (UINT)luaL_checknumber(L, 3 + offset);
-		color = { (FLOAT)r / 0xFF, (FLOAT)g / 0xFF, (FLOAT)b / 0xFF, 1.0f};
+        color = { (FLOAT)r / 0xFF, (FLOAT)g / 0xFF, (FLOAT)b / 0xFF, 1.0f };
+        lua_remove(L, 2 + offset);
+        lua_remove(L, 2 + offset);
     }
 
     return color;
@@ -386,7 +396,7 @@ LUAF(Rend, RenderState)
 }
 LUAF(Rend, SetFog)
 {
-    DWORD color = (DWORD)luaL_checkinteger(L, 1);
+    DWORD color = luaH_getcolor(L);
     DWORD mode = (DWORD)luaL_checkinteger(L, 2);
 	FLOAT start = (FLOAT)luaL_checknumber(L, 3);
 	FLOAT end = 0.0f;
