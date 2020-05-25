@@ -34,8 +34,7 @@ static INT light_delete(lua_State* L)
 static INT light_setdiffuse(lua_State* L)
 {
     CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2)/(FLOAT)0xff, (FLOAT)luaL_checknumber(L, 3)/(FLOAT)0xff, (FLOAT)luaL_checknumber(L, 4)/(FLOAT)0xff, 1.0f };
-    lit->SetDiffuse(color);
+    lit->SetDiffuse(luaH_getcolorlinear(L, 1));
 
     return 0;
 }
@@ -43,8 +42,7 @@ static INT light_setdiffuse(lua_State* L)
 static INT light_setambient(lua_State* L)
 {
     CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2)/(FLOAT)0xff, (FLOAT)luaL_checknumber(L, 3)/(FLOAT)0xff, (FLOAT)luaL_checknumber(L, 4)/(FLOAT)0xff, 1.0f };
-    lit->SetAmbient(color);
+    lit->SetAmbient(luaH_getcolorlinear(L, 1));
 
     return 0;
 }
@@ -52,8 +50,7 @@ static INT light_setambient(lua_State* L)
 static INT light_setspecular(lua_State* L)
 {
     CLight* lit = *(CLight**)luaL_checkudata(L, 1, L_LIGHT);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2)/(FLOAT)0xff, (FLOAT)luaL_checknumber(L, 3)/(FLOAT)0xff, (FLOAT)luaL_checknumber(L, 4)/(FLOAT)0xff, 1.0f };
-    lit->SetSpecular(color);
+    lit->SetSpecular(luaH_getcolorlinear(L, 1));
 
     return 0;
 }

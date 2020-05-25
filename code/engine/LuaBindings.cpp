@@ -35,6 +35,56 @@ static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
     return D3DXVECTOR4(x, y, z, w);
 }
 
+static DWORD luaH_getcolor(lua_State* L, UINT offset = 0)
+{
+    DWORD color = 0x0;
+
+    if (lua_gettop(L) == 1+offset)
+    {
+        color = (DWORD)luaL_checkinteger(L, 1+offset);
+    }
+    else if ((UINT)lua_gettop(L) >= 3+offset)
+    {
+        UINT r = 0, g = 0, b = 0;
+
+        r = (UINT)luaL_checknumber(L, 1+offset);
+        g = (UINT)luaL_checknumber(L, 2+offset);
+        b = (UINT)luaL_checknumber(L, 3+offset);
+        color = D3DCOLOR_XRGB(r, g, b);
+    }
+
+	return color;
+}
+
+static D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset = 0)
+{
+	D3DCOLORVALUE color = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	if (luaL_testudata(L, 1 + offset, L_VECTOR))
+	{
+		color = *(D3DCOLORVALUE*)luaL_checkudata(L, 1 + offset, L_VECTOR);
+	}
+    else if ((UINT)lua_gettop(L) == 1+offset)
+    {
+        DWORD encodedColor = (DWORD)luaL_checkinteger(L, 1 + offset);
+        BYTE r = (BYTE)((encodedColor & 0x00FF0000) >> 16);
+		BYTE g = (BYTE)((encodedColor & 0x0000FF00) >> 8);
+		BYTE b = (BYTE)((encodedColor & 0x000000FF) >> 0);
+		color = { (FLOAT)r / 0xFF, (FLOAT)g / 0xFF, (FLOAT)b / 0xFF, 1.0f};
+    }
+    else if ((UINT)lua_gettop(L) >= 3+offset)
+    {
+        UINT r = 0, g = 0, b = 0;
+
+        r = (UINT)luaL_checknumber(L, 1 + offset);
+        g = (UINT)luaL_checknumber(L, 2 + offset);
+        b = (UINT)luaL_checknumber(L, 3 + offset);
+		color = { (FLOAT)r / 0xFF, (FLOAT)g / 0xFF, (FLOAT)b / 0xFF, 1.0f};
+    }
+
+    return color;
+}
+
 #include "LuaMatrix.h"
 #include "LuaVector4.h"
 #include "LuaVertex.h"
@@ -218,19 +268,7 @@ VOID CLuaBindings::BindMath(lua_State* L)
 /// RENDERER METHODS
 LUAF(Rend, ClearScene)
 {
-	UINT r = 0, g = 0, b = 0;
-
-	if (lua_gettop(L) >= 3)
-	{
-		r = (UINT)luaL_checknumber(L, 1);
-		g = (UINT)luaL_checknumber(L, 2);
-		b = (UINT)luaL_checknumber(L, 3);
-	}
-	UINT flags = CLEARFLAG_STANDARD;
-	
-	if (lua_isnumber(L, 4))
-		flags = (UINT)luaL_checknumber(L, 4);
-	RENDERER->ClearBuffer(D3DCOLOR_XRGB(r,g,b), flags);
+	RENDERER->ClearBuffer(luaH_getcolor(L), CLEARFLAG_STANDARD);
 	return 0;
 }
 LUAF(Rend, CameraPerspective)
@@ -390,16 +428,7 @@ LUAF(Rend, AmbientColor)
 		return 1;
 	}
 
-    UINT r = 0, g = 0, b = 0;
-
-    if (lua_gettop(L) >= 3)
-    {
-        r = (UINT)luaL_checknumber(L, 1);
-        g = (UINT)luaL_checknumber(L, 2);
-        b = (UINT)luaL_checknumber(L, 3);
-    }
-
-	RENDERER->SetRenderState(D3DRS_AMBIENT, D3DCOLOR_XRGB(r, g, b));
+	RENDERER->SetRenderState(D3DRS_AMBIENT, luaH_getcolor(L));
     return 0;
 }
 LUAF(Rend, ClearTarget)

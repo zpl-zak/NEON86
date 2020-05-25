@@ -155,8 +155,7 @@ static INT material_delete(lua_State* L)
 static INT material_setdiffuse(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
-    mat->SetDiffuse(color);
+    mat->SetDiffuse(luaH_getcolorlinear(L, 1));
 
     return 0;
 }
@@ -164,8 +163,7 @@ static INT material_setdiffuse(lua_State* L)
 static INT material_setambient(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
-    mat->SetAmbient(color);
+    mat->SetAmbient(luaH_getcolorlinear(L, 1));
 
     return 0;
 }
@@ -173,8 +171,7 @@ static INT material_setambient(lua_State* L)
 static INT material_setemission(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
-    mat->SetEmission(color);
+    mat->SetEmission(luaH_getcolorlinear(L, 1));
 
     return 0;
 }
@@ -182,8 +179,7 @@ static INT material_setemission(lua_State* L)
 static INT material_setspecular(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
-    D3DCOLORVALUE color = { (FLOAT)luaL_checknumber(L, 2), (FLOAT)luaL_checknumber(L, 3), (FLOAT)luaL_checknumber(L, 4) };
-    mat->SetSpecular(color);
+    mat->SetSpecular(luaH_getcolorlinear(L, 1));
 
     return 0;
 }

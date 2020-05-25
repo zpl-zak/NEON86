@@ -39,7 +39,7 @@ static INT vector4_newrgba(lua_State* L)
     FLOAT r = (FLOAT)luaL_checknumber(L, 1) / (FLOAT)0xFF;
     FLOAT g = (FLOAT)luaL_checknumber(L, 2) / (FLOAT)0xFF;
     FLOAT b = (FLOAT)luaL_checknumber(L, 3) / (FLOAT)0xFF;
-    FLOAT a = 0xFF;
+    FLOAT a = 1.0f;
 
     if (lua_gettop(L) == 4)
         a = (FLOAT)luaL_checknumber(L, 4) / (FLOAT)0xFF;
@@ -192,12 +192,9 @@ static INT vector4_get(lua_State* L)
 static INT vector4_color(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
-	lua_pushnumber(L, vec->x * 0xFF);
-	lua_pushnumber(L, vec->y * 0xFF);
-	lua_pushnumber(L, vec->z * 0xFF);
-	lua_pushnumber(L, vec->w * 0xFF);
-
-    return 4;
+	BYTE color[4] = { (BYTE)(vec->w*0xFF), (BYTE)(vec->x*0xFF), (BYTE)(vec->y*0xFF), (BYTE)(vec->z*0xFF) };
+	lua_pushinteger(L, D3DCOLOR_ARGB(color[0], color[1], color[2], color[3]));
+    return 1;
 }
 
 static INT vector4_mag(lua_State* L)
