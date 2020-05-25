@@ -1,7 +1,6 @@
 @echo off
 
-cd %~dp0\..
-
+cd %~dp0
 REM detect paths
 set msbuild_cmd=msbuild.exe
 where /q msbuild.exe
