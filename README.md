@@ -32,6 +32,11 @@ Engine is DCC-driven and supports model scene graphs and hierarchy manipulations
 Engine also provides a hardware lighting support that is very simple to use, it also 
 offers a shader support that is easily expendable and provides rich visuals at low costs.
 
+## Documentation
+
+You can review the NEON86 Lua API on the following page: [](DOCUMENTATION.md). It explains how the project is set up as well
+as provide a list of all Lua API functions and modules you can use to create your tiny game.
+
 ## License
 
 This software is licensed under the **3-Clause BSD License**, see **LICENSE** file.
