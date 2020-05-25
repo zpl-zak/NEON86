@@ -131,6 +131,15 @@ LUAF(Base, RestartGame)
 	VM->Restart();
     return 0;
 }
+LUAF(Base, IsDebugMode)
+{
+#ifdef _DEBUG
+	lua_pushboolean(L, TRUE);
+#else
+	lua_pushboolean(L, FALSE);
+#endif
+	return 1;
+}
 LUAF(Base, SetFPS)
 {
 	FLOAT fps = (FLOAT)luaL_checknumber(L, 1);
@@ -188,6 +197,7 @@ VOID CLuaBindings::BindBase(lua_State* L)
 	REGF(Base, ShowMessage);
 	REGF(Base, LogString);
     REGF(Base, ExitGame);
+	REGF(Base, IsDebugMode);
     REGF(Base, RestartGame);
 	REGF(Base, SetFPS);
 	REGF(Base, dofile);
