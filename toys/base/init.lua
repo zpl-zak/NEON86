@@ -14,12 +14,12 @@ function _init()
     EnableLighting(true)
 end
 
-function _update()
+function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
     end
 
-    time = getTime()
+    time = time + dt
     sphere:setTransform(Matrix():rotate(math.sin(time), 0, 0))
 end
 
