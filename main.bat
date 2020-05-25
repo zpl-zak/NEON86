@@ -49,8 +49,9 @@ set proj=%proj: =%
 	echo  F. Create new project
 	echo  G. Open in explorer
 	echo  H. Switch to base template
+	echo  I. Open itch.io page
 	echo =======================
-	choice /C 123456789ABCDEFGH /N /M "Your choice:"
+	choice /C 123456789ABCDEFGHI /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -70,6 +71,8 @@ set proj=%proj: =%
 	if %errorlevel%==15 call :new_project
 	if %errorlevel%==16 call :open_explorer
 	if %errorlevel%==17 set "proj=base"
+	if %errorlevel%==18 start "" "https://zaklaus.itch.io/neon-86"
+
 goto :begin
 
 :build
