@@ -25,7 +25,7 @@ function _init()
         end
     end
 
-    addLight(0, LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.8, -1.0), Vector3(0.6,0.6,0.2,1))
+    addLight(LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.8, -1.0), Vector3(0.6,0.6,0.2,1))
 
     local lightsNode = rootNode:findNode("Lights")
 
@@ -38,7 +38,7 @@ function _init()
             c = str2vec(p) / 0xFF
         end
 
-        addLight(0, LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
+        addLight(LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
     end
 
     EnableLighting(true)
@@ -81,8 +81,8 @@ function _render()
     globe:draw(Matrix():rotate(-time/4 + math.rad(45), 0, 0))
 end
 
-function addLight(slot, kind, pos, dir, diffuse)
-    local l = Light(slot)
+function addLight(kind, pos, dir, diffuse)
+    local l = Light()
     l:setType(kind)
     l:setPosition(pos)
     l:setDirection(dir)
