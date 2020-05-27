@@ -51,7 +51,7 @@ VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
     LRESULT res = RENDERER->GetDevice()->CreateTexture(
         w ? w : dp.Width,
         h ? h : dp.Height,
-        0,
+        1,
         D3DUSAGE_RENDERTARGET,
         dp.Format,
         D3DPOOL_DEFAULT,

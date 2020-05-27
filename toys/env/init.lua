@@ -26,7 +26,7 @@ function _init()
     testFont = Font("Silkscreen", 36, 1, false)
 
     local res = GetResolution()
-    rt = RenderTarget(math.floor(res[1]/2), math.floor(res[2]/4), true)
+    rt = RenderTarget(2048, 2048, true)
     rtMat = Material()
     rtMat:setHandle(1, rt:getHandle())
 
@@ -54,7 +54,7 @@ end
 
 function _render()
     rt:bind()
-    CameraPerspective(75, 0.1, 1000, true)
+    CameraPerspective(75, 0.1, 500, true)
 
     cam = Matrix():lookAt(
         Vector(),
@@ -73,22 +73,22 @@ function _render()
     ClearScene(120,20,69)
     AmbientColor(16,16,16)
 
+    skybox:draw(Matrix():translate(camera.pos))
     sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
-    skybox:draw(Matrix())
     monkey:draw(Matrix():translate(camera.pos))
 
     ClearTarget()
     CullMode(3)
     lookAt:bind(VIEW)
-    CameraPerspective(62, 0.1, 1000)
+    CameraPerspective(62, 0.1, 500)
     EnableLighting(false)
     ClearScene(20,20,69)
 
+    skybox:draw(Matrix():translate(camera.pos))
     testModel:getMeshes()[1]:setMaterial(0, rtMat)
     testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
     testModel:draw(testMat:scale(2,1,1))
     sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
-    skybox:draw(Matrix())
 end
 
 function _render2d()
