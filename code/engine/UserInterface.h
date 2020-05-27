@@ -16,6 +16,7 @@ public:
 
     VOID ClearErrorWindow();
     VOID PushErrorMessage(LPCSTR err);
+    ID3DXSprite* GetTextSurface() { return mTextSurface; }
 private:
     VOID DebugPanel(VOID);
 
@@ -24,5 +25,7 @@ private:
     BOOL mShowError;
     std::string mErrorMessage;
 #endif
+
+    ID3DXSprite* mTextSurface;
 };
 

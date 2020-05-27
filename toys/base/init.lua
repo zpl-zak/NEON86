@@ -2,6 +2,7 @@ local sphere
 local sphereModel
 local time = 0
 local light
+local testFont
 
 function _init()
     sphereModel = Model("sphere.fbx")
@@ -12,6 +13,9 @@ function _init()
     light:setType(LIGHTKIND_DIRECTIONAL)
     light:enable(true, 0)
     EnableLighting(true)
+
+    RegisterFontFile("slkscr.ttf")
+    testFont = Font("Silkscreen", 36, 1, false)
 end
 
 function _update(dt)
@@ -35,4 +39,8 @@ function _render()
     CameraPerspective(62, 0.1, 100)
 
     sphere:draw(Matrix())
+end
+
+function _render2d()
+    testFont:drawText(0xFFFFFFFF, "Welcome to the NEON86 basic template!", 15, 30)
 end

@@ -106,6 +106,7 @@ static D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset = 0)
 #include "LuaScene.h"
 #include "LuaRenderTarget.h"
 #include "LuaEffect.h"
+#include "LuaFont.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage) 
@@ -483,6 +484,12 @@ LUAF(Rend, FillScreen)
     RENDERER->DrawQuad(0, (FLOAT)res.right, 0, (FLOAT)res.bottom, color, flipY);
     return 0;
 }
+LUAF(Rend, RegisterFontFile)
+{
+	LPCSTR path = (LPCSTR)luaL_checkstring(L, 1);
+	lua_pushboolean(L, CFont::AddFontToDatabase(path));
+	return 1;
+}
 ///<END
 
 VOID CLuaBindings::BindRenderer(lua_State* L)
@@ -501,6 +508,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawQuad);
 	REGF(Rend, FillScreen);
+	REGF(Rend, RegisterFontFile);
 
 	REGF(Rend, BindTexture);
 
@@ -513,6 +521,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	LuaNode_register(L);
 	LuaEffect_register(L);
 	LuaRenderTarget_register(L);
+	LuaFont_register(L);
 
 	// enums
 	{

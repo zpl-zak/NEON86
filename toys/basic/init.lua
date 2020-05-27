@@ -51,6 +51,10 @@ sun:setType(LIGHTKIND_DIRECTIONAL)
 sun:setDirection(Vector(-1,-1,1))
 sun:enable(true, 0)
 
+-- Create a basic font used to draw hint text
+RegisterFontFile("slkscr.ttf")
+hintFont = Font("Silkscreen", 36, 0, false)
+
 function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
@@ -117,6 +121,10 @@ function _render()
         drawSceneUsingShader()
         blitScreen(mainRT)
     end
+end
+
+function _render2d()
+    hintFont:drawText(0xFFFFFFFF, "Press 'm' to enable/disable shaders", 15, 30)
 end
 
 -- Draw model with a specific transformation matrix

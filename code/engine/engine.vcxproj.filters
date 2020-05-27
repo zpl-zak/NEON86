@@ -117,6 +117,9 @@
     <ClCompile Include="VM.cpp">
       <Filter>Source Files\Lua</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -258,6 +261,12 @@
       <Filter>Header Files\Lua</Filter>
     </ClInclude>
     <ClInclude Include="LuaNode.h">
+      <Filter>Header Files\Lua\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaFont.h">
       <Filter>Header Files\Lua\Modules</Filter>
     </ClInclude>
   </ItemGroup>

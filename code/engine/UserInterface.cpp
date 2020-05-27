@@ -24,11 +24,14 @@ CUserInterface::CUserInterface()
     ImGui_ImplWin32_EnableDpiAwareness();
 
     ClearErrorWindow();
+
+    D3DXCreateSprite(RENDERER->GetDevice(), &mTextSurface);
 }
 
 BOOL CUserInterface::Release(VOID)
 {
     ImGui_ImplDX9_Shutdown();
+    SAFE_RELEASE(mTextSurface);
     return TRUE;
 }
 
@@ -44,8 +47,6 @@ VOID CUserInterface::Render(VOID)
     ImGui::NewFrame();
 
     DebugPanel();
-
-    VM->Render2D();
 
     ImGui::EndFrame();
     

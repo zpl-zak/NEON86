@@ -26,6 +26,11 @@
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
 
+#include "VM.h"
+#include "Renderer.h"
+#include "UserInterface.h"
+#include "engine.h"
+
 // DirectX
 #include <d3d9.h>
 
@@ -171,6 +176,16 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
 
     // Setup desired DX state
     ImGui_ImplDX9_SetupRenderState(draw_data);
+
+    // NEON86: Render 2D
+    IDirect3DStateBlock9* neonsbt = NULL;
+    RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
+    UI->GetTextSurface()->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_DONOTMODIFY_RENDERSTATE);
+    VM->Render2D();
+    UI->GetTextSurface()->End(); 
+
+    neonsbt->Apply();
+    neonsbt->Release();
 
     // Render command lists
     // (Because we merged all buffers into a single one, we maintain our own offset into them)

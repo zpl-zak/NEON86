@@ -15,6 +15,9 @@ demoSystem = generateSystem(Vector(), 24, 4, 30)
 
 skybox = Model("skybox.fbx")
 
+fontSize = 20
+font = Font("Arial", fontSize, 700)
+
 function _init()
 	ShowCursor(false)
 	SetCursorMode(CURSORMODE_CENTERED)
@@ -30,18 +33,6 @@ function _update(dt)
 
 	if GetKeyDown(KEY_ESCAPE) then
 		ExitGame()
-	end
-
-	if GetKeyDown(KEY_F4) then
-		alphaValue = alphaValue + 0.5
-
-		if alphaValue > 1.0 then
-			alphaValue = 0.0
-		end
-	end
-
-	if GetKeyDown(KEY_F5) then
-		alphaValue = 1.0
 	end
 
 	if GetKeyDown("p") then
@@ -78,4 +69,8 @@ function _render()
 	--[[ unlit ]]
 	skybox:draw(Matrix():scale(scale*20):translate(camera.pos))
 
+end
+
+function _render2d()
+	font:drawText(0xffffffff, "WASD to move\nPress 'P' to pause simulation\nPress 'F2' to unfocus cursor", 15, 30 + 0)
 end
