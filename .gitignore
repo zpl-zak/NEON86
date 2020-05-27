@@ -18,6 +18,7 @@ data
 *.dsw
 *.opt
 *.suo
+*.blend1
 LAUNCHER.lnk
 
 # private projects
