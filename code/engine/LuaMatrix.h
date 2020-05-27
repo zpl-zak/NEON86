@@ -122,6 +122,17 @@ static INT matrix_getfield(lua_State* L)
 	D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	UINT row = (UINT)luaL_checkinteger(L, 2) -1;
 	UINT col = (UINT)luaL_checkinteger(L, 3) -1;
+	FLOAT val = 0.0f;
+
+	if (lua_gettop(L) >= 4)
+	{
+		val = (FLOAT)luaL_checknumber(L, 4);
+		matPtr->m[row][col] = val;
+		matrix_new(L);
+		D3DXMATRIX* newMat = (D3DXMATRIX*)luaL_checkudata(L, 5, L_MATRIX);
+		*newMat = *matPtr;
+		return 1;
+	}
 
 	D3DXMATRIX mat = *matPtr;
 	lua_pushnumber(L, mat(row, col));

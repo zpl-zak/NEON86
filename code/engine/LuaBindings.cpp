@@ -296,21 +296,38 @@ LUAF(Rend, CameraPerspective)
 {
 	FLOAT fov = (FLOAT)luaL_checknumber(L, 1);
 	FLOAT zNear=0.1f, zFar=1000.0f;
+	BOOL flipHandedness = FALSE;
 
-	if (lua_gettop(L) == 3)
+	if (lua_gettop(L) >= 3)
 	{
 		zNear = (FLOAT)luaL_checknumber(L, 2);
 		zFar = (FLOAT)luaL_checknumber(L, 3);
 	}
 
+	if (lua_gettop(L) >= 4)
+	{
+		flipHandedness = (BOOL)lua_toboolean(L, 4);
+	}
+
 	D3DXMATRIX matProjection;    
 	RECT res = RENDERER->GetResolution();
 
-	D3DXMatrixPerspectiveFovLH(&matProjection,
-		D3DXToRadian(fov),
-		(FLOAT)res.right / (FLOAT)res.bottom,
-		zNear,    
-		zFar);    
+	if (flipHandedness)
+	{
+        D3DXMatrixPerspectiveFovRH(&matProjection,
+            D3DXToRadian(fov),
+            (FLOAT)res.right / (FLOAT)res.bottom,
+            zNear,
+            zFar);
+	}
+	else
+	{
+        D3DXMatrixPerspectiveFovLH(&matProjection,
+            D3DXToRadian(fov),
+            (FLOAT)res.right / (FLOAT)res.bottom,
+            zNear,
+            zFar);
+	}
 
 	RENDERER->SetMatrix(MATRIXKIND_PROJECTION, matProjection);
 
@@ -320,6 +337,7 @@ LUAF(Rend, CameraOrthographic)
 {
 	RECT res = RENDERER->GetResolution();
 	FLOAT w=(FLOAT)res.right, h=(FLOAT)res.bottom;
+    BOOL flipHandedness = FALSE;
 
 	if (lua_gettop(L) >= 2)
 	{
@@ -329,18 +347,35 @@ LUAF(Rend, CameraOrthographic)
 
 	FLOAT zNear=1.0f, zFar=100.0f;
 
-	if (lua_gettop(L) == 4)
+	if (lua_gettop(L) >= 4)
 	{
 		zNear = (FLOAT)luaL_checknumber(L, 3);
 		zFar = (FLOAT)luaL_checknumber(L, 4);
 	}
+
+    if (lua_gettop(L) >= 5)
+    {
+        flipHandedness = (BOOL)lua_toboolean(L, 5);
+    }
+
 	D3DXMATRIX matProjection;    
 
-	D3DXMatrixOrthoLH(&matProjection,
-		  			 w,
-					 h,
-					 zNear,    
-					 zFar);
+	if (flipHandedness)
+	{
+        D3DXMatrixOrthoLH(&matProjection,
+            w,
+            h,
+            zNear,
+            zFar);
+	}
+	else 
+	{
+        D3DXMatrixOrthoRH(&matProjection,
+            w,
+            h,
+            zNear,
+            zFar);
+	}
 
 	RENDERER->SetMatrix(MATRIXKIND_PROJECTION, matProjection);
 
@@ -469,6 +504,12 @@ LUAF(Rend, DrawQuad)
 	RENDERER->DrawQuad(x1, x2, y1, y2, color, flipY);
     return 0;
 }
+LUAF(Rend, CullMode)
+{
+	UINT mode = (UINT)luaL_checkinteger(L, 1);
+	RENDERER->SetRenderState(D3DRS_CULLMODE, mode);
+	return 0;
+}
 LUAF(Rend, FillScreen)
 {
 	DWORD color = 0x00FFFFFF;
@@ -504,6 +545,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearFog);
 	REGF(Rend, SamplerState);
 	REGF(Rend, EnableLighting);
+	REGF(Rend, CullMode);
 	REGF(Rend, AmbientColor);
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawQuad);
@@ -566,6 +608,9 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 		REGN(VIEW, MATRIXKIND_VIEW);
 		REGN(PROJ, MATRIXKIND_PROJECTION);
 
+        REGN(CULLKIND_NONE, 1);
+        REGN(CULLKIND_CW, 2);
+        REGN(CULLKIND_CCW, 3);
 
 		// render states
 #define _X(NAME, VALUE) REGN(NAME, VALUE);
