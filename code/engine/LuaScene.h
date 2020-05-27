@@ -110,7 +110,13 @@ static INT scene_getflattennodes(lua_State* L)
 static INT scene_draw(lua_State* L)
 {
     CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
-    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+    D3DXMATRIX* mat = &D3DXMATRIX();
+    D3DXMatrixIdentity(mat);
+
+    if (lua_gettop(L) >= 2)
+    {
+        mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+    }
 
     scene->Draw(*mat);
 
@@ -122,7 +128,13 @@ static INT scene_drawsubset(lua_State* L)
 {
     CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     UINT subset = (UINT)luaL_checkinteger(L, 2) - 1;
-    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+    D3DXMATRIX* mat = &D3DXMATRIX();
+    D3DXMatrixIdentity(mat);
+
+    if (lua_gettop(L) >= 3)
+    {
+        mat = (D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+    }
 
     scene->DrawSubset(subset, *mat);
 

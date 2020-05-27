@@ -55,7 +55,12 @@ static INT mesh_getfgroups(lua_State* L)
 static INT mesh_draw(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+    D3DXMATRIX* mat = &D3DXMATRIX();
+
+    if (lua_gettop(L) >= 2)
+    {
+        mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+    }
 
     mesh->Draw(*mat);
 

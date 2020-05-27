@@ -75,7 +75,7 @@ function _render()
     AmbientColor(16,16,16)
     CameraPerspective(62, 2, 80)
 
-    world:draw(Matrix())
+    world:draw()
     scene:getRootNode():findNode("Enemies posing"):draw(Matrix())
 
     globe:draw(Matrix():rotate(-time/4 + math.rad(45), 0, 0))

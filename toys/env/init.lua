@@ -16,6 +16,7 @@ dofile("camera.lua")
 
 function _init()
     testModel = Model("test.fbx")
+    testModel:getRootNode():setTransform(Matrix():scale(2,1,1))
     sphere = Model("sphere.fbx")
     monkey = Model("monkey.fbx")
 
@@ -73,8 +74,7 @@ function _render()
     sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
     monkey:draw(Matrix():translate(camera.pos))
     testModel:getMeshes()[1]:setMaterial(0, rtMat)
-    testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
-    testModel:draw(testMat:scale(2,1,1))
+    testModel:draw()
 
     rt:bind()
     CullMode(3)
@@ -85,15 +85,13 @@ function _render()
 
     skybox:draw(Matrix():translate(camera.pos))
     sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
-    testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
-    testModel:draw(testMat:scale(2,1,1))
+    testModel:draw()
 
     ClearTarget()
     ClearScene(120,20,69)
     skybox:draw(Matrix():translate(camera.pos))
     sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
-    testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
-    testModel:draw(testMat:scale(2,1,1))
+    testModel:draw()
 end
 
 function _render2d()
