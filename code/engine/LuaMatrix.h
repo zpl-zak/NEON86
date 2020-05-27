@@ -144,6 +144,20 @@ static INT matrix_getrow(lua_State* L)
     D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	UINT row = (UINT)luaL_checkinteger(L, 2) - 1;
 
+	if (lua_gettop(L) >= 3)
+	{
+		D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
+        matrix_new(L);
+        D3DXMATRIX* newMat = (D3DXMATRIX*)luaL_checkudata(L, 4, L_MATRIX);
+        *newMat = *matPtr;
+
+		newMat[row][0] = vec->x;
+		newMat[row][1] = vec->y;
+		newMat[row][2] = vec->z;
+		newMat[row][3] = vec->w;
+		return 1;
+	}
+
     D3DXMATRIX mat = *matPtr;
 	D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
 	luaL_setmetatable(L, L_VECTOR);
@@ -155,6 +169,20 @@ static INT matrix_getcol(lua_State* L)
 {
     D3DXMATRIX* matPtr = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
     UINT col = (UINT)luaL_checkinteger(L, 2) - 1;
+
+    if (lua_gettop(L) >= 3)
+    {
+        D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
+        matrix_new(L);
+        D3DXMATRIX* newMat = (D3DXMATRIX*)luaL_checkudata(L, 4, L_MATRIX);
+        *newMat = *matPtr;
+
+        newMat[0][col] = vec->x;
+        newMat[0][col] = vec->y;
+        newMat[0][col] = vec->z;
+        newMat[0][col] = vec->w;
+        return 1;
+    }
 
     D3DXMATRIX mat = *matPtr;
     D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));

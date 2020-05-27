@@ -189,6 +189,17 @@ static INT vector4_get(lua_State* L)
 	return 1;
 }
 
+static INT vector4_normalize(lua_State* L)
+{
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+
+    vector4_new(L);
+    D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
+    D3DXVec4Normalize(out, vec);
+
+    return 1;
+}
+
 static INT vector4_color(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
@@ -256,6 +267,7 @@ static VOID LuaVector_register(lua_State* L)
 	REGC("magSq", vector4_magsq);
 	REGC("lerp", vector4_lerp);
 	REGC("neg", vector4_neg);
+    REGC("normalize", vector4_normalize);
 
     REGC("__add", vector4_add);
     REGC("__sub", vector4_sub);

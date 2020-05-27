@@ -10,7 +10,7 @@ local rt
 local mat
 local rtMat
 
-local changeRot = 1
+local changeRot = 0
 
 dofile("camera.lua")
 
@@ -23,7 +23,7 @@ function _init()
     skybox:getMeshes()[1]:getMaterial(1):setShaded(false)
 
     RegisterFontFile("slkscr.ttf")
-    testFont = Font("Silkscreen", 36, 1, false)
+    testFont = Font("Silkscreen", 18, 1, false)
 
     local res = GetResolution()
     rt = RenderTarget(2048, 2048, true)
@@ -54,19 +54,15 @@ end
 
 function _render()
     rt:bind()
-    CameraPerspective(75, 0.1, 500, true)
+    CameraPerspective(62.5, 0.1, 500, true)
 
     cam = Matrix():lookAt(
         Vector(),
-        Vector(0,0,1),
+        lookAt:row(3),
         Vector(0,1,0)
     )
 
     CullMode(2)
-
-    if changeRot > 0 then
-        cam = cam:rotate(math.sin(time), 0, 0)
-    end
 
     cam:bind(VIEW)
     EnableLighting(false)
@@ -76,8 +72,11 @@ function _render()
     skybox:draw(Matrix():translate(camera.pos))
     sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
     monkey:draw(Matrix():translate(camera.pos))
+    testModel:getMeshes()[1]:setMaterial(0, rtMat)
+    testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
+    testModel:draw(testMat:scale(2,1,1))
 
-    ClearTarget()
+    rt:bind()
     CullMode(3)
     lookAt:bind(VIEW)
     CameraPerspective(62, 0.1, 500)
@@ -85,12 +84,18 @@ function _render()
     ClearScene(20,20,69)
 
     skybox:draw(Matrix():translate(camera.pos))
-    testModel:getMeshes()[1]:setMaterial(0, rtMat)
+    sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
     testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
     testModel:draw(testMat:scale(2,1,1))
+
+    ClearTarget()
+    ClearScene(120,20,69)
+    skybox:draw(Matrix():translate(camera.pos))
     sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
+    testMat = Matrix():rotate(math.sin(time)*changeRot, 0, 0)
+    testModel:draw(testMat:scale(2,1,1))
 end
 
 function _render2d()
-    testFont:drawText(0xFFFFFFFF, "RTT mirrors test (no shaders)\nWASD to move around\nM to disable mirror rotation", 15, 30)
+    testFont:drawText(0xFFFFFFFF, "RTT mirrors test (no shaders)\nWASD to move around\nM to toggle mirror rotation", 15, 30)
 end
