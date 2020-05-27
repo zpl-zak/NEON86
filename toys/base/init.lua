@@ -38,7 +38,7 @@ function _render()
     ):bind(VIEW)
     CameraPerspective(62, 0.1, 100)
 
-    sphere:draw(Matrix())
+    sphere:draw()
 end
 
 function _render2d()
