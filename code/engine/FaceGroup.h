@@ -31,7 +31,7 @@ public:
 
 	inline CMaterial* GetMaterial() { return mData.mat; }
 	inline DWORD GetMaterialStage() { return mData.stage; }
-	inline RENDERBOUNDS GetBounds() { return mData.bounds; }
+	inline D3DXVECTOR4* GetBounds() { if (mData.meshBounds[0] == mData.meshBounds[1] && !D3DXVec4LengthSq(&mData.meshBounds[0])) Build(); return mData.meshBounds; }
 private:
 	RENDERDATA mData;
 	

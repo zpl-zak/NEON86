@@ -141,4 +141,5 @@ struct RENDERDATA
 	LPD3DXMESH mesh;
 	D3DXVECTOR3 meshOrigin;
 	FLOAT meshRadius;
+	D3DXVECTOR4 meshBounds[2];
 };

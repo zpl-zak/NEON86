@@ -183,10 +183,10 @@ static INT vector4_dot(lua_State* L)
 static INT vector4_get(lua_State* L)
 {
 	D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
-	FLOAT arr[3] = { vec->x, vec->y, vec->z };
+	FLOAT arr[4] = { vec->x, vec->y, vec->z, vec->w };
 	
 	lua_newtable(L);
-	for (UINT i=0; i<3; i++)
+	for (UINT i=0; i<4; i++)
 	{
 		lua_pushinteger(L, i+1ULL);
 		lua_pushnumber(L, arr[i]);
@@ -194,6 +194,23 @@ static INT vector4_get(lua_State* L)
 	}
 
 	return 1;
+}
+
+static INT vector4_field(lua_State* L)
+{
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+    INT idx = (INT)luaL_checkinteger(L, 2);
+    FLOAT val = (FLOAT)luaL_checknumber(L, 3);
+    
+    D3DXVECTOR4 *out = vector4_ctor(L);
+    *out = *vec;
+    switch (idx) {
+    case 1: out->x = val; break;
+    case 2: out->y = val; break;
+    case 3: out->z = val; break;
+    case 4: out->w = val; break;
+    }
+    return 1;
 }
 
 static INT vector4_normalize(lua_State* L)
@@ -281,6 +298,7 @@ static VOID LuaVector_register(lua_State* L)
     REGC("__mul", vector4_dot);
 	REGC("__div", vector4_div);
 
+    REGC("m", vector4_field);
     REGC("x", vector4_x);
     REGC("y", vector4_y);
     REGC("z", vector4_z);

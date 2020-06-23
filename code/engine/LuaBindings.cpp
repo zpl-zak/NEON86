@@ -440,6 +440,15 @@ LUAF(Rend, RenderState)
 	RENDERER->SetRenderState(kind, state);
 	return 0;
 }
+LUAF(Rend, ToggleWireframe)
+{
+	BOOL state = (BOOL)lua_toboolean(L, 1);
+    
+	RENDERER->SetRenderState(D3DRS_FILLMODE, state ? D3DFILL_WIREFRAME : D3DFILL_SOLID);
+	RENDERER->SetRenderState(D3DRS_CULLMODE, state ? D3DCULL_NONE : D3DCULL_CCW);
+	RENDERER->SetRenderState(D3DRS_ZENABLE, state ? FALSE : TRUE);
+	return 0;
+}
 LUAF(Rend, SetFog)
 {
     DWORD color = luaH_getcolor(L);
@@ -490,6 +499,15 @@ LUAF(Rend, AmbientColor)
 LUAF(Rend, ClearTarget)
 {
 	RENDERER->SetRenderTarget(NULL);
+    return 0;
+}
+LUAF(Rend, DrawBox)
+{
+	D3DXMATRIX mat = *(D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+	D3DXVECTOR4 dims = *(D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
+    DWORD color = (DWORD)luaL_checkinteger(L, 3);
+
+    RENDERER->DrawBox(mat, dims, color);
     return 0;
 }
 LUAF(Rend, DrawQuad)
@@ -544,10 +562,12 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, SetFog);
 	REGF(Rend, ClearFog);
 	REGF(Rend, SamplerState);
+	REGF(Rend, ToggleWireframe);
 	REGF(Rend, EnableLighting);
 	REGF(Rend, CullMode);
 	REGF(Rend, AmbientColor);
 	REGF(Rend, ClearTarget);
+	REGF(Rend, DrawBox)
 	REGF(Rend, DrawQuad);
 	REGF(Rend, FillScreen);
 	REGF(Rend, RegisterFontFile);

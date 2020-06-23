@@ -267,12 +267,12 @@ static int math_random (lua_State *L) {
     }
     case 1: {  /* only upper limit */
       low = 1;
-      up = luaL_checkinteger(L, 1);
+      up = luaL_checknumber(L, 1);
       break;
     }
     case 2: {  /* lower and upper limits */
-      low = luaL_checkinteger(L, 1);
-      up = luaL_checkinteger(L, 2);
+      low = luaL_checknumber(L, 1);
+      up = luaL_checknumber(L, 2);
       break;
     }
     default: return luaL_error(L, "wrong number of arguments");

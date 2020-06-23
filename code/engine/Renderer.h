@@ -33,6 +33,7 @@ public:
     /// Render commands
     VOID DrawMesh(const RENDERDATA& data);
     VOID DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY = FALSE);
+    VOID DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color);
     VOID ClearBuffer(D3DCOLOR color, UINT flags = CLEARFLAG_STANDARD);
     VOID SetMaterial(DWORD stage, CMaterial* mat);
     VOID SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
@@ -71,6 +72,7 @@ protected:
     CEffect* mActiveEffect;
     CRenderTarget* mMainTarget;
     CMaterial *mDefaultMaterial;
+    LPD3DXMESH mDefaultBox;
 
     D3DSURFACE_DESC mDisplayDesc;
     BOOL mVsync;
@@ -79,4 +81,5 @@ protected:
 
     VOID Clear(VOID);
     VOID BuildParams(VOID);
+    VOID PrepareEffectDraw();
 };

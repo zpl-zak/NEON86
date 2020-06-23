@@ -121,6 +121,13 @@ VOID CFaceGroup::Build(VOID)
         &mData.meshOrigin,
         &mData.meshRadius);
 
+	D3DXComputeBoundingBox((D3DXVECTOR3*)mVerts.GetData(),
+        mVerts.GetCount(),
+        sizeof(VERTEX),
+		(D3DXVECTOR3*)&mData.meshBounds[0],
+		(D3DXVECTOR3*)&mData.meshBounds[1]
+	);
+
 	mData.mesh->UnlockVertexBuffer();
 
     if (mIndices.GetCount() > 0)

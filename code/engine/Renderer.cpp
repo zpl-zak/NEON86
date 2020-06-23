@@ -24,6 +24,8 @@ CRenderer::CRenderer()
 	mWindow = NULL;
 	mMainTarget = NULL;
 	mActiveEffect = NULL;
+	mDefaultBox = NULL;
+	mDefaultMaterial = NULL;
 	mVsync = TRUE;
 	mFullscreen = FALSE;
 	mEnableLighting = FALSE;
@@ -49,6 +51,35 @@ VOID CRenderer::BuildParams(VOID)
 	{
 		mParams.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 		mParams.FullScreen_RefreshRateInHz = 0;
+	}
+}
+
+VOID CRenderer::PrepareEffectDraw()
+{
+	if (GetActiveEffect())
+	{
+		D3DXMATRIX world = GetDeviceMatrix(MATRIXKIND_WORLD);
+		D3DXMATRIX view  = GetDeviceMatrix(MATRIXKIND_VIEW);
+		D3DXMATRIX proj  = GetDeviceMatrix(MATRIXKIND_PROJECTION);
+		D3DXMATRIX inverseWorld, inverseMV;
+		D3DXMatrixInverse(&inverseWorld, NULL, &world);
+
+        D3DXMATRIX mvp = world * view * proj;
+		D3DXMATRIX mv = world * view;
+
+		D3DXMatrixInverse(&inverseMV, NULL, &mv);
+
+		GetActiveEffect()->SetMatrix("NEON.World", world);
+		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
+		GetActiveEffect()->SetMatrix("NEON.InverseWorldView", inverseMV, TRUE);
+		GetActiveEffect()->SetMatrix("NEON.WorldView", mv);
+		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
+
+		D3DCOLOR ambience = 0x0;
+		GetDevice()->GetRenderState(D3DRS_AMBIENT, &ambience);
+		GetActiveEffect()->SetInteger("NEON.AmbientColor", ambience);
+
+        GetActiveEffect()->CommitChanges();
 	}
 }
 
@@ -210,31 +241,7 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
 	if (data.usesMatrix)
 		SetMatrix(MATRIXKIND_WORLD, data.matrix);
 
-	if (GetActiveEffect())
-	{
-		D3DXMATRIX world = GetDeviceMatrix(MATRIXKIND_WORLD);
-		D3DXMATRIX view  = GetDeviceMatrix(MATRIXKIND_VIEW);
-		D3DXMATRIX proj  = GetDeviceMatrix(MATRIXKIND_PROJECTION);
-		D3DXMATRIX inverseWorld, inverseMV;
-		D3DXMatrixInverse(&inverseWorld, NULL, &world);
-
-        D3DXMATRIX mvp = world * view * proj;
-		D3DXMATRIX mv = world * view;
-
-		D3DXMatrixInverse(&inverseMV, NULL, &mv);
-
-		GetActiveEffect()->SetMatrix("NEON.World", world);
-		GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
-		GetActiveEffect()->SetMatrix("NEON.InverseWorldView", inverseMV, TRUE);
-		GetActiveEffect()->SetMatrix("NEON.WorldView", mv);
-		GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
-
-		D3DCOLOR ambience = 0x0;
-		GetDevice()->GetRenderState(D3DRS_AMBIENT, &ambience);
-		GetActiveEffect()->SetInteger("NEON.AmbientColor", ambience);
-
-        GetActiveEffect()->CommitChanges();
-	}
+	PrepareEffectDraw();
 
 	if (data.mesh)
 		data.mesh->DrawSubset(0);
@@ -262,6 +269,31 @@ VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
 	mDevice->SetVertexDeclaration(vertsDecl);
 	mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6, (VOID*)verts, sizeof(VERTEX_2D));
 	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+}
+
+VOID CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
+{
+	SAFE_RELEASE(mDefaultBox);
+	
+    SetMatrix(MATRIXKIND_WORLD, mat);
+
+	D3DXCreateBox(mDevice, ::abs(dims.x), ::abs(dims.y), ::abs(dims.z), &mDefaultBox, NULL);
+
+	if (!mDefaultBox)
+		return;
+
+    mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_CONSTANT);
+	mDevice->SetTextureStageState(0, D3DTSS_CONSTANT, color);
+    mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    mDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    mDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_CONSTANT);
+    mDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    mDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    mDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    
+	PrepareEffectDraw();
+	mDefaultBox->DrawSubset(0);
 }
 
 VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)

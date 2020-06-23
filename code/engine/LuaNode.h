@@ -48,6 +48,32 @@ static INT node_getmeshes(lua_State* L)
     return 1;
 }
 
+static INT node_getmeshparts(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+
+    lua_newtable(L);
+
+    for (UINT i = 0; i < node->GetNumMeshes(); i++)
+    {
+        CMesh* mesh = node->GetMeshes()[i];
+        lua_pushinteger(L, i + 1ULL);
+        {
+            lua_newtable(L);
+            for (UINT i = 0; i < mesh->GetNumFGroups(); i++)
+            {
+                CFaceGroup* fg = mesh->GetFGroupData()[i];
+                lua_pushinteger(L, i + 1ULL);
+                LUAP(L, L_FACEGROUP, CFaceGroup, fg);
+                lua_settable(L, -3);
+            }
+        }
+        lua_settable(L, -3);
+    }
+
+    return 1;
+}
+
 static INT node_getlights(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
@@ -326,6 +352,7 @@ static VOID LuaNode_register(lua_State* L)
     REGC("draw", node_draw);
     REGC("drawSubset", node_drawsubset);
     REGC("getMeshes", node_getmeshes);
+    REGC("getMeshParts", node_getmeshparts);
     REGC("getLights", node_getlights);
     REGC("getNodes", node_getnodes);
     REGC("getTargets", node_gettargets);
