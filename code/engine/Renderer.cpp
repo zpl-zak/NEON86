@@ -115,6 +115,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 
 	mMainTarget = new CRenderTarget(winres.right, winres.bottom, TRUE);
 	SetRenderTarget(NULL);
+    mDefaultMaterial = new CMaterial();
 
 	return res;
 }
@@ -174,6 +175,7 @@ BOOL CRenderer::Release(VOID)
 	SAFE_RELEASE(mFrustum);
 	SAFE_RELEASE(mDevice);
 	SAFE_RELEASE(mDirect9);
+	SAFE_RELEASE(mDefaultMaterial);
 
 	return TRUE;
 }
@@ -317,6 +319,9 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 		MATERIAL* matData = mat ? &mat->GetMaterialData() : NULL;
 		SetTexture(stage, mat ? mat->GetTextureHandle() : NULL);
 		if (mat) mDevice->SetMaterial(matData);
+		else {
+			mDevice->SetMaterial(&mDefaultMaterial->GetMaterialData());
+		}
 
 		if (mat && mat->IsTransparent())
 		{

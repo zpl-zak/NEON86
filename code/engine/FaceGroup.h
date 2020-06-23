@@ -31,6 +31,7 @@ public:
 
 	inline CMaterial* GetMaterial() { return mData.mat; }
 	inline DWORD GetMaterialStage() { return mData.stage; }
+	inline RENDERBOUNDS GetBounds() { return mData.bounds; }
 private:
 	RENDERDATA mData;
 	

@@ -5,7 +5,7 @@ local light
 local testFont
 
 function _init()
-    sphereModel = Model("sphere.fbx")
+    sphereModel = Model("sphere.fbx", false) -- load mesh w/o material
     sphere = sphereModel:getRootNode()
 
     light = Light()

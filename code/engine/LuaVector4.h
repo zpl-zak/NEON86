@@ -4,6 +4,14 @@
 
 #include <lua/lua.hpp>
 
+static D3DXVECTOR4* vector4_ctor(lua_State* L)
+{
+    D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
+    *vec = { 0,0,0,0 };
+    luaL_setmetatable(L, L_VECTOR);
+    return vec;
+}
+
 static INT vector4_new(lua_State* L)
 {
 	FLOAT x=0.0f, y=0.0f, z=0.0f, w=0.0f;
@@ -22,14 +30,13 @@ static INT vector4_new(lua_State* L)
     z = (FLOAT)lua_tonumber(L, 3);
 	w = (FLOAT)lua_tonumber(L, 4);
 
-	D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
+    D3DXVECTOR4* vec = vector4_ctor(L);
 
-	if (!vecRHS)
-		*vec = D3DXVECTOR4(x, y, z, w);
-	else
-		*vec = *vecRHS;
+    if (!vecRHS)
+        *vec = D3DXVECTOR4(x, y, z, w);
+    else
+        *vec = *vecRHS;
 
-	luaL_setmetatable(L, L_VECTOR);
 	return 1;
 }
 

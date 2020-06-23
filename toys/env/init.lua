@@ -57,19 +57,6 @@ function _render()
     rt:bind()
     CameraPerspective(62.5, 0.1, 500, true)
 
-    cam = Matrix():lookAt(
-        Vector(),
-        lookAt:row(3),
-        Vector(0,1,0)
-    )
-
-    CullMode(2)
-
-    cam:bind(VIEW)
-    EnableLighting(false)
-    ClearScene(120,20,69)
-    AmbientColor(16,16,16)
-
     skybox:draw(Matrix():translate(camera.pos))
     sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
     monkey:draw(Matrix():translate(camera.pos))

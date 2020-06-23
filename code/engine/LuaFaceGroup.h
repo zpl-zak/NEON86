@@ -161,6 +161,26 @@ static INT facegroup_getvertices(lua_State* L)
 	return 1;
 }
 
+static INT facegroup_getbounds(lua_State* L)
+{
+	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
+	RENDERBOUNDS b = mesh->GetBounds();
+
+	lua_newtable(L);
+
+	D3DXVECTOR4* minVec = vector4_ctor(L);
+	*minVec = { b.x1, b.y1, b.z1, 0.0f };
+	lua_pushinteger(L, 1);
+	lua_settable(L, -3);
+
+    D3DXVECTOR4* maxVec = vector4_ctor(L);
+    *maxVec = { b.x2, b.y2, b.z2, 0.0f };
+    lua_pushinteger(L, 2);
+    lua_settable(L, -3);
+
+	return 1;
+}
+
 static INT facegroup_getindices(lua_State* L)
 {
     CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
@@ -191,6 +211,7 @@ static VOID LuaFaceGroup_register(lua_State* L)
     REGC("setMaterial", facegroup_setmaterial);
 	REGC("getMaterial", facegroup_getmaterial);
 	REGC("getMaterialStage", facegroup_getmaterialstage);
+	REGC("getBounds", facegroup_getbounds);
     REGC("draw", facegroup_draw);
     REGC("build", facegroup_build);
 	REGC("calcNormals", facegroup_calcnormals);

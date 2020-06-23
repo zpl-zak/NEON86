@@ -61,7 +61,7 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 
     BOOL isGlobalShadingEnabled = RENDERER->GetLightingState();
 
-    if (isGlobalShadingEnabled)
+    if (isGlobalShadingEnabled && mData.mat)
         RENDERER->EnableLighting(mData.mat->GetMaterialData().Shaded);
 
     RENDERER->SetDefaultRenderStates();

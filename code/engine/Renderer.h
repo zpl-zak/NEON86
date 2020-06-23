@@ -12,6 +12,7 @@
 class CFrustum;
 class CEffect;
 class CRenderTarget;
+class CMaterial;
 
 #include "RenderData.h"
 
@@ -69,6 +70,7 @@ protected:
     CFrustum* mFrustum;
     CEffect* mActiveEffect;
     CRenderTarget* mMainTarget;
+    CMaterial *mDefaultMaterial;
 
     D3DSURFACE_DESC mDisplayDesc;
     BOOL mVsync;
