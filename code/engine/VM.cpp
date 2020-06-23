@@ -235,9 +235,9 @@ static VOID _lua_openlibs(lua_State *L) {
 	}
 	
 	static char path[MAX_PATH] = { 0 };
-	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua'", FILESYSTEM->GetCanonicalGamePath());
+	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua;libs/?/init.lua'", FILESYSTEM->GetCanonicalGamePath());
 	luaL_dostring(L, path);
-    sprintf_s(path, MAX_PATH, "package.cpath = '%s/?.dll'", FILESYSTEM->GetCanonicalGamePath());
+    sprintf_s(path, MAX_PATH, "package.cpath = '%s/?.dll;libs/?.dll'", FILESYSTEM->GetCanonicalGamePath());
     luaL_dostring(L, path);
 }
 
