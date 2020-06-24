@@ -210,7 +210,7 @@ exit /B 0
 
 
 :open_in_vscode
-	start cmd /C "code.exe toys\%proj%"
+	start cmd /C "code.exe ."
 exit /B 0
 
 
