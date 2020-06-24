@@ -4,21 +4,22 @@ local monkey
 local sphere
 local skybox
 local time = 0
-local light
 local testFont
 local rt
-local mat
 local rtMat
+local camera
+
+local cam = require "camera"
 
 local changeRot = 0
-
-dofile("camera.lua")
 
 function _init()
   testModel = Model("test.fbx")
   testModel:getRootNode():setTransform(Matrix():scale(2,1,1))
   sphere = Model("sphere.fbx")
   monkey = Model("monkey.fbx")
+  camera = cam.newCamera(Vector3(-2,0,-8))
+  camera.angles = {0.48500002529471, 0}
 
   skybox = Model("skybox.fbx")
   skybox:getMeshes()[1]:getMaterial(1):setShaded(false)
@@ -49,13 +50,14 @@ function _update(dt)
       changeRot = 1 - changeRot
   end
 
+  camera:update(dt)
   time = time + dt
-  updateCamera(dt)
 end
 
 function _render()
   rt:bind()
   CameraPerspective(62.5, 0.1, 500, true)
+  camera.mat:bind(VIEW)
 
   skybox:draw(Matrix():translate(camera.pos))
   sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
@@ -65,7 +67,6 @@ function _render()
 
   rt:bind()
   CullMode(3)
-  lookAt:bind(VIEW)
   CameraPerspective(62, 0.1, 500)
   EnableLighting(false)
   ClearScene(20,20,69)

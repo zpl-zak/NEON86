@@ -1,6 +1,7 @@
 scale = 1
+local camera
+local cam = require "camera"
 
-dofile("camera.lua")
 dofile("solar.lua")
 
 paused = false
@@ -23,6 +24,8 @@ function _init()
 	SetCursorMode(CURSORMODE_CENTERED)
 
 	math.randomseed(1337)
+	camera = cam.newCamera(Vector3(0,6,-540*scale))
+	camera.speed = 120.0*scale
 end
 
 function _update(dt)
@@ -39,7 +42,7 @@ function _update(dt)
 		paused = not paused
 	end
 
-	updateCamera(dt)
+	camera:update(dt)
 
 	if paused == false then
 		time = time + dt
@@ -50,7 +53,7 @@ function _render()
 	ClearScene(20,20,20)
 	CameraPerspective(62, 0.1, 10000)
 
-	lookAt:bind(VIEW)
+	camera.mat:bind(VIEW)
 
 	spaceFX:start("Main")
 

@@ -156,24 +156,26 @@ goto :package_prompt
 	echo  1. Back to menu
 	echo  2. Custom...
 	echo  3. Minimal
-	echo  4. Quake
+	echo  4. Mafia
 	echo  5. Terrain view
 	echo  6. Space
 	echo  7. Scene graph
 	echo  8. Environment mapping
 	echo  9. Collisions
+	echo  A. Desert terrain FPS demo
 	echo =======================
-	choice /C 123456789 /N /M "Your choice:"
+	choice /C 123456789A /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 exit /B 0
 	if %errorlevel%==3 set "proj=minimal"
-	if %errorlevel%==4 set "proj=quake"
+	if %errorlevel%==4 set "proj=mafia"
 	if %errorlevel%==5 set "proj=terrainview"
 	if %errorlevel%==6 set "proj=space"
 	if %errorlevel%==7 set "proj=hierarchy"
 	if %errorlevel%==8 set "proj=env"
 	if %errorlevel%==9 set "proj=collisions"
+	if %errorlevel%==10 set "proj=desert"
 	
 	if %errorlevel%==2 (
 		set /p a="Enter name: "

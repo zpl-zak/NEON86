@@ -36,19 +36,19 @@ function _init()
   camera.updateMovement = function(self, dt)
     self.pos = self.pos + self.vel
     world:forEach(function (side)
-        ok, move = side:intersectsSphere(self.pos, 1, Vector(self.vel:x(), 0, 0))
+        ok, move = side:testSphere(self.pos, 1, Vector(self.vel:x(), 0, 0))
 
         if ok then
             self.pos = self.pos + move
         end
 
-        ok, move = side:intersectsSphere(self.pos, 1, Vector(0, self.vel:y(), 0))
+        ok, move = side:testSphere(self.pos, 1, Vector(0, self.vel:y(), 0))
 
         if ok then
             self.pos = self.pos + move
         end
 
-        ok, move = side:intersectsSphere(self.pos, 1, Vector(0, 0, self.vel:z()))
+        ok, move = side:testSphere(self.pos, 1, Vector(0, 0, self.vel:z()))
 
         if ok then
             self.pos = self.pos + move
@@ -65,8 +65,8 @@ function _init()
 
   for _, side in pairs(room:getNodes()) do
       local dims = side:getMeshParts()[1][1]:getBounds()
-      local mat = side:getTransform()
-      local tdims = cols.newBox(dims):withMatrix(mat):withDelta(Vector(0,10,10))
+      local mat = side:getTransform():translate(Vector(0,10,10))
+      local tdims = cols.newBox(dims, mat)
       world:addCollision(tdims)
   end
 
@@ -173,7 +173,7 @@ function updateBalls(dt)
       world:forEach(function (side)
         for i=1,3 do
           local v = Vector():m(i, vel[i])
-          ok, delta = side:intersectsSphere(ball.pos, 2, v)
+          ok, delta = side:testSphere(ball.pos, 2, v)
 
           if ok then
               ball.vel = ball.vel:m(i, vel[i]*-1*bounceFactor)
