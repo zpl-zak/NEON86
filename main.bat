@@ -50,8 +50,9 @@ set proj=%proj: =%
 	echo  G. Open in explorer
 	echo  H. Switch to base template
 	echo  I. Open itch.io page
+	echo  J. Open libs in lite
 	echo =======================
-	choice /C 123456789ABCDEFGHI /N /M "Your choice:"
+	choice /C 123456789ABCDEFGHIJ /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 goto :EOF
@@ -72,6 +73,7 @@ set proj=%proj: =%
 	if %errorlevel%==16 call :open_explorer
 	if %errorlevel%==17 set "proj=base"
 	if %errorlevel%==18 start "" "https://zaklaus.itch.io/neon-86"
+	if %errorlevel%==19 call :open_in_lite_libs
 
 goto :begin
 
@@ -214,6 +216,10 @@ exit /B 0
 
 :open_in_lite
 	start lite toys\%proj%
+exit /B 0
+
+:open_in_lite_libs
+	start lite libs\
 exit /B 0
 
 :git_pull

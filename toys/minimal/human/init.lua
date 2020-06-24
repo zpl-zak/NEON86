@@ -13,7 +13,7 @@ end
 
 function Human.update(self)
     if self.frameCounter == 6 then
-        self.humanFrame += 1
+        self.humanFrame = self.humanFrame + 1
 
         if self.humanFrame >= self.humanFrames then
             self.humanFrame = 1
@@ -21,7 +21,7 @@ function Human.update(self)
         self.frameCounter = 0
     end
 
-    self.frameCounter += 1
+    self.frameCounter = self.frameCounter + 1
 end
 
 function Human.draw(self, wmat)

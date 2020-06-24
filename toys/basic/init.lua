@@ -33,9 +33,9 @@ mainRT = RenderTarget(math.floor(winres[1]), math.floor(winres[2]))
 
 -- Construct the camera view
 viewMat = Matrix():lookAt(
-    Vector(2,3,-5),
-    Vector(0,0,0),
-    Vector(0,1,0)
+  Vector(2,3,-5),
+  Vector(0,0,0),
+  Vector(0,1,0)
 )
 
 -- Track global time to simulate movement
@@ -56,115 +56,115 @@ RegisterFontFile("slkscr.ttf")
 hintFont = Font("Silkscreen", 36, 0, false)
 
 function _update(dt)
-    if GetKeyDown(KEY_ESCAPE) then
-        ExitGame()
-    end
+  if GetKeyDown(KEY_ESCAPE) then
+      ExitGame()
+  end
 
-    if GetKeyDown("m") then
-        shaderDisabled = not shaderDisabled
-		EnableLighting(shaderDisabled)
-    end
+  if GetKeyDown("m") then
+      shaderDisabled = not shaderDisabled
+  EnableLighting(shaderDisabled)
+  end
 
-    if GetKeyDown("r") then
-        RestartGame()
-    end
+  if GetKeyDown("r") then
+      RestartGame()
+  end
 
-    time = getTime()
+  time = getTime()
 end
 
 function drawSceneUsingShader()
-    mainRT:bind()
-    ClearScene(20,20,20)
-    CameraPerspective(62, 2, 10)
+  mainRT:bind()
+  ClearScene(20,20,20)
+  CameraPerspective(62, 2, 10)
 
-    -- Initialize the shader and load the Main technique
-    mainShader:begin("Main")
+  -- Initialize the shader and load the Main technique
+  mainShader:begin("Main")
 
-    -- Main technique has a single pass, use it
-    mainShader:beginPass("Default")
+  -- Main technique has a single pass, use it
+  mainShader:beginPass("Default")
 
-    -- Set up global shader variables and commit changes to the GPU
-    mainShader:setVector4("ambience", VectorRGBA(20, 20, 20))
-    mainShader:setFloat("time", time)
-    mainShader:setLight("sun", sun)
-    mainShader:commit()
+  -- Set up global shader variables and commit changes to the GPU
+  mainShader:setVector4("ambience", VectorRGBA(20, 20, 20))
+  mainShader:setFloat("time", time)
+  mainShader:setLight("sun", sun)
+  mainShader:commit()
 
-    -- Draw the scene
-    drawScene()
+  -- Draw the scene
+  drawScene()
 
-    -- Finalize the pass
-    mainShader:endPass()
-    mainShader:done()
-    ClearTarget()
+  -- Finalize the pass
+  mainShader:endPass()
+  mainShader:done()
+  ClearTarget()
 end
 
 function drawSceneUsingFFP()
-    mainRT:bind()
-    sun:enable(true)
-    ClearScene(20,20,20)
-	AmbientColor(20,20,20)
-    CameraPerspective(62, 2, 10)
-    drawScene()
-    ClearTarget()
+  mainRT:bind()
+  sun:enable(true)
+  ClearScene(20,20,20)
+AmbientColor(20,20,20)
+  CameraPerspective(62, 2, 10)
+  drawScene()
+  ClearTarget()
 end
 
 function _render()
-    viewMat = Matrix()
-        :rotate(time/4, 0, 0)
-        :translate(0,0,5)
-        :bind(VIEW)
+  viewMat = Matrix()
+      :rotate(time/4, 0, 0)
+      :translate(0,0,5)
+      :bind(VIEW)
 
-    if shaderDisabled then
-        drawSceneUsingFFP()
-        blitScreenFFP(mainRT)
-    else
-        drawSceneUsingShader()
-        blitScreen(mainRT)
-    end
+  if shaderDisabled then
+      drawSceneUsingFFP()
+      blitScreenFFP(mainRT)
+  else
+      drawSceneUsingShader()
+      blitScreen(mainRT)
+  end
 end
 
 function _render2d()
-    hintFont:drawText(0xFFFFFFFF, "Press 'm' to enable/disable shaders", 15, 30)
+  hintFont:drawText(0xFFFFFFFF, "Press 'm' to enable/disable shaders", 15, 30)
 end
 
 -- Draw model with a specific transformation matrix
 function drawScene()
-    model:draw(Matrix():rotate(time))
-    floor:draw(Matrix():translate(0,-2,0))
+  model:draw(Matrix():rotate(time))
+  floor:draw(Matrix():translate(0,-2,0))
 end
 
 -- Blit rendered RenderTarget using a RTT shader
 -- This allows us to apply various Post-FX effects
 function blitScreen(rt)
-    ClearTarget()
-    ClearScene(0,0,0)
+  ClearTarget()
+  ClearScene(0,0,0)
 
-    -- Initialize the shader and load the RTT technique
-    mainShader:begin("RTT")
+  -- Initialize the shader and load the RTT technique
+  mainShader:begin("RTT")
 
-    -- RTT technique has a Copy pass, use it
-    mainShader:beginPass("Copy")
+  -- RTT technique has a Copy pass, use it
+  mainShader:beginPass("Copy")
 
-    -- Set up global shader variables and commit changes to the GPU
-    mainShader:setTexture("sceneTex", rt)
-    mainShader:commit()
+  -- Set up global shader variables and commit changes to the GPU
+  mainShader:setTexture("sceneTex", rt)
+  mainShader:commit()
 
-    -- Copy the RT via shader
-    FillScreen(0xFFFFFFFF, true)
+  -- Copy the RT via shader
+  FillScreen(0xFFFFFFFF, true)
 
-    -- Finalize the pass and present changes to the screen
-    mainShader:endPass()
-    mainShader:done()
+  -- Finalize the pass and present changes to the screen
+  mainShader:endPass()
+  mainShader:done()
 end
 
 -- Blit rendered RenderTarget using FFP
 -- While easy to perform, it doesn't offer any significant advantage over shaders
 function blitScreenFFP(rt)
-    ClearTarget()
-    ClearScene(0,0,0)
-    BindTexture(0, rt)
+  ClearTarget()
+  ClearScene(0,0,0)
+  BindTexture(0, rt)
 
-    -- Copy the RT directly into backbuffer
-    FillScreen(0xFFFFFFFF, true)
-    BindTexture(0, 0)
+  -- Copy the RT directly into backbuffer
+  FillScreen(0xFFFFFFFF, true)
+  BindTexture(0, 0)
 end
