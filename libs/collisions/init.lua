@@ -58,7 +58,7 @@ function Box.intersectsPoint(self, pos, move)
   return self:intersectsSphere(pos, 0.0, move)
 end
 
-function Box.intersects(self, box, move)
+function Box.intersectsBox(self, box, move)
   if move == nil then
       move = Vector()
   end
@@ -79,6 +79,26 @@ function Box.intersects(self, box, move)
   return ok, move, (BmaxV - self.min)
 end
 
+-- World API
+
+local World = {}
+World.__index = World
+
+function World.addCollision(self, shape)
+    table.insert(self.shapes, shape)
+    return #self.shapes
+end
+
+function World.delCollision(self, idx)
+    table.remove(self.shapes, idx)
+end
+
+function World.forEach(self, fn)
+    for _, shape in pairs(self.shapes) do
+      fn(shape)
+    end
+end
+
 -- Public API
 
 function _.newBox(dims)
@@ -96,6 +116,12 @@ function _.newBox(dims)
       self.mat = self.mat:translate(dims[4])
   end
   return self
+end
+
+function _.newWorld()
+    local self = setmetatable({}, World)
+    self.shapes = {}
+    return self
 end
 
 return _

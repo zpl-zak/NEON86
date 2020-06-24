@@ -13,19 +13,18 @@ local DEFAULT_BOUNCE_FACTOR = 0.90
 local DEFAULT_SPHERE_VEL_CAP = 0.001
 local bounceFactor = DEFAULT_BOUNCE_FACTOR
 
-local roomSpawnBox
-roomSides = {}
 local balls = {}
 local camera
+local world
 
 function _init()
+  world = cols.newWorld()
   sphereModel = Model("sphere.fbx", false)
   sphere = sphereModel:getRootNode()
 
   roomScene = Scene("scene.fbx")
   roomRoot = roomScene:getRootNode()
   room = roomRoot:findNode("room")
-  roomSpawnBox = roomRoot:findNode("roomBounds"):getMeshParts()[1][1]:getBounds()
   addBall()
 
   local cament = roomScene:findTarget("campos")
@@ -36,7 +35,7 @@ function _init()
   camera = cam.newCamera(campos)
   camera.updateMovement = function(self, dt)
     self.pos = self.pos + self.vel
-    for _, side in pairs(roomSides) do
+    world:forEach(function (side)
         ok, move = side:intersectsSphere(self.pos, 1, Vector(self.vel:x(), 0, 0))
 
         if ok then
@@ -54,7 +53,7 @@ function _init()
         if ok then
             self.pos = self.pos + move
         end
-    end
+    end)
     self.vel = self.vel + self.vel:neg()*0.10
   end
 
@@ -64,13 +63,12 @@ function _init()
       camup
   ):bind(VIEW)
 
-  for i, side in pairs(room:getNodes()) do
+  for _, side in pairs(room:getNodes()) do
       local dims = side:getMeshParts()[1][1]:getBounds()
       local mat = side:getTransform()
       local tdims = cols.newBox(dims):withMatrix(mat)
       tdims = tdims:withDelta(Vector(0,10,10))
-      LogString("Room side " .. tostring(i) .. ": min(" .. vec2str(tdims.min) .. "), max(" .. vec2str(tdims.max) .. ")")
-      table.insert(roomSides, tdims)
+      world:addCollision(tdims)
   end
 
   light = Light()
@@ -132,9 +130,9 @@ function _render()
   room:draw()
 
   ToggleWireframe(true)
-  for _, side in pairs(roomSides) do
+  world:forEach(function (side)
       DrawBox(Matrix():translate(side.mat:row(4)), side.dims, 0xFFFFFFFF)
-  end
+  end)
   ToggleWireframe(false)
 
   for _, ball in pairs(balls) do
@@ -155,20 +153,11 @@ T - reset scene
 end
 
 function addBall()
-  local opos = Vector3(
-      math.random(roomSpawnBox[1]:x(), roomSpawnBox[2]:x()),
-      math.random(roomSpawnBox[1]:y(), roomSpawnBox[2]:y()),
-      math.random(roomSpawnBox[1]:z(), roomSpawnBox[2]:z())
-  )
-
   local ovel = Vector3(
       math.random(-DEFAULT_SPHERE_VEL_CAP,DEFAULT_SPHERE_VEL_CAP),
       math.random(-DEFAULT_SPHERE_VEL_CAP,DEFAULT_SPHERE_VEL_CAP),
       math.random(-DEFAULT_SPHERE_VEL_CAP,DEFAULT_SPHERE_VEL_CAP)
   )
-
-  LogString("Room min: " .. vec2str(roomSpawnBox[1]) .. ", Room max: " .. vec2str(roomSpawnBox[2]))
-  LogString("New ball at: " .. vec2str(opos) .. " with velocity: " .. vec2str(ovel))
 
   table.insert(balls, {
 --         pos = opos,
@@ -182,27 +171,18 @@ function updateBalls(dt)
   for _, ball in pairs(balls) do
       local vel = ball.vel:get()
 
-      for _, side in pairs(roomSides) do
-          for i=1,3 do
-              local v = Vector():m(i, vel[i])
-              ok, delta = side:intersectsSphere(ball.pos, 2, v)
+      world:forEach(function (side)
+        for i=1,3 do
+          local v = Vector():m(i, vel[i])
+          ok, delta = side:intersectsSphere(ball.pos, 2, v)
 
-              if ok then
-                  ball.vel = ball.vel:m(i, vel[i]*-1*bounceFactor)
-                  ball.pos = ball.pos + delta
-                  i=99
-              end
+          if ok then
+              ball.vel = ball.vel:m(i, vel[i]*-1*bounceFactor)
+              ball.pos = ball.pos + delta
+              i=99
           end
-      end
-
---         for _, sndBall in pairs(balls) do
---             local dist = (sndBall.pos - ball.pos):mag()
-
---             if dist <= 4 then
---                 ball.vel = ball.vel:neg()
---                 sndBall.vel = sndBall.vel:neg()
---             end
---         end
+        end
+      end)
 
       ball.pos = ball.pos + ball.vel
       ball.vel:y(ball.vel:y()+gravity*dt)
