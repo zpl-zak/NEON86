@@ -15,7 +15,7 @@ function Box.diameter(self)
 end
 
 function Box.clone(self)
-  return _.newBox({self.min, self.max})
+  return _.newBox({self.min, self.max, self.mat})
 end
 
 function Box.withDelta(self, delta)
@@ -101,19 +101,19 @@ end
 
 -- Public API
 
-function _.newBox(dims)
+function _.newBox(data)
   local self = setmetatable({}, Box)
-  self.min = dims[1]
-  self.max = dims[2]
+  self.min = data[1]
+  self.max = data[2]
   self.mat = Matrix()
   self.dims = self.max - self.min
 
-  if dims[3] ~= nil then
-      self.mat = dims[3] * self.mat
+  if data[3] ~= nil then
+      self.mat = data[3] * self.mat
   end
 
-  if dims[4] ~= nil then
-      self.mat = self.mat:translate(dims[4])
+  if data[4] ~= nil then
+      self.mat = self.mat:translate(data[4])
   end
   return self
 end

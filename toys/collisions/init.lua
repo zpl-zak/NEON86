@@ -66,8 +66,7 @@ function _init()
   for _, side in pairs(room:getNodes()) do
       local dims = side:getMeshParts()[1][1]:getBounds()
       local mat = side:getTransform()
-      local tdims = cols.newBox(dims):withMatrix(mat)
-      tdims = tdims:withDelta(Vector(0,10,10))
+      local tdims = cols.newBox(dims):withMatrix(mat):withDelta(Vector(0,10,10))
       world:addCollision(tdims)
   end
 
