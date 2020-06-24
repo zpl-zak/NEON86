@@ -71,7 +71,7 @@ set proj=%proj: =%
 	if %errorlevel%==14 call :tests
 	if %errorlevel%==15 call :new_project
 	if %errorlevel%==16 call :open_explorer
-	if %errorlevel%==17 set "proj=base"
+	if %errorlevel%==17 call :toggle_base
 	if %errorlevel%==18 start "" "https://zaklaus.itch.io/neon-86"
 	if %errorlevel%==19 call :open_in_lite_libs
 
@@ -240,6 +240,15 @@ exit /B 0
 	if "%a%"=="" exit /B 0
 	set proj=%a%
 	xcopy /Y /E toys\base\ toys\%proj%\
+exit /B 0
+
+:toggle_base
+	if "%proj%"=="base" (
+		set proj=%oldproj%
+	) else (
+		set oldproj=%proj%
+		set proj=base
+	)
 exit /B 0
 
 :open_explorer
