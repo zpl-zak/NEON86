@@ -35,6 +35,9 @@ POINT CInput::GetMouseXY(VOID) const
 
 VOID CInput::SetCursor(BOOL state)
 {
+    if (GetCursor() == state)
+        return;
+
     ShowCursor(state);
 }
 
@@ -49,6 +52,9 @@ BOOL CInput::GetCursor(VOID)
 
 VOID CInput::SetCursorMode(UCHAR mode)
 {
+    if (mCursorMode == mode)
+        return;
+
     mCursorMode = mode;
 
     if (mCursorMode == CURSORMODE_CENTERED || mCursorMode == CURSORMODE_WRAPPED)

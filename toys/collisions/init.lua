@@ -58,9 +58,6 @@ function _init()
 
     RegisterFontFile("slkscr.ttf")
     testFont = Font("Silkscreen", 18, 1, false)
-
-    ShowCursor(false)
-	SetCursorMode(CURSORMODE_CENTERED)
 end
 
 function _update(dt)
@@ -71,9 +68,12 @@ function _update(dt)
         ExitGame()
     end
 
-    if GetKeyDown(KEY_F2) then
-		ShowCursor(not IsCursorVisible())
-		SetCursorMode(1-GetCursorMode())
+    if GetMouse(MOUSE_RIGHT_BUTTON) then
+        ShowCursor(false)
+    	SetCursorMode(CURSORMODE_CENTERED)
+    else
+        ShowCursor(true)
+    	SetCursorMode(CURSORMODE_DEFAULT)
     end
 
     if GetKeyDown(KEY_SPACE) then
@@ -123,6 +123,7 @@ function _render2d()
     testFont:drawText(0xFFFFFFFF, [[
 Simple sphere physics
 Press SPACE to spawn another ball!
+Hold RMB to look around
 M - bounce: crazy
 N - bounce: normal
 B - bounce: less bouncy
