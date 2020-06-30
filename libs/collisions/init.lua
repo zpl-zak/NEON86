@@ -1,13 +1,51 @@
 local _ = {}
 
-function squared(a)
-  return a*a
+-- TriangleMesh API
+
+local TriangleMesh = {}
+TriangleMesh.__index = TriangleMesh
+
+function TriangleMesh.clone(self)
+  return _.newTriangleMesh(self.tris, self.mat)
+end
+
+function TriangleMesh.testSphere(self, pos, radius, move)
+  ok, _ = self.bounds:testSphere(pos, radius, move)
+  if not ok then
+    return false, move:neg()
+  end
+
+  for _, tr in pairs(self.tris) do
+    local v1 = tr[1]
+    local v2 = tr[2]
+    local v3 = tr[3]
+    
+    local u = v2 - v1
+    local v = v3 - v1
+    local n = u:cross(v)
+    local w = pos - v1
+    local n2 = squared(n)
+    local a = (u:cross(w) * n) / n2
+    local b = (w:cross(v) * n) / n2
+    local c = 1 - a - b
+
+    if (0 <= c) and (c <= 1) and
+       (0 <= b) and (b <= 1) and
+       (0 <= a) and (a <= 1) then
+        local pp = (v1 * c) + (v2 * b) + (v3 * a)
+
+        if (pp - pos):mag() <= radius then
+          return true, move:neg(), pp, tr
+        end
+    end
+  end
+
+  return false, move
 end
 
 -- Box API
 
 local Box = {}
-
 Box.__index = Box
 
 function Box.diameter(self)
@@ -18,17 +56,9 @@ function Box.clone(self)
   return _.newBox({self.min, self.max, self.mat})
 end
 
-function Box.withDelta(self, delta)
-  return _.newBox({self.min+delta, self.max+delta, self.mat, delta})
-end
-
-function Box.withMatrix(self, mat)
-  return _.newBox({self.min*mat, self.max*mat, mat})
-end
-
-function Box.intersectsSphere(self, pos, radius, move)
+function Box.testSphere(self, pos, radius, move)
   if move == nil then
-      move = Vector()
+    move = Vector()
   end
   local sqDist = 0.0
   local p = (pos + move):get()
@@ -36,29 +66,29 @@ function Box.intersectsSphere(self, pos, radius, move)
   local max = self.max:get()
 
   for i=1,3 do
-      local v = p[i]
-      if v < min[i] then
-          sqDist = sqDist + squared(min[i] - v)
-      end
-      if v > max[i] then
-          sqDist = sqDist + squared(v - max[i])
-      end
+    local v = p[i]
+    if v < min[i] then
+      sqDist = sqDist + squared(min[i] - v)
+    end
+    if v > max[i] then
+      sqDist = sqDist + squared(v - max[i])
+    end
   end
 
   local delta = sqDist - squared(radius)
 
   if delta <= 0 then
-      return true, move:neg()
+    return true, move:neg()
   else
-      return false, move
+    return false, move
   end
 end
 
-function Box.intersectsPoint(self, pos, move)
-  return self:intersectsSphere(pos, 0.0, move)
+function Box.testPoint(self, pos, move)
+  return self:testSphere(pos, 0.0, move)
 end
 
-function Box.intersectsBox(self, box, move)
+function Box.testBox(self, box, move)
   if move == nil then
       move = Vector()
   end
@@ -69,11 +99,11 @@ function Box.intersectsBox(self, box, move)
   local Bmax = BmaxV:get()
 
   ok = (Amin[1] <= Bmax[1] and Amax[1] >= Bmin[1]) and
-        (Amin[2] <= Bmax[2] and Amax[2] >= Bmin[2]) and
-        (Amin[3] <= Bmax[3] and Amax[3] >= Bmin[3])
+       (Amin[2] <= Bmax[2] and Amax[2] >= Bmin[2]) and
+       (Amin[3] <= Bmax[3] and Amax[3] >= Bmin[3])
 
   if not ok then
-      move = move:neg()
+    move = move:neg()
   end
 
   return ok, move, (BmaxV - self.min)
@@ -85,43 +115,149 @@ local World = {}
 World.__index = World
 
 function World.addCollision(self, shape)
-    table.insert(self.shapes, shape)
-    return #self.shapes
+  table.insert(self.shapes, shape)
+  return #self.shapes
 end
 
 function World.delCollision(self, idx)
-    table.remove(self.shapes, idx)
+  table.remove(self.shapes, idx)
 end
 
 function World.forEach(self, fn)
-    for _, shape in pairs(self.shapes) do
-      fn(shape)
-    end
+  for _, shape in pairs(self.shapes) do
+    fn(shape)
+  end
 end
 
 -- Public API
 
-function _.newBox(data)
+function _.newTriangleMesh(tris, mat)
+  if mat == nil then
+    mat = Matrix()
+  end
+  local self = setmetatable({}, TriangleMesh)
+  self.tris = transformTriangles(tris, mat)
+  self.bounds = _.newBox(calculateTrisMinMax(self.tris))
+  self.mat = mat
+  return self
+end
+
+function _.newTriangleMeshFromVertexData(data, mat)
+  local tris = convertVertexDataToTris(data)
+  return _.newTriangleMesh(tris, mat)
+end
+
+function _.newTriangleMeshFromPart(part, mat)
+  return _.newTriangleMeshFromVertexData({part:getVertices(), part:getIndices()}, mat)
+end
+
+function _.newBox(data, mat)
+  if mat == nil then
+    mat = Matrix()
+  end
   local self = setmetatable({}, Box)
-  self.min = data[1]
-  self.max = data[2]
-  self.mat = Matrix()
+  self.min = data[1] * mat
+  self.max = data[2] * mat
+  self.mat = mat
   self.dims = self.max - self.min
-
-  if data[3] ~= nil then
-      self.mat = data[3] * self.mat
-  end
-
-  if data[4] ~= nil then
-      self.mat = self.mat:translate(data[4])
-  end
   return self
 end
 
 function _.newWorld()
-    local self = setmetatable({}, World)
-    self.shapes = {}
-    return self
+  local self = setmetatable({}, World)
+  self.shapes = {}
+  return self
+end
+
+-- Helpers
+
+function squared(a)
+  return a*a
+end
+
+function calculateTrisMinMax(tris)
+  local min = Vector3()
+  local max = Vector3()
+
+  for i=1,3 do
+    for _, tr in pairs(tris) do
+      for _, v in pairs(tr) do
+        if v:get()[i] < min:get()[i] then
+          min = min:m(i, v:get()[i])
+        end
+        if v:get()[i] > max:get()[i] then
+          max = max:m(i, v:get()[i])
+        end
+      end
+    end
+  end
+  return {min, max}
+end
+
+function transformTriangles(tris, mat)
+  local newTris = {}
+  for _, tr in pairs(tris) do
+    local v1 = tr[1] * mat
+    local v2 = tr[2] * mat
+    local v3 = tr[3] * mat
+    table.insert(newTris, {v1,v2,v3})
+  end
+  return newTris
+end
+
+function convertVertexDataToTris(data)
+  local verts = data[1]
+  local inds = data[2]
+  local tris = {}
+  local xyz = {}
+
+  for _, vert in pairs(verts) do
+    local vertData = vert:get()
+    table.insert(xyz, Vector3(vertData[1], vertData[2], vertData[3]))
+  end
+
+  if inds ~= nil and #inds > 0 then
+    for i=1,#inds,3 do
+      local v1 = xyz[inds[i+0]+1]
+      local v2 = xyz[inds[i+1]+1]
+      local v3 = xyz[inds[i+2]+1]
+      table.insert(tris, {v1,v2,v3})
+    end
+  else
+    for i=1,#xyz,3 do
+      local v1 = xyz[i+0]
+      local v2 = xyz[i+1]
+      local v3 = xyz[i+2]
+      table.insert(tris, {v1,v2,v3})
+    end
+  end
+
+  return tris
+end
+
+function findClosestPointToCenter(pos, v1, v2, v3)
+  local cp = v1
+  local d1 = (pos-v1):magSq()
+  local d2 = (pos-v2):magSq()
+  local d3 = (pos-v3):magSq()
+  local sd = d1
+  if d2 < sd then
+    cp = v2
+    sd = d2
+  end
+  if d3 < sd then
+    cp = v3
+    sd = d3
+  end
+  return cp
+end
+
+function distSq(v)
+  return math.abs(squared(v:x()) + squared(v:y()) + squared(v:z()))
+end
+
+function area(a, b)
+  return math.abs((a:x() * (b:y() - b:z()) + a:y() * (b:z() - b:x()) + a:z() * (b:x() - b:y())) / 2.0)
 end
 
 return _

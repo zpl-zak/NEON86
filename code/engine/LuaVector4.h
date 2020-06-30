@@ -107,7 +107,7 @@ static INT vector4_sub(lua_State* L)
         vector4_new(L);
         D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
         D3DXVec4Subtract(out, vec, vecRHS);
-        
+        out->w = 0.0f;
 		return 1;
     }
 
@@ -141,6 +141,7 @@ static INT vector4_div(lua_State* L)
 
     vector4_new(L);
     D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
+    vec->w = 0.0f;
     *out = *vec / scalarRHS;
     return 1;
 }
@@ -183,10 +184,11 @@ static INT vector4_dot(lua_State* L)
 static INT vector4_get(lua_State* L)
 {
 	D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+    UINT onlyThreeComponents = (UINT)lua_tointeger(L, 2);
 	FLOAT arr[4] = { vec->x, vec->y, vec->z, vec->w };
 	
 	lua_newtable(L);
-	for (UINT i=0; i<4; i++)
+	for (UINT i=0; i<(UINT)(onlyThreeComponents ? 3 : 4); i++)
 	{
 		lua_pushinteger(L, i+1ULL);
 		lua_pushnumber(L, arr[i]);

@@ -100,8 +100,15 @@ static INT facegroup_getmaterialstage(lua_State* L)
 static INT facegroup_draw(lua_State* L)
 {
 	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
-	
-	mesh->Draw(NULL);
+    D3DXMATRIX* mat = &D3DXMATRIX();
+
+	if (lua_gettop(L) >= 2)
+	{
+		mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+	}
+	else mat = NULL;
+
+	mesh->Draw(mat);
 
 	lua_pushvalue(L, 1);
 	return 1;

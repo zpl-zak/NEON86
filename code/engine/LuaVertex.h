@@ -24,12 +24,12 @@ static INT vertex_new(lua_State* L)
 		tv = (FLOAT)luaL_checknumber(L, 5);
 	}
 
-	if (lua_gettop(L) == 6)
+	if (lua_gettop(L) >= 6)
 	{
 		color = (DWORD)luaL_checknumber(L, 6);
 	}
 
-	if (lua_gettop(L) == 9)
+	if (lua_gettop(L) >= 9)
 	{
         nx = (FLOAT)luaL_checknumber(L, 7);
         ny = (FLOAT)luaL_checknumber(L, 8);
@@ -37,6 +37,7 @@ static INT vertex_new(lua_State* L)
 	}
 
 	VERTEX* vert = (VERTEX*)lua_newuserdata(L, sizeof(VERTEX));
+	ZeroMemory(vert, sizeof(VERTEX));
 	vert->x = x;
 	vert->y = y;
 	vert->z = z;

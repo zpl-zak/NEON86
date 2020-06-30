@@ -62,7 +62,7 @@ function Camera.updateMouseLook(self, dt)
 	end
 end
 
-function Camera.updateMovement(self, dt)
+function Camera.updateMovement(self)
   self.pos = self.pos + self.vel
   self.vel = self.vel + self.vel:neg()*0.10
 end

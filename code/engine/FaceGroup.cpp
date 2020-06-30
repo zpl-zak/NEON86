@@ -96,7 +96,15 @@ VOID CFaceGroup::Build(VOID)
 	if (mVerts.GetCount() == 0)
 		return;
 
-	DWORD numFaces = ((mIndices.GetCount() > 0) ? mIndices.GetCount() : mVerts.GetCount())/3;
+	if (mIndices.GetCount() == 0)
+	{
+		// Small hack, populate indices from verts
+		for (UINT i = 0; i < mVerts.GetCount(); i++) {
+			AddIndex(i);
+		}
+	}
+
+	DWORD numFaces = mIndices.GetCount()/3;
 	
 	D3DXCreateMesh(numFaces,
 		mVerts.GetCount(),
@@ -130,12 +138,9 @@ VOID CFaceGroup::Build(VOID)
 
 	mData.mesh->UnlockVertexBuffer();
 
-    if (mIndices.GetCount() > 0)
-    {
-        mData.mesh->LockIndexBuffer(0, (VOID**)&vidMem);
-        memcpy(vidMem, mIndices.GetData(), mIndices.GetCount() * sizeof(SHORT));
-		mData.mesh->UnlockIndexBuffer();
-    }
+    mData.mesh->LockIndexBuffer(0, (VOID**)&vidMem);
+    memcpy(vidMem, mIndices.GetData(), mIndices.GetCount() * sizeof(SHORT));
+    mData.mesh->UnlockIndexBuffer();
 
 	mIsDirty = FALSE;
 }
