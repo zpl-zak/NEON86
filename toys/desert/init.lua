@@ -68,13 +68,8 @@ function _update(dt)
     camera.vel:y(camera.vel:y() + 5)
   end
 
-  if GetMouse(MOUSE_RIGHT_BUTTON) then
-      ShowCursor(false)
-    SetCursorMode(CURSORMODE_CENTERED)
-  else
-    ShowCursor(true)
-    SetCursorMode(CURSORMODE_DEFAULT)
-  end
+  ShowCursor(false)
+  SetCursorMode(CURSORMODE_CENTERED)
 
   time = time + dt
 end
