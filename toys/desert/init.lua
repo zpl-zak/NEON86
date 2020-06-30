@@ -35,15 +35,15 @@ function _init()
   camera.updateMovement = function(self, dt)
     self.dirs.fwd:y(0) -- Ensure heading doesn't affect movement
     self.pos = self.pos + self.vel
+    self.vel:y(self.vel:y() - 6*dt)
     world:forEach(function (shape)
-      ok, move, cp = shape:testSphere(self.pos, 5, Vector(0, self.vel:y(), 0))
+      ok, move, cp = shape:testSphere(self.pos, 1, Vector(0, self.vel:y(), 0))
 
       if ok then
-        self.pos:y(cp:y() + 5)
+        self.pos:y(cp:y())
         self.vel:y(0)
       end
     end)
-    self.vel:y(self.vel:y() - 6*dt)
     self.vel = self.vel + self.vel:neg()*0.10
   end
 
@@ -78,7 +78,7 @@ function _render()
   ClearScene(80,80,69)
   AmbientColor(45,45,45)
   CameraPerspective(62, 0.1, 1000)
-  camera.mat:bind(VIEW)
+  camera.mat:translate(Vector3(0,-5,0)):bind(VIEW)
   terrain:draw()
 
   ToggleWireframe(true)
