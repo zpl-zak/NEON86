@@ -64,6 +64,10 @@ function _update(dt)
       ExitGame()
   end
 
+  if GetKeyDown(KEY_SPACE) then
+    camera.vel:y(camera.vel:y() + 5)
+  end
+
   if GetMouse(MOUSE_RIGHT_BUTTON) then
       ShowCursor(false)
     SetCursorMode(CURSORMODE_CENTERED)
