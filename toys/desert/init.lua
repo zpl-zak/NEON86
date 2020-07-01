@@ -6,18 +6,18 @@ local cols = require "collisions"
 local cam = require "camera"
 
 local camera
-local world, propCols
+local world
 local terrain, trMesh, propsNode
 
 function _init()
   world = cols.newWorld()
-  propCols = cols.newWorld()
   terrain = Scene("desert.fbx")
   local terrainRoot = terrain:getRootNode()
   propsNode = terrainRoot:findNode("props")
   local meshNode = terrainRoot:findNode("terrain")
   local mesh = meshNode:getMeshParts()[1][1]
   trMesh = cols.newTriangleMeshFromPart(mesh, meshNode:getFinalTransform())
+  trMesh.friction = 0.1
   world:addCollision(trMesh)
 
   camera = cam.newCamera(terrainRoot:findTarget("cament"):row(4))
@@ -26,30 +26,13 @@ function _init()
     self.dirs.fwd:y(0) -- Ensure heading doesn't affect movement
     self.vel:y(self.vel:y() - 6*dt)
     world:forEach(function (shape)
-      ok, move, cp = shape:testSphere(self.pos, 1, Vector(0, self.vel:y(), 0))
+      ok, move, cp, tr = shape:testSphere(self.pos, 1, self.vel)
       
       if ok then
-        self.pos:y(cp:y())
-        self.vel:y(0)
-      end
-    end)
-    propCols:forEach(function (side)
-      ok, move = side:testSphere(self.pos, 1, Vector(self.vel:x(), 0, 0))
-      
-      if ok then
-        self.vel:x(0)
-      end
-      
-      ok, move = side:testSphere(self.pos, 1, Vector(0, self.vel:y(), 0))
-      
-      if ok then
-        self.vel:y(0)
-      end
-      
-      ok, move = side:testSphere(self.pos, 1, Vector(0, 0, self.vel:z()))
-      
-      if ok then
-        self.vel:z(0)
+        local dir = self.vel
+        local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
+        local wallDir = norm * (dir * norm)
+        self.vel = self.vel - wallDir
       end
     end)
     self.pos = self.pos + self.vel
@@ -60,7 +43,9 @@ function _init()
   for _, propNode in pairs(propsNode:getNodes()) do
     local prop = propNode:getMeshes()[1]
     for _, part in pairs(prop:getParts()) do
-      propCols:addCollision(cols.newTriangleMeshFromPart(part, propNode:getFinalTransform()))
+      slMesh = cols.newTriangleMeshFromPart(part, propNode:getFinalTransform())
+      slMesh.friction = 1.0
+      world:addCollision(slMesh)
     end
   end
 

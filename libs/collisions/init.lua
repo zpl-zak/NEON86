@@ -191,7 +191,6 @@ function calculateTrisMinMax(tris)
     for _, v in pairs(tr) do
       for i=1,3 do
         local c = v:get()[i]
-        LogString(vec2str(v))
         if c < min:get()[i] then
           min = min:m(i, c)
         end
