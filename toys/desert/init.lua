@@ -60,7 +60,7 @@ function _init()
   for _, propNode in pairs(propsNode:getNodes()) do
     local prop = propNode:getMeshes()[1]
     for _, part in pairs(prop:getParts()) do
-      propCols:addCollision(cols.newBoxFromPart(part, propNode:getFinalTransform()))
+      propCols:addCollision(cols.newTriangleMeshFromPart(part, propNode:getFinalTransform()))
     end
   end
 
