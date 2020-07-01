@@ -205,7 +205,8 @@ end
 
 function transformTriangles(tris, mat)
   local newTris = {}
-  for _, tr in pairs(tris) do
+  for idx, tr in pairs(tris) do
+    -- LogString(tostring(idx) .. " " .. tostring(tr[1]).. " " .. tostring(tr[2]).. " " .. tostring(tr[3]))
     local v1 = tr[1] * mat
     local v2 = tr[2] * mat
     local v3 = tr[3] * mat
@@ -219,12 +220,12 @@ function convertVertexDataToTris(data)
   local inds = data[2]
   local tris = {}
   local xyz = {}
-
+  
   for _, vert in pairs(verts) do
     local vertData = vert:get()
     table.insert(xyz, Vector3(vertData[1], vertData[2], vertData[3]))
   end
-
+  
   if inds ~= nil and #inds > 0 then
     for i=1,#inds,3 do
       local v1 = xyz[inds[i+0]+1]

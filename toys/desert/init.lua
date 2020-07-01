@@ -24,15 +24,20 @@ function _init()
   camera.speed = 30.0
   camera.updateMovement = function(self, dt)
     self.dirs.fwd:y(0) -- Ensure heading doesn't affect movement
-    self.vel:y(self.vel:y() - 6*dt)
+    
+    if self.grounded == false then
+      self.vel:y(self.vel:y() - 6*dt)
+    else
+      self.vel:y(0)
+    end
     world:forEach(function (shape)
       ok, move, cp, tr = shape:testSphere(self.pos, 1, self.vel)
       
       if ok then
-        local dir = self.vel
         local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
-        local wallDir = norm * (dir * norm)
+        local wallDir = norm * (self.vel * norm)
         self.vel = self.vel - wallDir
+        self.grounded = true
       end
     end)
     self.pos = self.pos + self.vel
@@ -63,19 +68,22 @@ end
 
 function _update(dt)
   camera:update(dt)
-
+  
   if GetKeyDown(KEY_ESCAPE) then
-      ExitGame()
+    ExitGame()
   end
-
+  
   if GetKeyDown(KEY_SPACE) then
-    camera.vel:y(camera.vel:y() + 2)
+    if camera.grounded == true then
+      camera.vel:y(camera.vel:y() + 3)
+    end
   end
-
+  
   ShowCursor(false)
   SetCursorMode(CURSORMODE_CENTERED)
 
   time = time + dt
+  camera.grounded = false
 end
 
 function _render()

@@ -47,14 +47,15 @@ VOID CScene::Release()
 BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
 {
     Assimp::Importer imp;
-    imp.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 65534);
+    imp.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 32762);
 
     DWORD meshFlags = MESHIMPORT_FLAGS;
 
     if (optimizeMesh)
     {
         meshFlags |= aiProcess_PreTransformVertices 
-                    | aiProcess_RemoveRedundantMaterials;
+                    | aiProcess_RemoveRedundantMaterials
+                    | aiProcess_Triangulate;
     }
 
     const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), meshFlags);

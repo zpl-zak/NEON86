@@ -9,7 +9,7 @@ local cols = require "collisions"
 local cam = require "camera"
 local gravity = -0.0981
 
-local DEFAULT_BOUNCE_FACTOR = 0.90
+local DEFAULT_BOUNCE_FACTOR = 1.8
 local DEFAULT_SPHERE_VEL_CAP = 0.001
 local bounceFactor = DEFAULT_BOUNCE_FACTOR
 
@@ -34,26 +34,17 @@ function _init()
 
   camera = cam.newCamera(campos)
   camera.updateMovement = function(self, dt)
-    self.pos = self.pos + self.vel
-    world:forEach(function (side, idx)
-        ok, move = side:testSphere(self.pos, 1, Vector(self.vel:x(), 0, 0))
-
-        if ok then
-            self.pos = self.pos + move
-        end
-
-        ok, move = side:testSphere(self.pos, 1, Vector(0, self.vel:y(), 0))
-
-        if ok then
-            self.pos = self.pos + move
-        end
-
-        ok, move = side:testSphere(self.pos, 1, Vector(0, 0, self.vel:z()))
-
-        if ok then
-            self.pos = self.pos + move
-        end
+    world:forEach(function (shape)
+      ok, move, cp, tr = shape:testSphere(self.pos, 1, self.vel)
+      
+      if ok then
+        local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
+        local wallDir = norm * (self.vel * norm)
+        self.vel = self.vel - wallDir
+        self.grounded = true
+      end
     end)
+    self.pos = self.pos + self.vel
     self.vel = self.vel + self.vel:neg()*0.10
   end
 
@@ -66,7 +57,7 @@ function _init()
   for _, sideNode in pairs(room:getNodes()) do
     local mat = sideNode:getFinalTransform()
     local part = sideNode:getMeshParts()[1][1]
-    local dims = cols.newBoxFromPart(part, mat)
+    local dims = cols.newTriangleMeshFromPart(part, mat)
     world:addCollision(dims)
   end
 
@@ -101,11 +92,11 @@ function _update(dt)
   end
 
   if GetKeyDown("m") then
-      bounceFactor = 1.35
+      bounceFactor = 2.35
   end
 
   if GetKeyDown("b") then
-      bounceFactor = 0.5
+      bounceFactor = 1.2
   end
 
   if GetKeyDown("n") then
@@ -162,18 +153,14 @@ end
 
 function updateBalls(dt)
   for _, ball in pairs(balls) do
-      local vel = ball.vel:get()
 
-      world:forEach(function (side)
-        for i=1,3 do
-          local v = Vector():m(i, vel[i])
-          ok, delta = side:testSphere(ball.pos, 2, v)
-
-          if ok then
-              ball.vel = ball.vel:m(i, vel[i]*-1*bounceFactor)
-              ball.pos = ball.pos + delta
-              i=99
-          end
+      world:forEach(function (shape)
+        ok, move, cp, tr = shape:testSphere(ball.pos, 2, ball.vel)
+        
+        if ok then
+          local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
+          local wallDir = norm * (ball.vel * norm)
+          ball.vel = ball.vel - wallDir*bounceFactor
         end
       end)
 
