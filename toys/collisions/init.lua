@@ -35,7 +35,7 @@ function _init()
   camera = cam.newCamera(campos)
   camera.updateMovement = function(self, dt)
     self.pos = self.pos + self.vel
-    world:forEach(function (side)
+    world:forEach(function (side, idx)
         ok, move = side:testSphere(self.pos, 1, Vector(self.vel:x(), 0, 0))
 
         if ok then
@@ -63,11 +63,11 @@ function _init()
       camup
   ):bind(VIEW)
 
-  for _, side in pairs(room:getNodes()) do
-      local dims = side:getMeshParts()[1][1]:getBounds()
-      local mat = side:getTransform():translate(Vector(0,10,10))
-      local tdims = cols.newBox(dims, mat)
-      world:addCollision(tdims)
+  for _, sideNode in pairs(room:getNodes()) do
+    local mat = sideNode:getFinalTransform()
+    local part = sideNode:getMeshParts()[1][1]
+    local dims = cols.newBoxFromPart(part, mat)
+    world:addCollision(dims)
   end
 
   light = Light()
@@ -96,7 +96,7 @@ function _update(dt)
     SetCursorMode(CURSORMODE_DEFAULT)
   end
 
-  if GetKeyDown(KEY_SPACE) then
+  if GetKey(KEY_SPACE) then
       addBall()
   end
 
@@ -127,12 +127,6 @@ function _render()
   CameraPerspective(62, 0.1, 100)
 
   room:draw()
-
-  ToggleWireframe(true)
-  world:forEach(function (side)
-      DrawBox(Matrix():translate(side.mat:row(4)), side.dims, 0xFFFFFFFF)
-  end)
-  ToggleWireframe(false)
 
   for _, ball in pairs(balls) do
       sphere:draw(Matrix():translate(ball.pos))

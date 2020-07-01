@@ -107,7 +107,7 @@ VOID CEngine::Think()
 
     if (mUnprocessedTime > mUpdateDuration)
     {
-        Update(deltaTime);
+        Update(mUpdateDuration);
         render = TRUE;
         mUnprocessedTime -= mUpdateDuration;
     }

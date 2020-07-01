@@ -172,19 +172,17 @@ static INT facegroup_getbounds(lua_State* L)
 {
 	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	D3DXVECTOR4* b = mesh->GetBounds();
-
+	
 	lua_newtable(L);
 
 	lua_pushinteger(L, 1);
 	D3DXVECTOR4* minVec = vector4_ctor(L);
 	*minVec = b[0];
-	minVec->w = 1.0f;
 	lua_settable(L, -3);
 
 	lua_pushinteger(L, 2);
     D3DXVECTOR4* maxVec = vector4_ctor(L);
 	*maxVec = b[1];
-	maxVec->w = 1.0f;
     lua_settable(L, -3);
 
 	return 1;

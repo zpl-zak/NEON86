@@ -15,6 +15,8 @@ function TriangleMesh.testSphere(self, pos, radius, move)
     return false, move:neg()
   end
 
+  pos = pos + move
+
   for _, tr in pairs(self.tris) do
     local v1 = tr[1]
     local v2 = tr[2]
@@ -124,8 +126,8 @@ function World.delCollision(self, idx)
 end
 
 function World.forEach(self, fn)
-  for _, shape in pairs(self.shapes) do
-    fn(shape)
+  for idx, shape in pairs(self.shapes) do
+    fn(shape, idx)
   end
 end
 
@@ -151,16 +153,22 @@ function _.newTriangleMeshFromPart(part, mat)
   return _.newTriangleMeshFromVertexData({part:getVertices(), part:getIndices()}, mat)
 end
 
-function _.newBox(data, mat)
-  if mat == nil then
-    mat = Matrix()
-  end
+function _.newBox(data)
   local self = setmetatable({}, Box)
-  self.min = data[1] * mat
-  self.max = data[2] * mat
-  self.mat = mat
+  self.min = data[1]
+  self.max = data[2]
   self.dims = self.max - self.min
   return self
+end
+
+function _.newBoxFromVertexData(data, mat)
+  local tris = convertVertexDataToTris(data)
+  local bounds = calculateTrisMinMax(transformTriangles(tris, mat))
+  return _.newBox(bounds)
+end
+
+function _.newBoxFromPart(part, mat)
+  return _.newBoxFromVertexData({part:getVertices(), part:getIndices()}, mat)
 end
 
 function _.newWorld()
@@ -176,17 +184,19 @@ function squared(a)
 end
 
 function calculateTrisMinMax(tris)
-  local min = Vector3()
-  local max = Vector3()
+  local min = Vector3(math.maxinteger, math.maxinteger, math.maxinteger)
+  local max = Vector3(math.mininteger, math.mininteger, math.mininteger)
 
-  for i=1,3 do
-    for _, tr in pairs(tris) do
-      for _, v in pairs(tr) do
-        if v:get()[i] < min:get()[i] then
-          min = min:m(i, v:get()[i])
+  for _, tr in pairs(tris) do
+    for _, v in pairs(tr) do
+      for i=1,3 do
+        local c = v:get()[i]
+        LogString(vec2str(v))
+        if c < min:get()[i] then
+          min = min:m(i, c)
         end
-        if v:get()[i] > max:get()[i] then
-          max = max:m(i, v:get()[i])
+        if c > max:get()[i] then
+          max = max:m(i, c)
         end
       end
     end

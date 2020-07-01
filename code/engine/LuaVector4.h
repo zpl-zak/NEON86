@@ -173,8 +173,8 @@ static INT vector4_dot(lua_State* L)
 	if ((matRHS = (D3DXMATRIX*)luaL_testudata(L, 2, L_MATRIX)))
 	{
 		vector4_new(L);
-		D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
-		D3DXVec4Transform(out, vec, matRHS);
+		D3DXVECTOR3* out = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR);
+		D3DXVec3TransformCoord(out, (D3DXVECTOR3*)vec, matRHS);
 		return 1;
 	}
 	
