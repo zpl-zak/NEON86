@@ -6,6 +6,12 @@
 #define ENGINE_API __declspec(dllimport)
 #endif
 
+#ifdef PLUGIN_EXPORTS
+#define PLUGIN_API __declspec(dllexport)
+#else
+#define PLUGIN_API __declspec(dllimport)
+#endif
+
 #define SAFE_DELETE(memory) if(memory) { delete memory; memory = NULL; }
 #define SAFE_DELETE_ARRAY(memory) if(memory) { delete[] memory; memory = NULL; }
 #define SAFE_FREE(memory) if(memory) { neon_free(memory); memory = NULL; }

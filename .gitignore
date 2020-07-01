@@ -7,6 +7,12 @@ Build
 Debug/
 Release/
 data
+
+*.pdb
+*.ilk
+*.lib
+*.exp
+
 .lite_workspace.lua
 *.code-workspace
 
