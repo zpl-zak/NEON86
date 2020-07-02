@@ -49,9 +49,7 @@ function Camera.updateInput(self, dt)
 		vel = vel * 4
 	end
 
-	if vel:mag() ~= 0 then
-		self.vel = self.vel + (Vector3(vel) - self.vel)*0.10
-	end
+  self.movedir = vel
 end
 
 function Camera.updateMouseLook(self, dt)
@@ -63,8 +61,8 @@ function Camera.updateMouseLook(self, dt)
 end
 
 function Camera.updateMovement(self)
+  self.vel = self.vel + (self.movedir - self.vel)*0.10
   self.pos = self.pos + self.vel
-  self.vel = self.vel + self.vel:neg()*0.10
 end
 
 -- Public API

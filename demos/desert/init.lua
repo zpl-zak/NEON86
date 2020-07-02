@@ -4,6 +4,7 @@ local testFont
 
 local cols = require "collisions"
 local cam = require "camera"
+local hh = require "helpers"
 
 local camera
 local world
@@ -17,25 +18,26 @@ function _init()
   local meshNode = terrainRoot:findNode("terrain")
   local mesh = meshNode:getMeshParts()[1][1]
   trMesh = cols.newTriangleMeshFromPart(mesh, meshNode:getFinalTransform())
-  trMesh.friction = 0.1
+  trMesh.friction = 0.075
   world:addCollision(trMesh)
 
   camera = cam.newCamera(terrainRoot:findTarget("cament"):row(4))
   camera.speed = 30.0
   camera.updateMovement = function(self, dt)
-    self.dirs.fwd:y(0) -- Ensure heading doesn't affect movement
-    
     if self.grounded == false then
       self.vel:y(self.vel:y() - 6*dt)
     end
+    self.movedir:y(0)
     world:forEach(function (shape)
-      shape:testSphere(self.pos, 2, self.vel - Vector3(0,5,0), function (norm)
-        self.vel = cols.slide(self.vel, norm)
+      shape:testSphere(self.pos, 2, self.movedir + self.vel + Vector3(0,-5,0), function (norm)
+        local o = cols.slide((self.vel), norm)
+        local g = cols.slide((self.movedir), norm)
+        self.vel = hh.lerp(o, g, shape.friction)
         self.grounded = true
       end)
     end)
+
     self.pos = self.pos + self.vel
-    self.vel = self.vel + self.vel:neg()*0.10
   end
 
   -- Create prop AABB collisions
@@ -43,7 +45,7 @@ function _init()
     local prop = propNode:getMeshes()[1]
     for _, part in pairs(prop:getParts()) do
       slMesh = cols.newTriangleMeshFromPart(part, propNode:getFinalTransform())
-      slMesh.friction = 1.0
+      slMesh.friction = 0.6
       world:addCollision(slMesh)
     end
   end
@@ -69,7 +71,7 @@ function _update(dt)
   
   if GetKeyDown(KEY_SPACE) then
     if camera.grounded == true then
-      camera.vel:y(camera.vel:y() + 3)
+      camera.vel:y(camera.vel:y() + 96*dt)
     end
   end
   

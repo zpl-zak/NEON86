@@ -65,20 +65,20 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
     local v = v3 - v1
     local n = u:cross(v)
     local w = pos - v1
+
     local n2 = squared(n)
     local a = (u:cross(w) * n) / n2
     local b = (w:cross(v) * n) / n2
     local c = 1 - a - b
 
     if (0 <= c) and (c <= 1) and
-       (0 <= b) and (b <= 1) and
-       (0 <= a) and (a <= 1) then
+      (0 <= b) and (b <= 1) and
+      (0 <= a) and (a <= 1) then
         local pp = (v1 * c) + (v2 * b) + (v3 * a)
 
         local d = (pp - pos):mag()
         if d <= radius then
           local pd = d - radius
-          LogString(tostring(pd))
           table.insert(contacts, {fn(u:cross(v):normalize(), pd, tr)})
         end
     end

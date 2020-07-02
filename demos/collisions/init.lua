@@ -34,6 +34,7 @@ function _init()
 
   camera = cam.newCamera(campos)
   camera.updateMovement = function(self, dt)
+    self.vel = self.movedir
     world:forEach(function (shape)
       shape:testSphere(self.pos, 1, self.vel, function (norm)
         local wallDir = norm * (self.vel * norm)
@@ -41,7 +42,6 @@ function _init()
       end)
     end)
     self.pos = self.pos + self.vel
-    self.vel = self.vel + self.vel:neg()*0.10
   end
 
   Matrix():lookAt(

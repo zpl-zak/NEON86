@@ -217,11 +217,11 @@ static INT vector4_field(lua_State* L)
 
 static INT vector4_normalize(lua_State* L)
 {
-    D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+    D3DXVECTOR3* vec = (D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR);
 
     vector4_new(L);
-    D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
-    D3DXVec4Normalize(out, vec);
+    D3DXVECTOR3* out = (D3DXVECTOR3*)luaL_checkudata(L, 2, L_VECTOR);
+    D3DXVec3Normalize(out, vec);
 
     return 1;
 }
