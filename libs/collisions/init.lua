@@ -217,6 +217,20 @@ function _.newWorld()
   return self
 end
 
+-- Response API
+
+function _.slide(dir, norm)
+  return _.bounce(dir, norm, 1.0)
+end
+
+function _.bounce(dir, norm, factor)
+  if factor < 1.0 then
+    factor = 1.0
+  end
+
+  return dir - (norm * (dir * norm))*factor
+end
+
 -- Helpers
 
 function squared(a)

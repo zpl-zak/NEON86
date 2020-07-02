@@ -30,8 +30,7 @@ function _init()
     end
     world:forEach(function (shape)
       shape:testSphere(self.pos, 2, self.vel - Vector3(0,5,0), function (norm)
-        local wallDir = norm * (self.vel * norm)
-        self.vel = self.vel - wallDir
+        self.vel = cols.slide(self.vel, norm)
         self.grounded = true
       end)
     end)

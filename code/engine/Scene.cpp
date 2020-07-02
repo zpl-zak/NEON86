@@ -54,8 +54,7 @@ BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
     if (optimizeMesh)
     {
         meshFlags |= aiProcess_PreTransformVertices 
-                    | aiProcess_RemoveRedundantMaterials
-                    | aiProcess_Triangulate;
+                    | aiProcess_RemoveRedundantMaterials;
     }
 
     const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), meshFlags);
