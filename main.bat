@@ -45,7 +45,7 @@ set proj=%proj: =%
 	echo  B. Change project
 	echo  C. Open In VS (minimal)
 	echo  D. Run production
-	echo  E. Run unit tests
+	echo  E. Run debug
 	echo  F. Create new project
 	echo  G. Open in explorer
 	echo  H. Switch to base template
@@ -68,7 +68,7 @@ set proj=%proj: =%
 	if %errorlevel%==11 call :change_project
 	if %errorlevel%==12 call :open_in_vs_minimal
 	if %errorlevel%==13 call :run_release
-	if %errorlevel%==14 call :tests
+	if %errorlevel%==14 call :debug
 	if %errorlevel%==15 call :new_project
 	if %errorlevel%==16 call :open_explorer
 	if %errorlevel%==17 call :toggle_base
@@ -104,11 +104,6 @@ exit /B 0
 	if not exist build\release\player.exe call :build_release
 	if %errorlevel%==0 exit /B 0
 	build\release\player.exe demos\%proj%
-exit /B 0
-
-:tests
-	echo Never!
-	pause
 exit /B 0
 
 :open_in_vs_minimal

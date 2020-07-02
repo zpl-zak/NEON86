@@ -11,10 +11,16 @@ end
 
 function Sphere.testSphere(self, pos, radius, move, fn)
   pos = pos + move
+  local d = (self.pos - pos):mag()
+  local r = (self.radius + radius)
 
-  if (self.pos - pos):mag() <= (self.radius + radius) then
-    return fn()
+  if d <= r then
+    return {fn((self.pos - pos):normalize(), (r-d))}
   end
+  if d == 0 then
+    return {fn(Vector3(1,0,0), self.radius)}
+  end
+  return {}
 end
 
 function Sphere.testPoint(self, pos, move, fn)
@@ -39,11 +45,11 @@ function TriangleMesh.clone(self)
 end
 
 function TriangleMesh.testSphere(self, pos, radius, move, fn)
-  local ok = self.bounds:testSphere(pos, radius, move, function ()
+  local aabbContacts = self.bounds:testSphere(pos, radius, move, function ()
     return true
   end)
 
-  if not ok then
+  if #aabbContacts < 1 then
     return
   end
 
@@ -69,8 +75,11 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
        (0 <= a) and (a <= 1) then
         local pp = (v1 * c) + (v2 * b) + (v3 * a)
 
-        if (pp - pos):mag() <= radius then
-          table.insert(contacts, {fn(u:cross(v):normalize(), tr)})
+        local d = (pp - pos):mag()
+        if d <= radius then
+          local pd = d - radius
+          LogString(tostring(pd))
+          table.insert(contacts, {fn(u:cross(v):normalize(), pd, tr)})
         end
     end
   end
@@ -95,8 +104,9 @@ function Box.testSphere(self, pos, radius, move, fn)
   if move == nil then
     move = Vector()
   end
+  pos = pos + move
   local sqDist = 0.0
-  local p = (pos + move):get()
+  local p = pos:get()
   local min = self.min:get()
   local max = self.max:get()
 
@@ -113,7 +123,11 @@ function Box.testSphere(self, pos, radius, move, fn)
   local delta = sqDist - squared(radius)
 
   if delta <= 0 then
-    return fn()
+    local cp = (self.max - self.min) / 2
+    local n = (cp - pos)
+    return {fn(n:normalize(), (radius - n:mag()))}
+  else
+    return {}
   end
 end
 
@@ -135,12 +149,10 @@ function Box.testBox(self, box, move, fn)
        (Amin[2] <= Bmax[2] and Amax[2] >= Bmin[2]) and
        (Amin[3] <= Bmax[3] and Amax[3] >= Bmin[3])
 
-  if not ok then
-    move = move:neg()
-  end
-
   if ok then
-    return fn(BmaxV - self.min)
+    return {fn(Vector(), 0, BmaxV - self.min)}
+  else
+    return {}
   end
 end
 
