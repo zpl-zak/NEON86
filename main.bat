@@ -16,7 +16,7 @@ if not exist build mkdir build
 if exist build\.proj (
 	set /p proj=<build\.proj
 	
-	if not exist "toys\%proj%" (
+	if not exist "demos\%proj%" (
 		set "proj=basic"
 		echo %proj% > build\.proj
 	)
@@ -97,13 +97,13 @@ exit /B 0
 
 :debug
 	if not exist build\debug\player.exe call :build
-	build\debug\player.exe toys\%proj%
+	build\debug\player.exe demos\%proj%
 exit /B 0
 
 :run_release
 	if not exist build\release\player.exe call :build_release
 	if %errorlevel%==0 exit /B 0
-	build\release\player.exe toys\%proj%
+	build\release\player.exe demos\%proj%
 exit /B 0
 
 :tests
@@ -123,7 +123,7 @@ exit /B 0
 	mkdir build\deploy
 	xcopy /Y build\release\*.dll build\deploy\
 	xcopy /Y build\release\player.exe build\deploy\
-	xcopy /Y /E /exclude:.gitignore toys\%proj%\ build\deploy\data\
+	xcopy /Y /E /exclude:.gitignore demos\%proj%\ build\deploy\data\
 	xcopy /Y /E /I /exclude:.gitignore libs build\deploy\libs
 	xcopy /Y LICENSE.md build\deploy\
 	xcopy /Y README.md build\deploy\
@@ -217,7 +217,7 @@ exit /B 0
 
 
 :open_in_lite
-	start lite toys\%proj%
+	start lite demos\%proj%
 exit /B 0
 
 :open_in_lite_libs
@@ -241,7 +241,7 @@ exit /B 0
 	set /p a="Enter name: "
 	if "%a%"=="" exit /B 0
 	set proj=%a%
-	xcopy /Y /E toys\base\ toys\%proj%\
+	xcopy /Y /E demos\base\ demos\%proj%\
 exit /B 0
 
 :toggle_base
@@ -254,5 +254,5 @@ exit /B 0
 exit /B 0
 
 :open_explorer
-	start explorer.exe toys\%proj%\
+	start explorer.exe demos\%proj%\
 exit /B 0

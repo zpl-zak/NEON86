@@ -18,7 +18,7 @@ BOOL CFileSystem::LoadGameInternal()
 	{
 	case LOADKIND_FOLDER:
 		{
-			DWORD ft = GetFileAttributes(mGamePath);
+			DWORD ft = GetFileAttributesA(mGamePath);
 
 			if (ft & FILE_ATTRIBUTE_DIRECTORY)
 				return TRUE;
@@ -69,7 +69,7 @@ VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
 BOOL CFileSystem::ValidatePath(LPCSTR path, LPCSTR dir)
 {
 	CHAR buf[MAX_PATH] = { 0 };
-    WIN32_FIND_DATA data;
+    WIN32_FIND_DATAA data;
 
 	if (!dir)
 	{
@@ -77,7 +77,7 @@ BOOL CFileSystem::ValidatePath(LPCSTR path, LPCSTR dir)
 	}
 	else
 		sprintf_s(buf, MAX_PATH, "%s\\%s\\*", mGamePath, dir);
-    HANDLE hFind = FindFirstFile(buf, &data);
+    HANDLE hFind = FindFirstFileA(buf, &data);
 
     if (hFind != INVALID_HANDLE_VALUE) {
         do {
@@ -108,7 +108,7 @@ BOOL CFileSystem::ValidatePath(LPCSTR path, LPCSTR dir)
 				FindClose(hFind);
 				return TRUE;
 			}
-        } while (FindNextFile(hFind, &data));
+        } while (FindNextFileA(hFind, &data));
         FindClose(hFind);
     }
 
