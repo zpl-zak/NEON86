@@ -129,9 +129,18 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         VERTEX vert = { 0 };
 
         const aiVector3D pos = mesh->mVertices[i];
-        const aiVector3D nm = mesh->mNormals[i];
-        const aiVector3D ta = mesh->mTangents[i];
-        const aiVector3D tb = mesh->mBitangents[i];
+        aiVector3D nm, ta, tb;
+        
+        if (mesh->HasNormals()) 
+        {
+            nm = mesh->mNormals[i];
+        }
+
+        if (mesh->HasTangentsAndBitangents())
+        {
+            ta = mesh->mTangents[i];
+            tb = mesh->mBitangents[i];
+        }
 
         vert.x = pos.x;
         vert.y = pos.y;

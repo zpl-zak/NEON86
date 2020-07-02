@@ -27,18 +27,13 @@ function _init()
     
     if self.grounded == false then
       self.vel:y(self.vel:y() - 6*dt)
-    else
-      self.vel:y(0)
     end
     world:forEach(function (shape)
-      ok, move, cp, tr = shape:testSphere(self.pos, 1, self.vel)
-      
-      if ok then
-        local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
+      shape:testSphere(self.pos, 2, self.vel - Vector3(0,5,0), function (norm)
         local wallDir = norm * (self.vel * norm)
         self.vel = self.vel - wallDir
         self.grounded = true
-      end
+      end)
     end)
     self.pos = self.pos + self.vel
     self.vel = self.vel + self.vel:neg()*0.10
@@ -90,7 +85,7 @@ function _render()
   ClearScene(80,80,69)
   AmbientColor(80,80,132)
   CameraPerspective(62, 0.1, 1000)
-  camera.mat:translate(Vector3(0,-5,0)):bind(VIEW)
+  camera.mat:bind(VIEW)
   terrain:draw()
   propsNode:draw()
 end

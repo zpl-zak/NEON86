@@ -35,14 +35,10 @@ function _init()
   camera = cam.newCamera(campos)
   camera.updateMovement = function(self, dt)
     world:forEach(function (shape)
-      ok, move, cp, tr = shape:testSphere(self.pos, 1, self.vel)
-      
-      if ok then
-        local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
+      shape:testSphere(self.pos, 1, self.vel, function (norm)
         local wallDir = norm * (self.vel * norm)
         self.vel = self.vel - wallDir
-        self.grounded = true
-      end
+      end)
     end)
     self.pos = self.pos + self.vel
     self.vel = self.vel + self.vel:neg()*0.10
@@ -155,13 +151,10 @@ function updateBalls(dt)
   for _, ball in pairs(balls) do
 
       world:forEach(function (shape)
-        ok, move, cp, tr = shape:testSphere(ball.pos, 2, ball.vel)
-        
-        if ok then
-          local norm = (tr[2] - tr[1]):cross(tr[3] - tr[1]):normalize()
+        shape:testSphere(ball.pos, 2, ball.vel, function (norm)
           local wallDir = norm * (ball.vel * norm)
           ball.vel = ball.vel - wallDir*bounceFactor
-        end
+        end)
       end)
 
       ball.pos = ball.pos + ball.vel

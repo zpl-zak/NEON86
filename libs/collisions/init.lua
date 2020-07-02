@@ -1,5 +1,34 @@
 local _ = {}
 
+-- Sphere API
+
+local Sphere = {}
+Sphere.__index = Sphere
+
+function Sphere.clone(self)
+  return _.newSphere(self.pos, self.radius)
+end
+
+function Sphere.testSphere(self, pos, radius, move, fn)
+  pos = pos + move
+
+  if (self.pos - pos):mag() <= (self.radius + radius) then
+    return fn()
+  end
+end
+
+function Sphere.testPoint(self, pos, move, fn)
+  return self:testSphere(pos, 0, move, fn)
+end
+
+function Sphere.testMesh(self, mesh, move, fn)
+  return mesh:testSphere(self.pos, self.radius, move:neg(), fn)
+end
+
+function Sphere.testBox(self, bounds, move, fn)
+  return bounds:testSphere(self.pos, self.radius, move:neg(), fn)
+end
+
 -- TriangleMesh API
 
 local TriangleMesh = {}
@@ -9,19 +38,23 @@ function TriangleMesh.clone(self)
   return _.newTriangleMesh(self.tris, self.mat)
 end
 
-function TriangleMesh.testSphere(self, pos, radius, move)
-  ok, _ = self.bounds:testSphere(pos, radius, move)
+function TriangleMesh.testSphere(self, pos, radius, move, fn)
+  local ok = self.bounds:testSphere(pos, radius, move, function ()
+    return true
+  end)
+
   if not ok then
-    return false, move:neg()
+    return
   end
 
   pos = pos + move
+  local contacts = {}
 
   for _, tr in pairs(self.tris) do
     local v1 = tr[1]
     local v2 = tr[2]
     local v3 = tr[3]
-    
+
     local u = v2 - v1
     local v = v3 - v1
     local n = u:cross(v)
@@ -37,12 +70,12 @@ function TriangleMesh.testSphere(self, pos, radius, move)
         local pp = (v1 * c) + (v2 * b) + (v3 * a)
 
         if (pp - pos):mag() <= radius then
-          return true, move:neg(), pp, tr
+          table.insert(contacts, {fn(u:cross(v):normalize(), tr)})
         end
     end
   end
 
-  return false, move
+  return contacts
 end
 
 -- Box API
@@ -58,7 +91,7 @@ function Box.clone(self)
   return _.newBox({self.min, self.max, self.mat})
 end
 
-function Box.testSphere(self, pos, radius, move)
+function Box.testSphere(self, pos, radius, move, fn)
   if move == nil then
     move = Vector()
   end
@@ -80,17 +113,15 @@ function Box.testSphere(self, pos, radius, move)
   local delta = sqDist - squared(radius)
 
   if delta <= 0 then
-    return true, move:neg()
-  else
-    return false, move
+    return fn()
   end
 end
 
-function Box.testPoint(self, pos, move)
-  return self:testSphere(pos, 0.0, move)
+function Box.testPoint(self, pos, move, fn)
+  return self:testSphere(pos, 0.0, move, fn)
 end
 
-function Box.testBox(self, box, move)
+function Box.testBox(self, box, move, fn)
   if move == nil then
       move = Vector()
   end
@@ -108,7 +139,9 @@ function Box.testBox(self, box, move)
     move = move:neg()
   end
 
-  return ok, move, (BmaxV - self.min)
+  if ok then
+    return fn(BmaxV - self.min)
+  end
 end
 
 -- World API
@@ -171,6 +204,13 @@ function _.newBoxFromPart(part, mat)
   return _.newBoxFromVertexData({part:getVertices(), part:getIndices()}, mat)
 end
 
+function _.newSphere(pos, radius)
+  local self = setmetatable({}, Sphere)
+  self.pos = pos
+  self.radius = radius
+  return self
+end
+
 function _.newWorld()
   local self = setmetatable({}, World)
   self.shapes = {}
@@ -206,7 +246,6 @@ end
 function transformTriangles(tris, mat)
   local newTris = {}
   for idx, tr in pairs(tris) do
-    -- LogString(tostring(idx) .. " " .. tostring(tr[1]).. " " .. tostring(tr[2]).. " " .. tostring(tr[3]))
     local v1 = tr[1] * mat
     local v2 = tr[2] * mat
     local v3 = tr[3] * mat
