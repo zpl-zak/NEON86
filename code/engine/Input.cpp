@@ -74,6 +74,13 @@ VOID CInput::SetMouseXY(SHORT x, SHORT y)
 
 VOID CInput::Update(VOID)
 {
+#ifdef _DEBUG
+    if (this->GetKeyDown(VK_F1))
+    {
+        this->SetCursor(!this->GetCursor());
+        this->SetCursorMode(1-this->GetCursorMode());
+    }
+#endif
     for (UINT i = 0; i < NUM_MOUSEBUTTONS; i++)
     {
         SetMouseDown(i, FALSE);

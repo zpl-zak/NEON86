@@ -60,6 +60,9 @@ function _init()
 
   RegisterFontFile("slkscr.ttf")
   testFont = Font("Silkscreen", 18, 1, false)
+  
+  ShowCursor(false)
+  SetCursorMode(CURSORMODE_CENTERED)
 end
 
 function _update(dt)
@@ -74,9 +77,6 @@ function _update(dt)
       camera.vel:y(camera.vel:y() + 96*dt)
     end
   end
-  
-  ShowCursor(false)
-  SetCursorMode(CURSORMODE_CENTERED)
 
   time = time + dt
   camera.grounded = false
