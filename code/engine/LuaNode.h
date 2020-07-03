@@ -31,6 +31,15 @@ static INT node_getname(lua_State* L)
     return 1;
 }
 
+static INT node_setname(lua_State* L)
+{
+    CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
+    LPSTR name = (LPSTR)luaL_checkstring(L, 2);
+    node->SetName(aiString(name));
+
+    return 0;
+}
+
 static INT node_getmeshes(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
@@ -344,6 +353,7 @@ static VOID LuaNode_register(lua_State* L)
 
     REGC("clone", node_clone);
     REGC("getName", node_getname);
+    REGC("setName", node_setname);
     REGC("getTransform", node_gettransform);
     REGC("setTransform", node_settransform);
     REGC("getFinalTransform", node_getfinaltransform);
