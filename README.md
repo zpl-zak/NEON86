@@ -34,8 +34,7 @@ offers a shader support that is easily expendable and provides rich visuals at l
 
 ## Documentation
 
-You can review the NEON86 Lua API on the following page: [](DOCUMENTATION.md). It explains how the project is set up as well
-as provide a list of all Lua API functions and modules you can use to create your tiny game.
+You can review NEON86 API by reading [the cheatsheet](docs/neon86_cheatsheet.pdf). It is still work in progress.
 
 ## License
 

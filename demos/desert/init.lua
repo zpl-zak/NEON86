@@ -29,12 +29,17 @@ function _init()
     end
     self.movedir:y(0)
     world:forEach(function (shape)
-      shape:testSphere(self.pos, 2, self.movedir + self.vel + Vector3(0,-5,0), function (norm)
+      contacts = shape:testSphere(self.pos, 1, self.movedir + self.vel + Vector3(0,-5,0), function (norm)
         local o = cols.slide((self.vel), norm)
         local g = cols.slide((self.movedir), norm)
-        self.vel = hh.lerp(o, g, shape.friction)
         self.grounded = true
+        return hh.lerp(o, g, shape.friction)
       end)
+
+
+      for _, c in pairs(contacts) do
+        self.vel = self.vel + c[1]
+      end
     end)
 
     self.pos = self.pos + self.vel

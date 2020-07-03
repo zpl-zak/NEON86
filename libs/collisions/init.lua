@@ -11,7 +11,7 @@ end
 
 function Sphere.testSphere(self, pos, radius, move, fn)
   pos = pos + move
-  local d = (self.pos - pos):mag()
+  local d = (self.pos - pos):magSq()
   local r = (self.radius + radius)
 
   if d <= r then
@@ -50,7 +50,7 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
   end)
 
   if #aabbContacts < 1 then
-    return
+    return {}
   end
 
   pos = pos + move
@@ -76,10 +76,10 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
       (0 <= a) and (a <= 1) then
         local pp = (v1 * c) + (v2 * b) + (v3 * a)
 
-        local d = (pp - pos):mag()
+        local d = (pp - pos):magSq()
         if d <= radius then
           local pd = d - radius
-          table.insert(contacts, {fn(u:cross(v):normalize(), pd, tr)})
+          table.insert(contacts, {fn(n:normalize(), pd, tr)})
         end
     end
   end
@@ -93,7 +93,7 @@ local Box = {}
 Box.__index = Box
 
 function Box.diameter(self)
-  return (self.max - self.min):mag()
+  return (self.max - self.min):magSq()
 end
 
 function Box.clone(self)
@@ -125,7 +125,7 @@ function Box.testSphere(self, pos, radius, move, fn)
   if delta <= 0 then
     local cp = (self.max - self.min) / 2
     local n = (cp - pos)
-    return {fn(n:normalize(), (radius - n:mag()))}
+    return {fn(n:normalize(), (radius - n:magSq()))}
   else
     return {}
   end
@@ -312,9 +312,9 @@ end
 
 function findClosestPointToCenter(pos, v1, v2, v3)
   local cp = v1
-  local d1 = (pos-v1):magSq()
-  local d2 = (pos-v2):magSq()
-  local d3 = (pos-v3):magSq()
+  local d1 = (pos-v1):magSqSq()
+  local d2 = (pos-v2):magSqSq()
+  local d3 = (pos-v3):magSqSq()
   local sd = d1
   if d2 < sd then
     cp = v2

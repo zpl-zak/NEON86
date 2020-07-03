@@ -122,6 +122,7 @@ exit /B 0
 	xcopy /Y /E /I /exclude:.gitignore libs build\deploy\libs
 	xcopy /Y LICENSE.md build\deploy\
 	xcopy /Y README.md build\deploy\
+	xcopy /Y /E /I /exclude:.gitignore docs build\deploy\docs
 	del   /S /Q /F build\deploy\*.blend
 	echo.
 	
