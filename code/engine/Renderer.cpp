@@ -29,6 +29,7 @@ CRenderer::CRenderer()
 	mVsync = TRUE;
 	mFullscreen = FALSE;
 	mEnableLighting = FALSE;
+	mUsesMaterialOverride = FALSE;
 	ZeroMemory(&mLastRes, sizeof(mLastRes));
 	ZeroMemory(&mParams, sizeof(mParams));
 }
