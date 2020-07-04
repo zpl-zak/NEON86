@@ -28,19 +28,28 @@ function _init()
       self.vel:y(self.vel:y() - 6*dt)
     end
     self.movedir:y(0)
+    local nvel = Vector()
+    local contacts = {}
     world:forEach(function (shape)
-      contacts = shape:testSphere(self.pos, 1, self.movedir + self.vel + Vector3(0,-5,0), function (norm)
+      c = shape:testSphere(self.pos, 1, self.movedir + self.vel + Vector3(0,-5,0), function (norm)
         local o = cols.slide((self.vel), norm)
         local g = cols.slide((self.movedir), norm)
         self.grounded = true
         return hh.lerp(o, g, shape.friction)
       end)
-
-
-      for _, c in pairs(contacts) do
-        self.vel = self.vel + c[1]
+      for _, cp in pairs(c) do
+        table.insert(contacts, cp)
       end
     end)
+    
+    if #contacts > 0 then
+      for _, c in pairs(contacts) do
+        nvel = nvel + c[1]
+      end
+      nvel = nvel / #contacts
+    end
+
+    self.vel = self.vel + nvel
 
     self.pos = self.pos + self.vel
   end

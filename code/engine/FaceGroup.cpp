@@ -66,13 +66,15 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
 
     RENDERER->SetDefaultRenderStates();
 
-    mData.mat->Bind(mData.stage);
+	if (!RENDERER->UsesMaterialOverride())
+		mData.mat->Bind(mData.stage);
 
 	RENDERER->DrawMesh(mData);
 
     RENDERER->EnableLighting(isGlobalShadingEnabled);
 
-	mData.mat->Unbind(mData.stage);
+	if (!RENDERER->UsesMaterialOverride())
+		mData.mat->Unbind(mData.stage);
 }
 
 VOID CFaceGroup::CalculateNormals()

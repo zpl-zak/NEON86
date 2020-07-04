@@ -386,22 +386,26 @@ LUAF(Rend, BindTexture)
 	DWORD stage = (DWORD)luaL_checknumber(L, 1);
 	CMaterial* tex = NULL;
 
-    if (luaL_testudata(L, 2, L_RENDERTARGET))
-    {
-        CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 2);
+	if (luaL_testudata(L, 2, L_RENDERTARGET))
+	{
+		CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 2);
 		RENDERER->SetTexture(stage, rtt->GetTextureHandle());
-    }
-    else if (luaL_testudata(L, 2, L_MATERIAL))
-    {
-        CMaterial* mat = *(CMaterial**)lua_touserdata(L, 2);
+	}
+	else if (luaL_testudata(L, 2, L_MATERIAL))
+	{
+		CMaterial* mat = *(CMaterial**)lua_touserdata(L, 2);
 		mat->Bind(stage);
-    }
-    else if (lua_gettop(L) == 2) {
-        LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 2);
+		RENDERER->MarkMaterialOverride(TRUE);
+	}
+	else if (lua_gettop(L) == 2) {
+		LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 2);
 		RENDERER->SetTexture(stage, handle);
-    }
+	}
 	else
-		RENDERER->SetTexture(stage, NULL);
+	{
+		RENDERER->GetDefaultMaterial()->Bind(stage);
+		RENDERER->MarkMaterialOverride(FALSE);
+	}
 
 	return 0;
 }
@@ -430,6 +434,11 @@ LUAF(Rend, GetMatrix)
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 	*mat = RENDERER->GetDeviceMatrix(kind);
     
+    return 1;
+}
+LUAF(Rend, IsFocused)
+{
+	lua_pushboolean(L, RENDERER->IsFocused());
     return 1;
 }
 LUAF(Rend, RenderState)
@@ -522,6 +531,28 @@ LUAF(Rend, DrawQuad)
 	RENDERER->DrawQuad(x1, x2, y1, y2, color, flipY);
     return 0;
 }
+LUAF(Rend, DrawQuad3D)
+{
+    FLOAT x1 = (FLOAT)luaL_checknumber(L, 1);
+    FLOAT x2 = (FLOAT)luaL_checknumber(L, 2);
+    FLOAT y1 = (FLOAT)luaL_checknumber(L, 3);
+    FLOAT y2 = (FLOAT)luaL_checknumber(L, 4);
+    FLOAT z1 = (FLOAT)luaL_checknumber(L, 5);
+    FLOAT z2 = (FLOAT)luaL_checknumber(L, 6);
+    DWORD color = (DWORD)luaL_checkinteger(L, 7);
+
+    RENDERER->DrawQuad3D(x1, x2, y1, y2, z1, z2, color);
+    return 0;
+}
+LUAF(Rend, DrawPolygon)
+{
+    VERTEX a = *(VERTEX*)luaL_checkudata(L, 1, L_VERTEX);
+	VERTEX b = *(VERTEX*)luaL_checkudata(L, 2, L_VERTEX);
+	VERTEX c = *(VERTEX*)luaL_checkudata(L, 3, L_VERTEX);
+
+    RENDERER->DrawPolygon(a, b, c);
+    return 0;
+}
 LUAF(Rend, CullMode)
 {
 	UINT mode = (UINT)luaL_checkinteger(L, 1);
@@ -558,6 +589,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, CameraOrthographic);
 	REGF(Rend, GetMatrix);
 	REGF(Rend, GetResolution);
+	REGF(Rend, IsFocused);
 	REGF(Rend, RenderState);
 	REGF(Rend, SetFog);
 	REGF(Rend, ClearFog);
@@ -569,6 +601,8 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawBox)
 	REGF(Rend, DrawQuad);
+	REGF(Rend, DrawQuad3D);
+	REGF(Rend, DrawPolygon);
 	REGF(Rend, FillScreen);
 	REGF(Rend, RegisterFontFile);
 

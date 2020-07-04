@@ -15,7 +15,16 @@ local function clamp(a,x,b)
 end
 
 local function cap3(v, m)
-  return v:normalize() * m
+  if math.abs(v:x()) > m then
+    return v / v:x() * m
+  end
+  if math.abs(v:y()) > m then
+    return v / v:y() * m
+  end
+  if math.abs(v:z()) > m then
+    return v / v:z() * m
+  end
+  return v
 end
 
 return {

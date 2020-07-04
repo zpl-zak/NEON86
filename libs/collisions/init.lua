@@ -45,6 +45,8 @@ function TriangleMesh.clone(self)
 end
 
 function TriangleMesh.testSphere(self, pos, radius, move, fn)
+  pos = pos + move
+  
   local aabbContacts = self.bounds:testSphere(pos, radius, move, function ()
     return true
   end)
@@ -53,7 +55,6 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
     return {}
   end
 
-  pos = pos + move
   local contacts = {}
 
   for _, tr in pairs(self.tris) do
