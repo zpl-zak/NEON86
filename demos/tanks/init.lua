@@ -3,6 +3,8 @@ local net = require "sampleplugin"
 time = 0
 local testFont
 player = {}
+testAI = {}
+local light
 
 WORLD_SIZE = 1000.0
 WORLD_TILES = {5,5}
@@ -20,16 +22,27 @@ dofile("player.lua")
 function _init()
   RegisterFontFile("slkscr.ttf")
   testFont = Font("Silkscreen", 36, 1, false)
-
+  
   initWorld()
   initTankModel()
   setupTrail()
 
+  math.random()
+  math.random()
+  math.random()
+  math.random()
   addTank("local")
-
+  -- testAI = addTank()
+  
   setupPlayer()
-
-  SetFog(VectorRGBA((0xe6/0xff)*0.80,(0xcf/0xff)*0.80,(0xff/0xff)*0.80), FOGKIND_EXP, 0.00112)
+  
+  light = Light()
+  light:setDirection(Vector(-1,-1,1))
+  -- light:setSpecular(0xffffff)
+  light:setSpecular(0)
+  light:setDiffuse(0xffcc99)
+  light:setType(LIGHTKIND_DIRECTIONAL)
+  light:enable(true, 0)
 end
 
 function _net_tankupdate(entity_id, x, y, z, r)
@@ -70,7 +83,9 @@ function _update(dt)
   end
 
   updateTanks(dt)
+  -- updateTestAI()
   player:update(dt, net)
+
   time = time + dt
 end
 
@@ -78,15 +93,28 @@ end
 function _render()
   EnableLighting(true)
   ToggleWireframe(true)
-  ClearScene(5,0,5)
-  AmbientColor(0xffffff)
-  CameraPerspective(62, 0.1, 5000)
+  ClearScene(15,0,15)
+  AmbientColor(0x773377)
+  CameraPerspective(90, 0.1, 5000)
+  Matrix():bind(WORLD)
   player.cam:bind(VIEW)
-  drawWorld()
+  -- SetFog(VectorRGBA(0,0,255,255), FOGKIND_LINEAR, 600, 1300)
+  SetFog(VectorRGBA(0,0,25,255), FOGKIND_LINEAR, 600, 1300)
+  light:setDirection(Vector(-0.6,-1,-0.7))
+  
+  -- ClearFog()
   drawTanks()
   ToggleWireframe(false)
+  drawWorld()
 end
 
 function _render2d()
-  testFont:drawText(0xFFFFFFFF, "demo", 15, 30)
+  testFont:drawText(0xFFFFFFFF, [[
+WASD - move
+shift - brake
+  ]], 15, 30)
+end
+
+function updateTestAI()
+  testAI.movedir = (player.tank.pos - testAI.pos):normalize()*0.001
 end

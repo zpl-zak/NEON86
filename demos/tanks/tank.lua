@@ -10,25 +10,39 @@ function initTankModel()
     tankBody = tankNode:findNode("body")
     trailPosNode = tankNode:findNode("trailpos")
     tankMaterial = Material()
-    tankMaterial:setAmbient(0xe6cfff)
+    tankMaterial:setDiffuse(0xe6cfff)
+    tankMaterial:setEmission(0xe6cfff)
 end
 
 function addTank(id)
-    tanks[id] = {
-      pos = Vector3(
-        math.random(0,WORLD_SIZE*WORLD_TILES[1]),
-        10,
-        math.random(0,WORLD_SIZE*WORLD_TILES[2])
-      ),
-      hover = Vector3(),
-      movedir = Vector3(),
-      vel = Vector(),
-      rot = Matrix(),
-      trails = {},
-      trailTime = 0,
-      crot = 0,
-      health = 100
-    }
+  t = {
+    pos = Vector3(
+      math.random(WORLD_SIZE/4.0,(WORLD_SIZE/4.0)*WORLD_TILES[1]),
+      10,
+      math.random(WORLD_SIZE/4.0,(WORLD_SIZE/4.0)*WORLD_TILES[2])
+    ),
+    movedir = Vector3(),
+    hover = Vector3(),
+    vel = Vector(),
+    rot = Matrix(),
+    heading = 0,
+    trails = {},
+    trailTime = 0,
+    crot = 0,
+    health = 100
+  }
+
+  l = Light()
+  l:setType(LIGHTKIND_POINT)
+  l:setPosition(t.pos)
+  l:setDiffuse(0xff9933)
+  l:setRange(80)
+  l:setAttenuation(0,0.01,0)
+  t.light = l
+
+  -- table.insert(tanks, t)
+  tanks[id] = t
+  return t
 end
 
 function updateTanks(dt)
@@ -42,7 +56,7 @@ function updateTanks(dt)
         end)
       end)
       local hoverFactor = 2
-      t.vel = t.vel:lerp(t.vel+t.movedir, 1.0)
+      t.vel = t.vel:lerp(t.movedir*1000, 0.01323)
       t.hover = Vector3(0,math.sin(time*4) * (hoverFactor - math.min(t.vel:magSq(), hoverFactor) / hoverFactor),0)
       t.pos = t.pos + t.vel
       t.crotm = t.rot
@@ -78,11 +92,12 @@ end
 
 function drawTanks()
     BindTexture(0, tankMaterial)
-    for id, t in pairs(tanks) do
-        LogString("draawing tank #"..id .. " pso: " .. vec2str(t.pos))
-        Matrix():bind(WORLD)
-        tankBody:draw(t.rot * Matrix():translate(t.pos+t.hover))
-        drawTrails(t, 5, trailPosNode)
+    for idx, t in pairs(tanks) do
+      t.light:setPosition(t.pos+Vector3(0,5,0))
+      t.light:enable(true, idx)
+      Matrix():bind(WORLD)
+      tankBody:draw(t.rot * Matrix():translate(t.pos+t.hover))
+      drawTrails(t, 5, trailPosNode)
     end
     BindTexture(0)
 end

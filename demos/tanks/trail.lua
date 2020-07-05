@@ -4,7 +4,8 @@ TRAIL_TIME = 0.05
 
 function setupTrail()
     trailMaterial = Material("trail.png")
-    trailMaterial:setAmbient(255,0,0)
+    trailMaterial:setDiffuse(255,0,0)
+    trailMaterial:setEmission(255,0,0)
     trailMaterial:setOpacity(1)
     trailMaterial:alphaIsTransparency(true)
 end
@@ -26,7 +27,6 @@ end
 
 function drawTrails(tank, height, trailNode)
     local trails = tank.trails
-    Matrix():bind(WORLD)
     for i=1,#trails,1 do
         local tr1 = trails[i]
         local tr2 = trails[i+1]
@@ -45,14 +45,14 @@ function drawTrails(tank, height, trailNode)
             ToggleWireframe(false)
             CullMode(CULLKIND_NONE)
             DrawPolygon(
-                Vertex(tr1:x(), tr1:y()-height, tr1:z(), 0, 0),
-                Vertex(tr1:x(), tr1:y()+height, tr1:z(), 0, 1),
-                Vertex(tr2:x(), tr2:y()-height, tr2:z(), 1, 0)
+                Vertex(tr1:x()-height, tr1:y(), tr1:z(), 0, 0),
+                Vertex(tr1:x()+height, tr1:y(), tr1:z(), 0, 1),
+                Vertex(tr2:x()-height, tr2:y(), tr2:z(), 1, 0)
             )
             DrawPolygon(
-                Vertex(tr1:x(), tr1:y()+height, tr1:z(), 0, 1),
-                Vertex(tr2:x(), tr2:y()-height, tr2:z(), 1, 0),
-                Vertex(tr2:x(), tr2:y()+height, tr2:z(), 1, 1)
+                Vertex(tr1:x()+height, tr1:y(), tr1:z(), 0, 1),
+                Vertex(tr2:x()-height, tr2:y(), tr2:z(), 1, 0),
+                Vertex(tr2:x()+height, tr2:y(), tr2:z(), 1, 1)
             )
             ToggleWireframe(true)
         end

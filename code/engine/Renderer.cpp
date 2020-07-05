@@ -239,13 +239,22 @@ VOID CRenderer::Resize(RECT res)
 /// Render commands
 VOID CRenderer::DrawMesh(const RENDERDATA& data)
 {
+	D3DMATRIX oldMatrix;
 	if (data.usesMatrix)
+	{
+		oldMatrix = GetDeviceMatrix(MATRIXKIND_WORLD);
 		SetMatrix(MATRIXKIND_WORLD, data.matrix);
+	}
 
 	PrepareEffectDraw();
 
 	if (data.mesh)
 		data.mesh->DrawSubset(0);
+
+    if (data.usesMatrix)
+    {
+        SetMatrix(MATRIXKIND_WORLD, oldMatrix);
+    }
 }
 
 VOID CRenderer::DrawPolygon(VERTEX a, VERTEX b, VERTEX c)

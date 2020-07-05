@@ -30,6 +30,14 @@ function player.update(self, dt, net)
     local fwd = rotMat:col(3)
     local rhs = rotMat:col(1)
 
+    -- spectator cam
+    --[[ self.cam = Matrix():lookAt(
+        self.pos:neg()+Vector3(-250,500,-250),
+        self.pos:neg(),
+        Vector3(0,1,0)
+    ) ]]
+
+
     self.heading = hh.lerp(self.heading, self.angles[1], 0.1238772)
     self.tank.rot = Matrix():rotate(self.heading+math.rad(90),0,0)
 
@@ -49,7 +57,7 @@ function player.update(self, dt, net)
     end
 
     if GetKey(KEY_SHIFT) then
-        self.tank.vel = self.tank.vel:lerp(Vector3(0,self.tank.vel:y(), 0), 0.01221)
+        self.tank.vel = self.tank.vel:lerp(Vector3(0,--[[ self.tank.vel:y() ]] 0, 0), 0.04221)
     end
 
     if self.sendTime < time then
