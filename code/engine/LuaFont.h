@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 
-static INT font_new(lua_State* L)
+INT font_new(lua_State* L)
 {
     LPCSTR fontPath = luaL_checkstring(L, 1);
     INT fontSize = (INT)luaL_checkinteger(L, 2);

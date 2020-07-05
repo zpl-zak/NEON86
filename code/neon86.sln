@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{69D2
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SamplePlugin", "plugsrc\SamplePlugin\SamplePlugin.vcxproj", "{D574FD6B-DEA3-4560-B2A2-A201D5D8CE4A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkPlugin", "plugsrc\NetworkPlugin\NetworkPlugin.vcxproj", "{10F44255-5F8C-49DA-AFE8-E402CD8C3FB4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinesNetworking", "plugsrc\LinesNetworking\LinesNetworking.vcxproj", "{10F44255-5F8C-49DA-AFE8-E402CD8C3FB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

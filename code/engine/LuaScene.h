@@ -8,7 +8,7 @@
 #include "Light.h"
 #include "Node.h"
 
-static INT scene_new(lua_State* L)
+INT scene_new(lua_State* L)
 {
     LPCSTR modelPath = NULL;
     BOOL loadMaterials = TRUE;

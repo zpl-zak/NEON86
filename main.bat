@@ -160,7 +160,7 @@ goto :package_prompt
 	echo  8. Environment mapping
 	echo  9. Collisions
 	echo  A. Desert terrain FPS demo
-	echo  B. Tanks demo
+	echo  B. Lines game
 	echo =======================
 	choice /C 123456789AB /N /M "Your choice:"
 	echo.
@@ -174,7 +174,7 @@ goto :package_prompt
 	if %errorlevel%==8 set "proj=env"
 	if %errorlevel%==9 set "proj=collisions"
 	if %errorlevel%==10 set "proj=desert"
-	if %errorlevel%==11 set "proj=tanks"
+	if %errorlevel%==11 set "proj=lines"
 	
 	if %errorlevel%==2 (
 		set /p a="Enter name: "

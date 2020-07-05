@@ -6,7 +6,7 @@
 
 #include "FaceGroup.h"
 
-static INT facegroup_new(lua_State* L)
+INT facegroup_new(lua_State* L)
 {
 	*(CFaceGroup**)lua_newuserdata(L, sizeof(CFaceGroup*)) = new CFaceGroup();
 

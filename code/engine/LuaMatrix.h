@@ -4,7 +4,7 @@
 
 #include <lua/lua.hpp>
 
-static INT matrix_new(lua_State* L)
+INT matrix_new(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)lua_newuserdata(L, sizeof(D3DXMATRIX));
 	D3DXMatrixIdentity(mat);

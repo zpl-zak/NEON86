@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 
-static INT effect_new(lua_State* L)
+INT effect_new(lua_State* L)
 {
     LPCSTR effectPath = luaL_checkstring(L, 1);
     

@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 
-static INT rtt_new(lua_State* L)
+INT rtt_new(lua_State* L)
 {
     UINT w = 0, h = 0;
     CRenderTarget** rtt = (CRenderTarget**)lua_newuserdata(L, sizeof(CRenderTarget*));

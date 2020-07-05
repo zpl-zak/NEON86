@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 
-static INT light_new(lua_State* L)
+INT light_new(lua_State* L)
 {
     UINT slot = 0;
 

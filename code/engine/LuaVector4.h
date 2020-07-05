@@ -4,7 +4,7 @@
 
 #include <lua/lua.hpp>
 
-static D3DXVECTOR4* vector4_ctor(lua_State* L)
+D3DXVECTOR4* vector4_ctor(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
     *vec = { 0,0,0,0 };
@@ -12,7 +12,7 @@ static D3DXVECTOR4* vector4_ctor(lua_State* L)
     return vec;
 }
 
-static INT vector4_new(lua_State* L)
+INT vector4_new(lua_State* L)
 {
 	FLOAT x=0.0f, y=0.0f, z=0.0f, w=0.0f;
 	D3DXVECTOR4* vecRHS = NULL;

@@ -1,4 +1,4 @@
-local net = require "networkplugin"
+local net = require "linesnetworking"
 
 time = 0
 local testFont

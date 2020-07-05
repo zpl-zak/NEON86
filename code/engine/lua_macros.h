@@ -57,3 +57,24 @@ static INT NAME(lua_State* L) {\
 #define L_FONT "Font"
 
 #define ENDF {0,0}
+
+struct lua_State;
+struct D3DXVECTOR4;
+
+ENGINE_API extern D3DXVECTOR4* vector4_ctor(lua_State* L);
+ENGINE_API extern D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0);
+ENGINE_API extern DWORD luaH_getcolor(lua_State* L, UINT offset = 0);
+ENGINE_API extern struct _D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset = 0);
+
+ENGINE_API extern INT matrix_new(lua_State* L);
+ENGINE_API extern INT effect_new(lua_State* L);
+ENGINE_API extern INT facegroup_new(lua_State* L);
+ENGINE_API extern INT font_new(lua_State* L);
+ENGINE_API extern INT light_new(lua_State* L);
+ENGINE_API extern INT material_new(lua_State* L);
+ENGINE_API extern INT mesh_new(lua_State* L);
+ENGINE_API extern INT node_new(lua_State* L);
+ENGINE_API extern INT rtt_new(lua_State* L);
+ENGINE_API extern INT scene_new(lua_State* L);
+ENGINE_API extern INT vector4_new(lua_State* L);
+ENGINE_API extern INT vertex_new(lua_State* L);

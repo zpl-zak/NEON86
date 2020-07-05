@@ -10,7 +10,7 @@
 #include <lua/lua.hpp>
 #include <sstream>
 
-static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
+D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset)
 {
     if (luaL_testudata(L, 2+offset, L_VECTOR))
     {
@@ -35,7 +35,7 @@ static D3DXVECTOR4 luaH_getcomps(lua_State* L, UINT offset=0)
     return D3DXVECTOR4(x, y, z, w);
 }
 
-static DWORD luaH_getcolor(lua_State* L, UINT offset = 0)
+DWORD luaH_getcolor(lua_State* L, UINT offset)
 {
     DWORD color = 0x0;
 
@@ -64,7 +64,7 @@ static DWORD luaH_getcolor(lua_State* L, UINT offset = 0)
 	return color;
 }
 
-static D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset = 0)
+D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset)
 {
 	D3DCOLORVALUE color = { 0.0f, 0.0f, 0.0f, 1.0f };
 

@@ -6,7 +6,7 @@
 
 #include "Mesh.h"
 
-static INT mesh_new(lua_State* L)
+INT mesh_new(lua_State* L)
 {
     *(CMesh**)lua_newuserdata(L, sizeof(CMesh*)) = new CMesh();
 

@@ -4,7 +4,7 @@
 
 #include <lua/lua.hpp>
 
-static INT vertex_new(lua_State* L)
+INT vertex_new(lua_State* L)
 {
 	FLOAT x=0.0F, y=0.0F, z=0.0F;
 	FLOAT nx=0.0F, ny=0.0F, nz=0.0F;

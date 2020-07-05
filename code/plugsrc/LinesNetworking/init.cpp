@@ -285,7 +285,7 @@ static const luaL_Reg networkplugin[] = {
     ENDF
 };
 
-extern "C" INT PLUGIN_API luaopen_networkplugin(lua_State* L) {
+extern "C" INT PLUGIN_API luaopen_linesnetworking(lua_State* L) {
     enet_initialize();
     luaL_newlib(L, networkplugin);
     return 1;

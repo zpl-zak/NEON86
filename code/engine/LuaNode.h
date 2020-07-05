@@ -8,7 +8,7 @@
 #include "Node.h"
 #include "Scene.h"
 
-static INT node_new(lua_State* L)
+INT node_new(lua_State* L)
 {
     *(CNode**)lua_newuserdata(L, sizeof(CNode*)) = new CNode();
     luaL_setmetatable(L, L_NODE);

@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 
-static INT material_new(lua_State* L)
+INT material_new(lua_State* L)
 {
 	char* matName = NULL;
 	UINT w=1, h=1;
