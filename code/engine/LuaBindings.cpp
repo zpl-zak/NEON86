@@ -362,7 +362,7 @@ LUAF(Rend, CameraOrthographic)
 
 	if (flipHandedness)
 	{
-        D3DXMatrixOrthoLH(&matProjection,
+        D3DXMatrixOrthoRH(&matProjection,
             w,
             h,
             zNear,
@@ -370,7 +370,7 @@ LUAF(Rend, CameraOrthographic)
 	}
 	else 
 	{
-        D3DXMatrixOrthoRH(&matProjection,
+        D3DXMatrixOrthoLH(&matProjection,
             w,
             h,
             zNear,

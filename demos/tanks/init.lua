@@ -1,6 +1,7 @@
 time = 0
 local testFont
 player = {}
+local light
 
 WORLD_SIZE = 1000.0
 WORLD_TILES = {5,5}
@@ -23,11 +24,21 @@ function _init()
   initTankModel()
   setupTrail()
 
+  math.random()
+  math.random()
+  math.random()
+  math.random()
   addTank()
 
   setupPlayer()
 
-  SetFog(VectorRGBA((0xe6/0xff)*0.80,(0xcf/0xff)*0.80,(0xff/0xff)*0.80), FOGKIND_EXP, 0.00112)
+  light = Light()
+  light:setDirection(Vector(-1,-1,1))
+  light:setDiffuse(255,255,255)
+  light:setType(LIGHTKIND_DIRECTIONAL)
+  light:enable(true, 0)
+
+  SetFog(VectorRGBA(0,0,255,255), FOGKIND_LINEAR, 600, 1300)
 end
 
 function _update(dt)
@@ -51,9 +62,10 @@ end
 function _render()
   EnableLighting(true)
   ToggleWireframe(true)
-  ClearScene(5,0,5)
-  AmbientColor(0xffffff)
+  ClearScene(15,0,15)
+  AmbientColor(0x440844)
   CameraPerspective(62, 0.1, 5000)
+  Matrix():bind(WORLD)
   player.cam:bind(VIEW)
   drawWorld()
   drawTanks()
@@ -61,5 +73,8 @@ function _render()
 end
 
 function _render2d()
-  testFont:drawText(0xFFFFFFFF, "demo", 15, 30)
+  testFont:drawText(0xFFFFFFFF, [[
+WASD - move
+shift - brake
+  ]], 15, 30)
 end

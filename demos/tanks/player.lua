@@ -16,17 +16,24 @@ function player.update(self, dt)
     end
 
     self.pos = self.pos:lerp(self.tank.pos:neg(), 0.233589)
-    self.cam = Matrix()
+    --[[ self.cam = Matrix()
     :translate(self.pos)
     :rotate(-self.angles[1],0,0)
     :rotate(0,self.angles[2],0)
-    :translate(Vector3(0,-20,80))
+    :translate(Vector3(0,-20,80)) ]]
 
     local rotMat = Matrix()
     :rotate(-self.heading,0,0)
 
     local fwd = rotMat:col(3)
     local rhs = rotMat:col(1)
+
+    self.cam = Matrix():lookAt(
+        self.pos:neg()+Vector3(-250,500,-250),
+        self.pos:neg(),
+        Vector3(0,1,0)
+    )
+
 
     self.heading = hh.lerp(self.heading, self.angles[1], 0.1238772)
     self.tank.rot = Matrix():rotate(self.heading+math.rad(90),0,0)

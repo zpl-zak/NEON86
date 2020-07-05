@@ -162,7 +162,7 @@ goto :package_prompt
 	echo  A. Desert terrain FPS demo
 	echo  B. Tanks demo
 	echo =======================
-	choice /C 123456789A /N /M "Your choice:"
+	choice /C 123456789AB /N /M "Your choice:"
 	echo.
 	
 	if %errorlevel%==1 exit /B 0

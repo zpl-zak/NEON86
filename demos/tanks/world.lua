@@ -4,7 +4,7 @@ world = {}
 function initWorld()
     terrain = Model("terrain.fbx", false)
     terrainMaterial = Material()
-    terrainMaterial:setAmbient(0x815192)
+    terrainMaterial:setDiffuse(0x815192)
 
     world = cols.newWorld()
 
@@ -28,6 +28,7 @@ function addTile(meshNode, mesh, pos)
         terrainMesh.model:addVertex(Vertex(tr[3]:x(),tr[3]:y(),tr[3]:z()))
     end
     terrainMesh.model:build()
+    terrainMesh.model:calcNormals()
 
     world:addCollision(terrainMesh)
 end

@@ -10,15 +10,16 @@ function initTankModel()
     tankBody = tankNode:findNode("body")
     trailPosNode = tankNode:findNode("trailpos")
     tankMaterial = Material()
-    tankMaterial:setAmbient(0xe6cfff)
+    tankMaterial:setDiffuse(0xe6cfff)
+    tankMaterial:setEmission(0xe6cfff)
 end
 
 function addTank()
     table.insert(tanks, {
       pos = Vector3(
-        math.random(0,WORLD_SIZE*WORLD_TILES[1]),
+        math.random(WORLD_SIZE/4.0,(WORLD_SIZE/4.0)*WORLD_TILES[1]),
         10,
-        math.random(0,WORLD_SIZE*WORLD_TILES[2])
+        math.random(WORLD_SIZE/4.0,(WORLD_SIZE/4.0)*WORLD_TILES[2])
       ),
       movedir = Vector3(),
       vel = Vector(),
@@ -76,7 +77,6 @@ end
 function drawTanks()
     BindTexture(0, tankMaterial)
     for _, t in pairs(tanks) do
-        Matrix():bind(WORLD)
         tankBody:draw(t.rot * Matrix():translate(t.pos+t.hover))
         drawTrails(t, 5, trailPosNode)
     end
