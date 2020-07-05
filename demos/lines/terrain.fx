@@ -30,6 +30,7 @@ struct VS_OUTPUT {
     float2 texCoord : TEXCOORD0;
     float3 normal : NORMAL;
     float depth : TEXCOORD1;
+    float4 flatColor : TEXCOORD3;
 };
 
 float ComputeFogFactor(float d, float start, float end) 
@@ -49,6 +50,14 @@ VS_OUTPUT VS_Main(VS_INPUT IN)
     OUT.texCoord = IN.texCoord * 0.5;
     OUT.depth = ComputeFogFactor(length(campos - OUT.worldPos), 300, 1000);
 
+    float3 v = normalize(campos - OUT.worldPos);
+    float3 n = normalize(OUT.normal);
+    float3 l = normalize(-sun.Direction);
+    float3 r = reflect(normalize(sun.Direction), normalize(n));
+    float4 sunColor = float4(0.3, 0.15, 0.2, 1);
+
+    OUT.flatColor = sunColor * pow(saturate(dot(r,v)), 2.0);
+
     return OUT;
 }
 
@@ -64,15 +73,13 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float4 colorMin = float4(0.1, 0.1, 0.2, 1);
     float4 iterm = lerp(colorNear, colorFar*1.5, IN.depth)*2.5;
 
-    float3 v = normalize(campos - IN.worldPos);
     float3 n = normalize(IN.normal);
     float3 l = normalize(-sun.Direction);
-    float3 r = reflect(normalize(sun.Direction), normalize(n));
     float diffuse = saturate(dot(n, l));
 
     OUT += brightPart.a * iterm * 2;
     OUT += colorMin * diffuse * 2;
-    OUT += colorMin * pow(saturate(dot(r,v)), 12.0) * 2 * (1.0 - brightPart.a);
+    OUT += IN.flatColor;
 
     return OUT;
 }
