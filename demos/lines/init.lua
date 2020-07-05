@@ -4,7 +4,7 @@ time = 0
 local testFont
 player = {}
 testAI = {}
-local light
+light = {}
 
 WORLD_SIZE = 1000.0
 WORLD_TILES = {5,5}

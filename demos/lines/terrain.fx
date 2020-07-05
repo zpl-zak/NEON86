@@ -60,16 +60,19 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float4 brightPart = tex2D(colorMap, IN.texCoord + float2(1,1)*time);
 
     float4 colorNear = float4(0.5, 0.2, 0.4, 1);
-    float4 colorFar = float4(0.1, 0.2, 0.4, 1);
-    float4 colorNeu = float4(0.1, 0.1, 0.2, 1);
+    float4 colorFar = max(float4(0.1, 0.2, 0.4, 1), float4(0.1, 0.2, 0.4, 1)*sin(time*0.5)*2);
+    float4 colorMin = float4(0.1, 0.1, 0.2, 1);
     float4 iterm = lerp(colorNear, colorFar*1.5, IN.depth)*2.5;
 
+    float3 v = normalize(campos - IN.worldPos);
     float3 n = normalize(IN.normal);
     float3 l = normalize(-sun.Direction);
+    float3 r = reflect(normalize(sun.Direction), normalize(n));
     float diffuse = saturate(dot(n, l));
 
-    OUT = max(brightPart.a * iterm * 2, colorNeu);
-    // OUT = normalize(sun.Diffuse) * diffuse;
+    OUT += brightPart.a * iterm * 2;
+    OUT += colorMin * diffuse * 2;
+    OUT += colorMin * pow(saturate(dot(r,v)), 12.0) * 2 * (1.0 - brightPart.a);
 
     return OUT;
 }
