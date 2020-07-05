@@ -13,13 +13,14 @@ function initTankModel()
     tankMaterial:setAmbient(0xe6cfff)
 end
 
-function addTank()
-    table.insert(tanks, {
+function addTank(id)
+    tanks[id] = {
       pos = Vector3(
         math.random(0,WORLD_SIZE*WORLD_TILES[1]),
         10,
         math.random(0,WORLD_SIZE*WORLD_TILES[2])
       ),
+      hover = Vector3(),
       movedir = Vector3(),
       vel = Vector(),
       rot = Matrix(),
@@ -27,11 +28,13 @@ function addTank()
       trailTime = 0,
       crot = 0,
       health = 100
-    })
+    }
 end
 
 function updateTanks(dt)
-    for _, t in pairs(tanks) do
+    local t = tanks["local"]
+
+    -- for _, t in pairs(tanks) do
       t.vel:y(t.vel:y() - 2*dt)
       world:forEach(function (shape)
         shape:testSphere(t.pos, 5, t.vel, function (norm)
@@ -70,12 +73,13 @@ function updateTanks(dt)
       end
 
       handleTrails(t, trailPosNode)
-    end
+    -- end
 end
 
 function drawTanks()
     BindTexture(0, tankMaterial)
-    for _, t in pairs(tanks) do
+    for id, t in pairs(tanks) do
+        LogString("draawing tank #"..id .. " pso: " .. vec2str(t.pos))
         Matrix():bind(WORLD)
         tankBody:draw(t.rot * Matrix():translate(t.pos+t.hover))
         drawTrails(t, 5, trailPosNode)

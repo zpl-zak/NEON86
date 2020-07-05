@@ -1,3 +1,5 @@
+local net = require "sampleplugin"
+
 time = 0
 local testFont
 player = {}
@@ -23,16 +25,40 @@ function _init()
   initTankModel()
   setupTrail()
 
-  addTank()
+  addTank("local")
 
   setupPlayer()
 
   SetFog(VectorRGBA((0xe6/0xff)*0.80,(0xcf/0xff)*0.80,(0xff/0xff)*0.80), FOGKIND_EXP, 0.00112)
 end
 
+function _net_tankupdate(entity_id, x, y, z, r)
+  if tanks[entity_id] == nil then
+    addTank(entity_id)
+  end
+
+  local tank = tanks[entity_id]
+
+  tank.pos = Vector3(x,y,z)
+  tank.heading = r
+
+  -- LogString("_net_tankupdate: " .. entity_id .. " pos: " .. x .. " " .. y .. " " .. z)
+end
+
 function _update(dt)
+  net.update()
+
   if GetKeyDown(KEY_ESCAPE) then
       ExitGame()
+  end
+
+  if GetKeyDown("1") then
+    net.server_start()
+    net.connect("localhost")
+  end
+
+  if GetKeyDown("2") then
+    net.connect("localhost")
   end
 
   if IsFocused() then
@@ -44,9 +70,10 @@ function _update(dt)
   end
 
   updateTanks(dt)
-  player:update(dt)
+  player:update(dt, net)
   time = time + dt
 end
+
 
 function _render()
   EnableLighting(true)
