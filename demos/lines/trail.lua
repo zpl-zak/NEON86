@@ -6,6 +6,7 @@ function setupTrail()
     trailMaterial = Material("trail.png")
     trailMaterial:setDiffuse(255,0,0)
     trailMaterial:setEmission(255,0,0)
+    trailMaterial:setAmbient(255,0,0)
     trailMaterial:setOpacity(1)
     trailMaterial:alphaIsTransparency(true)
 end

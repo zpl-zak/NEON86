@@ -10,7 +10,7 @@ local cam = require "camera"
 local gravity = -0.0981
 
 local DEFAULT_BOUNCE_FACTOR = 1.8
-local DEFAULT_SPHERE_VEL_CAP = 0.001
+local DEFAULT_SPHERE_VEL_CAP = 1
 local bounceFactor = DEFAULT_BOUNCE_FACTOR
 
 local balls = {}
@@ -137,7 +137,7 @@ function addBall()
       math.random(-DEFAULT_SPHERE_VEL_CAP,DEFAULT_SPHERE_VEL_CAP),
       math.random(-DEFAULT_SPHERE_VEL_CAP,DEFAULT_SPHERE_VEL_CAP),
       math.random(-DEFAULT_SPHERE_VEL_CAP,DEFAULT_SPHERE_VEL_CAP)
-  )
+  ) * 0.10
 
   table.insert(balls, {
 --         pos = opos,

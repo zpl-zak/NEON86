@@ -5,7 +5,7 @@ function _init()
   ShowMessage("Method test", tostring(dll.test()))
 
   local w, h = dll.interopTest()
-  ShowMessage("Engine interop test", tostring(w) .. " " .. tostring(h))
+  ShowMessage("Engine interop test", "w: " .. w .. " h: " .. h)
 
   ShowMessage("Engine cross-Lua obj test", vec2str(dll.randvec()))
   ExitGame()
