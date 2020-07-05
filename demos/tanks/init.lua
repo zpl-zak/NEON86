@@ -65,13 +65,17 @@ function _update(dt)
       ExitGame()
   end
 
+  if GetKeyDown("R") then
+      RestartGame()
+  end
+
   if GetKeyDown("1") then
     net.server_start()
     net.connect("localhost")
   end
 
   if GetKeyDown("2") then
-    net.connect("localhost")
+    net.connect("inlife.no-ip.org")
   end
 
   if IsFocused() then
@@ -95,7 +99,7 @@ function _render()
   -- ToggleWireframe(true)
   ClearScene(15,0,15)
   AmbientColor(0x773377)
-  CameraPerspective(90, 0.1, 5000)
+  CameraPerspective(90, 1.0, 5000)
   Matrix():bind(WORLD)
   player.cam:bind(VIEW)
   -- SetFog(VectorRGBA(0,0,255,255), FOGKIND_LINEAR, 600, 1300)

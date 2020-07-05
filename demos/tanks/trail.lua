@@ -31,9 +31,11 @@ function drawTrails(tank, height, trailNode)
         local tr1 = trails[i]
         local tr2 = trails[i+1]
         
+        local alpha = math.min(i, 20.0) / 20.0
+
         if tr1 ~= nil then
             if #trails > MAX_TRAILS then
-                trailMaterial:setOpacity(i/MAX_TRAILS)
+                trailMaterial:setOpacity(alpha)
             end
             if tr2 == nil then
                 tr2 = getTrailPos(tank, trailNode)

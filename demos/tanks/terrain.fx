@@ -6,6 +6,8 @@
 // These can be set up from Lua as well
 float time;
 float4 ambience;
+float3 campos;
+TLIGHT sun;
 
 // Our global sampler state for the diffuse texture
 sampler2D colorMap = sampler_state
@@ -34,7 +36,20 @@ struct VS_OUTPUT {
     float4 color : COLOR0;
     float2 texCoord : TEXCOORD0;
     float3 normal : NORMAL;
+    float depth : TEXCOORD1;
 };
+
+//Vertex Shader Bits
+float ComputeFogFactor(float d) 
+{
+    float FogEnabled = 1;
+    float FogStart = 300;
+    float FogEnd = 1000;
+    //d is the distance to the geometry sampling from the camera
+    //this simply returns a value that interpolates from 0 to 1 
+    //with 0 starting at FogStart and 1 at FogEnd 
+    return clamp((d - FogStart) / (FogEnd - FogStart), 0, 1) * FogEnabled;
+}
 
 // Vertex shader, called per each vertex, here we perform transformations
 // and calculate data that doesn't need per-pixel precision
@@ -45,7 +60,8 @@ VS_OUTPUT VS_Main(VS_INPUT IN)
     OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
     OUT.normal = mul(IN.normal, NEON.World);
     OUT.color = IN.color;
-    OUT.texCoord = IN.texCoord;
+    OUT.texCoord = IN.texCoord * 0.5;
+    OUT.depth = ComputeFogFactor(length(campos - OUT.worldPos));
 
     return OUT;
 }
@@ -57,15 +73,17 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float4 OUT = float4(0,0,0,1);
     float4 brightPart = tex2D(colorMap, IN.texCoord);
 
-    if (brightPart.r > 0.1f) {
-        OUT = float4(0.5, 0.2, 0.4,1);
-    } else {
-        float3 n = normalize(IN.normal);
-        for (int i=1; i<9; i++) {
-            if (!lights[i].IsEnabled)
-                continue;
-        }
-    }
+    float4 colorNear = float4(0.5, 0.2, 0.4, 1);
+    float4 colorFar = float4(0.1, 0.2, 0.4, 1);
+    float4 colorNeu = float4(0.1, 0.1, 0.2, 1);
+    float4 iterm = lerp(colorNear, colorFar*1.5, IN.depth);
+
+    float3 n = normalize(IN.normal);
+    float3 l = normalize(-sun.Direction);
+    float diffuse = saturate(dot(n, l));
+
+    OUT = max(brightPart.a * iterm * 2, colorNeu);
+    // OUT = normalize(sun.Diffuse) * diffuse;
 
     return OUT;
 }

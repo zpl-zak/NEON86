@@ -32,9 +32,15 @@ end
 function drawWorld()
     terrainShader:begin("Main")
     terrainShader:beginPass("Default")
+    terrainShader:setFloat("time", time)
+    terrainShader:setVector3("campos", player.pos:neg())
+    terrainShader:setLight("sun", light)
+    terrainShader:commit()
+    BindTexture(0, terrainMaterial)
     for _, w in pairs(world.shapes) do
         terrain:draw(w.pos)
     end
+    BindTexture(0)
     terrainShader:flush()
     terrainShader:done()
 end

@@ -48,7 +48,6 @@ end
 function updateTanks(dt)
     local t = tanks["local"]
 
-    -- for _, t in pairs(tanks) do
       t.vel:y(t.vel:y() - 2*dt)
       world:forEach(function (shape)
         shape:testSphere(t.pos, 5, t.vel, function (norm)
@@ -86,8 +85,9 @@ function updateTanks(dt)
         t.vel:y(1)
       end
 
+    for _, t in pairs(tanks) do
       handleTrails(t, trailPosNode)
-    -- end
+    end
 end
 
 function drawTanks()
