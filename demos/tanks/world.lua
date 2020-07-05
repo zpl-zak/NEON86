@@ -5,6 +5,7 @@ function initWorld()
     terrain = Model("terrain.fbx", false)
     terrainMaterial = Material()
     terrainMaterial:setDiffuse(0x815192)
+    terrainMaterial:setPower(120)
 
     world = cols.newWorld()
 

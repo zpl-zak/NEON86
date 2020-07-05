@@ -33,12 +33,12 @@ function _init()
   setupPlayer()
 
   light = Light()
-  light:setDirection(Vector(-1,-1,1))
-  light:setDiffuse(255,255,255)
+  light:setDirection(Vector(-0.6,-1,-0.7))
+  -- light:setSpecular(0xffffff)
+  light:setSpecular(0xff9933)
+  light:setDiffuse(0xffcc99)
   light:setType(LIGHTKIND_DIRECTIONAL)
   light:enable(true, 0)
-
-  SetFog(VectorRGBA(0,0,255,255), FOGKIND_LINEAR, 600, 1300)
 end
 
 function _update(dt)
@@ -67,7 +67,10 @@ function _render()
   CameraPerspective(62, 0.1, 5000)
   Matrix():bind(WORLD)
   player.cam:bind(VIEW)
+  SetFog(VectorRGBA(0,0,255,255), FOGKIND_LINEAR, 600, 1300)
   drawWorld()
+
+  ClearFog()
   drawTanks()
   ToggleWireframe(false)
 end
