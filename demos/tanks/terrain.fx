@@ -62,7 +62,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     } else {
         float3 n = normalize(IN.normal);
         for (int i=1; i<9; i++) {
-            if (lights[i].!IsEnabled)
+            if (!lights[i].IsEnabled)
                 continue;
 
             
