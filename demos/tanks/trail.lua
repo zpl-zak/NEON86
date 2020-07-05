@@ -26,6 +26,7 @@ function handleTrails(t, trailNode)
 end
 
 function drawTrails(tank, height, trailNode)
+    EnableLighting(false)
     local trails = tank.trails
     for i=1,#trails,1 do
         local tr1 = trails[i]

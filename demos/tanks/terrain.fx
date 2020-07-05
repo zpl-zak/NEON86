@@ -76,7 +76,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float4 colorNear = float4(0.5, 0.2, 0.4, 1);
     float4 colorFar = float4(0.1, 0.2, 0.4, 1);
     float4 colorNeu = float4(0.1, 0.1, 0.2, 1);
-    float4 iterm = lerp(colorNear, colorFar*1.5, IN.depth);
+    float4 iterm = lerp(colorNear, colorFar*1.5, IN.depth)*2.5;
 
     float3 n = normalize(IN.normal);
     float3 l = normalize(-sun.Direction);
