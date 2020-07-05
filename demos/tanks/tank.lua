@@ -92,12 +92,14 @@ end
 
 function drawTanks()
     BindTexture(0, tankMaterial)
+    local i = 1
     for idx, t in pairs(tanks) do
       t.light:setPosition(t.pos+Vector3(0,5,0))
-      t.light:enable(true, idx)
+      t.light:enable(true, i)
       Matrix():bind(WORLD)
-      tankBody:draw(t.rot * Matrix():translate(t.pos+t.hover))
-      drawTrails(t, 5, trailPosNode)
+      tankBody:draw(t.rot * Matrix():scale(2, 2, 2):translate(t.pos+t.hover))
+      drawTrails(t, 10, trailPosNode)
+      i = i + 1
     end
     BindTexture(0)
 end

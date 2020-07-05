@@ -1,4 +1,4 @@
-local net = require "sampleplugin"
+local net = require "networkplugin"
 
 time = 0
 local testFont
@@ -92,7 +92,7 @@ end
 
 function _render()
   EnableLighting(true)
-  ToggleWireframe(true)
+  -- ToggleWireframe(true)
   ClearScene(15,0,15)
   AmbientColor(0x773377)
   CameraPerspective(90, 0.1, 5000)

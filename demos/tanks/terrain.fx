@@ -58,14 +58,12 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
     float4 brightPart = tex2D(colorMap, IN.texCoord);
 
     if (brightPart.r > 0.1f) {
-        OUT = float4(1, 0.4, 0.8,1);
+        OUT = float4(0.5, 0.2, 0.4,1);
     } else {
         float3 n = normalize(IN.normal);
         for (int i=1; i<9; i++) {
             if (!lights[i].IsEnabled)
                 continue;
-
-            
         }
     }
 

@@ -45,14 +45,14 @@ function drawTrails(tank, height, trailNode)
             ToggleWireframe(false)
             CullMode(CULLKIND_NONE)
             DrawPolygon(
-                Vertex(tr1:x()-height, tr1:y(), tr1:z(), 0, 0),
-                Vertex(tr1:x()+height, tr1:y(), tr1:z(), 0, 1),
-                Vertex(tr2:x()-height, tr2:y(), tr2:z(), 1, 0)
+                Vertex(tr1:x(), tr1:y()-height, tr1:z(), 0, 0),
+                Vertex(tr1:x(), tr1:y()+height, tr1:z(), 0, 1),
+                Vertex(tr2:x(), tr2:y()-height, tr2:z(), 1, 0)
             )
             DrawPolygon(
-                Vertex(tr1:x()+height, tr1:y(), tr1:z(), 0, 1),
-                Vertex(tr2:x()-height, tr2:y(), tr2:z(), 1, 0),
-                Vertex(tr2:x()+height, tr2:y(), tr2:z(), 1, 1)
+                Vertex(tr1:x(), tr1:y()+height, tr1:z(), 0, 1),
+                Vertex(tr2:x(), tr2:y()-height, tr2:z(), 1, 0),
+                Vertex(tr2:x(), tr2:y()+height, tr2:z(), 1, 1)
             )
             ToggleWireframe(true)
         end
