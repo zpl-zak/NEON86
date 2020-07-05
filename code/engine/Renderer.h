@@ -4,9 +4,6 @@
 
 #pragma comment (lib, "d3d9.lib")
 
-#include <d3d9.h>
-#include <d3dx9.h>
-
 #define RENDERER CEngine::the()->GetRenderer()
 
 class CFrustum;
