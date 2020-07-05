@@ -51,7 +51,7 @@ function updateTanks(dt)
         end)
       end)
       local hoverFactor = 2
-      t.vel = t.vel:lerp(t.vel+t.movedir, 1.0)
+      t.vel = t.vel:lerp(t.movedir*1000, 0.01323)
       t.hover = Vector3(0,math.sin(time*4) * (hoverFactor - math.min(t.vel:magSq(), hoverFactor) / hoverFactor),0)
       t.pos = t.pos + t.vel
       t.crotm = t.rot

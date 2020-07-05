@@ -55,7 +55,7 @@ function player.update(self, dt)
     end
 
     if GetKey(KEY_SHIFT) then
-        self.tank.vel = self.tank.vel:lerp(Vector3(0,self.tank.vel:y(), 0), 0.01221)
+        self.tank.vel = self.tank.vel:lerp(Vector3(0,--[[ self.tank.vel:y() ]] 0, 0), 0.04221)
     end
 end
   
