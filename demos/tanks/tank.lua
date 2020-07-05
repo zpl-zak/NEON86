@@ -97,7 +97,7 @@ function drawTanks()
       t.light:setPosition(t.pos+Vector3(0,5,0))
       t.light:enable(true, i)
       Matrix():bind(WORLD)
-      tankBody:draw(t.rot * Matrix():scale(2, 2, 2):translate(t.pos+t.hover))
+      tankBody:draw(t.rot * Matrix():translate(t.pos+t.hover))
       drawTrails(t, 10, trailPosNode)
       i = i + 1
     end
