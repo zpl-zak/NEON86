@@ -118,7 +118,7 @@ exit /B 0
 	mkdir build\deploy
 	xcopy /Y build\release\*.dll build\deploy\
 	xcopy /Y build\release\player.exe build\deploy\
-	xcopy /Y /E /exclude:.gitignore demos\%proj%\ build\deploy\data\
+	xcopy /Y /E /exclude:.gitignore "demos\%proj%\" "build\deploy\data\"
 	xcopy /Y /E /I /exclude:.gitignore libs build\deploy\libs
 	xcopy /Y LICENSE.md build\deploy\
 	xcopy /Y README.md build\deploy\
