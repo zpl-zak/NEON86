@@ -96,20 +96,15 @@ end
 
 function _render()
   EnableLighting(true)
-  -- ToggleWireframe(true)
   ClearScene(15,0,15)
   AmbientColor(0x773377)
   CameraPerspective(90, 1.0, 5000)
   Matrix():bind(WORLD)
   player.cam:bind(VIEW)
-  -- SetFog(VectorRGBA(0,0,255,255), FOGKIND_LINEAR, 600, 1300)
   SetFog(VectorRGBA(0,0,25,255), FOGKIND_LINEAR, 600, 1300)
   light:setDirection(Vector(-0.6,-1,-0.7))
-  
-  -- ClearFog()
-  drawTanks()
-  ToggleWireframe(false)
   drawWorld()
+  drawTanks()
 end
 
 function _render2d()

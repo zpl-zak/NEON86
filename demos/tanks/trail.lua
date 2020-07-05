@@ -26,7 +26,6 @@ function handleTrails(t, trailNode)
 end
 
 function drawTrails(tank, height, trailNode)
-    EnableLighting(false)
     local trails = tank.trails
     for i=1,#trails,1 do
         local tr1 = trails[i]
@@ -45,7 +44,6 @@ function drawTrails(tank, height, trailNode)
             
             BindTexture(0, trailMaterial)
             Matrix():bind(WORLD)
-            ToggleWireframe(false)
             CullMode(CULLKIND_NONE)
             DrawPolygon(
                 Vertex(tr1:x(), tr1:y()-height, tr1:z(), 0, 0),
@@ -57,7 +55,6 @@ function drawTrails(tank, height, trailNode)
                 Vertex(tr2:x(), tr2:y()-height, tr2:z(), 1, 0),
                 Vertex(tr2:x(), tr2:y()+height, tr2:z(), 1, 1)
             )
-            ToggleWireframe(true)
         end
     end
     BindTexture(0)
