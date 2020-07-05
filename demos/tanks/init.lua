@@ -35,7 +35,7 @@ function _init()
   setupPlayer()
   
   light = Light()
-  light:setDirection(Vector(-0.6,-1,-0.7))
+  light:setDirection(Vector(-1,-1,1))
   -- light:setSpecular(0xffffff)
   light:setSpecular(0)
   light:setDiffuse(0xffcc99)
@@ -66,7 +66,7 @@ function _render()
   EnableLighting(true)
   ToggleWireframe(true)
   ClearScene(15,0,15)
-  AmbientColor(0x440844)
+  AmbientColor(0x773377)
   CameraPerspective(90, 0.1, 5000)
   Matrix():bind(WORLD)
   player.cam:bind(VIEW)
@@ -88,5 +88,5 @@ shift - brake
 end
 
 function updateTestAI()
-  testAI.movedir = (player.tank.pos - testAI.pos):normalize()*0.1
+  testAI.movedir = (player.tank.pos - testAI.pos):normalize()*0.001
 end

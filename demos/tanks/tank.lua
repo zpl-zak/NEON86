@@ -35,7 +35,7 @@ function addTank()
   l:setPosition(t.pos)
   l:setDiffuse(0xff9933)
   l:setRange(80)
-  l:setAttenuation(0,0.16,0)
+  l:setAttenuation(0,0.01,0)
   t.light = l
 
   table.insert(tanks, t)

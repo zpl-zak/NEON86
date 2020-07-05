@@ -1,9 +1,10 @@
 local terrain, terrainMaterial
 world = {}
+local terrainShader
 
 function initWorld()
-    terrain = Model("terrain.fbx", false)
-    terrainMaterial = Material()
+    terrain = Model("terrain.fbx")
+    terrainMaterial = Material("tile.png")
     terrainMaterial:setDiffuse(0x815192)
     terrainMaterial:setPower(120)
 
@@ -17,27 +18,23 @@ function initWorld()
         addTile(meshNode, mesh, Vector3(WORLD_SIZE*i,0,WORLD_SIZE*j))
         end
     end
+
+    terrainShader = Effect("terrain.fx")
 end
 
 function addTile(meshNode, mesh, pos)
     local terrainMesh = cols.newTriangleMeshFromPart(mesh, meshNode:getFinalTransform():translate(pos))
-    terrainMesh.model = FaceGroup()
-
-    for _, tr in pairs(terrainMesh.tris) do
-        terrainMesh.model:addVertex(Vertex(tr[1]:x(),tr[1]:y(),tr[1]:z()))
-        terrainMesh.model:addVertex(Vertex(tr[2]:x(),tr[2]:y(),tr[2]:z()))
-        terrainMesh.model:addVertex(Vertex(tr[3]:x(),tr[3]:y(),tr[3]:z()))
-    end
-    terrainMesh.model:build()
-    terrainMesh.model:calcNormals()
+    terrainMesh.pos = Matrix():translate(pos)
 
     world:addCollision(terrainMesh)
 end
 
 function drawWorld()
-    BindTexture(0, terrainMaterial)
+    terrainShader:begin("Main")
+    terrainShader:beginPass("Default")
     for _, w in pairs(world.shapes) do
-        w.model:draw()
+        terrain:draw(w.pos)
     end
-    BindTexture(0)
+    terrainShader:flush()
+    terrainShader:done()
 end
