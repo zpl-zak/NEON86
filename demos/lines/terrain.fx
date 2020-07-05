@@ -19,13 +19,6 @@ sampler2D colorMap = sampler_state
     MaxAnisotropy = 16;
 };
 
-sampler2D glowMap = sampler_state
-{
-	Texture = <specularTex>;
-    Filter = MIN_MAG_MIP_POINT;
-    MaxAnisotropy = 16;
-};
-
 TLIGHT lights[9];
 
 // Pipeline structure used to pass calculated per-vertex
@@ -39,16 +32,9 @@ struct VS_OUTPUT {
     float depth : TEXCOORD1;
 };
 
-//Vertex Shader Bits
-float ComputeFogFactor(float d) 
+float ComputeFogFactor(float d, float start, float end) 
 {
-    float FogEnabled = 1;
-    float FogStart = 300;
-    float FogEnd = 1000;
-    //d is the distance to the geometry sampling from the camera
-    //this simply returns a value that interpolates from 0 to 1 
-    //with 0 starting at FogStart and 1 at FogEnd 
-    return clamp((d - FogStart) / (FogEnd - FogStart), 0, 1) * FogEnabled;
+    return clamp((d - start) / (end - start), 0, 1);
 }
 
 // Vertex shader, called per each vertex, here we perform transformations
@@ -61,7 +47,7 @@ VS_OUTPUT VS_Main(VS_INPUT IN)
     OUT.normal = mul(IN.normal, NEON.World);
     OUT.color = IN.color;
     OUT.texCoord = IN.texCoord * 0.5;
-    OUT.depth = ComputeFogFactor(length(campos - OUT.worldPos));
+    OUT.depth = ComputeFogFactor(length(campos - OUT.worldPos), 300, 1000);
 
     return OUT;
 }
@@ -71,7 +57,7 @@ VS_OUTPUT VS_Main(VS_INPUT IN)
 float4 PS_Main(VS_OUTPUT IN) : COLOR
 {
     float4 OUT = float4(0,0,0,1);
-    float4 brightPart = tex2D(colorMap, IN.texCoord);
+    float4 brightPart = tex2D(colorMap, IN.texCoord + float2(1,1)*time);
 
     float4 colorNear = float4(0.5, 0.2, 0.4, 1);
     float4 colorFar = float4(0.1, 0.2, 0.4, 1);
