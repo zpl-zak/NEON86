@@ -41,26 +41,28 @@ VOID CSound::Update()
 
 VOID CSound::SetVolume(LONG vol)
 {
-    mBuffer->SetVolume(vol);
+    LONG realVol = (LONG)ScaleBetween((FLOAT)vol, DSBVOLUME_MIN, DSBVOLUME_MAX, 0, 100);
+    mBuffer->SetVolume(realVol);
 }
 
 VOID CSound::SetPan(LONG pan)
 {
-    mBuffer->SetPan(pan);
+    LONG realPan = (LONG)ScaleBetween((FLOAT)pan, DSBPAN_LEFT, DSBPAN_RIGHT, -100, 100);
+    mBuffer->SetPan(realPan);
 }
 
 LONG CSound::GetVolume()
 {
     LONG vol;
     mBuffer->GetVolume(&vol);
-    return vol;
+    return (LONG)ScaleBetween((FLOAT)vol, 0, 100, DSBVOLUME_MIN, DSBVOLUME_MAX);;
 }
 
 LONG CSound::GetPan()
 {
     LONG pan;
     mBuffer->GetPan(&pan);
-    return pan;
+    return (LONG)ScaleBetween((FLOAT)pan, -100, 100, DSBVOLUME_MIN, DSBVOLUME_MAX);;
 }
 
 BOOL CSound::IsPlaying()

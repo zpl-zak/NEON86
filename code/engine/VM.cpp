@@ -279,6 +279,7 @@ VOID CVirtualMachine::InitVM(VOID)
 	CLuaBindings::BindMath(mLuaVM);
 	CLuaBindings::BindRenderer(mLuaVM);
 	CLuaBindings::BindInput(mLuaVM);
+	CLuaBindings::BindAudio(mLuaVM);
 
 	// Load script
 	result = luaL_loadstring(mLuaVM, (const char*)mMainScript);

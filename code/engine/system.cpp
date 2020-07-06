@@ -17,6 +17,11 @@ FLOAT GetTime()
 	return (counter.QuadPart - perf_counter.QuadPart) / (FLOAT)(perf_freq.QuadPart);
 }
 
+FLOAT ScaleBetween(FLOAT x, FLOAT a, FLOAT b, FLOAT na, FLOAT nb)
+{
+	return (b - a) * (x - na) / (nb - na) + a;
+}
+
 #include <unordered_map>
 static std::unordered_map<LPVOID, DWORD> gMemoryMap;
 

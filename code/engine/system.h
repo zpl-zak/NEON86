@@ -23,7 +23,7 @@
 #define EXPAND_COLX(q) { q.r, q.g, q.b, 1.0f }
 
 ENGINE_API extern FLOAT GetTime();
-
+ENGINE_API extern FLOAT ScaleBetween(FLOAT x, FLOAT a, FLOAT b, FLOAT na, FLOAT nb);
 
 extern DWORD gMemUsed, gMemUsedLua, gMemPeak, gResourceCount;
 extern VOID neon_mempeak_update();

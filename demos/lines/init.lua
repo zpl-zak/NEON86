@@ -25,7 +25,7 @@ function _init()
   RegisterFontFile("slkscr.ttf")
   testFont = Font("Silkscreen", 36, 1, false)
   testSnd = Sound("test.wav")
-  testSnd:setVolume(50)
+  testSnd:setVolume(65)
   testSnd:loop(true)
   testSnd:play()
   
