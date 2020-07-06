@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "FileSystem.h"
+#include "Sound.h"
 
 #include <lua/lua.hpp>
 #include <sstream>
@@ -107,6 +108,7 @@ D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset)
 #include "LuaRenderTarget.h"
 #include "LuaEffect.h"
 #include "LuaFont.h"
+#include "LuaSound.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage) 
@@ -195,6 +197,8 @@ LUAF(Base, getTime)
 
 VOID CLuaBindings::BindBase(lua_State* L)
 {
+    LuaSound_register(L);
+
 	REGF(Base, ShowMessage);
 	REGF(Base, LogString);
     REGF(Base, ExitGame);

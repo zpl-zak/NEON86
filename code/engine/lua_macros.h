@@ -55,6 +55,7 @@ static INT NAME(lua_State* L) {\
 #define L_RENDERTARGET "RenderTarget"
 #define L_LIGHT "Light"
 #define L_FONT "Font"
+#define L_SOUND "Sound"
 
 #define ENDF {0,0}
 
@@ -70,6 +71,7 @@ ENGINE_API extern INT matrix_new(lua_State* L);
 ENGINE_API extern INT effect_new(lua_State* L);
 ENGINE_API extern INT facegroup_new(lua_State* L);
 ENGINE_API extern INT font_new(lua_State* L);
+ENGINE_API extern INT sound_new(lua_State* L);
 ENGINE_API extern INT light_new(lua_State* L);
 ENGINE_API extern INT material_new(lua_State* L);
 ENGINE_API extern INT mesh_new(lua_State* L);

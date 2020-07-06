@@ -9,6 +9,8 @@
 #include "FileSystem.h"
 #include "VM.h"
 #include "UserInterface.h"
+#include "AudioSystem.h"
+
 #include <ctime>
 
 CEngine::CEngine(VOID)
@@ -22,6 +24,7 @@ CEngine::CEngine(VOID)
     mFileSystem = NULL;
     mVirtualMachine = NULL;
     mUserInterface = NULL;
+    mAudioSystem = NULL;
     
     SetFPS(60.0f);
     mUnprocessedTime = 0.0f;
@@ -37,6 +40,7 @@ BOOL CEngine::Release()
     SAFE_RELEASE(mUserInterface);
     SAFE_RELEASE(mRenderer);
     SAFE_RELEASE(mInput);
+    SAFE_RELEASE(mAudioSystem);
 
     return TRUE;
 }
@@ -85,10 +89,18 @@ BOOL CEngine::Init(HWND window, RECT resolution)
 
     if (mRenderer->CreateDevice(window, resolution) != ERROR_SUCCESS)
     {
+        MessageBoxA(window, "Failed to initialize the renderer!", "Renderer error", MB_OK);
         return FALSE;
     }
 
     mUserInterface = new CUserInterface();
+    mAudioSystem = new CAudioSystem();
+
+    if (mAudioSystem->CreateDevice() != ERROR_SUCCESS)
+    {
+        MessageBoxA(window, "Failed to initialize the audio system!", "Audio error", MB_OK);
+        return FALSE;
+    }
 
     mIsInitialised = TRUE;
     mIsRunning = TRUE;

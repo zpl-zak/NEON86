@@ -5,6 +5,7 @@ class CInput;
 class CFileSystem;
 class CVirtualMachine;
 class CUserInterface;
+class CAudioSystem;
 
 #define ENGINE CEngine::the()
 
@@ -27,6 +28,7 @@ public:
 	CFileSystem* GetFileSystem() { return mFileSystem; }
 	CVirtualMachine* GetVM() { return mVirtualMachine; }
 	CUserInterface* GetUI() { return mUserInterface; }
+	CAudioSystem* GetAudioSystem() { return mAudioSystem; }
 
 	BOOL IsRunning() const { return mIsRunning; }
 
@@ -38,6 +40,7 @@ protected:
 	CFileSystem* mFileSystem;
 	CVirtualMachine* mVirtualMachine;
 	CUserInterface* mUserInterface;
+	CAudioSystem* mAudioSystem;
 private:
 	VOID Update(FLOAT deltaTime);
 	VOID Render();

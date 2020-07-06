@@ -9,3 +9,4 @@
 #include "VM.h"
 #include "RenderData.h"
 #include "UserInterface.h"
+#include "AudioSystem.h"

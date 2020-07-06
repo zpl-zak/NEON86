@@ -293,6 +293,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioSystem.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Font.cpp" />
@@ -308,6 +309,8 @@
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LuaBindings.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SoundLoader.cpp" />
     <ClCompile Include="VM.cpp" />
     <ClCompile Include="FaceGroup.cpp" />
     <ClCompile Include="Node.cpp" />
@@ -326,6 +329,7 @@
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioSystem.h" />
     <ClInclude Include="BuiltinShaders.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Engine.h" />
@@ -348,10 +352,13 @@
     <ClInclude Include="LuaNode.h" />
     <ClInclude Include="LuaScene.h" />
     <ClInclude Include="LuaRenderTarget.h" />
+    <ClInclude Include="LuaSound.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LuaBindings.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundLoader.h" />
     <ClInclude Include="VM.h" />
     <ClInclude Include="LuaMatrix.h" />
     <ClInclude Include="LuaFaceGroup.h" />

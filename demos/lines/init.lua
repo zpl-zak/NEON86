@@ -19,9 +19,15 @@ dofile("tank.lua")
 dofile("world.lua")
 dofile("player.lua")
 
+local testSnd
+
 function _init()
   RegisterFontFile("slkscr.ttf")
   testFont = Font("Silkscreen", 36, 1, false)
+  testSnd = Sound("test.wav")
+  testSnd:setVolume(50)
+  testSnd:loop(true)
+  testSnd:play()
   
   initWorld()
   initTankModel()

@@ -40,6 +40,12 @@
     <Filter Include="Source Files\Lua">
       <UniqueIdentifier>{be28eed9-9922-42f6-aa8f-0a32bee9c6a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Audio">
+      <UniqueIdentifier>{5c734097-6abe-4d0a-9603-d4bb3a42c27b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{df6efd9b-9fc8-4eb3-98b5-818a480fbc19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp">
@@ -119,6 +125,15 @@
     </ClCompile>
     <ClCompile Include="Font.cpp">
       <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioSystem.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundLoader.cpp">
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +282,18 @@
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="LuaFont.h">
+      <Filter>Header Files\Lua\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioSystem.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundLoader.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaSound.h">
       <Filter>Header Files\Lua\Modules</Filter>
     </ClInclude>
   </ItemGroup>
