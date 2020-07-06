@@ -31,7 +31,7 @@ BOOL CAudioSystem::CreateDevice()
     }
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-    bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME;
+    bufferDesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
     bufferDesc.dwBufferBytes = 0;
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = NULL;
