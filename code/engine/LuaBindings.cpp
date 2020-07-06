@@ -197,8 +197,6 @@ LUAF(Base, getTime)
 
 VOID CLuaBindings::BindBase(lua_State* L)
 {
-    LuaSound_register(L);
-
 	REGF(Base, ShowMessage);
 	REGF(Base, LogString);
     REGF(Base, ExitGame);
@@ -208,6 +206,11 @@ VOID CLuaBindings::BindBase(lua_State* L)
 	REGF(Base, dofile);
 	REGF(Base, loadfile);
 	REGF(Base, getTime);
+}
+
+VOID CLuaBindings::BindAudio(lua_State* L)
+{
+	LuaSound_register(L);
 }
 
 /// MATH METHODS

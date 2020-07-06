@@ -16,14 +16,16 @@ class ENGINE_API CAudioSystem
 {
 public:
     CAudioSystem();
-    BOOL CreateDevice();
+    HRESULT CreateDevice();
     VOID Release();
 
     VOID Update(FLOAT dt);
     inline IDirectSound8* GetDevice() { return mDirectSound; }
+    inline IDirectSound3DListener8* GetListener() { return mListener; }
 
 private:
     BOOL mIsInitialized;
     IDirectSound8* mDirectSound;
     IDirectSoundBuffer* mPrimaryBuffer;
+    IDirectSound3DListener8* mListener;
 };

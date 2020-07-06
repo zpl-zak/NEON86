@@ -3,14 +3,18 @@
 #include "AudioSystem.h"
 #include "NeonEngine.h"
 
+#include <mmsystem.h>
+#include <dsound.h>
+
 CAudioSystem::CAudioSystem()
 {
     mIsInitialized = FALSE;
     mDirectSound = NULL;
     mPrimaryBuffer = NULL;
+    mListener = NULL;
 }
 
-BOOL CAudioSystem::CreateDevice()
+HRESULT CAudioSystem::CreateDevice()
 {
     HRESULT result;
     DSBUFFERDESC bufferDesc;
@@ -53,6 +57,13 @@ BOOL CAudioSystem::CreateDevice()
     waveFormat.cbSize = 0;
 
     result = mPrimaryBuffer->SetFormat(&waveFormat);
+    if (FAILED(result))
+    {
+        Release();
+        return result;
+    }
+
+    result = mPrimaryBuffer->QueryInterface(IID_IDirectSound3DListener8, (LPVOID*)&mListener);
     if (FAILED(result))
     {
         Release();

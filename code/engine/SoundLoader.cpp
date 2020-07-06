@@ -118,7 +118,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
     waveFormat.cbSize = 0;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
+    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
     bufferDesc.dwBufferBytes = waveFileHeader.dataSize;
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = &waveFormat;
