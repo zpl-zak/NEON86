@@ -47,9 +47,9 @@ function drawWorld()
         terrain:draw(w.pos)
     end
     BindTexture(0)
-    terrainShader:flush()
+    terrainShader:endPass()
     terrainShader:done()
-
+    
     BindTexture(0, backdropMaterial)
     backdropModel:draw(Matrix():scale(WORLD_TILES[1], WORLD_TILES[1], WORLD_TILES[1]))
     BindTexture(0)
