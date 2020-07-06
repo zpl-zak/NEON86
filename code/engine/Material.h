@@ -41,6 +41,8 @@ public:
     VOID SetOpacity(FLOAT val);
     VOID SetShaded(BOOL state);
     VOID SetAlphaIsTransparency(BOOL state);
+    VOID SetEnableAlphaTest(BOOL state);
+    VOID SetAlphaRef(DWORD refval);
 
     inline MATERIAL GetMaterialData() const { return mMaterialData; }
     inline BOOL IsTransparent() const { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }

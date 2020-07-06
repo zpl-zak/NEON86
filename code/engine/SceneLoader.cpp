@@ -323,6 +323,8 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
         if (((buf[i] << 24) & 0xFF) < 1.0f)
         {
             newMaterial->SetAlphaIsTransparency(TRUE);
+            newMaterial->SetEnableAlphaTest(TRUE);
+            newMaterial->SetAlphaRef(127);
             break;
         }
     }

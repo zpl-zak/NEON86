@@ -38,6 +38,7 @@ VOID CMaterial::DefaultMaterial(VOID)
     mMaterialData.Opacity = 1.0f;
     mMaterialData.Power = 1.0f;
     mMaterialData.Shaded = TRUE;
+    mMaterialData.AlphaRef = 127;
 
     SetSamplerState(D3DSAMP_MINFILTER, TEXF_ANISOTROPIC);
     SetSamplerState(D3DSAMP_MIPFILTER, TEXF_ANISOTROPIC);
@@ -179,4 +180,14 @@ VOID CMaterial::SetShaded(BOOL state)
 VOID CMaterial::SetAlphaIsTransparency(BOOL state)
 {
     mMaterialData.AlphaIsTransparency = state;
+}
+
+VOID CMaterial::SetEnableAlphaTest(BOOL state)
+{
+    mMaterialData.AlphaTestEnabled = TRUE;
+}
+
+VOID CMaterial::SetAlphaRef(DWORD refval)
+{
+    mMaterialData.AlphaRef = refval;
 }

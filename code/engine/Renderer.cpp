@@ -414,9 +414,9 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 
             mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-			if (matData && matData->AlphaIsTransparency == TRUE)
+			if (matData && matData->AlphaIsTransparency == TRUE && matData->AlphaTestEnabled == TRUE)
 			{
-				mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)127);
+				mDevice->SetRenderState(D3DRS_ALPHAREF, (DWORD)matData->AlphaRef);
 				mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 				mDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 			}

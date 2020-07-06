@@ -211,6 +211,24 @@ static INT material_setalphaistransparency(lua_State* L)
     return 0;
 }
 
+static INT material_setalphatest(lua_State* L)
+{
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
+    BOOL val = (BOOL)lua_toboolean(L, 2);
+    mat->SetEnableAlphaTest(val);
+
+    return 0;
+}
+
+static INT material_setalpharef(lua_State* L)
+{
+    CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
+    DWORD val = (DWORD)luaL_checkinteger(L, 2);
+    mat->SetAlphaRef(val);
+
+    return 0;
+}
+
 static INT material_setshaded(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
@@ -243,6 +261,8 @@ static VOID LuaMaterial_register(lua_State* L)
     REGC("setPower", material_setpower);
     REGC("setOpacity", material_setopacity);
     REGC("alphaIsTransparency", material_setalphaistransparency);
+    REGC("alphaTest", material_setalphatest);
+    REGC("setAlphaRef", material_setalpharef);
     REGC("setShaded", material_setshaded);
 
     REGC("__gc", material_delete);

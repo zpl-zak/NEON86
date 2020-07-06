@@ -118,6 +118,8 @@ struct MATERIAL : D3DMATERIAL9
 	FLOAT Opacity;
 	BOOL Shaded;
 	BOOL AlphaIsTransparency;
+	BOOL AlphaTestEnabled;
+	DWORD AlphaRef;
 };
 
 struct RENDERDATA

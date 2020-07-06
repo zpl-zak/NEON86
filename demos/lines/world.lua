@@ -1,12 +1,18 @@
-local terrain, terrainMaterial
+local terrain, terrainMaterial, backdropModel, backdropMaterial
 world = {}
 local terrainShader
 
 function initWorld()
     terrain = Model("terrain.fbx")
+    backdropModel = Model("backdrop.fbx")
     terrainMaterial = Material("tile.png")
     terrainMaterial:setDiffuse(0x815192)
     terrainMaterial:setPower(120)
+
+    backdropMaterial = Material("bounds.png")
+    backdropMaterial:setEmission(0xD546A6)
+    backdropMaterial:setDiffuse(0xD546A6)
+    backdropMaterial:alphaIsTransparency(true)
 
     world = cols.newWorld()
 
@@ -43,4 +49,8 @@ function drawWorld()
     BindTexture(0)
     terrainShader:flush()
     terrainShader:done()
+
+    BindTexture(0, backdropMaterial)
+    backdropModel:draw(Matrix():scale(WORLD_TILES[1], WORLD_TILES[1], WORLD_TILES[1]))
+    BindTexture(0)
 end
