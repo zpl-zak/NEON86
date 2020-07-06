@@ -82,6 +82,7 @@ protected:
     BOOL mVsync;
     BOOL mFullscreen;
     BOOL mEnableLighting;
+    VERTEX mImmediateBuffer[3];
 
     VOID Clear(VOID);
     VOID BuildParams(VOID);

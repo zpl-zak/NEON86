@@ -257,12 +257,10 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
 
 VOID CRenderer::DrawPolygon(VERTEX a, VERTEX b, VERTEX c)
 {
-    VERTEX verts[] =
-    {
-        {a.x, a.y, a.z, 0,0,0,0,0,0,0,0,0, a.color, a.su, a.tv},
-        {b.x, b.y, b.z, 0,0,0,0,0,0,0,0,0, b.color, b.su, b.tv},
-        {c.x, c.y, c.z, 0,0,0,0,0,0,0,0,0, c.color, c.su, c.tv},
-    };
+	ZeroMemory(&mImmediateBuffer, sizeof(mImmediateBuffer));
+	mImmediateBuffer[0] = { a.x, a.y, a.z, 0,0,0,0,0,0,0,0,0, a.color, a.su, a.tv };
+	mImmediateBuffer[1] = { b.x, b.y, b.z, 0,0,0,0,0,0,0,0,0, b.color, b.su, b.tv };
+	mImmediateBuffer[2] = {c.x, c.y, c.z, 0,0,0,0,0,0,0,0,0, c.color, c.su, c.tv};
 
     static IDirect3DVertexDeclaration9* vertsDecl = NULL;
 
@@ -270,7 +268,7 @@ VOID CRenderer::DrawPolygon(VERTEX a, VERTEX b, VERTEX c)
         mDevice->CreateVertexDeclaration(meshVertexFormat, &vertsDecl);
 
     mDevice->SetVertexDeclaration(vertsDecl);
-    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 3, (LPVOID)verts, sizeof(VERTEX));
+    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 3, (LPVOID)mImmediateBuffer, sizeof(VERTEX));
 }
 
 VOID CRenderer::DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLOAT z2, DWORD color)
