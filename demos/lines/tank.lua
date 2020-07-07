@@ -49,6 +49,10 @@ function updateTanks(dt)
     local t = tanks["local"]
 
       t.vel:y(t.vel:y() - 2*dt)
+
+      if t.vel:y() > 5.0 then
+        t.vel:y(5.0)
+      end
       world:forEach(function (shape)
         shape:testSphere(t.pos, 5, t.vel+t.movedir, function (norm)
           p = norm * ((t.vel * norm) / (norm * norm))
