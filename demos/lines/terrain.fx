@@ -66,7 +66,7 @@ VS_OUTPUT VS_Main(VS_INPUT IN)
 float4 PS_Main(VS_OUTPUT IN) : COLOR
 {
     float4 OUT = float4(0,0,0,1);
-    float4 brightPart = tex2D(colorMap, IN.texCoord + float2(1,1)*time);
+    float4 brightPart = tex2D(colorMap, IN.texCoord * float2(20,20) + float2(1,1)*time);
 
     float4 colorNear = float4(0.5, 0.2, 0.4, 1);
     float4 colorFar = max(float4(0.1, 0.2, 0.4, 1), float4(0.1, 0.2, 0.4, 1)*sin(time*0.5)*2);

@@ -42,9 +42,10 @@ function player.update(self, dt, net)
     self.tank.rot = Matrix():rotate(self.heading+math.rad(90),0,0)
 
     self.tank.movedir = Vector()
+    self.tank.movedir = self.tank.movedir + fwd*SPEED*dt*0.5
 
     if GetKey("w") then
-        self.tank.movedir = self.tank.movedir + fwd*SPEED*dt
+        self.tank.movedir = self.tank.movedir + fwd*SPEED*dt*0.5
     end
     if GetKey("s") then
         self.tank.movedir = self.tank.movedir - fwd*SPEED*dt

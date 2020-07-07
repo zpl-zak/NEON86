@@ -50,8 +50,9 @@ function updateTanks(dt)
 
       t.vel:y(t.vel:y() - 2*dt)
       world:forEach(function (shape)
-        shape:testSphere(t.pos, 5, t.vel, function (norm)
-          t.vel = cols.slide(t.vel+t.movedir*2, norm)
+        shape:testSphere(t.pos, 5, t.vel+t.movedir, function (norm)
+          p = norm * ((t.vel * norm) / (norm * norm))
+          t.vel = (t.vel - p)
         end)
       end)
       local hoverFactor = 2
