@@ -7,7 +7,9 @@ CSound::CSound(LPSTR wavPath): CAllocable()
 {
     mBuffer = NULL;
     mIsLooping = FALSE;
-    CSoundLoader::LoadWAV(wavPath, &mBuffer);
+    mData = NULL;
+    mDataSize = 0;
+    CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize);
 }
 
 VOID CSound::Release()
@@ -15,6 +17,7 @@ VOID CSound::Release()
     if (DelRef())
     {
         SAFE_RELEASE(mBuffer);
+        SAFE_DELETE_ARRAY(mData);
         delete this;
     }
 }
@@ -98,4 +101,10 @@ VOID CSound::SetLoop(BOOL state)
 BOOL CSound::IsLooping()
 {
     return mIsLooping;
+}
+
+UCHAR* CSound::GetData(ULONG* sizeOut)
+{
+    *sizeOut = mDataSize;
+    return mData;
 }

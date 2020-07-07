@@ -23,7 +23,11 @@ public:
     VOID SetCurrentPosition(DWORD cursor);
     VOID SetLoop(BOOL state);
     BOOL IsLooping();
+
+    UCHAR* GetData(ULONG* sizeOut);
 private:
     IDirectSoundBuffer8* mBuffer;
     BOOL mIsLooping;
+    UCHAR* mData;
+    ULONG mDataSize;
 };

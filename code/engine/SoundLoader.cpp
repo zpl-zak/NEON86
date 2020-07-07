@@ -9,33 +9,33 @@
 
 struct WAVEHEADER
 {
-    char chunkId[4];
-    unsigned long chunkSize;
-    char format[4];
-    char subChunkId[4];
-    unsigned long subChunkSize;
-    unsigned short audioFormat;
-    unsigned short numChannels;
-    unsigned long sampleRate;
-    unsigned long bytesPerSecond;
-    unsigned short blockAlign;
-    unsigned short bitsPerSample;
-    char dataChunkId[4];
-    unsigned long dataSize;
+    CHAR chunkId[4];
+    ULONG chunkSize;
+    CHAR format[4];
+    CHAR subChunkId[4];
+    ULONG subChunkSize;
+    USHORT audioFormat;
+    USHORT numChannels;
+    ULONG sampleRate;
+    ULONG bytesPerSecond;
+    USHORT blockAlign;
+    USHORT bitsPerSample;
+    CHAR dataChunkId[4];
+    ULONG dataSize;
 };
 
-VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
+VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
 {
     FILE* fp;
-    unsigned int count;
+    UINT count;
     WAVEHEADER waveFileHeader;
     WAVEFORMATEX waveFormat;
     DSBUFFERDESC bufferDesc;
     HRESULT result;
     IDirectSoundBuffer* tempBuffer;
-    unsigned char* waveData;
-    unsigned char* bufferPtr;
-    unsigned long bufferSize;
+    UCHAR* waveData;
+    UCHAR* bufferPtr;
+    ULONG bufferSize;
 
     fp = FILESYSTEM->OpenResource(RESOURCEKIND_USER, wavPath);
 
@@ -146,13 +146,16 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
     IDirectSoundBuffer8* snd = *sndBuffer;
 
     fseek(fp, sizeof(WAVEHEADER), SEEK_SET);
-    waveData = new unsigned char[waveFileHeader.dataSize];
+    waveData = new UCHAR[waveFileHeader.dataSize];
     if (!waveData)
     {
         FILESYSTEM->CloseResource(fp);
         VM->PostError("Failed to allocate data for sound buffer for file: " + std::string(wavPath));
         return;
     }
+
+    *dataPtr = waveData;
+    *dataSize = waveFileHeader.dataSize;
 
     count = fread(waveData, 1, waveFileHeader.dataSize, fp);
     if (count != waveFileHeader.dataSize)
@@ -181,22 +184,20 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
         VM->PostError("Failed to unlock sound buffer for file: " + std::string(wavPath));
         return;
     }
-
-    delete[] waveData;
 }
 
-VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
+VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
 {
     FILE* fp;
-    unsigned int count;
+    UINT count;
     WAVEHEADER waveFileHeader;
     WAVEFORMATEX waveFormat;
     DSBUFFERDESC bufferDesc;
     HRESULT result;
     IDirectSoundBuffer* tempBuffer;
-    unsigned char* waveData;
-    unsigned char* bufferPtr;
-    unsigned long bufferSize;
+    UCHAR* waveData;
+    UCHAR* bufferPtr;
+    ULONG bufferSize;
 
     fp = FILESYSTEM->OpenResource(RESOURCEKIND_USER, wavPath);
 
@@ -307,13 +308,16 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
     IDirectSoundBuffer8* snd = *sndBuffer;
 
     fseek(fp, sizeof(WAVEHEADER), SEEK_SET);
-    waveData = new unsigned char[waveFileHeader.dataSize];
+    waveData = new UCHAR[waveFileHeader.dataSize];
     if (!waveData)
     {
         FILESYSTEM->CloseResource(fp);
         VM->PostError("Failed to allocate data for sound buffer for file: " + std::string(wavPath));
         return;
     }
+
+    *dataPtr = waveData;
+    *dataSize = waveFileHeader.dataSize;
 
     count = fread(waveData, 1, waveFileHeader.dataSize, fp);
     if (count != waveFileHeader.dataSize)
@@ -342,6 +346,4 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer)
         VM->PostError("Failed to unlock sound buffer for file: " + std::string(wavPath));
         return;
     }
-
-    delete[] waveData;
 }

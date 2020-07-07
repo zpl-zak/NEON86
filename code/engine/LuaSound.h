@@ -29,6 +29,23 @@ INT sound_stop(lua_State* L)
     return 0;
 }
 
+INT sound_getdata(lua_State* L)
+{
+    CSound* snd = *(CSound**)luaL_checkudata(L, 1, L_SOUND);
+    ULONG dataLen = 0;
+    UCHAR* data = snd->GetData(&dataLen);
+
+    lua_newtable(L);
+
+    for (ULONG i=0; i<dataLen; i++)
+    {
+        lua_pushinteger(L, i + 1);
+        lua_pushinteger(L, data[i]);
+        lua_settable(L, -3);
+    }
+    return 1;
+}
+
 INT sound_setvolume(lua_State* L)
 {
     CSound* snd = *(CSound**)luaL_checkudata(L, 1, L_SOUND);
@@ -122,6 +139,7 @@ static VOID LuaSound_register(lua_State* L)
     REGC("getVolume", sound_getvolume);
     REGC("getPan", sound_getpan);
     REGC("getCursor", sound_getcursor);
+    REGC("getData", sound_getdata);
     REGC("__gc", sound_delete);
 
     lua_pop(L, 1);
