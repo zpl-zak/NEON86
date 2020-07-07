@@ -13,8 +13,7 @@ function initWorld()
     terrain:getMeshes()[1]:setMaterial(0, terrainMaterial)
 
     boundsMaterial = Material("bounds.png")
-    boundsMaterial:setEmission(0xD546A6)
-    boundsMaterial:setDiffuse(0xD546A6)
+    boundsMaterial:setShaded(false)
     boundsMaterial:alphaIsTransparency(true)
 
     gradientMaterial = Material("gradient.png")
