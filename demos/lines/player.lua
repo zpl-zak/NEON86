@@ -18,11 +18,14 @@ function player.update(self, dt, net)
     end
 
     self.pos = self.pos:lerp(self.tank.pos:neg(), 0.233589)
+
+    self.angles[2] = hh.clamp(-1.15, self.angles[2], 0.15)
+    
     self.cam = Matrix()
-        :translate(self.pos)
+        :translate(self.pos+self.tank.vel)
         :rotate(-self.angles[1],0,0)
         :rotate(0,self.angles[2],0)
-        :translate(Vector3(0,-20,80))
+        :translate(Vector3(0,-40,100))
 
     local rotMat = Matrix()
     :rotate(-self.heading,0,0)
@@ -38,7 +41,10 @@ function player.update(self, dt, net)
     ) ]]
 
 
-    self.heading = hh.lerp(self.heading, self.angles[1], 0.1238772)
+    if not GetMouse(MOUSE_RIGHT_BUTTON) then
+        self.heading = hh.lerp(self.heading, self.angles[1], 0.1238772)
+    end
+
     self.tank.rot = Matrix():rotate(self.heading+math.rad(90),0,0)
 
     self.tank.movedir = Vector()
@@ -63,7 +69,7 @@ function player.update(self, dt, net)
 
     if self.sendTime < time then
         self.sendTime = time + SEND_TIME
-        local npos = self.pos:neg()
+        local npos = self.tank.pos
         net.send(npos:x(), npos:y(), npos:z(), self.heading)
     end
 end
