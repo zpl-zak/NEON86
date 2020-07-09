@@ -78,12 +78,12 @@ set proj=%proj: =%
 goto :begin
 
 :build
-	%msbuild_cmd% code\neon86.sln /p:Configuration=Debug /p:Platform=x86 /m
+	%msbuild_cmd% code\neon86.sln /p:Configuration=Debug /p:Platform=x64 /m
 	pause
 exit /B 0
 
 :build_release
-	%msbuild_cmd% code\neon86.sln /p:Configuration=Release /p:Platform=x86 /m
+	%msbuild_cmd% code\neon86.sln /p:Configuration=Release /p:Platform=x64 /m
 	echo.
 	echo =======================
 	echo  1. Continue with deployment

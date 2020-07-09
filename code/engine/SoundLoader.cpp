@@ -27,7 +27,7 @@ struct WAVEHEADER
 VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
 {
     FILE* fp;
-    UINT count;
+    size_t count;
     WAVEHEADER waveFileHeader;
     WAVEFORMATEX waveFormat;
     DSBUFFERDESC bufferDesc;
@@ -189,7 +189,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
 VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
 {
     FILE* fp;
-    UINT count;
+    size_t count;
     WAVEHEADER waveFileHeader;
     WAVEFORMATEX waveFormat;
     DSBUFFERDESC bufferDesc;

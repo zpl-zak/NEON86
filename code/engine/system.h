@@ -25,10 +25,10 @@
 ENGINE_API extern FLOAT GetTime();
 ENGINE_API extern FLOAT ScaleBetween(FLOAT x, FLOAT a, FLOAT b, FLOAT na, FLOAT nb);
 
-extern DWORD gMemUsed, gMemUsedLua, gMemPeak, gResourceCount;
+extern size_t gMemUsed, gMemUsedLua, gMemPeak, gResourceCount;
 extern VOID neon_mempeak_update();
-extern LPVOID neon_malloc(DWORD size);
-extern LPVOID neon_realloc(LPVOID mem, DWORD newSize);
+extern LPVOID neon_malloc(size_t size);
+extern LPVOID neon_realloc(LPVOID mem, size_t newSize);
 extern VOID neon_free(LPVOID mem);
 
 /// panic handling

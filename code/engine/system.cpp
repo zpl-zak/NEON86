@@ -23,7 +23,7 @@ FLOAT ScaleBetween(FLOAT x, FLOAT a, FLOAT b, FLOAT na, FLOAT nb)
 }
 
 #include <unordered_map>
-static std::unordered_map<LPVOID, DWORD> gMemoryMap;
+static std::unordered_map<LPVOID, size_t> gMemoryMap;
 
 VOID neon_mempeak_update()
 {
@@ -31,7 +31,7 @@ VOID neon_mempeak_update()
 		gMemPeak = (gMemUsed + gMemUsedLua);
 }
 
-LPVOID neon_malloc(DWORD size)
+extern LPVOID neon_malloc(size_t size)
 {
 	gMemUsed += size;
 	neon_mempeak_update();
@@ -41,7 +41,7 @@ LPVOID neon_malloc(DWORD size)
 	return mem;
 }
 
-LPVOID neon_realloc(LPVOID mem, DWORD newSize)
+extern LPVOID neon_realloc(LPVOID mem, size_t newSize)
 {
 	if (gMemoryMap.find(mem) != gMemoryMap.end())
 	{	
@@ -78,8 +78,8 @@ void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style)
 	gPanicHandler(window, text, caption, style);
 }
 
-DWORD gMemUsed = 0;
-DWORD gMemUsedLua = 0;
-DWORD gMemPeak = 0;
-DWORD gResourceCount = 0;
+size_t gMemUsed = 0;
+size_t gMemUsedLua = 0;
+size_t gMemPeak = 0;
+size_t gResourceCount = 0;
 neon_panic_ptr* gPanicHandler = NULL;

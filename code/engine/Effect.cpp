@@ -35,7 +35,7 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
         if (!strcmp(pFileName, "neon") || !strcmp(pFileName, "common.fx"))
         {
             *ppData = _shader_common;
-            *pBytes = strlen(_shader_common);
+            *pBytes = (UINT)strlen(_shader_common);
             return S_OK;
         }
         

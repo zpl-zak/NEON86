@@ -15,6 +15,12 @@
 #include <assimp/matrix4x4.h>
 #include <sstream>
 
+#ifndef _DEBUG
+#pragma comment (lib, "assimp.lib")
+#else
+#pragma comment (lib, "assimpd.lib")
+#endif
+
 VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials)
 {
     aiMatrix4x4 mat = impNode->mTransformation;

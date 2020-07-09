@@ -25,7 +25,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     rect.right = 1600;
     rect.bottom = 900;
 
-    hWnd = BuildWindow(hInstance, nCmdShow, L"NeonClass", L"NEON 86 | PLAYER", rect);
+    hWnd = BuildWindow(hInstance, nCmdShow, (LPWSTR)L"NeonClass", (LPWSTR)L"NEON 86 | PLAYER", rect);
     CenterWindow(hWnd);
 
     if (!ENGINE->Init(hWnd, rect))

@@ -152,7 +152,7 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 	if (mLoadDone)
 		SAFE_DELETE(mGamePath);
 
-	UINT strSize = strlen(gamePath)+1;
+	ULONG strSize = (ULONG)strlen(gamePath)+1;
 	mGamePath = new CHAR[strSize];
 	strcpy_s(mGamePath, strSize, gamePath);
 

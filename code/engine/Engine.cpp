@@ -16,7 +16,7 @@
 CEngine::CEngine(VOID)
 : mIsRunning(FALSE)
 {
-    srand((size_t)time(0));
+    srand((UINT)time(0));
     sInstance = this; 
     mIsInitialised = FALSE;
     mRenderer = NULL;
@@ -200,17 +200,17 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
         case WM_KEYDOWN:
         {
-            if (INPUT->GetKey(wParam))
+            if (INPUT->GetKey((DWORD)wParam))
                 break;
 
-            INPUT->SetKey(wParam, TRUE);
-            INPUT->SetKeyDown(wParam, TRUE);
+            INPUT->SetKey((DWORD)wParam, TRUE);
+            INPUT->SetKeyDown((DWORD)wParam, TRUE);
         } break;
 
         case WM_KEYUP:
         {
-            INPUT->SetKey(wParam, FALSE);
-            INPUT->SetKeyUp(wParam, TRUE);
+            INPUT->SetKey((DWORD)wParam, FALSE);
+            INPUT->SetKeyUp((DWORD)wParam, TRUE);
         } break;
     }
 
