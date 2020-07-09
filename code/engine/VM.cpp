@@ -12,6 +12,7 @@
 #include "ReferenceManager.h"
 
 #include <lua/lua.hpp>
+#include <lua/lstate.h>
 #include <cstdio>
 
 CVirtualMachine::CVirtualMachine(VOID)
@@ -241,25 +242,6 @@ static VOID _lua_openlibs(lua_State *L) {
     luaL_dostring(L, path);
 }
 
-
-LPVOID ENGINE_API neon_luamem(LPVOID ud, LPVOID ptr, size_t osize, size_t nsize)
-{
-    (void)ud;  /* not used */
-
-    if (nsize == 0) {
-		gMemUsedLua -= (DWORD)osize;
-        free(ptr);
-        return NULL;
-    }
-	else
-	{
-		gMemUsedLua += (DWORD)(nsize - osize);
-
-		neon_mempeak_update();
-		return realloc(ptr, nsize);
-	}
-}
-
 static INT neon_luapanic(lua_State* L) {
     lua_writestringerror("PANIC: unprotected error in call to Lua API (%s)\n",
         lua_tostring(L, -1));
@@ -269,7 +251,7 @@ static INT neon_luapanic(lua_State* L) {
 VOID CVirtualMachine::InitVM(VOID)
 {
 	INT result;
-	mLuaVM = lua_newstate(neon_luamem, NULL);
+	mLuaVM = luaL_newstate();
     if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);
 	
 	_lua_openlibs(mLuaVM);
@@ -311,6 +293,8 @@ VOID CVirtualMachine::PrintVMError()
 
 BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)
 {
+	gMemUsedLua = mLuaVM->l_G->totalbytes;
+
 	if (result != LUA_OK)
 	{
 		PrintVMError();
