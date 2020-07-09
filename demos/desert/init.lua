@@ -35,21 +35,9 @@ function _init()
         local o = cols.slide((self.vel), norm)
         local g = cols.slide((self.movedir), norm)
         self.grounded = true
-        return hh.lerp(o, g, shape.friction)
+        self.vel = hh.lerp(o, g, shape.friction)
       end)
-      for _, cp in pairs(c) do
-        table.insert(contacts, cp)
-      end
     end)
-    
-    if #contacts > 0 then
-      for _, c in pairs(contacts) do
-        nvel = nvel + c[1]
-      end
-      nvel = nvel / #contacts
-    end
-
-    self.vel = self.vel + nvel
 
     self.pos = self.pos + self.vel
   end
