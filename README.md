@@ -24,7 +24,7 @@
 A toy game engine reflecting on simplicity and 
 retro approach to gamedev. It is currently work in progress.
 
-This game engine runs on Windows as a 32-bit executable. Renderer is backed by 
+This game engine runs on Windows as a 64-bit executable. Renderer is backed by 
 Direct3D9 and scripting is powered by Lua 5.3.
 
 Engine is DCC-driven and supports model scene graphs and hierarchy manipulations. 
