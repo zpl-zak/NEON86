@@ -18,7 +18,9 @@ CGameEditor::CGameEditor()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    mErrorMessage = new std::string();
+    #ifdef _DEBUG
+mErrorMessage = new std::string();
+#endif // _DEBUG
 
     ImGui::StyleColorsDark();
 
@@ -35,7 +37,9 @@ BOOL CGameEditor::Release(VOID)
 {
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
-    SAFE_DELETE(mErrorMessage);
+    #ifdef _DEBUG
+SAFE_DELETE(mErrorMessage);
+#endif // _DEBUG
     return TRUE;
 }
 
