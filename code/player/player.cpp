@@ -10,7 +10,7 @@
 #include "NeonEngine.h"
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT& resolution);
+HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& resolution);
 BOOL CenterWindow(HWND hwndWindow);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -25,19 +25,19 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     rect.right = 1600;
     rect.bottom = 900;
 
-    hWnd = BuildWindow(hInstance, nCmdShow, (LPWSTR)L"NeonClass", (LPWSTR)L"NEON 86 | PLAYER", rect);
+    hWnd = BuildWindow(hInstance, nCmdShow, "NeonClass", "NEON 86 | PLAYER", rect);
     CenterWindow(hWnd);
 
     if (!ENGINE->Init(hWnd, rect))
     {
-        MessageBox(NULL, L"Failed to start engine!", L"Engine load failure", MB_OK);
+        MessageBox(NULL, "Failed to start engine!", "Engine load failure", MB_OK);
         ENGINE->Release();
         return 0;
     }
 
     if (!FILESYSTEM->LoadGame(lpCmdLine))
     {
-        MessageBox(NULL, L"Failed to load game!", L"Game load failure", MB_OK);
+        MessageBox(NULL, "Failed to load game!", "Game load failure", MB_OK);
         ENGINE->Release();
         return 0;
     }
@@ -48,7 +48,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     return 0;
 }
 
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titleName, RECT& rect)
+HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& resolution)
 {
     HWND hWnd;
     WNDCLASSEX wc;
@@ -67,14 +67,14 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPWSTR className, LPWSTR titl
 
     DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
 
-    AdjustWindowRectEx(&rect, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
+    AdjustWindowRectEx(&resolution, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
 
     hWnd = CreateWindowEx(NULL,
         className,
         titleName,
         style,
-        rect.left, rect.top,
-        rect.right, rect.bottom,
+        resolution.left, resolution.top,
+        resolution.right, resolution.bottom,
         NULL,
         NULL,
         instance,
