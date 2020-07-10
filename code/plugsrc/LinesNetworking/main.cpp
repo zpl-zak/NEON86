@@ -218,6 +218,7 @@ void ne_client_update(lua_State* L) {
                     // OutputDebugStringA("update: %ld: [%f %f %f] %f\n", entity_id, x, y, z, r);
 
                     lua_rawgeti(L, LUA_REGISTRYINDEX, tankupdateref);
+                    lua_pushvalue(L, 1);
 
                     if (!lua_isfunction(L, -1))
                         continue;
@@ -229,6 +230,8 @@ void ne_client_update(lua_State* L) {
                     lua_pushnumber(L, r);
 
                     lua_pcall(L, 5, 0, 0);
+
+                    tankupdateref = luaL_ref(L, LUA_REGISTRYINDEX);
                 }
 
                 /* Clean up the packet now that we're done using it. */
