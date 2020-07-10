@@ -19,6 +19,7 @@ public:
     ID3DXSprite* GetTextSurface() { return mTextSurface; }
 private:
     VOID DebugPanel(VOID);
+    std::string FormatBytes(UINT64 bytes);
 
 #if _DEBUG
     // Error handling

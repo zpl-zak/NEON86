@@ -11,6 +11,8 @@
 #include "VM.h"
 #include "ReferenceManager.h"
 
+#include <sstream>
+
 CGameEditor::CGameEditor()
 {
     IMGUI_CHECKVERSION();
@@ -96,7 +98,7 @@ VOID CGameEditor::DebugPanel(VOID)
         ImGui::Separator();
         ImGui::Text("RESOURCES: %d", gResourceCount);
         ImGui::Separator();
-        ImGui::Text("MEM ENGINE: %.3f kb LUA: %.3f kb TOTAL: %.3f kb PEAK: %.3f kb", gMemUsed/1024.0, gMemUsedLua / 1024.0, ((INT64)gMemUsed+gMemUsedLua) / 1024.0, gMemPeak / 1024.0);
+        ImGui::Text("MEM ENGINE: %s LUA: %s TOTAL: %s PEAK: %s", FormatBytes(gMemUsed).c_str(), FormatBytes(gMemUsedLua).c_str(), FormatBytes((INT64)gMemUsed+gMemUsedLua).c_str(), FormatBytes(gMemPeak).c_str());
         ImGui::Separator();
     }
     ImGui::EndMainMenuBar();
@@ -119,4 +121,22 @@ VOID CGameEditor::DebugPanel(VOID)
         ImGui::End();
     }
 #endif
+}
+
+std::string CGameEditor::FormatBytes(UINT64 bytes)
+{
+    const std::string suffixes[] = { "B", "KB", "MB", "GB", "TB" };
+    BYTE suffixId;
+    DOUBLE formattedBytes = 0.0;
+
+    for (suffixId = 0; suffixId < 5 && bytes >= 1024; suffixId++, bytes /= 1024)
+    {
+        formattedBytes = bytes / 1024.0;
+    }
+
+    std::stringstream ss;
+    ss.precision(2);
+    ss << std::fixed << formattedBytes << " " << suffixes[suffixId];
+
+    return ss.str();
 }
