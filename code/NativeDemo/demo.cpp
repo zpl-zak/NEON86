@@ -66,6 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     RENDERER->SetMatrix(MATRIXKIND_PROJECTION, projMat);
     RENDERER->SetMatrix(MATRIXKIND_VIEW, viewMat);
     RENDERER->EnableLighting(TRUE);
+    RENDERER->GetDevice()->SetRenderState(D3DRS_AMBIENT, 0x202069);
 
     MSG msg;
     FLOAT lastTime = GetTime();
@@ -95,7 +96,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         // 2. Render sample data
         RENDERER->BeginRender();
         {
-            RENDERER->ClearBuffer(0xFF000000, CLEARFLAG_STANDARD);
+            RENDERER->ClearBuffer(0xFF202069, CLEARFLAG_STANDARD);
             demoLight->Enable(TRUE);
             demoModel->Draw(worldMat);
             UI->Render();
