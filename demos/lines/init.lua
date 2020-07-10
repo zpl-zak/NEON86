@@ -49,19 +49,20 @@ function _init()
   light:setDiffuse(0xffcc99)
   light:setType(LIGHTKIND_DIRECTIONAL)
   light:enable(true, 0)
-end
 
-function _net_tankupdate(entity_id, x, y, z, r)
-  if tanks[entity_id] == nil then
-    addTank(entity_id)
-  end
-
-  local tank = tanks[entity_id]
-
-  tank.pos = Vector3(x,y,z)
-  tank.heading = r
-
-  -- LogString("_net_tankupdate: " .. entity_id .. " pos: " .. x .. " " .. y .. " " .. z)
+  -- Set up network update event
+  net.set_update(function (entity_id, x, y, z, r)
+    if tanks[entity_id] == nil then
+      addTank(entity_id)
+    end
+  
+    local tank = tanks[entity_id]
+  
+    tank.pos = Vector3(x,y,z)
+    tank.heading = r
+  
+    -- LogString("_net_tankupdate: " .. entity_id .. " pos: " .. x .. " " .. y .. " " .. z)
+  end)
 end
 
 function _update(dt)

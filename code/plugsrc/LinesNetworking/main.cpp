@@ -15,6 +15,7 @@ ENetHost *server = NULL;
 ENetHost *client = NULL;
 ENetPeer *client_peer = NULL;
 
+INT tankupdateref = 0;
 
 static INT ne_server_start(lua_State* L) {
     if (server) {
@@ -216,7 +217,7 @@ void ne_client_update(lua_State* L) {
 
                     // OutputDebugStringA("update: %ld: [%f %f %f] %f\n", entity_id, x, y, z, r);
 
-                    lua_getglobal(L, "_net_tankupdate");
+                    lua_rawgeti(L, LUA_REGISTRYINDEX, tankupdateref);
 
                     if (!lua_isfunction(L, -1))
                         continue;
@@ -275,6 +276,11 @@ static INT ne_send(lua_State* L) {
     return 1;
 }
 
+static INT ne_setupdate(lua_State* L) {
+    tankupdateref = luaL_ref(L, LUA_REGISTRYINDEX);
+    return 0;
+}
+
 static const luaL_Reg networkplugin[] = {
     {"server_start", ne_server_start},
     {"server_stop", ne_server_stop},
@@ -282,6 +288,7 @@ static const luaL_Reg networkplugin[] = {
     {"disconnect", ne_disconnect},
     {"update", ne_update},
     {"send", ne_send},
+    {"set_update", ne_setupdate},
     ENDF
 };
 
