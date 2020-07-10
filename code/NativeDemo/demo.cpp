@@ -22,8 +22,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     RECT rect;
     rect.left = CW_USEDEFAULT;
     rect.top = CW_USEDEFAULT;
-    rect.right = 1600;
-    rect.bottom = 900;
+    rect.right = 480;
+    rect.bottom = 320;
 
     hWnd = BuildWindow(hInstance, nCmdShow, "NeonClass", "NEON 86 | NATIVE DEMO", rect);
     CenterWindow(hWnd);
