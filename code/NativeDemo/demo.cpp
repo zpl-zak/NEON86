@@ -50,7 +50,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     demoModel->LoadScene((LPSTR)"sphere.fbx");
     D3DXMATRIX viewMat;
     D3DXMATRIX worldMat;
-    D3DXMatrixIdentity(&worldMat);
     D3DXVECTOR3 eyePos = D3DXVECTOR3(0,0,-5);
     D3DXVECTOR3 lookPos = D3DXVECTOR3(0,0,0);
     D3DXVECTOR3 up = D3DXVECTOR3(0,1,0);
@@ -66,7 +65,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     RENDERER->SetMatrix(MATRIXKIND_PROJECTION, projMat);
     RENDERER->SetMatrix(MATRIXKIND_VIEW, viewMat);
-    RENDERER->SetMatrix(MATRIXKIND_WORLD, worldMat);
     RENDERER->EnableLighting(TRUE);
 
     MSG msg;
