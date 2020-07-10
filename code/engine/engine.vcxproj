@@ -157,7 +157,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\deps;..\deps\d3d9\include;..\deps\assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -305,7 +305,6 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
@@ -342,7 +341,6 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Font.h" />
-    <ClInclude Include="Frustum.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="imgui_impl_dx9.h" />

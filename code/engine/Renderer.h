@@ -56,7 +56,6 @@ public:
     RECT GetLocalCoordinates(VOID) const;
     D3DMATRIX GetDeviceMatrix(UINT kind);
     inline HWND GetWindow() const { return mWindow; }
-    inline CFrustum* GetFrustum() { return mFrustum; }
     inline CEffect* GetActiveEffect() { return mActiveEffect; }
     inline D3DSURFACE_DESC GetDisplayDesc() { return mDisplayDesc; }
     inline BOOL IsLightingEnabled() { return mEnableLighting; }
@@ -71,7 +70,6 @@ protected:
     D3DPRESENT_PARAMETERS mParams;
     RECT mLastRes;
     HWND mWindow;
-    CFrustum* mFrustum;
     CEffect* mActiveEffect;
     CRenderTarget* mMainTarget;
     CMaterial *mDefaultMaterial;

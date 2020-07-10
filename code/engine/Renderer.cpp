@@ -5,7 +5,6 @@
 #include "stdafx.h"
 #include "Renderer.h"
 #include "Material.h"
-#include "Frustum.h"
 #include "FaceGroup.h"
 #include "Effect.h"
 #include "RenderTarget.h"
@@ -16,7 +15,6 @@
 
 CRenderer::CRenderer()
 {
-	mFrustum = new CFrustum();
 	mDirect9 = NULL;
 	mDevice = NULL;
 	mWindow = NULL;
@@ -202,7 +200,6 @@ VOID CRenderer::Clear(VOID)
 BOOL CRenderer::Release(VOID)
 {
 	SAFE_RELEASE(mMainTarget);
-	SAFE_RELEASE(mFrustum);
 	SAFE_RELEASE(mDevice);
 	SAFE_RELEASE(mDirect9);
 	SAFE_RELEASE(mDefaultMaterial);
@@ -440,9 +437,6 @@ VOID CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
 VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
 {
     mDevice->SetTransform((D3DTRANSFORMSTATETYPE)kind, &mat);
-
-    if (kind == MATRIXKIND_PROJECTION || kind == MATRIXKIND_VIEW)
-        GetFrustum()->Build();
 }
 
 VOID CRenderer::ResetMatrices()

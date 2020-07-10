@@ -69,9 +69,6 @@
     <ClCompile Include="Renderer.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="Frustum.cpp">
-      <Filter>Source Files\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>Source Files\Renderer</Filter>
     </ClCompile>
@@ -177,9 +174,6 @@
       <Filter>Header Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="RenderStates.h">
-      <Filter>Header Files\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Frustum.h">
       <Filter>Header Files\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="LuaMatrix.h">

@@ -16,10 +16,9 @@ class ENGINE_API CAudioSystem
 {
 public:
     CAudioSystem();
-    HRESULT CreateDevice();
+    HRESULT CreateDevice(HWND);
     VOID Release();
 
-    VOID Update(FLOAT dt);
     inline IDirectSound8* GetDevice() { return mDirectSound; }
     inline IDirectSound3DListener8* GetListener() { return mListener; }
 

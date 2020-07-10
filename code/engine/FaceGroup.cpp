@@ -6,7 +6,6 @@
 #include "Renderer.h"
 
 #include "Material.h"
-#include "Frustum.h"
 
 CFaceGroup::CFaceGroup(VOID): CAllocable()
 {

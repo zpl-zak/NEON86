@@ -96,7 +96,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
     mGameEditor = new CGameEditor();
     mAudioSystem = new CAudioSystem();
 
-    if (mAudioSystem->CreateDevice() != ERROR_SUCCESS)
+    if (mAudioSystem->CreateDevice(window) != ERROR_SUCCESS)
     {
         MessageBoxA(window, "Failed to initialize the audio system!", "Audio error", MB_OK);
         return FALSE;

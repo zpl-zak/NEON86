@@ -1,7 +1,6 @@
 
 #include "StdAfx.h"
 #include "AudioSystem.h"
-#include "NeonEngine.h"
 
 #include <mmsystem.h>
 #include <dsound.h>
@@ -14,7 +13,7 @@ CAudioSystem::CAudioSystem()
     mListener = NULL;
 }
 
-HRESULT CAudioSystem::CreateDevice()
+HRESULT CAudioSystem::CreateDevice(HWND window)
 {
     HRESULT result;
     DSBUFFERDESC bufferDesc;
@@ -27,7 +26,7 @@ HRESULT CAudioSystem::CreateDevice()
         return result;
     }
 
-    result = mDirectSound->SetCooperativeLevel(RENDERER->GetWindow(), DSSCL_PRIORITY);
+    result = mDirectSound->SetCooperativeLevel(window, DSSCL_PRIORITY);
     if (FAILED(result))
     {
         Release();
@@ -79,9 +78,4 @@ VOID CAudioSystem::Release()
     SAFE_RELEASE(mPrimaryBuffer);
     SAFE_RELEASE(mDirectSound);
     mIsInitialized = FALSE;
-}
-
-VOID CAudioSystem::Update(FLOAT dt)
-{
-    
 }
