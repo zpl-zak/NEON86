@@ -64,6 +64,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     RENDERER->EnableLighting(TRUE);
 
     MSG msg;
+    FLOAT lastTime = GetTime();
 
     while (ENGINE->IsRunning())
     {
@@ -72,6 +73,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+
+        FLOAT currTime = GetTime();
+        FLOAT dt = currTime - lastTime;
+
+        D3DXMatrixRotationY(&worldMat, currTime);
 
         // 2. Render sample data
         RENDERER->BeginRender();
@@ -82,6 +88,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             UI->Render();
         }
         RENDERER->EndRender();
+
+        VM->PassTime(dt);
+        lastTime = GetTime();
     }
 
     demoModel->Release();

@@ -162,7 +162,7 @@ VOID CVirtualMachine::Update(FLOAT dt)
 	int r = lua_pcall(mLuaVM, 1, 0, 0);
 	CheckVMErrors(r);
 
-	mRunTime += dt;
+	PassTime(dt);
 }
 
 VOID CVirtualMachine::Render(VOID)

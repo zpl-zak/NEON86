@@ -39,6 +39,7 @@ public:
 	inline VOID PostError(LPCSTR err);
 	inline VOID PostError(std::string err);
 	inline FLOAT GetRunTime() { return mRunTime; }
+	inline VOID PassTime(FLOAT dt) { mRunTime += dt; }
 private:
 	UCHAR mPlayKind;
 	UCHAR mScheduledTermination;
