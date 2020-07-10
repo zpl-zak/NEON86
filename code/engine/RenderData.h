@@ -113,7 +113,7 @@ struct RENDERBOUNDS {
 	FLOAT x2, y2, z2;
 };
 
-struct MATERIAL : D3DMATERIAL9
+struct ENGINE_API MATERIAL : D3DMATERIAL9
 {
 	FLOAT Opacity;
 	BOOL Shaded;

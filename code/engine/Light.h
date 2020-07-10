@@ -4,7 +4,7 @@
 #include "ReferenceManager.h"
 #include "NodeComponent.h"
 
-class CLight : public CReferenceCounter, public CNodeComponent
+class ENGINE_API CLight : public CReferenceCounter, public CNodeComponent
 {
 public:
     CLight(UINT slot=0);

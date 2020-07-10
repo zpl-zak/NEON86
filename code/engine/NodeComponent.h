@@ -6,26 +6,28 @@
 
 class CNode;
 
-class CNodeComponent
+class ENGINE_API CNodeComponent
 {
 public:
     CNodeComponent() 
     {
-        mName = aiString("(unknown)");
+        mName = new aiString("(unknown)");
         mOwner = NULL;
     }
 
-    virtual ~CNodeComponent() {}
+    virtual ~CNodeComponent() {
+        SAFE_DELETE(mName);
+    }
 
     virtual LPCSTR GetKind() { return "Unknown"; }
 
-    inline VOID SetName(aiString name) { mName = name; }
-    inline aiString GetName() { return mName; }
+    inline VOID SetName(aiString name) { mName = new aiString(name); }
+    inline aiString GetName() { return *mName; }
 
     inline VOID SetOwner(CNode* node) { mOwner = node; }
     inline CNode* GetOwner() { return mOwner; }
 
 private:
-    aiString mName;
+    aiString* mName;
     CNode* mOwner;
 };

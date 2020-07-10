@@ -46,7 +46,7 @@ extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
 /// helpers
 template <typename T>
-class CArray
+class ENGINE_API CArray
 {
 public:
     typedef T* iterator;

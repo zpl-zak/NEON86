@@ -4,7 +4,7 @@
 
 #include <vector>
 
-class CReferenceCounter 
+class ENGINE_API CReferenceCounter 
 {
 public:
     CReferenceCounter() :
@@ -23,7 +23,7 @@ private:
 };
 
 template <typename T>
-class CAllocable
+class ENGINE_API CAllocable
 {
 public:
     CAllocable() { ++gResourceCount; gMemUsed += sizeof(T); neon_mempeak_update(); }

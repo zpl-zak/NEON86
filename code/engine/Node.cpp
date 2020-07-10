@@ -86,7 +86,7 @@ CNode* CNode::Clone()
         clonedNode->AddNode(b);
     }
 
-    clonedNode->SetTransform(mTransform);
+    clonedNode->SetTransform(*mTransform);
 
     return clonedNode;
 }
@@ -99,15 +99,15 @@ BOOL CNode::IsEmpty()
 D3DXMATRIX CNode::GetFinalTransform()
 {
     if (!mIsTransformDirty)
-        return mCachedTransform;
+        return *mCachedTransform;
 
     if (GetParent() == NULL)
-        return mTransform;
+        return *mTransform;
 
-    mCachedTransform = mTransform * GetParent()->GetFinalTransform();
+    *mCachedTransform = *mTransform * GetParent()->GetFinalTransform();
     mIsTransformDirty = FALSE;
 
-    return mCachedTransform;
+    return *mCachedTransform;
 }
 
 VOID CNode::InvalidateTransformRecursively()
@@ -136,6 +136,10 @@ VOID CNode::Release()
         mMeshes.Release();
         mLights.Release();
         mNodes.Release();
+
+        SAFE_DELETE(mTransform);
+        SAFE_DELETE(mCachedTransform);
+        SAFE_DELETE(mMetadata);
 
         delete this;
     }

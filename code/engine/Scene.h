@@ -7,7 +7,7 @@
 class CMesh;
 class CLight;
 
-class CScene: public CNode
+class ENGINE_API CScene: public CNode
 {
 public:
     CScene(LPSTR modelPath=NULL);

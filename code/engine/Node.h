@@ -13,19 +13,25 @@
 class CMesh;
 class CLight;
 
+using METADATA = std::unordered_map<std::string, std::string>;
+
 struct METADATA_RESULT
 {
     BOOL Found;
     std::string Value;
 };
 
-class CNode: public CNodeComponent, public CReferenceCounter, CAllocable<CNode>
+class ENGINE_API CNode: public CNodeComponent, public CReferenceCounter, CAllocable<CNode>
 {
 public:
     CNode(): CAllocable()
     {
-        D3DXMatrixIdentity(&mTransform);
-        D3DXMatrixIdentity(&mCachedTransform);
+        mTransform = new D3DXMATRIX();
+        mCachedTransform = new D3DXMATRIX();
+        mMetadata = new METADATA();
+
+        D3DXMatrixIdentity(mTransform);
+        D3DXMatrixIdentity(mCachedTransform);
         SetName(aiString("(unknown)"));
         mIsTransformDirty = TRUE;
         mParent = NULL;
@@ -38,12 +44,14 @@ public:
     CNode(aiMatrix4x4 mat, aiString name): CAllocable()
     {
         SetName(name);
-        mTransform = *(D3DXMATRIX*)&mat;
+        mTransform = new D3DXMATRIX(*(D3DXMATRIX*)&mat);
+        mCachedTransform = new D3DXMATRIX();
+        mMetadata = new METADATA();
 
         mMeshes.Release();
         mLights.Release();
         mNodes.Release();
-        mMetadata.clear();
+        mMetadata->clear();
 
         mParent = NULL;
         mIsTransformDirty = TRUE;
@@ -56,13 +64,13 @@ public:
     VOID Draw(const D3DXMATRIX& wmat);
     VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
 
-    inline VOID SetMetadata(LPCSTR name, LPCSTR value) { mMetadata[name] = value; }
+    inline VOID SetMetadata(LPCSTR name, LPCSTR value) { (*mMetadata)[name] = value; }
     inline METADATA_RESULT GetMetadata(LPCSTR name) 
     {
         METADATA_RESULT res = { 0 };
-        auto e = mMetadata.find(name);
+        auto e = mMetadata->find(name);
 
-        if (e == mMetadata.end())
+        if (e == mMetadata->end())
         {
             res.Found = FALSE;
             res.Value = "";
@@ -95,8 +103,8 @@ public:
 
     BOOL IsEmpty();
 
-    inline VOID SetTransform(D3DXMATRIX transform) { mTransform = transform; InvalidateTransformRecursively(); }
-    inline D3DXMATRIX GetTransform() { return mTransform; }
+    inline VOID SetTransform(D3DXMATRIX transform) { *mTransform = transform; InvalidateTransformRecursively(); }
+    inline D3DXMATRIX GetTransform() { return *mTransform; }
 
     inline VOID SetParent(CNode* node) { if (node != this) mParent = node; }
     inline CNode* GetParent() { return mParent; }
@@ -113,6 +121,6 @@ protected:
 
 private:
     BOOL mIsTransformDirty;
-    D3DXMATRIX mTransform, mCachedTransform;
-    std::unordered_map<std::string, std::string> mMetadata;
+    D3DXMATRIX* mTransform, *mCachedTransform;
+    METADATA *mMetadata;
 };

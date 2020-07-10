@@ -6,7 +6,7 @@
 
 class CLight;
 
-class CEffect: public CAllocable<CEffect>
+class ENGINE_API CEffect: public CAllocable<CEffect>
 {
 public:
     CEffect(LPCSTR effectPath);

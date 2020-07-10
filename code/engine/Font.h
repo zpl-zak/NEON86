@@ -4,7 +4,7 @@
 #include "RenderData.h"
 #include "ReferenceManager.h"
 
-class CFont : public CAllocable<CFont>, public CReferenceCounter
+class ENGINE_API CFont : public CAllocable<CFont>, public CReferenceCounter
 {
 public:
     CFont(LPCSTR path, INT size, INT boldness, BOOL isItalic);
