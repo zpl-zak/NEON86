@@ -316,7 +316,9 @@ inline VOID CVirtualMachine::PostError(LPCSTR err)
 {
 #ifdef _DEBUG
     UI->PushErrorMessage(err);
-	lua_error(mLuaVM);
+	
+	if (mLuaVM)
+		lua_error(mLuaVM);
 #else
     MessageBoxA(NULL, err, "Engine error", MB_OK);
     ENGINE->Shutdown();

@@ -18,6 +18,7 @@ CGameEditor::CGameEditor()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    mErrorMessage = new std::string();
 
     ImGui::StyleColorsDark();
 
@@ -34,6 +35,7 @@ BOOL CGameEditor::Release(VOID)
 {
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
+    SAFE_DELETE(mErrorMessage);
     return TRUE;
 }
 
@@ -67,7 +69,7 @@ VOID CGameEditor::ClearErrorWindow()
 {
 #ifdef _DEBUG
     mShowError = FALSE;
-    mErrorMessage = "";
+    *mErrorMessage = "";
 #endif
 }
 
@@ -77,7 +79,7 @@ VOID CGameEditor::PushErrorMessage(LPCSTR err)
     mShowError = TRUE;
 
     if (err)
-        mErrorMessage += std::string(err) + "\n";
+        *mErrorMessage += std::string(err) + "\n";
 #endif
 }
 
@@ -108,7 +110,7 @@ VOID CGameEditor::DebugPanel(VOID)
         ImGui::SetNextWindowSize(ImVec2(500, 150), ImGuiCond_Always);
         ImGui::Begin("Error messages", NULL, ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_NoCollapse|ImGuiWindowFlags_AlwaysAutoResize);
         {
-            ImGui::TextWrapped("%s", mErrorMessage.c_str());
+            ImGui::TextWrapped("%s", mErrorMessage->c_str());
             
             if (ImGui::Button("Restart VM"))
                 VM->Restart();

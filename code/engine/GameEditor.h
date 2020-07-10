@@ -5,7 +5,7 @@
 
 #define UI CEngine::the()->GetUI()
 
-class CGameEditor
+class ENGINE_API CGameEditor
 {
 public:
     CGameEditor();
@@ -24,7 +24,7 @@ private:
 #if _DEBUG
     // Error handling
     BOOL mShowError;
-    std::string mErrorMessage;
+    std::string *mErrorMessage;
 #endif
 
     ID3DXSprite* mTextSurface;
