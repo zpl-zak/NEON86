@@ -8,7 +8,7 @@
 #include "Input.h"
 #include "FileSystem.h"
 #include "VM.h"
-#include "UserInterface.h"
+#include "GameEditor.h"
 #include "AudioSystem.h"
 
 #include <ctime>
@@ -23,7 +23,7 @@ CEngine::CEngine(VOID)
     mInput = NULL;
     mFileSystem = NULL;
     mVirtualMachine = NULL;
-    mUserInterface = NULL;
+    mGameEditor = NULL;
     mAudioSystem = NULL;
     
     SetFPS(60.0f);
@@ -37,7 +37,7 @@ BOOL CEngine::Release()
 {
     SAFE_RELEASE(mVirtualMachine);
     SAFE_RELEASE(mFileSystem);
-    SAFE_RELEASE(mUserInterface);
+    SAFE_RELEASE(mGameEditor);
     SAFE_RELEASE(mRenderer);
     SAFE_RELEASE(mInput);
     SAFE_RELEASE(mAudioSystem);
@@ -93,7 +93,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
         return FALSE;
     }
 
-    mUserInterface = new CUserInterface();
+    mGameEditor = new CGameEditor();
     mAudioSystem = new CAudioSystem();
 
     if (mAudioSystem->CreateDevice() != ERROR_SUCCESS)
@@ -132,7 +132,7 @@ VOID CEngine::Think()
 
 LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (mUserInterface->ProcessEvents(hWnd, message, wParam, lParam))
+    if (mGameEditor->ProcessEvents(hWnd, message, wParam, lParam))
         return FALSE;
 
     CInput* input = INPUT;
@@ -220,7 +220,7 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 VOID CEngine::Update(FLOAT deltaTime)
 {
     mVirtualMachine->Update(deltaTime);
-    mUserInterface->Update(deltaTime);
+    mGameEditor->Update(deltaTime);
     mInput->Update();
 }
 
@@ -228,7 +228,7 @@ VOID CEngine::Render()
 {
     mRenderer->BeginRender();
     mVirtualMachine->Render();
-    mUserInterface->Render();
+    mGameEditor->Render();
     mRenderer->EndRender();
 }
 

@@ -17,6 +17,10 @@ CInput::CInput(VOID)
     mCursorMode = CURSORMODE_DEFAULT;
     mMouseDelta = { 0,0 };
     mLastMousePos = GetMouseXY();
+
+#ifdef _DEBUG
+    mForceMouseCursor = FALSE;
+#endif
 }
 
 VOID CInput::Release(VOID)
@@ -38,6 +42,11 @@ VOID CInput::SetCursor(BOOL state)
     if (GetCursor() == state)
         return;
 
+#ifdef _DEBUG
+    if (mForceMouseCursor)
+        return;
+#endif
+
     ShowCursor(state);
 }
 
@@ -54,6 +63,11 @@ VOID CInput::SetCursorMode(UCHAR mode)
 {
     if (mCursorMode == mode)
         return;
+
+#ifdef _DEBUG
+    if (mForceMouseCursor)
+        return;
+#endif
 
     mCursorMode = mode;
 
@@ -77,10 +91,16 @@ VOID CInput::Update(VOID)
 #ifdef _DEBUG
     if (this->GetKeyDown(VK_F1))
     {
+        BOOL lastState = mForceMouseCursor;
+        if (lastState)
+            mForceMouseCursor = FALSE;
         this->SetCursor(!this->GetCursor());
         this->SetCursorMode(1-this->GetCursorMode());
+        if (lastState == FALSE)
+            mForceMouseCursor = TRUE;
     }
 #endif
+
     for (UINT i = 0; i < NUM_MOUSEBUTTONS; i++)
     {
         SetMouseDown(i, FALSE);

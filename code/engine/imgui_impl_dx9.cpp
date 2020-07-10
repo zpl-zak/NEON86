@@ -28,7 +28,7 @@
 
 #include "VM.h"
 #include "Renderer.h"
-#include "UserInterface.h"
+#include "GameEditor.h"
 #include "engine.h"
 
 // DirectX

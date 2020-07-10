@@ -5,7 +5,7 @@
 
 #include "Engine.h"
 #include "FileSystem.h"
-#include "UserInterface.h"
+#include "GameEditor.h"
 
 #include "LuaBindings.h"
 

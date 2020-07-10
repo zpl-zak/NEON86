@@ -65,4 +65,8 @@ private:
 
     POINT mMouseDelta;
     POINT mLastMousePos;
+
+#ifdef _DEBUG
+    BOOL mForceMouseCursor;
+#endif
 };

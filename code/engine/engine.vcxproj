@@ -334,7 +334,7 @@
     </ClCompile>
     <ClCompile Include="system.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="UserInterface.cpp" />
+    <ClCompile Include="GameEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioSystem.h" />
@@ -388,7 +388,7 @@
     <ClInclude Include="system.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="UserInterface.h" />
+    <ClInclude Include="GameEditor.h" />
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>
   <ItemGroup>

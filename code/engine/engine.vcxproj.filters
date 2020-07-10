@@ -46,6 +46,12 @@
     <Filter Include="Source Files\Audio">
       <UniqueIdentifier>{df6efd9b-9fc8-4eb3-98b5-818a480fbc19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Editor">
+      <UniqueIdentifier>{207bea8c-65e3-4a1f-86f4-23d24911ea96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editor">
+      <UniqueIdentifier>{1c4f0e0d-2956-4f52-b4e3-80c203477a24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp">
@@ -99,9 +105,6 @@
     <ClCompile Include="imgui_impl_win32.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="UserInterface.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -134,6 +137,9 @@
     </ClCompile>
     <ClCompile Include="SoundLoader.cpp">
       <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEditor.cpp">
+      <Filter>Source Files\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +251,6 @@
     <ClInclude Include="imgui_impl_win32.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="UserInterface.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Header Files\Core</Filter>
     </ClInclude>
@@ -295,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="LuaSound.h">
       <Filter>Header Files\Lua\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEditor.h">
+      <Filter>Header Files\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
