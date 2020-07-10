@@ -8,6 +8,9 @@
 #include "NeonEngine.h"
 #include "Scene.h"
 #include "Light.h"
+#include "Font.h"
+
+#pragma comment (lib, "d3dx9.lib")
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& rect);
@@ -22,8 +25,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     RECT rect;
     rect.left = CW_USEDEFAULT;
     rect.top = CW_USEDEFAULT;
-    rect.right = 480;
-    rect.bottom = 320;
+    rect.right = 800;
+    rect.bottom = 600;
 
     hWnd = BuildWindow(hInstance, nCmdShow, "NeonClass", "NEON 86 | NATIVE DEMO", rect);
     CenterWindow(hWnd);
@@ -55,6 +58,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     CLight* demoLight = new CLight(0);
 
+    CFont::AddFontToDatabase("slkscr.ttf");
+    CFont* demoFont = new CFont((LPSTR)"Silkscreen", 20, 16, FALSE);
+
     D3DXMATRIX projMat;
     D3DXMatrixPerspectiveFovRH(&projMat, D3DXToRadian(62.0f), rect.right / (FLOAT)rect.bottom, 0.01f, 1000.0f);
 
@@ -66,12 +72,21 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     MSG msg;
     FLOAT lastTime = GetTime();
 
+    UI->SetDraw2DHook([&]() {
+        demoFont->RenderText(0xFFFFFFFF, "This demo is running from the native C++ side", 15, 30);
+    });
+
     while (ENGINE->IsRunning())
     {
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+        }
+
+        if (INPUT->GetKeyDown(VK_ESCAPE)) {
+            ENGINE->Shutdown();
+            break;
         }
 
         FLOAT currTime = GetTime();
@@ -91,8 +106,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
         VM->PassTime(dt);
         lastTime = GetTime();
+        INPUT->Update();
     }
 
+    demoFont->Release();
     demoModel->Release();
     demoLight->Release();
     ENGINE->Release();

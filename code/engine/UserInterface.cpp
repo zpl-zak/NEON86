@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "GameEditor.h"
+#include "UserInterface.h"
 
 #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 #include "imgui.h"
@@ -13,14 +13,16 @@
 
 #include <sstream>
 
-CGameEditor::CGameEditor()
+CUserInterface::CUserInterface()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    #ifdef _DEBUG
-mErrorMessage = new std::string();
+#ifdef _DEBUG
+    mErrorMessage = new std::string();
 #endif // _DEBUG
+
+    mDraw2DHook = new Draw2DHook();
 
     ImGui::StyleColorsDark();
 
@@ -33,22 +35,25 @@ mErrorMessage = new std::string();
     D3DXCreateSprite(RENDERER->GetDevice(), &mTextSurface);
 }
 
-BOOL CGameEditor::Release(VOID)
+BOOL CUserInterface::Release(VOID)
 {
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
-    #ifdef _DEBUG
-SAFE_DELETE(mErrorMessage);
+    SAFE_DELETE(mDraw2DHook);
+    
+#ifdef _DEBUG
+    SAFE_DELETE(mErrorMessage);
 #endif // _DEBUG
+
     return TRUE;
 }
 
-VOID CGameEditor::Update(FLOAT dt)
+VOID CUserInterface::Update(FLOAT dt)
 {
 
 }
 
-VOID CGameEditor::Render(VOID)
+VOID CUserInterface::Render(VOID)
 {
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -62,14 +67,20 @@ VOID CGameEditor::Render(VOID)
     ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
 
+VOID CUserInterface::RenderHook(VOID)
+{
+    if (*mDraw2DHook)
+        (*mDraw2DHook)();
+}
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT CGameEditor::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CUserInterface::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 }
 
-VOID CGameEditor::ClearErrorWindow()
+VOID CUserInterface::ClearErrorWindow()
 {
 #ifdef _DEBUG
     mShowError = FALSE;
@@ -77,7 +88,7 @@ VOID CGameEditor::ClearErrorWindow()
 #endif
 }
 
-VOID CGameEditor::PushErrorMessage(LPCSTR err)
+VOID CUserInterface::PushErrorMessage(LPCSTR err)
 {
 #ifdef _DEBUG
     mShowError = TRUE;
@@ -87,7 +98,7 @@ VOID CGameEditor::PushErrorMessage(LPCSTR err)
 #endif
 }
 
-VOID CGameEditor::DebugPanel(VOID)
+VOID CUserInterface::DebugPanel(VOID)
 {
 #ifdef _DEBUG
     ImGui::BeginMainMenuBar();
@@ -129,7 +140,7 @@ VOID CGameEditor::DebugPanel(VOID)
 #endif
 }
 
-std::string CGameEditor::FormatBytes(UINT64 bytes)
+std::string CUserInterface::FormatBytes(UINT64 bytes)
 {
     const std::string suffixes[] = { "B", "KB", "MB", "GB", "TB" };
     BYTE suffixId;

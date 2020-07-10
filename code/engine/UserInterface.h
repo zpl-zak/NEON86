@@ -5,18 +5,26 @@
 
 #define UI CEngine::the()->GetUI()
 
-class ENGINE_API CGameEditor
+#include <functional>
+
+using Draw2DHook = std::function<void()>;
+
+class ENGINE_API CUserInterface
 {
 public:
-    CGameEditor();
+    CUserInterface();
     BOOL Release(VOID);
     VOID Update(FLOAT dt);
     VOID Render(VOID);
+    VOID RenderHook(VOID);
     LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
     VOID ClearErrorWindow();
     VOID PushErrorMessage(LPCSTR err);
     ID3DXSprite* GetTextSurface() { return mTextSurface; }
+
+    inline VOID SetDraw2DHook(Draw2DHook hook) { *mDraw2DHook = hook; }
+    inline Draw2DHook GetDraw2DHook() { return *mDraw2DHook; }
 private:
     VOID DebugPanel(VOID);
     std::string FormatBytes(UINT64 bytes);
@@ -28,5 +36,6 @@ private:
 #endif
 
     ID3DXSprite* mTextSurface;
+    Draw2DHook* mDraw2DHook;
 };
 

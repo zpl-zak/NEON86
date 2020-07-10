@@ -28,7 +28,7 @@
 
 #include "VM.h"
 #include "Renderer.h"
-#include "GameEditor.h"
+#include "UserInterface.h"
 #include "engine.h"
 
 // DirectX
@@ -181,6 +181,7 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     IDirect3DStateBlock9* neonsbt = NULL;
     RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
     UI->GetTextSurface()->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_DONOTMODIFY_RENDERSTATE);
+    UI->RenderHook();
     VM->Render2D();
     UI->GetTextSurface()->End(); 
 

@@ -8,5 +8,5 @@
 #include "FileSystem.h"
 #include "VM.h"
 #include "RenderData.h"
-#include "GameEditor.h"
+#include "UserInterface.h"
 #include "AudioSystem.h"

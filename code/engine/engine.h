@@ -4,7 +4,7 @@ class CRenderer;
 class CInput;
 class CFileSystem;
 class CVirtualMachine;
-class CGameEditor;
+class CUserInterface;
 class CAudioSystem;
 
 #define ENGINE CEngine::the()
@@ -27,7 +27,7 @@ public:
 	CInput* GetInput() { return mInput; }
 	CFileSystem* GetFileSystem() { return mFileSystem; }
 	CVirtualMachine* GetVM() { return mVirtualMachine; }
-	CGameEditor* GetUI() { return mGameEditor; }
+	CUserInterface* GetUI() { return mGameEditor; }
 	CAudioSystem* GetAudioSystem() { return mAudioSystem; }
 
 	BOOL IsRunning() const { return mIsRunning; }
@@ -39,7 +39,7 @@ protected:
 	CInput* mInput;
 	CFileSystem* mFileSystem;
 	CVirtualMachine* mVirtualMachine;
-	CGameEditor* mGameEditor;
+	CUserInterface* mGameEditor;
 	CAudioSystem* mAudioSystem;
 private:
 	VOID Update(FLOAT deltaTime);

@@ -8,7 +8,7 @@
 #include "Input.h"
 #include "FileSystem.h"
 #include "VM.h"
-#include "GameEditor.h"
+#include "UserInterface.h"
 #include "AudioSystem.h"
 
 #include <ctime>
@@ -93,7 +93,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
         return FALSE;
     }
 
-    mGameEditor = new CGameEditor();
+    mGameEditor = new CUserInterface();
     mAudioSystem = new CAudioSystem();
 
     if (mAudioSystem->CreateDevice(window) != ERROR_SUCCESS)

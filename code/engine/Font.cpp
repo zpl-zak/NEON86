@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Font.h"
 
-#include "GameEditor.h"
+#include "UserInterface.h"
 #include "Renderer.h"
 #include "VM.h"
 #include "FileSystem.h"

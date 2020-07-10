@@ -135,8 +135,8 @@
     <ClCompile Include="SoundLoader.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="GameEditor.cpp">
-      <Filter>Source Files\Editor</Filter>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -293,8 +293,8 @@
     <ClInclude Include="LuaSound.h">
       <Filter>Header Files\Lua\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="GameEditor.h">
-      <Filter>Header Files\Editor</Filter>
+    <ClInclude Include="UserInterface.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

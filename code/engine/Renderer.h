@@ -3,8 +3,6 @@
 #include "system.h"
 
 #pragma comment (lib, "d3d9.lib")
-#pragma comment (lib, "d3d9/d3dx9.lib")
-#pragma comment (lib, "d3d9/dxguid.lib")
 
 #define RENDERER CEngine::the()->GetRenderer()
 
