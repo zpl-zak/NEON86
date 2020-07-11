@@ -7,6 +7,7 @@ Build
 Debug/
 Release/
 data
+libs/*.dll
 
 *.pdb
 *.ilk
