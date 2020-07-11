@@ -10,6 +10,10 @@ local camera
 local world
 local terrain, trMesh, propsNode
 
+local dbgTriangleMaterial = Material()
+dbgTriangleMaterial:setShaded(false)
+local dbgTris = {}
+
 function _init()
   world = cols.newWorld()
   terrain = Scene("desert.fbx")
@@ -25,17 +29,25 @@ function _init()
   camera.speed = 30.0
   camera.updateMovement = function(self, dt)
     if self.grounded == false then
-      self.vel:y(self.vel:y() - 6*dt)
+      self.vel:y(self.vel:y() - 5*dt)
     end
     self.movedir:y(0)
     local nvel = Vector()
     local contacts = {}
+    self.vel:x(self.movedir:x())
+    self.vel:z(self.movedir:z())
     world:forEach(function (shape)
-      c = shape:testSphere(self.pos, 1, self.movedir + self.vel + Vector3(0,-5,0), function (norm)
-        local o = cols.slide((self.vel), norm)
-        local g = cols.slide((self.movedir), norm)
+      c = shape:testSphere(self.pos, 1, self.movedir + self.vel + Vector3(0,-5,0), function (norm, pd, tr, pp)
+        local push = norm:normalize()*pd*-1
+
+        -- self.pos = self.pos + push
+        if push:magSq() < 0.001 then
+          return
+        end
+        local pushP = push * ((self.vel * push) / (push * push))
+        self.vel = (self.vel - pushP)
         self.grounded = true
-        self.vel = hh.lerp(o, g, shape.friction)
+        table.insert(dbgTris, tr)
       end)
     end)
 
@@ -91,6 +103,22 @@ function _render()
   camera.mat:bind(VIEW)
   terrain:draw()
   propsNode:draw()
+
+  RenderState(RENDERSTATE_ZENABLE, false)
+  BindTexture(0, dbgTriangleMaterial)
+  CullMode(CULLKIND_NONE)
+  Matrix():bind(WORLD)
+  for _, tr in pairs(dbgTris) do
+    DrawPolygon(
+      Vertex(tr[1]:x(), tr[1]:y(), tr[1]:z()),
+      Vertex(tr[2]:x(), tr[2]:y(), tr[2]:z()),
+      Vertex(tr[3]:x(), tr[3]:y(), tr[3]:z())
+    )
+  end
+  dbgTris = {}
+  BindTexture(0)
+  CullMode(CULLKIND_CCW)
+  RenderState(RENDERSTATE_ZENABLE, true)
 end
 
 function _render2d()

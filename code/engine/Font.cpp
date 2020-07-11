@@ -35,7 +35,7 @@ VOID CFont::Release()
     }
 }
 
-VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h)
+VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h, DWORD flags)
 {
     if (!mFontHandle)
         return;
@@ -52,7 +52,7 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h)
         rect.bottom = y + h;
     }
 
-    mFontHandle->DrawTextA(UI->GetTextSurface(), text, -1, &rect, DT_LEFT|DT_WORDBREAK, color);
+    mFontHandle->DrawTextA(UI->GetTextSurface(), text, -1, &rect, flags, color);
 }
 
 BOOL CFont::AddFontToDatabase(LPCSTR path)
@@ -60,7 +60,7 @@ BOOL CFont::AddFontToDatabase(LPCSTR path)
     return AddFontResourceExA(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, path), FR_PRIVATE, 0) > 0;
 }
 
-VOID CFont::CalculateRect(LPCSTR text, LPRECT rect)
+VOID CFont::CalculateRect(LPCSTR text, LPRECT rect, DWORD flags)
 {
-    mFontHandle->DrawTextA(NULL, text, -1, rect, DT_LEFT|DT_CALCRECT|DT_WORDBREAK, 0);
+    mFontHandle->DrawTextA(NULL, text, -1, rect, flags|DT_CALCRECT, 0);
 }

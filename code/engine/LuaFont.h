@@ -31,16 +31,47 @@ static INT font_drawtext(lua_State* L)
     LPCSTR text = (LPCSTR)luaL_checkstring(L, 3);
     UINT x = (UINT)luaL_checkinteger(L, 4);
     UINT y = (UINT)luaL_checkinteger(L, 5);
-
+    
     UINT w = 0, h = 0;
     if (lua_gettop(L) >= 6)
     {
         w = (UINT)luaL_checkinteger(L, 6);
         h = (UINT)luaL_checkinteger(L, 7);
     }
+    
+    DWORD flags = DT_WORDBREAK;
+    if (lua_gettop(L) >= 7)
+    {
+        flags = (DWORD)luaL_checkinteger(L, 8);
+    }
 
-    font->RenderText(color, text, x, y, w, h);
+    font->RenderText(color, text, x, y, w, h, flags);
     return 0;
+}
+
+static INT font_measuretext(lua_State* L)
+{
+    CFont* font = *(CFont**)luaL_checkudata(L, 1, L_FONT);
+    LPCSTR text = (LPCSTR)luaL_checkstring(L, 2);
+    DWORD flags = (DWORD)luaL_checkinteger(L, 3);
+    
+    RECT rect = { 0 };
+    if (lua_gettop(L) >= 4)
+    {
+        rect.right = (UINT)luaL_checkinteger(L, 4);
+    }
+
+    font->CalculateRect(text, &rect, flags);
+
+    lua_newtable(L);
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, rect.right);
+    lua_settable(L, -3);
+    lua_pushinteger(L, 2);
+    lua_pushnumber(L, rect.bottom);
+    lua_settable(L, -3);
+
+    return 1;
 }
 
 static INT font_delete(lua_State* L)
@@ -58,6 +89,7 @@ static VOID LuaFont_register(lua_State* L)
     lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
 
     REGC("drawText", font_drawtext);
+    REGC("measureText", font_measuretext);
 
     REGC("__gc", font_delete);
 

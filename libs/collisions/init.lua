@@ -78,9 +78,9 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
         local pp = (v1 * c) + (v2 * b) + (v3 * a)
 
         local d = (pp - pos):magSq()
-        if d <= radius then
+        if d < radius and ((pp - pos) * n:normalize()) > 0 then
           local pd = d - radius
-          table.insert(contacts, {fn(n:normalize(), pd, tr)})
+          table.insert(contacts, {fn(n, pd, tr, pp)})
         end
     end
   end
