@@ -198,6 +198,14 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
             return 0;
         break;
 
+        case WM_CHAR:
+        {
+            if (wParam >= 0x20) 
+            {
+                VM->CharInput((DWORD)wParam);
+            }
+        } break;
+
         case WM_KEYDOWN:
         {
             if (INPUT->GetKey((DWORD)wParam))

@@ -32,6 +32,12 @@ Engine is DCC-driven and supports model scene graphs and hierarchy manipulations
 Engine also provides a hardware lighting support that is very simple to use, it also 
 offers a shader support that is easily expendable and provides rich visuals at low costs.
 
+## Compilation
+
+You can use **main.bat** to quickly access and operate the engine workflow, there is also a solution file located in `code/neon86.sln` you can open to compile the project.
+
+Debug build requires **d3dx9d_42.dll** to be present in your system (Which is part of the DirectX SDK February 2010 package), you can alternatively define `NEON_FORCE_D3DX9` to force the usage of redistributable DLLs instead, this is what the Release build uses by default and is used for shipping.
+
 ## Documentation
 
 You can review NEON86 API by reading [the cheatsheet](docs/neon86_cheatsheet.pdf). It is still work in progress.

@@ -210,6 +210,23 @@ VOID CVirtualMachine::Resize(RECT res)
 	CheckVMErrors(r);
 }
 
+VOID CVirtualMachine::CharInput(DWORD key)
+{
+	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
+		return;
+
+	lua_getglobal(mLuaVM, "_charInput");
+
+	if (!lua_isfunction(mLuaVM, -1))
+		return;
+
+	CHAR buf[2] = { (CHAR)key, 0 };
+	lua_pushstring(mLuaVM, buf);
+
+	int r = lua_pcall(mLuaVM, 1, 0, 0);
+	CheckVMErrors(r);
+}
+
 static const luaL_Reg loadedlibs[] = {
 	{"_G", luaopen_base},
 	{LUA_LOADLIBNAME, luaopen_package},
@@ -236,7 +253,7 @@ static VOID _lua_openlibs(lua_State *L) {
 	}
 	
 	static char path[MAX_PATH] = { 0 };
-	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua;libs/?/init.lua'", FILESYSTEM->GetCanonicalGamePath());
+	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua;libs/?/init.lua;%s/?.lua'", FILESYSTEM->GetCanonicalGamePath(), FILESYSTEM->GetCanonicalGamePath());
 	luaL_dostring(L, path);
     sprintf_s(path, MAX_PATH, "package.cpath = '%s/?.dll;libs/?.dll;libs/?/init.dll;libs/?/?.dll'", FILESYSTEM->GetCanonicalGamePath());
     luaL_dostring(L, path);

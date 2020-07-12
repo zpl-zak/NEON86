@@ -33,6 +33,7 @@ public:
 	VOID Update(FLOAT dt);
 	VOID Render(VOID);
 	VOID Render2D(VOID);
+	VOID CharInput(DWORD key);
 	VOID Resize(RECT res);
 
 	inline BOOL CheckVMErrors(INT, BOOL canFail=FALSE);
