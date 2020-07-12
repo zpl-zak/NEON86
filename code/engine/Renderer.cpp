@@ -9,7 +9,12 @@
 #include "Effect.h"
 #include "RenderTarget.h"
 
+#ifndef _DEBUG
 #pragma comment (lib, "d3d9/d3dx9.lib")
+#else
+#pragma comment (lib, "d3d9/d3dx9d.lib")
+#endif
+
 #pragma comment (lib, "d3d9/dxguid.lib")
 
 //////////////////////////////////////////////////////////////////////
@@ -255,12 +260,20 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
     }
 }
 
-VOID CRenderer::DrawPolygon(VERTEX a, VERTEX b, VERTEX c)
+VOID CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
 {
+	D3DXVECTOR3 v1 = D3DXVECTOR3(a.x, a.y, a.z);
+	D3DXVECTOR3 v2 = D3DXVECTOR3(b.x, b.y, b.z);
+	D3DXVECTOR3 v3 = D3DXVECTOR3(c.x, c.y, c.z);
+	D3DXVECTOR3 e1 = (v3 - v1);
+	D3DXVECTOR3 e2 = (v3 - v2);
+	D3DXVECTOR3 n;
+	D3DXVec3Cross(&n, &e1, &e2);
+
 	ZeroMemory(&mImmediateBuffer, sizeof(mImmediateBuffer));
-	mImmediateBuffer[0] = { a.x, a.y, a.z, 0,0,0,0,0,0,0,0,0, a.color, a.su, a.tv };
-	mImmediateBuffer[1] = { b.x, b.y, b.z, 0,0,0,0,0,0,0,0,0, b.color, b.su, b.tv };
-	mImmediateBuffer[2] = {c.x, c.y, c.z, 0,0,0,0,0,0,0,0,0, c.color, c.su, c.tv};
+	mImmediateBuffer[0] = { a.x, a.y, a.z, n.x,n.y,n.z,0,0,0,0,0,0, a.color, a.su, a.tv };
+	mImmediateBuffer[1] = { b.x, b.y, b.z, n.x,n.y,n.z,0,0,0,0,0,0, b.color, b.su, b.tv };
+	mImmediateBuffer[2] = { c.x, c.y, c.z, n.x,n.y,n.z,0,0,0,0,0,0, c.color, c.su, c.tv };
 
     static IDirect3DVertexDeclaration9* vertsDecl = NULL;
 
@@ -268,7 +281,7 @@ VOID CRenderer::DrawPolygon(VERTEX a, VERTEX b, VERTEX c)
         mDevice->CreateVertexDeclaration(meshVertexFormat, &vertsDecl);
 
     mDevice->SetVertexDeclaration(vertsDecl);
-    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 3, (LPVOID)mImmediateBuffer, sizeof(VERTEX));
+    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, (LPVOID)mImmediateBuffer, sizeof(VERTEX));
 }
 
 VOID CRenderer::DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLOAT z2, DWORD color)
@@ -290,7 +303,7 @@ VOID CRenderer::DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLO
         mDevice->CreateVertexDeclaration(meshVertexFormat, &vertsDecl);
 
     mDevice->SetVertexDeclaration(vertsDecl);
-    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6, (LPVOID)verts, sizeof(VERTEX));
+    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, (LPVOID)verts, sizeof(VERTEX));
 }
 
 VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY)
@@ -313,7 +326,7 @@ VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
 
 	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
 	mDevice->SetVertexDeclaration(vertsDecl);
-	mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 6, (VOID*)verts, sizeof(VERTEX_2D));
+	mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, (VOID*)verts, sizeof(VERTEX_2D));
 	mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 }
 

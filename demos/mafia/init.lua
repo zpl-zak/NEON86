@@ -29,24 +29,8 @@ camera.grounded = false
 function _init()
   mapModel = Model("map.fbx", true, false)
   
-  for _, meshNode in pairs(mapModel:getRootNode():getNodes()) do
-    for _, mesh in pairs(meshNode:getMeshes()) do
-      for _, part in pairs(mesh:getParts()) do
-        slMesh = cols.newTriangleMeshFromPart(part, meshNode:getFinalTransform())
-        slMesh.friction = 1.0
-        world:addCollision(slMesh)
-      end
-    end
-  end
   camera.updateMovement = function(self, dt)
     self.vel = self.movedir
-    world:forEach(function (shape)
-      shape:testSphere(self.pos, 0.5, self.movedir, function (norm)
-        self.vel = cols.slide(self.movedir, norm)
-        self.grounded = true
-      end)
-    end)
-
     self.pos = self.pos + self.vel
   end
 
@@ -113,5 +97,5 @@ Map made by Cukier for Mafia: The City of Lost Heaven.
 
   ]], 15, 30, 1200, 800)
 
-      testFont:drawText(Color(255,64,0), "Move with WASD", 15, 600)
+testFont:drawText(Color(255,64,0), "Move with WASD", 15, 600)
 end

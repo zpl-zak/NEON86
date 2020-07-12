@@ -31,7 +31,7 @@ public:
     VOID DrawMesh(const RENDERDATA& data);
     VOID DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY = FALSE);
     VOID DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLOAT z2, DWORD color);
-    VOID DrawPolygon(VERTEX a, VERTEX b, VERTEX c);
+    VOID DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c);
     VOID DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color);
     VOID ClearBuffer(D3DCOLOR color, UINT flags = CLEARFLAG_STANDARD);
     VOID SetMaterial(DWORD stage, CMaterial* mat);

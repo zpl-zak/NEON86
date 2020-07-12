@@ -40,7 +40,7 @@ static INT font_drawtext(lua_State* L)
     }
     
     DWORD flags = DT_WORDBREAK;
-    if (lua_gettop(L) >= 7)
+    if (lua_gettop(L) >= 8)
     {
         flags = (DWORD)luaL_checkinteger(L, 8);
     }

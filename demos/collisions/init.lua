@@ -37,6 +37,7 @@ function _init()
     self.vel = self.movedir
     world:forEach(function (shape)
       shape:testSphere(self.pos, 1, self.vel, function (norm)
+        norm = norm:normalize()
         local wallDir = norm * (self.vel * norm)
         self.vel = self.vel - wallDir
       end)
@@ -152,6 +153,7 @@ function updateBalls(dt)
 
       world:forEach(function (shape)
         shape:testSphere(ball.pos, 2, ball.vel, function (norm)
+          norm = norm:normalize()
           local wallDir = norm * (ball.vel * norm)
           ball.vel = ball.vel - wallDir*bounceFactor
         end)

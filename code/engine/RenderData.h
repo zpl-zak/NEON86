@@ -75,7 +75,6 @@ enum TEXTURESLOT
 	MAX_TEXTURE_SLOTS,
 };
 
-#pragma pack(push, 1)
 struct VERTEX
 {
 	FLOAT x, y, z;
@@ -103,7 +102,6 @@ struct VERTEX_2D
     };
     FLOAT su, tv;
 };
-#pragma pack(pop)
 
 extern D3DVERTEXELEMENT9 meshVertexFormat[];
 extern D3DVERTEXELEMENT9 meshVertex2DFormat[];
