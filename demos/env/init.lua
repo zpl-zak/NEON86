@@ -1,6 +1,5 @@
 local test
 local testModel
-local monkey
 local sphere
 local skybox
 local time = 0
@@ -9,7 +8,7 @@ local rt
 local rtMat
 local camera
 
-local cam = require "camera"
+local Camera = require "camera"
 
 local changeRot = 0
 
@@ -17,8 +16,7 @@ function _init()
   testModel = Model("test.fbx")
   testModel:getRootNode():setTransform(Matrix():scale(2,1,1))
   sphere = Model("sphere.fbx")
-  monkey = Model("monkey.fbx")
-  camera = cam.newCamera(Vector3(-2,0,-8))
+  camera = Camera(Vector3(-2,0,-8))
   camera.angles = {0.48500002529471, 0}
 
   skybox = Model("skybox.fbx")
@@ -61,7 +59,6 @@ function _render()
 
   skybox:draw(Matrix():translate(camera.pos))
   sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
-  monkey:draw(Matrix():translate(camera.pos))
   testModel:getMeshes()[1]:setMaterial(0, rtMat)
   testModel:draw()
 

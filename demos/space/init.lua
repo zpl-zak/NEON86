@@ -1,6 +1,6 @@
 scale = 1
 local camera
-local cam = require "camera"
+local Camera = require "camera"
 
 dofile("solar.lua")
 
@@ -24,7 +24,7 @@ function _init()
 	SetCursorMode(CURSORMODE_CENTERED)
 
 	math.randomseed(1337)
-	camera = cam.newCamera(Vector3(0,6,-540*scale))
+	camera = Camera(Vector3(0,6,-540*scale))
 	camera.speed = 120.0*scale
 end
 

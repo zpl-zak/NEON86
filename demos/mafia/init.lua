@@ -1,8 +1,6 @@
 local mapModel, colsModel
 local camera
 
-local cam = require "camera"
-
 local bgColor = VectorRGBA(42, 16, 9)
 
 local cols = require "collisions"
@@ -22,7 +20,8 @@ RegisterFontFile("slkscr.ttf")
 testFont = Font("Silkscreen", 16, 700, false)
 
 -- Initialize camera
-camera = cam.newCamera(Vector3( -39.431,3.21591,1.2078))
+local Camera = require "camera"
+camera = Camera(Vector3( -39.431,3.21591,1.2078))
 camera.angles = { 0.60000003129245, 0.097500005085019}
 camera.grounded = false
 

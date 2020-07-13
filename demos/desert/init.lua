@@ -27,7 +27,7 @@ Class "GameCamera" (Camera) {
                 self.vel:normalize(),
                 function (norm, pd, tr)
                     local push = (norm:normalize()*pd)
-                    self.pos = self.pos + push*0.01
+                    self.pos = self.pos + push*0.0001
 
 
                     local pp = push * ((self.vel * push) / (push * push))

@@ -6,7 +6,7 @@ local testFont
 local roomScene
 local room
 local cols = require "collisions"
-local cam = require "camera"
+local Camera = require "camera"
 local gravity = -0.0981
 
 local DEFAULT_BOUNCE_FACTOR = 1.8
@@ -32,8 +32,8 @@ function _init()
   local camdir = cament:row(2)
   local camup = cament:row(3):neg()
 
-  camera = cam.newCamera(campos)
-  camera.updateMovement = function(self, dt)
+  camera = Camera(campos)
+  camera.movement = function(self, dt)
     self.vel = self.movedir
     world:forEach(function (shape)
       shape:testSphere(self.pos, 1, self.vel, function (norm)
