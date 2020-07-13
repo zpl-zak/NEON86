@@ -218,8 +218,4 @@ if common_class ~= false then
     end
 end
 
----------
--- End of slither.lua dependency
----------
-
-return class;
+return class

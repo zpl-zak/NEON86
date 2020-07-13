@@ -1,89 +1,86 @@
-local _ = {}
+local class = require "class"
 
--- Camera API
+class "Camera" {
+    __init__ = function (self, pos, angles)
+        if pos == nil then
+            pos = Vector3()
+        end
+        if angles == nil then
+        angles = {0.0, 0.0}
+        end
 
-local Camera = {}
-Camera.__index = Camera
+        self.pos = pos
+        self.angles = angles
+        self.speed = 15.0
+        self.sensitivity = 0.15
+        self.vel = Vector3()
+        self.heldControls = false
+        self:updateMatrix()
+    end,
 
-function Camera.updateMatrix(self)
-  self.mat = Matrix():translate(self.pos:neg())
-                     :rotate(-self.angles[1], 0, 0)
-                     :rotate(0, self.angles[2], 0)
-  self:updateDirVectors()
-end
+    -- Events
 
-function Camera.updateDirVectors(self)
-  self.dirs = {
-    fwd = self.mat:col(3),
-    rhs = self.mat:col(1)
-  }
-end
+    update = function (self, dt)
+        self:input(dt)
+        self:mouseLook(dt)
+        self:updateMatrix()
+        self:movement(dt)
+    end,
 
-function Camera.update(self, dt)
-  self:updateInput(dt)
-  self:updateMouseLook(dt)
-  self:updateMatrix()
-  self:updateMovement(dt)
-end
+    input = function (self, dt)
+        local movedir = Vector3()
 
-function Camera.updateInput(self, dt)
-	local vel = Vector3()
+        if GetKey("w") then
+            movedir = movedir + Vector3(self.dirs.fwd * dt * self.speed)
+        end
 
-	if GetKey("w") then
-		vel = vel + Vector3(self.dirs.fwd * dt * self.speed)
-	end
+        if GetKey("s") then
+            movedir = movedir + Vector3(self.dirs.fwd * dt * self.speed):neg()
+        end
 
-	if GetKey("s") then
-		vel = vel + Vector3(self.dirs.fwd * dt * self.speed):neg()
-	end
+        if GetKey("a") then
+            movedir = movedir + Vector3(self.dirs.rhs * dt * self.speed):neg()
+        end
 
-	if GetKey("a") then
-		vel = vel + Vector3(self.dirs.rhs * dt * self.speed):neg()
-	end
+        if GetKey("d") then
+            movedir = movedir + Vector3(self.dirs.rhs * dt * self.speed)
+        end
 
-	if GetKey("d") then
-		vel = vel + Vector3(self.dirs.rhs * dt * self.speed)
-	end
+        if GetKey(KEY_SHIFT) then
+            movedir = movedir * 4
+        end
 
-	if GetKey(KEY_SHIFT) then
-		vel = vel * 4
-	end
+        self.movedir = movedir
+    end,
 
-  self.movedir = vel
-end
+    mouseLook = function (self, dt)
+        if GetCursorMode() == CURSORMODE_CENTERED then
+            mouseDelta = GetMouseDelta()
+            self.angles[1] = self.angles[1] + (mouseDelta[1] * dt * self.sensitivity)
+            self.angles[2] = self.angles[2] - (mouseDelta[2] * dt * self.sensitivity)
+        end
+    end,
 
-function Camera.updateMouseLook(self, dt)
-  if GetCursorMode() == CURSORMODE_CENTERED then
-		mouseDelta = GetMouseDelta()
-		self.angles[1] = self.angles[1] + (mouseDelta[1] * dt * self.sensitivity)
-		self.angles[2] = self.angles[2] - (mouseDelta[2] * dt * self.sensitivity)
-	end
-end
+    movement = function (self)
+        self.vel = self.vel + (self.movedir - self.vel)*0.10
+        self.pos = self.pos + self.vel
+    end,
 
-function Camera.updateMovement(self)
-  self.vel = self.vel + (self.movedir - self.vel)*0.10
-  self.pos = self.pos + self.vel
-end
+    -- Helpers
 
--- Public API
+    updateMatrix = function (self)
+        self.mat = Matrix():translate(self.pos:neg())
+                            :rotate(-self.angles[1], 0, 0)
+                            :rotate(0, self.angles[2], 0)
+        self:updateDirVectors()
+    end,
 
-function _.newCamera(pos, angles)
-  if pos == nil then
-    pos = Vector3()
-  end
-  if angles == nil then
-    angles = {0.0, 0.0}
-  end
+    updateDirVectors = function (self)
+        self.dirs = {
+            fwd = self.mat:col(3),
+            rhs = self.mat:col(1)
+        }
+    end,
+}
 
-  local self = setmetatable({}, Camera)
-  self.pos = pos
-  self.angles = angles
-  self.speed = 15.0
-  self.sensitivity = 0.15
-  self.vel = Vector3()
-  self.heldControls = false
-  self:updateMatrix()
-  return self
-end
-
-return _
+return Camera
