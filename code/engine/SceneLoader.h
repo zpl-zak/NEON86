@@ -19,7 +19,7 @@ class ENGINE_API CSceneLoader
 {
 public:
     static VOID LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials);
-    static VOID LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes);
+    static BOOL LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes);
     static CFaceGroup* LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials);
     static CLight* LoadLight(const aiNode* impNode, const aiLight* impLight);
     static aiMatrix4x4 ComputeFinalTransformation(const aiNode* node);

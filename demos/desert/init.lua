@@ -13,10 +13,10 @@ Class "GameCamera" (Camera) {
     end,
 
     movement = function (self, dt)
+        self.movedir:y(0)
         if self.grounded == false then
             self.vel:y(self.vel:y() - 2*dt)
         end
-        self.movedir:y(0)
         self.vel:x(self.vel:x() + self.movedir:x())
         self.vel:z(self.vel:z() + self.movedir:z())
 
@@ -28,7 +28,6 @@ Class "GameCamera" (Camera) {
                 function (norm, pd, tr)
                     local push = (norm:normalize()*pd)
                     self.pos = self.pos + push*0.0001
-
 
                     local pp = push * ((self.vel * push) / (push * push))
                     self.vel = (self.vel - pp)

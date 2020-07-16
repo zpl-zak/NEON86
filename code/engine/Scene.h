@@ -4,9 +4,6 @@
 #include "RenderData.h"
 #include "Node.h"
 
-class CMesh;
-class CLight;
-
 class ENGINE_API CScene: public CNode
 {
 public:

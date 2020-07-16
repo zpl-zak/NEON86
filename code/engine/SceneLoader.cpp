@@ -13,6 +13,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/matrix4x4.h>
+#include <assimp/postprocess.h>
 #include <sstream>
 
 #ifndef _DEBUG
@@ -20,6 +21,14 @@
 #else
 #pragma comment (lib, "assimpd.lib")
 #endif
+
+#define MESHIMPORT_FLAGS \
+    aiProcess_ConvertToLeftHanded |\
+    aiProcess_Triangulate |\
+    aiProcess_CalcTangentSpace |\
+    aiProcess_FlipUVs |\
+    aiProcess_SplitLargeMeshes |\
+    0
 
 VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials)
 {
@@ -121,9 +130,26 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     }
 }
 
-VOID CSceneLoader::LoadScene(const aiScene* impScene, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes)
+BOOL CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes)
 {
-    LoadNodesRecursively(impScene, impScene->mRootNode, scene, scene, loadMaterials);
+    Assimp::Importer imp;
+    imp.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 32762);
+
+    DWORD meshFlags = MESHIMPORT_FLAGS;
+
+    if (optimizeMeshes)
+    {
+        meshFlags |= aiProcess_PreTransformVertices
+            | aiProcess_RemoveRedundantMaterials;
+    }
+
+    const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), meshFlags);
+
+    if (!model)
+        return FALSE;
+
+    LoadNodesRecursively(model, model->mRootNode, scene, scene, loadMaterials);
+    return TRUE;
 }
 
 CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)

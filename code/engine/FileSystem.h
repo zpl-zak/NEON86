@@ -30,7 +30,7 @@ struct FDATA
 #define _FILE_DEFINED
 typedef struct _iobuf
 {
-    VOID* _Placeholder;
+    LPVOID _Placeholder;
 } FILE;
 #endif
 
