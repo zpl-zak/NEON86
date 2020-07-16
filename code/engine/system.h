@@ -109,7 +109,7 @@ public:
     {
         for (UINT i = 0; i < mCount; i++)
         {
-            if (!strcmp(name, mData[i]->GetName().C_Str()))
+            if (!strcmp(name, mData[i]->GetName().Str()))
                 return mData[i];
         }
 
@@ -148,3 +148,60 @@ inline std::vector<std::string> split(const std::string& str, const std::string&
     } while (pos < str.length() && prev < str.length());
     return tokens;
 }
+
+class ENGINE_API CString {
+public:
+    CString() {
+        mStr = NULL;
+        mSize = 0;
+    };
+    CString(LPCSTR str) {
+        Assign(str);
+    }
+    CString(LPSTR str) {
+        Assign((LPCSTR)str);
+    }
+    CString(std::string str) {
+        Assign(str.c_str());
+    }
+    CString(const CString& rhs) {
+        Assign(rhs.mStr);
+    }
+
+    ~CString() {
+        SAFE_DELETE_ARRAY(mStr);
+    }
+
+    SSIZE_T Length() {
+        return mSize;
+    }
+
+    LPCSTR Str() {
+        return mStr;
+    }
+
+    BOOL operator== (LPCSTR str) {
+        return (::strcmp(mStr, str) == 0);
+    }
+
+    BOOL operator!= (LPCSTR str) {
+        return !(mStr == str);
+    }
+
+    VOID operator= (LPCSTR str) {
+        Assign(str);
+    }
+
+    VOID operator= (CString str) {
+        Assign(str.Str());
+    }
+private:
+    LPSTR mStr;
+    SSIZE_T mSize;
+
+    VOID Assign(LPCSTR str) {
+        mSize = ::strlen(str);
+        mStr = new CHAR[mSize + 1];
+        ::strcpy_s(mStr, mSize + 1, str);
+    }
+};

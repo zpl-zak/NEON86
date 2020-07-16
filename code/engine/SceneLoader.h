@@ -2,8 +2,6 @@
 
 #include "system.h"
 
-#include <assimp/matrix4x4.h>
-
 class CFaceGroup;
 class CMaterial;
 class CScene;
@@ -22,7 +20,6 @@ public:
     static BOOL LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes);
     static CFaceGroup* LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials);
     static CLight* LoadLight(const aiNode* impNode, const aiLight* impLight);
-    static aiMatrix4x4 ComputeFinalTransformation(const aiNode* node);
 private:
     static VOID LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType);
 };

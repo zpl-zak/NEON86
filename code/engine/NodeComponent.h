@@ -2,8 +2,6 @@
 
 #include "system.h"
 
-#include <Assimp/Importer.hpp>
-
 class CNode;
 
 class ENGINE_API CNodeComponent
@@ -11,23 +9,21 @@ class ENGINE_API CNodeComponent
 public:
     CNodeComponent() 
     {
-        mName = new aiString("(unknown)");
+        mName = CString("(unknown)");
         mOwner = NULL;
     }
 
-    virtual ~CNodeComponent() {
-        SAFE_DELETE(mName);
-    }
+    virtual ~CNodeComponent() {}
 
     virtual LPCSTR GetKind() { return "Unknown"; }
 
-    inline VOID SetName(aiString name) { mName = new aiString(name); }
-    inline aiString GetName() { return *mName; }
+    inline VOID SetName(CString name) { mName = name; }
+    inline CString GetName() { return mName; }
 
     inline VOID SetOwner(CNode* node) { mOwner = node; }
     inline CNode* GetOwner() { return mOwner; }
 
 private:
-    aiString* mName;
+    CString mName;
     CNode* mOwner;
 };

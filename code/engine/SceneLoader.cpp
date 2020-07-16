@@ -30,12 +30,14 @@
     aiProcess_SplitLargeMeshes |\
     0
 
+extern aiMatrix4x4 ComputeFinalTransformation(const aiNode* node);
+
 VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials)
 {
     aiMatrix4x4 mat = impNode->mTransformation;
     mat = mat.Transpose();
 
-    CNode* newNode = new CNode(mat, impNode->mName);
+    CNode* newNode = new CNode(*(D3DXMATRIX*)&mat, impNode->mName.C_Str());
     node->AddNode(newNode);
 
     if (node != scene)
@@ -89,7 +91,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         {
             if (lastMesh)
             {
-                lastMesh->SetName(lastMeshName);
+                lastMesh->SetName(lastMeshName.C_Str());
                 scene->AddMesh(lastMesh);
                 newNode->AddMesh(lastMesh);
             }
@@ -106,7 +108,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
 
     if (lastMesh)
     {
-        lastMesh->SetName(lastMeshName);
+        lastMesh->SetName(lastMeshName.C_Str());
         scene->AddMesh(lastMesh);
         newNode->AddMesh(lastMesh);
     }
@@ -307,16 +309,8 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
         break;
     }
 
-    lit->SetName(impNode->mName);
+    lit->SetName(impNode->mName.C_Str());
     return lit;
-}
-
-aiMatrix4x4 CSceneLoader::ComputeFinalTransformation(const aiNode* node)
-{
-    if (!node->mParent)
-        return aiMatrix4x4();
-
-    return node->mTransformation * ComputeFinalTransformation(node->mParent);
 }
 
 VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
@@ -362,4 +356,12 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
     }
 
     newMaterial->Unlock(slot);
+}
+
+static aiMatrix4x4 ComputeFinalTransformation(const aiNode* node)
+{
+    if (!node->mParent)
+        return aiMatrix4x4();
+
+    return node->mTransformation * ComputeFinalTransformation(node->mParent);
 }

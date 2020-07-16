@@ -91,7 +91,7 @@ static INT mesh_setname(lua_State* L)
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     LPCSTR meshName = luaL_checkstring(L, 2);
 
-    mesh->SetName(aiString(meshName));
+    mesh->SetName(meshName);
 
     return 0;
 }
@@ -100,7 +100,7 @@ static INT mesh_getname(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
 
-    lua_pushstring(L, mesh->GetName().C_Str());
+    lua_pushstring(L, mesh->GetName().Str());
     return 1;
 }
 

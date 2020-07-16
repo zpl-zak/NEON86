@@ -3,7 +3,6 @@
 #include "system.h"
 #include "NodeComponent.h"
 #include "ReferenceManager.h"
-#include <assimp/matrix4x4.h>
 
 #include <d3dx9.h>
 
@@ -32,7 +31,7 @@ public:
 
         D3DXMatrixIdentity(mTransform);
         D3DXMatrixIdentity(mCachedTransform);
-        SetName(aiString("(unknown)"));
+        SetName("(unknown)");
         mIsTransformDirty = TRUE;
         mParent = NULL;
 
@@ -41,10 +40,10 @@ public:
         mNodes.Release();
     }
 
-    CNode(aiMatrix4x4 mat, aiString name): CAllocable()
+    CNode(D3DXMATRIX mat, CString name): CAllocable()
     {
         SetName(name);
-        mTransform = new D3DXMATRIX(*(D3DXMATRIX*)&mat);
+        mTransform = new D3DXMATRIX(mat);
         mCachedTransform = new D3DXMATRIX();
         mMetadata = new METADATA();
 

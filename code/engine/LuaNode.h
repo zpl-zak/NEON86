@@ -26,7 +26,7 @@ static INT node_clone(lua_State* L)
 static INT node_getname(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
-    lua_pushstring(L, node->GetName().C_Str());
+    lua_pushstring(L, node->GetName().Str());
 
     return 1;
 }
@@ -35,7 +35,7 @@ static INT node_setname(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
     LPSTR name = (LPSTR)luaL_checkstring(L, 2);
-    node->SetName(aiString(name));
+    node->SetName(name);
 
     return 0;
 }
@@ -130,7 +130,7 @@ static INT node_gettargets(lua_State* L)
         if (!tgt->IsEmpty())
             continue;
 
-        lua_pushstring(L, tgt->GetName().C_Str());
+        lua_pushstring(L, tgt->GetName().Str());
         matrix_new(L);
         *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetFinalTransform();
         lua_settable(L, -3);

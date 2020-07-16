@@ -81,7 +81,7 @@ static INT scene_gettargets(lua_State* L)
         if (!tgt->IsEmpty())
             continue;
 
-        lua_pushstring(L, tgt->GetName().C_Str());
+        lua_pushstring(L, tgt->GetName().Str());
         matrix_new(L);
         *(D3DXMATRIX*)lua_touserdata(L, 4) = tgt->GetFinalTransform();
         lua_settable(L, -3);

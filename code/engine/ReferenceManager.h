@@ -2,8 +2,6 @@
 
 #include "system.h"
 
-#include <vector>
-
 class ENGINE_API CReferenceCounter 
 {
 public:
