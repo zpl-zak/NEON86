@@ -568,3 +568,7 @@ D3DVERTEXELEMENT9 meshVertex2DFormat[] =
     {0, 20, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD,0},
     D3DDECL_END()
 };
+
+/// Following lines make sure game runs on your dedicated mobile GPU rather than integrated one. (Applies only to mobile devices with integrated and dedicated GPU)
+_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001; // NVIDIA
+_declspec(dllexport) DWORD AmdPowerXpressRequestHighPerformance = 1; // ATI/AMD
