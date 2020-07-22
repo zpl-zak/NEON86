@@ -317,6 +317,7 @@
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LuaBindings.cpp" />
+    <ClCompile Include="ProfileManager.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundLoader.cpp" />
     <ClCompile Include="VM.cpp" />
@@ -364,6 +365,7 @@
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LuaBindings.h" />
+    <ClInclude Include="ProfileManager.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundLoader.h" />
     <ClInclude Include="VM.h" />

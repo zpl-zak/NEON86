@@ -6,6 +6,7 @@ class CFileSystem;
 class CVirtualMachine;
 class CUserInterface;
 class CAudioSystem;
+class CProfiler;
 
 #define ENGINE CEngine::the()
 
@@ -50,5 +51,13 @@ private:
 	BOOL mIsRunning;
 	FLOAT mUnprocessedTime;
 	FLOAT mLastTime;
+	FLOAT mFrameCounter;
 	FLOAT mUpdateDuration;
+	INT mFrames;
+	INT mRunCycle;
+
+	CProfiler* mUpdateProfiler;
+	CProfiler* mRenderProfiler;
+	CProfiler* mSleepProfiler;
+	CProfiler* mWindowProfiler;
 };

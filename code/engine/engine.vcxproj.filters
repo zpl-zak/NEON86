@@ -138,6 +138,9 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
+    <ClCompile Include="ProfileManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -295,6 +298,9 @@
     </ClInclude>
     <ClInclude Include="UserInterface.h">
       <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileManager.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

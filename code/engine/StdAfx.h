@@ -8,3 +8,4 @@
 #include <d3d9/include/d3dx9math.h>
 #include <d3d9/include/d3dx9effect.h>
 
+#include <cassert>

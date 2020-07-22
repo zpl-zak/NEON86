@@ -180,6 +180,10 @@ public:
         return mStr;
     }
 
+    std::string SStr() {
+        return std::string(mStr);
+    }
+
     BOOL operator== (LPCSTR str) {
         return (::strcmp(mStr, str) == 0);
     }
