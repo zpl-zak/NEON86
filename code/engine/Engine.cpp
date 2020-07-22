@@ -78,14 +78,13 @@ VOID CEngine::Run()
 
     while (IsRunning())
     {
-        mWindowProfiler->StartInvocation();
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
+            CProfileScope scope(mWindowProfiler);
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        mWindowProfiler->StopInvocation();
-
+     
         if (!IsRunning())
             break;
 
@@ -189,9 +188,8 @@ VOID CEngine::Think()
     }
     else
     {
-        mSleepProfiler->StartInvocation();
+        CProfileScope scope(mSleepProfiler);
         Sleep(1); // Let CPU sleep a bit
-        mSleepProfiler->StopInvocation();
     }
 }
 
@@ -292,9 +290,11 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 VOID CEngine::Update(FLOAT deltaTime)
 {
-    mUpdateProfiler->StartInvocation();
-    mVirtualMachine->Update(deltaTime);
-    mUpdateProfiler->StopInvocation();
+    {
+        CProfileScope scope(mUpdateProfiler);
+        mVirtualMachine->Update(deltaTime);
+    }
+ 
     mGameEditor->Update(deltaTime);
     mInput->Update();
 }
@@ -302,17 +302,21 @@ VOID CEngine::Update(FLOAT deltaTime)
 VOID CEngine::Render()
 {
     mRenderer->BeginRender();
-    mRenderProfiler->StartInvocation();
-    mVirtualMachine->Render();
-    mRenderProfiler->StopInvocation();
+    
+    {
+        CProfileScope scope(mRenderProfiler);
+        mVirtualMachine->Render();
+    }
 
-    mRender2DProfiler->StartInvocation();
-    mGameEditor->Render();
-    mRender2DProfiler->StopInvocation();
+    {
+        CProfileScope scope(mRender2DProfiler);
+        mGameEditor->Render();
+    }
 
-    mWindowProfiler->StartInvocation();
-    mRenderer->EndRender();
-    mWindowProfiler->StopInvocation();
+    {
+        CProfileScope scope(mWindowProfiler);
+        mRenderer->EndRender();
+    }
 }
 
 VOID CEngine::Resize(RECT resolution)
