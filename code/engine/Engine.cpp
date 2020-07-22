@@ -38,10 +38,13 @@ CEngine::CEngine(VOID)
 
     mUpdateProfiler = new CProfiler("Update");
     mRenderProfiler = new CProfiler("Render");
+    mRender2DProfiler = new CProfiler("RenderUI");
     mWindowProfiler = new CProfiler("Window");
     mSleepProfiler = new CProfiler("Sleep");
+    
 
     mProfilers[NEON_PROFILER_RENDER] = mRenderProfiler;
+    mProfilers[NEON_PROFILER_RENDER2D] = mRender2DProfiler;
     mProfilers[NEON_PROFILER_UPDATE] = mUpdateProfiler;
     mProfilers[NEON_PROFILER_SLEEP] = mSleepProfiler;
     mProfilers[NEON_PROFILER_WINDOW] = mWindowProfiler;
@@ -58,6 +61,7 @@ BOOL CEngine::Release()
 
     SAFE_DELETE(mUpdateProfiler);
     SAFE_DELETE(mRenderProfiler);
+    SAFE_DELETE(mRender2DProfiler);
     SAFE_DELETE(mSleepProfiler);
     SAFE_DELETE(mWindowProfiler);
     ZeroMemory(mProfilers, MAX_NEON_PROFILERS);
@@ -173,24 +177,20 @@ VOID CEngine::Think()
 
     while (mUnprocessedTime > mUpdateDuration)
     {
-        mUpdateProfiler->StartInvocation();
         Update(mUpdateDuration);
-        mUpdateProfiler->StopInvocation();
         render = TRUE;
         mUnprocessedTime -= mUpdateDuration;
     }
 
     if (render)
     {
-        mRenderProfiler->StartInvocation();
         Render();
         mFrames++;
-        mRenderProfiler->StopInvocation();
     }
     else
     {
         mSleepProfiler->StartInvocation();
-        Sleep(0); // Let CPU sleep a bit
+        Sleep(1); // Let CPU sleep a bit
         mSleepProfiler->StopInvocation();
     }
 }
@@ -292,7 +292,9 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 VOID CEngine::Update(FLOAT deltaTime)
 {
+    mUpdateProfiler->StartInvocation();
     mVirtualMachine->Update(deltaTime);
+    mUpdateProfiler->StopInvocation();
     mGameEditor->Update(deltaTime);
     mInput->Update();
 }
@@ -300,9 +302,17 @@ VOID CEngine::Update(FLOAT deltaTime)
 VOID CEngine::Render()
 {
     mRenderer->BeginRender();
+    mRenderProfiler->StartInvocation();
     mVirtualMachine->Render();
+    mRenderProfiler->StopInvocation();
+
+    mRender2DProfiler->StartInvocation();
     mGameEditor->Render();
+    mRender2DProfiler->StopInvocation();
+
+    mWindowProfiler->StartInvocation();
     mRenderer->EndRender();
+    mWindowProfiler->StopInvocation();
 }
 
 VOID CEngine::Resize(RECT resolution)

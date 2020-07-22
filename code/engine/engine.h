@@ -11,6 +11,7 @@ class CProfiler;
 enum {
     NEON_PROFILER_UPDATE,
     NEON_PROFILER_RENDER,
+	NEON_PROFILER_RENDER2D,
     NEON_PROFILER_WINDOW,
     NEON_PROFILER_SLEEP,
     MAX_NEON_PROFILERS
@@ -74,6 +75,7 @@ private:
 	CProfiler* mProfilers[MAX_NEON_PROFILERS];
 	CProfiler* mUpdateProfiler;
 	CProfiler* mRenderProfiler;
+	CProfiler* mRender2DProfiler;
 	CProfiler* mSleepProfiler;
 	CProfiler* mWindowProfiler;
 };
