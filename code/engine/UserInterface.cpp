@@ -28,6 +28,9 @@ public:
     }
 
     VOID Push(FLOAT ms) {
+        if (VM->GetStatus() != PLAYKIND_PLAYING)
+            return;
+
         mData.Push(ms);
 
         if (mData.GetCount() > sFramerateMaxSamples) {

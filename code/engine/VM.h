@@ -41,6 +41,7 @@ public:
 	inline VOID PostError(std::string err);
 	inline FLOAT GetRunTime() { return mRunTime; }
 	inline VOID PassTime(FLOAT dt) { mRunTime += dt; }
+	inline UCHAR GetStatus() { return mPlayKind; }
 private:
 	UCHAR mPlayKind;
 	UCHAR mScheduledTermination;
