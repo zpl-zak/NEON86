@@ -45,8 +45,6 @@ CEngine::CEngine(VOID)
     mProfilers[NEON_PROFILER_UPDATE] = mUpdateProfiler;
     mProfilers[NEON_PROFILER_SLEEP] = mSleepProfiler;
     mProfilers[NEON_PROFILER_WINDOW] = mWindowProfiler;
-
-    return; 
 }
 
 BOOL CEngine::Release()
@@ -192,7 +190,7 @@ VOID CEngine::Think()
     else
     {
         mSleepProfiler->StartInvocation();
-        Sleep(1); // Let CPU sleep a bit
+        Sleep(0); // Let CPU sleep a bit
         mSleepProfiler->StopInvocation();
     }
 }
