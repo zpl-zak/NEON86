@@ -30,7 +30,11 @@ CRenderer::CRenderer()
 	mActiveEffect = NULL;
 	mDefaultBox = NULL;
 	mDefaultMaterial = NULL;
+#ifndef _DEBUG
 	mVsync = TRUE;
+#else
+	mVsync = FALSE;
+#endif
 	mFullscreen = FALSE;
 	mEnableLighting = FALSE;
 	mUsesMaterialOverride = FALSE;
