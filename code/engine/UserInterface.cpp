@@ -140,6 +140,7 @@ VOID CUserInterface::DebugPanel(VOID)
     }
 
     // Profiler window
+    if (ENGINE->GetRunCycleCount() > 0)
     {
         RECT res = RENDERER->GetResolution();
         ImGui::SetNextWindowSizeConstraints({ 320, -1 }, { (FLOAT)res.right, -1 });

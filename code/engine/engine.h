@@ -47,6 +47,7 @@ public:
 	inline CProfiler** GetProfilers() { return mProfilers; }
 	inline FLOAT GetTotalRunTime() { return mTotalTime; };
 	inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
+	inline INT GetRunCycleCount() { return mRunCycle; }
 protected:
 	CRenderer* mRenderer;
 	CInput* mInput;
