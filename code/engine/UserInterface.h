@@ -17,6 +17,7 @@ public:
     VOID Update(FLOAT dt);
     VOID Render(VOID);
     VOID RenderHook(VOID);
+    VOID PushMS(FLOAT ms);
     LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
     VOID ClearErrorWindow();

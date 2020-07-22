@@ -88,6 +88,12 @@ function _update(dt)
       addBall()
   end
 
+  if GetKey("r") then
+    if #balls > 0 then
+      table.remove(balls, 1)
+    end
+  end
+
   if GetKeyDown("m") then
       bounceFactor = 2.35
   end

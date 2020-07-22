@@ -9,8 +9,12 @@
 
 #include "NeonEngine.h"
 
+#ifdef ENABLE_BORDERLESS
+#define DEV_BORDERLESS
+#endif
+
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& resolution);
+HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR titleName, RECT& resolution);
 BOOL CenterWindow(HWND hwndWindow);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
@@ -22,10 +26,16 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     RECT rect;
     rect.left = CW_USEDEFAULT;
     rect.top = CW_USEDEFAULT;
+#ifndef DEV_BORDERLESS
     rect.right = 1600;
     rect.bottom = 900;
+    hWnd = BuildWindow(hInstance, FALSE, "NeonClass", "NEON 86 | PLAYER", rect);
+#else
+    rect.right = GetSystemMetrics(SM_CXSCREEN);
+    rect.bottom = GetSystemMetrics(SM_CYSCREEN);
+    hWnd = BuildWindow(hInstance, TRUE, "NeonClass", "NEON 86 | PLAYER", rect);
+#endif
 
-    hWnd = BuildWindow(hInstance, nCmdShow, "NeonClass", "NEON 86 | PLAYER", rect);
     CenterWindow(hWnd);
 
     if (!ENGINE->Init(hWnd, rect))
@@ -48,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     return 0;
 }
 
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& resolution)
+HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR titleName, RECT& resolution)
 {
     HWND hWnd;
     WNDCLASSEX wc;
@@ -65,9 +75,12 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titl
 
     RegisterClassEx(&wc);
 
+#ifndef DEV_BORDERLESS
     DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
-
     AdjustWindowRectEx(&resolution, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
+#else
+    DWORD style = WS_VISIBLE | WS_POPUP;
+#endif
 
     hWnd = CreateWindowEx(NULL,
         className,

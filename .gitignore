@@ -8,6 +8,7 @@ Debug/
 Release/
 data
 libs/*.dll
+imgui.ini
 
 *.pdb
 *.ilk

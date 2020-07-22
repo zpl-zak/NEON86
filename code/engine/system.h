@@ -116,6 +116,14 @@ public:
         return NULL;
     }
 
+    inline T RemoveByIndex(UINT idx) {
+        T* ptr = (mData + idx);
+        ::memmove(mData + idx, mData + idx + 1, (mCount - idx - 1) * sizeof(T));
+        mCount--;
+
+        return *ptr;
+    }
+
     inline VOID Clear() { mCount = 0; }
 
     inline UINT GetCount() { return mCount; }
@@ -131,23 +139,7 @@ private:
     BOOL mIsOwned;
 };
 
-#include <vector>
 #include <string>
-
-inline std::vector<std::string> split(const std::string& str, const std::string& delim)
-{
-    std::vector<std::string> tokens;
-    size_t prev = 0, pos = 0;
-    do
-    {
-        pos = str.find(delim, prev);
-        if (pos == std::string::npos) pos = str.length();
-        std::string token = str.substr(prev, pos - prev);
-        if (!token.empty()) tokens.push_back(token);
-        prev = pos + delim.length();
-    } while (pos < str.length() && prev < str.length());
-    return tokens;
-}
 
 class ENGINE_API CString {
 public:

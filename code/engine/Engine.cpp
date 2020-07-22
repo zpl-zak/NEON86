@@ -149,11 +149,13 @@ VOID CEngine::Think()
     mUnprocessedTime += deltaTime;
     mFrameCounter += deltaTime;
 
-    if (mFrameCounter >= 1.0f) 
+    static constexpr FLOAT sFrameWindow = 0.5f;
+
+    if (mFrameCounter >= sFrameWindow) 
     {
         mTotalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
         mTotalMeasuredTime = 0.0f;
-        BOOL logStats = mRunCycle % 10 == 0;
+        BOOL logStats = mRunCycle % (INT(sFrameWindow*10.0f)) == 0;
 
         if (logStats) OutputDebugStringA("==================\n");
 
@@ -169,12 +171,14 @@ VOID CEngine::Think()
             OutputDebugStringA(std::string("Total Time: " + std::to_string(mTotalTime) + " ms (" + std::to_string(1000.0f / mTotalTime) + " fps) \n").c_str());
         }
 
+        UI->PushMS(mTotalTime);
+
         mFrames = 0;
         mFrameCounter = 0.0f;
         mRunCycle++;
     }
 
-    while (mUnprocessedTime > mUpdateDuration)
+    if (mUnprocessedTime > mUpdateDuration)
     {
         Update(mUpdateDuration);
         render = TRUE;
