@@ -30,6 +30,8 @@ CEngine::CEngine(VOID)
     SetFPS(60.0f);
     mUnprocessedTime = 0.0f;
     mLastTime = 0.0f;
+    mTotalTime = 0.0f;
+    mTotalMeasuredTime = 0.0f;
     mFrames = 0;
     mFrameCounter = 0.0f;
     mRunCycle = 0;
@@ -38,6 +40,11 @@ CEngine::CEngine(VOID)
     mRenderProfiler = new CProfiler("Render");
     mWindowProfiler = new CProfiler("Window");
     mSleepProfiler = new CProfiler("Sleep");
+
+    mProfilers[NEON_PROFILER_RENDER] = mRenderProfiler;
+    mProfilers[NEON_PROFILER_UPDATE] = mUpdateProfiler;
+    mProfilers[NEON_PROFILER_SLEEP] = mSleepProfiler;
+    mProfilers[NEON_PROFILER_WINDOW] = mWindowProfiler;
 
     return; 
 }
@@ -55,6 +62,7 @@ BOOL CEngine::Release()
     SAFE_DELETE(mRenderProfiler);
     SAFE_DELETE(mSleepProfiler);
     SAFE_DELETE(mWindowProfiler);
+    ZeroMemory(mProfilers, MAX_NEON_PROFILERS);
 
     return TRUE;
 }
@@ -142,21 +150,22 @@ VOID CEngine::Think()
 
     if (mFrameCounter >= 1.0f) 
     {
-        FLOAT totalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
-        FLOAT totalMeasuredTime = 0.0f;
+        mTotalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
+        mTotalMeasuredTime = 0.0f;
         BOOL logStats = mRunCycle % 10 == 0;
 
         if (logStats) OutputDebugStringA("==================\n");
-        totalMeasuredTime += mUpdateProfiler->DisplayAndReset(FLOAT(mFrames), logStats);
-        totalMeasuredTime += mRenderProfiler->DisplayAndReset(FLOAT(mFrames), logStats);
-        totalMeasuredTime += mWindowProfiler->DisplayAndReset(FLOAT(mFrames), logStats);
-        totalMeasuredTime += mSleepProfiler->DisplayAndReset(FLOAT(mFrames), logStats);
+
+        for (INT i=0; i<MAX_NEON_PROFILERS; i++)
+        {
+            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(FLOAT(mFrames), logStats);
+        }
 
         if (logStats)
         {
             OutputDebugStringA("\n");
-            OutputDebugStringA(std::string("Other Time: " + std::to_string(totalTime - totalMeasuredTime) + " ms\n").c_str());
-            OutputDebugStringA(std::string("Total Time: " + std::to_string(totalTime) + " ms (" + std::to_string(1000.0f / totalTime) + " fps) \n").c_str());
+            OutputDebugStringA(std::string("Other Time: " + std::to_string(mTotalTime - mTotalMeasuredTime) + " ms\n").c_str());
+            OutputDebugStringA(std::string("Total Time: " + std::to_string(mTotalTime) + " ms (" + std::to_string(1000.0f / mTotalTime) + " fps) \n").c_str());
         }
 
         mFrames = 0;

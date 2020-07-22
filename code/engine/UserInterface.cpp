@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "VM.h"
 #include "ReferenceManager.h"
+#include "ProfileManager.h"
 
 #include <sstream>
 
@@ -134,6 +135,41 @@ VOID CUserInterface::DebugPanel(VOID)
 
             if (ImGui::Button("Exit Game"))
                 ENGINE->Shutdown();
+        }
+        ImGui::End();
+    }
+
+    // Profiler window
+    {
+        RECT res = RENDERER->GetResolution();
+        ImGui::SetNextWindowSizeConstraints({ 320, -1 }, { (FLOAT)res.right, -1 });
+        ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_NoSavedSettings);
+        ImGui::SetWindowPos(ImVec2(0, (FLOAT)res.bottom - ImGui::GetWindowHeight()));
+        {
+            ImGui::Columns(2, "profiler");
+            ImGui::Separator();
+
+            ImGui::Text("Profiler"); ImGui::NextColumn();
+            ImGui::Text("Time"); ImGui::NextColumn();
+            ImGui::Separator();
+
+            for (INT i = 0; i < MAX_NEON_PROFILERS; i++)
+            {
+                CProfiler* profiler = ENGINE->GetProfilers()[i];
+                ImGui::Text("%s Time", profiler->GetName().Str()); ImGui::NextColumn();
+                ImGui::Text("%f ms", profiler->GetDelta()); ImGui::NextColumn();
+            }
+
+            ImGui::Separator();
+
+            ImGui::Text("Other Time"); ImGui::NextColumn();
+            ImGui::Text("%f ms", ((DOUBLE)ENGINE->GetTotalRunTime() - ENGINE->GetTotalMeasuredRunTime())); ImGui::NextColumn();
+            
+            ImGui::Text("Total Time"); ImGui::NextColumn();
+            ImGui::Text("%f ms (%.02f fps)", ENGINE->GetTotalRunTime(), (1000.0f / ENGINE->GetTotalRunTime())); ImGui::NextColumn();
+
+            ImGui::Columns(1);
+            ImGui::Separator();
         }
         ImGui::End();
     }

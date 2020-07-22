@@ -32,14 +32,14 @@ VOID CProfiler::StopInvocation()
 FLOAT CProfiler::DisplayAndReset(FLOAT divisor, BOOL logStats)
 {
     divisor = (divisor == 0.0f) ? (FLOAT)mNumInvocations : divisor;
-    FLOAT r = (mTotalTime == 0.0f && divisor == 0.0f) ? 0.0f : (1000.0f * mTotalTime) / divisor;
+    mDeltaTime = (mTotalTime == 0.0f && divisor == 0.0f) ? 0.0f : (1000.0f * mTotalTime) / divisor;
     Reset();
 
     if (logStats)
     {
-        CString stats = mName.SStr() + " Time: " + std::to_string(r) + " ms\n";
+        CString stats = mName.SStr() + " Time: " + std::to_string(mDeltaTime) + " ms\n";
         OutputDebugStringA(stats.Str());
     }
 
-    return r;
+    return mDeltaTime;
 }
