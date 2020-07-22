@@ -57,6 +57,9 @@ VOID CEngine::Run()
             DispatchMessage(&msg);
         }
 
+        if (!IsRunning())
+            break;
+
         Think();
     }
 
