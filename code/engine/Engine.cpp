@@ -24,7 +24,7 @@ CEngine::CEngine(VOID)
     mInput = NULL;
     mFileSystem = NULL;
     mVirtualMachine = NULL;
-    mGameEditor = NULL;
+    mDebugUI = NULL;
     mAudioSystem = NULL;
     
     SetFPS(60.0f);
@@ -54,7 +54,7 @@ BOOL CEngine::Release()
 {
     SAFE_RELEASE(mVirtualMachine);
     SAFE_RELEASE(mFileSystem);
-    SAFE_RELEASE(mGameEditor);
+    SAFE_RELEASE(mDebugUI);
     SAFE_RELEASE(mRenderer);
     SAFE_RELEASE(mInput);
     SAFE_RELEASE(mAudioSystem);
@@ -124,7 +124,7 @@ BOOL CEngine::Init(HWND window, RECT resolution)
         return FALSE;
     }
 
-    mGameEditor = new CUserInterface();
+    mDebugUI = new CUserInterface();
     mAudioSystem = new CAudioSystem();
 
     if (mAudioSystem->CreateDevice(window) != ERROR_SUCCESS)
@@ -199,7 +199,7 @@ VOID CEngine::Think()
 
 LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    if (mGameEditor->ProcessEvents(hWnd, message, wParam, lParam))
+    if (mDebugUI->ProcessEvents(hWnd, message, wParam, lParam))
         return FALSE;
 
     CInput* input = INPUT;
@@ -299,7 +299,7 @@ VOID CEngine::Update(FLOAT deltaTime)
         mVirtualMachine->Update(deltaTime);
     }
  
-    mGameEditor->Update(deltaTime);
+    mDebugUI->Update(deltaTime);
     mInput->Update();
 }
 
@@ -314,7 +314,7 @@ VOID CEngine::Render()
 
     {
         CProfileScope scope(mRender2DProfiler);
-        mGameEditor->Render();
+        mDebugUI->Render();
     }
 
     {

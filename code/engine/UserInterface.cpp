@@ -88,6 +88,9 @@ CUserInterface::CUserInterface()
 
 BOOL CUserInterface::Release(VOID)
 {
+#ifdef _DEBUG
+    ImGui::SaveIniSettingsToDisk(NULL);
+#endif
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
     SAFE_DELETE(mDraw2DHook);

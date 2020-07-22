@@ -37,7 +37,7 @@ public:
 	CInput* GetInput() { return mInput; }
 	CFileSystem* GetFileSystem() { return mFileSystem; }
 	CVirtualMachine* GetVM() { return mVirtualMachine; }
-	CUserInterface* GetUI() { return mGameEditor; }
+	CUserInterface* GetUI() { return mDebugUI; }
 	CAudioSystem* GetAudioSystem() { return mAudioSystem; }
 
 	BOOL IsRunning() const { return mIsRunning; }
@@ -54,7 +54,7 @@ protected:
 	CInput* mInput;
 	CFileSystem* mFileSystem;
 	CVirtualMachine* mVirtualMachine;
-	CUserInterface* mGameEditor;
+	CUserInterface* mDebugUI;
 	CAudioSystem* mAudioSystem;
 private:
 	VOID Update(FLOAT deltaTime);
