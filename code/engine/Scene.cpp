@@ -10,7 +10,7 @@
 #include "Renderer.h"
 #include "FileSystem.h"
 
-CScene::CScene(LPSTR modelPath)
+CScene::CScene(LPCSTR modelPath)
 {
     mRootNode = NULL;
 

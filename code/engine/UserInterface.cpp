@@ -201,7 +201,7 @@ VOID CUserInterface::DebugPanel(VOID)
     }
 
     // Profiler window
-    if (ENGINE->GetRunCycleCount() > 0)
+    if (ENGINE->DefaultProfiling.GetRunCycleCount() > 0)
     {
         RECT res = RENDERER->GetResolution();
         ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_AlwaysAutoResize);
@@ -215,13 +215,13 @@ VOID CUserInterface::DebugPanel(VOID)
             ImGui::Text("Profiler"); ImGui::NextColumn();
             ImGui::Text("Time"); ImGui::NextColumn();
 
-            if (ENGINE->GetProfilers().GetCount() > 0)
+            if (ENGINE->DefaultProfiling.GetProfilers().GetCount() > 0)
             {
                 ImGui::Separator();
 
-                for (UINT i = 0; i < ENGINE->GetProfilers().GetCount(); i++)
+                for (UINT i = 0; i < ENGINE->DefaultProfiling.GetProfilers().GetCount(); i++)
                 {
-                    CProfiler* profiler = ENGINE->GetProfilers()[i];
+                    CProfiler* profiler = ENGINE->DefaultProfiling.GetProfilers()[i];
                     ImGui::Text("%s Time", profiler->GetName().Str()); ImGui::NextColumn();
                     ImGui::Text("%f ms", profiler->GetDelta()); ImGui::NextColumn();
                 }
@@ -230,10 +230,10 @@ VOID CUserInterface::DebugPanel(VOID)
             ImGui::Separator();
 
             ImGui::Text("Other Time"); ImGui::NextColumn();
-            ImGui::Text("%f ms", ((DOUBLE)ENGINE->GetTotalRunTime() - ENGINE->GetTotalMeasuredRunTime())); ImGui::NextColumn();
+            ImGui::Text("%f ms", ((DOUBLE)ENGINE->DefaultProfiling.GetTotalRunTime() - ENGINE->DefaultProfiling.GetTotalMeasuredRunTime())); ImGui::NextColumn();
             
             ImGui::Text("Total Time"); ImGui::NextColumn();
-            ImGui::Text("%f ms (%.02f fps)", ENGINE->GetTotalRunTime(), (1000.0f / ENGINE->GetTotalRunTime())); ImGui::NextColumn();
+            ImGui::Text("%f ms (%.02f fps)", ENGINE->DefaultProfiling.GetTotalRunTime(), (1000.0f / ENGINE->DefaultProfiling.GetTotalRunTime())); ImGui::NextColumn();
 
             ImGui::Columns(1);
             ImGui::Separator();
@@ -249,6 +249,7 @@ VOID CUserInterface::DebugPanel(VOID)
                 conf.scale.max = sFramerateStats.GetMaxMS();
                 conf.scale.type = ImGui::PlotConfig::Scale::Linear;
                 conf.tooltip.show = true;
+                conf.tooltip.format = "%.0s%.02f ms";
                 conf.grid_x.show = true;
                 conf.grid_x.size = 10.0f;
                 conf.grid_x.subticks = 5;
@@ -260,7 +261,7 @@ VOID CUserInterface::DebugPanel(VOID)
                 conf.selection.length = &selection_length;
                 conf.frame_size = ImVec2(sFramerateMaxSamples*10, 200);
                 conf.line_thickness = 4.0f;
-                conf.overlay_text = "Framerate / Second";
+                conf.overlay_text = "Total Time (ms)";
                 ImGui::Plot("frameratePlot", conf);
             }
         }

@@ -7,7 +7,7 @@
 class ENGINE_API CScene: public CNode
 {
 public:
-    CScene(LPSTR modelPath=NULL);
+    CScene(LPCSTR modelPath=NULL);
     VOID Release();
 
     BOOL LoadScene(LPCSTR modelPath, BOOL loadMaterials = TRUE, BOOL optimizeMesh = FALSE);

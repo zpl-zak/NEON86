@@ -22,9 +22,6 @@ public:
 	VOID Shutdown();
 	VOID Resize(RECT resolution);
 	VOID Think();
-	VOID UpdateProfilers(FLOAT dt);
-	VOID IncrementFrame();
-	VOID SetupDefaultProfilers();
 	LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	CRenderer* GetRenderer() { return mRenderer; }
@@ -39,10 +36,47 @@ public:
 	inline VOID SetFPS(FLOAT fps) { if (fps) mUpdateDuration = 1.0f / fps; } 
 	inline FLOAT GetFPS() const { return 1.0f / mUpdateDuration; }
 
-	inline CArray<CProfiler*> GetProfilers() { return mProfilers; }
-	inline FLOAT GetTotalRunTime() { return mTotalTime; };
-	inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
-	inline INT GetRunCycleCount() { return mRunCycle; }
+	class ENGINE_API CDefaultProfiling {
+	public:
+		friend class CEngine;
+
+		CDefaultProfiling() {
+            mTotalTime = 0.0f;
+            mTotalMeasuredTime = 0.0f;
+            mFrames = 0;
+            mFrameCounter = 0.0f;
+            mRunCycle = 0;
+
+			mProfilers.Release();
+            mUpdateProfiler = NULL;
+            mRenderProfiler = NULL;
+            mRender2DProfiler = NULL;
+            mWindowProfiler = NULL;
+            mSleepProfiler = NULL;
+		}
+        VOID UpdateProfilers(FLOAT dt);
+        VOID IncrementFrame();
+        VOID SetupDefaultProfilers();
+
+		inline CArray<CProfiler*> GetProfilers() { return mProfilers; }
+        inline FLOAT GetTotalRunTime() { return mTotalTime; };
+        inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
+        inline INT GetRunCycleCount() { return mRunCycle; }
+	protected:
+		INT mFrames;
+        FLOAT mFrameCounter;
+        FLOAT mTotalTime;
+        FLOAT mTotalMeasuredTime;
+        INT mRunCycle;
+        CArray<CProfiler*> mProfilers;
+
+        /// Internal profilers
+        CProfiler* mUpdateProfiler;
+        CProfiler* mRenderProfiler;
+        CProfiler* mRender2DProfiler;
+        CProfiler* mSleepProfiler;
+        CProfiler* mWindowProfiler;
+	} DefaultProfiling;
 protected:
 	CRenderer* mRenderer;
 	CInput* mInput;
@@ -50,7 +84,7 @@ protected:
 	CVirtualMachine* mVirtualMachine;
 	CUserInterface* mDebugUI;
 	CAudioSystem* mAudioSystem;
-private:
+
 	VOID Update(FLOAT deltaTime);
 	VOID Render();
 
@@ -61,17 +95,4 @@ private:
 	FLOAT mLastTime;
 	FLOAT mFrameCounter;
 	FLOAT mUpdateDuration;
-    FLOAT mTotalTime;
-    FLOAT mTotalMeasuredTime;
-	INT mFrames;
-	INT mRunCycle;
-
-	CArray<CProfiler*> mProfilers;
-
-	/// Internal profilers
-	CProfiler* mUpdateProfiler;
-	CProfiler* mRenderProfiler;
-	CProfiler* mRender2DProfiler;
-	CProfiler* mSleepProfiler;
-	CProfiler* mWindowProfiler;
 };

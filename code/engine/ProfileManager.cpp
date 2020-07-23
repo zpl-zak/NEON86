@@ -22,8 +22,6 @@ VOID CProfiler::StartInvocation()
 
 VOID CProfiler::StopInvocation()
 {
-    assert(mStartTime != 0.0f);
-
     mNumInvocations++;
     mTotalTime += (GetTime() - mStartTime);
     mStartTime = 0.0f;

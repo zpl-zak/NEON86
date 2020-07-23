@@ -45,7 +45,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         return 0;
     }
 
-    ENGINE->SetupDefaultProfilers();
+    ENGINE->DefaultProfiling.SetupDefaultProfilers();
 
     if (!FILESYSTEM->LoadGame(lpCmdLine))
     {

@@ -200,7 +200,7 @@ VOID CRenderer::EndRender(VOID)
     Blit();
     GetDevice()->EndScene();
     GetDevice()->Present(NULL, NULL, NULL, NULL);
-	ENGINE->IncrementFrame();
+	ENGINE->DefaultProfiling.IncrementFrame();
 }
 
 VOID CRenderer::Clear(VOID)

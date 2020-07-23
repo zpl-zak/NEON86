@@ -30,13 +30,6 @@ CEngine::CEngine(VOID)
     SetFPS(60.0f);
     mUnprocessedTime = 0.0f;
     mLastTime = 0.0f;
-    mTotalTime = 0.0f;
-    mTotalMeasuredTime = 0.0f;
-    mFrames = 0;
-    mFrameCounter = 0.0f;
-    mRunCycle = 0;
-
-    mProfilers.Release();
 }
 
 BOOL CEngine::Release()
@@ -55,14 +48,11 @@ VOID CEngine::Run()
 {
     MSG msg;
 
-    GetTime();
-    Sleep(50);
-
     while (IsRunning())
     {
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            CProfileScope scope(mWindowProfiler);
+            CProfileScope scope(DefaultProfiling.mWindowProfiler);
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -130,7 +120,7 @@ VOID CEngine::Think()
 
     mUnprocessedTime += deltaTime;
 
-    UpdateProfilers(deltaTime);
+    DefaultProfiling.UpdateProfilers(deltaTime);
 
     if (mUnprocessedTime > mUpdateDuration)
     {
@@ -145,12 +135,12 @@ VOID CEngine::Think()
     }
     else
     {
-        CProfileScope scope(mSleepProfiler);
+        CProfileScope scope(DefaultProfiling.mSleepProfiler);
         Sleep(1); // Let CPU sleep a bit
     }
 }
 
-VOID CEngine::UpdateProfilers(FLOAT dt)
+VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
 {
     static constexpr FLOAT sFrameWindow = 0.5f;
 
@@ -184,12 +174,12 @@ VOID CEngine::UpdateProfilers(FLOAT dt)
     }
 }
 
-VOID CEngine::IncrementFrame()
+VOID CEngine::CDefaultProfiling::IncrementFrame()
 {
     mFrames++;
 }
 
-VOID CEngine::SetupDefaultProfilers()
+VOID CEngine::CDefaultProfiling::SetupDefaultProfilers()
 {
     mUpdateProfiler = new CProfiler("Update");
     mRenderProfiler = new CProfiler("Render");
@@ -302,7 +292,7 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 VOID CEngine::Update(FLOAT deltaTime)
 {
     {
-        CProfileScope scope(mUpdateProfiler);
+        CProfileScope scope(DefaultProfiling.mUpdateProfiler);
         mVirtualMachine->Update(deltaTime);
     }
  
@@ -315,17 +305,17 @@ VOID CEngine::Render()
     mRenderer->BeginRender();
     
     {
-        CProfileScope scope(mRenderProfiler);
+        CProfileScope scope(DefaultProfiling.mRenderProfiler);
         mVirtualMachine->Render();
     }
 
     {
-        CProfileScope scope(mRender2DProfiler);
+        CProfileScope scope(DefaultProfiling.mRender2DProfiler);
         mDebugUI->Render();
     }
 
     {
-        CProfileScope scope(mWindowProfiler);
+        CProfileScope scope(DefaultProfiling.mWindowProfiler);
         mRenderer->EndRender();
     }
 }

@@ -47,7 +47,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     // 1. Initialize sample data
     CScene* demoModel = new CScene();
-    demoModel->LoadScene((LPSTR)"sphere.fbx");
+    demoModel->LoadScene("sphere.fbx");
     D3DXMATRIX viewMat;
     D3DXMATRIX worldMat;
     D3DXVECTOR3 eyePos = D3DXVECTOR3(0,0,-5);
@@ -58,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     CLight* demoLight = new CLight(0);
 
     CFont::AddFontToDatabase("slkscr.ttf");
-    CFont* demoFont = new CFont((LPSTR)"Silkscreen", 20, 16, FALSE);
+    CFont* demoFont = new CFont("Silkscreen", 20, 16, FALSE);
 
     D3DXMATRIX projMat;
     D3DXMatrixPerspectiveFovRH(&projMat, D3DXToRadian(62.0f), rect.right / (FLOAT)rect.bottom, 0.01f, 1000.0f);
@@ -94,7 +94,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         FLOAT currTime = GetTime();
         FLOAT dt = currTime - lastTime;
 
-        ENGINE->UpdateProfilers(dt);
+        ENGINE->DefaultProfiling.UpdateProfilers(dt);
 
         D3DXMatrixRotationY(&worldMat, currTime);
 
@@ -107,7 +107,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             UI->Render();
         }
         RENDERER->EndRender();
-        ENGINE->IncrementFrame();
+        ENGINE->DefaultProfiling.IncrementFrame();
 
         VM->PassTime(dt);
         lastTime = GetTime();

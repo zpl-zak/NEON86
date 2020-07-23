@@ -24,7 +24,8 @@ private:
 class ENGINE_API CProfileScope {
 public:
     CProfileScope(CProfiler* profile) {
-        profile->StartInvocation();
+        if (profile)
+            profile->StartInvocation();
         mProfiler = profile;
     };
 
