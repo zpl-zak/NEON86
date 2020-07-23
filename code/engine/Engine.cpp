@@ -147,19 +147,42 @@ VOID CEngine::Think()
     mLastTime = startTime;
 
     mUnprocessedTime += deltaTime;
-    mFrameCounter += deltaTime;
 
+    UpdateProfilers(deltaTime);
+
+    if (mUnprocessedTime > mUpdateDuration)
+    {
+        Update(mUpdateDuration);
+        render = TRUE;
+        mUnprocessedTime -= mUpdateDuration;
+    }
+
+    if (render)
+    {
+        Render();
+    }
+    else
+    {
+        CProfileScope scope(mSleepProfiler);
+        Sleep(1); // Let CPU sleep a bit
+    }
+}
+
+VOID CEngine::UpdateProfilers(FLOAT dt)
+{
     static constexpr FLOAT sFrameWindow = 0.5f;
 
-    if (mFrameCounter >= sFrameWindow) 
+    mFrameCounter += dt;
+
+    if (mFrameCounter >= sFrameWindow)
     {
         mTotalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
         mTotalMeasuredTime = 0.0f;
-        BOOL logStats = mRunCycle % (INT(sFrameWindow*10.0f)) == 0;
+        BOOL logStats = mRunCycle % (INT(sFrameWindow * 10.0f)) == 0;
 
         if (logStats) OutputDebugStringA("==================\n");
 
-        for (INT i=0; i<MAX_NEON_PROFILERS; i++)
+        for (INT i = 0; i < MAX_NEON_PROFILERS; i++)
         {
             mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(FLOAT(mFrames), logStats);
         }
@@ -177,24 +200,11 @@ VOID CEngine::Think()
         mFrameCounter = 0.0f;
         mRunCycle++;
     }
+}
 
-    if (mUnprocessedTime > mUpdateDuration)
-    {
-        Update(mUpdateDuration);
-        render = TRUE;
-        mUnprocessedTime -= mUpdateDuration;
-    }
-
-    if (render)
-    {
-        Render();
-        mFrames++;
-    }
-    else
-    {
-        CProfileScope scope(mSleepProfiler);
-        Sleep(1); // Let CPU sleep a bit
-    }
+VOID CEngine::IncrementFrame()
+{
+    mFrames++;
 }
 
 LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

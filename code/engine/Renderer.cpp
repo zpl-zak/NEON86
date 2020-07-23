@@ -9,6 +9,8 @@
 #include "Effect.h"
 #include "RenderTarget.h"
 
+#include "engine.h"
+
 #if !defined(_DEBUG) || defined(NEON_FORCE_D3DX9)
 #pragma comment (lib, "d3d9/d3dx9.lib")
 #else
@@ -198,6 +200,7 @@ VOID CRenderer::EndRender(VOID)
     Blit();
     GetDevice()->EndScene();
     GetDevice()->Present(NULL, NULL, NULL, NULL);
+	ENGINE->IncrementFrame();
 }
 
 VOID CRenderer::Clear(VOID)

@@ -31,6 +31,8 @@ public:
 	VOID Shutdown();
 	VOID Resize(RECT resolution);
 	VOID Think();
+	VOID UpdateProfilers(FLOAT dt);
+	VOID IncrementFrame();
 	LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	CRenderer* GetRenderer() { return mRenderer; }

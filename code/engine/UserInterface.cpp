@@ -204,9 +204,10 @@ VOID CUserInterface::DebugPanel(VOID)
     if (ENGINE->GetRunCycleCount() > 0)
     {
         RECT res = RENDERER->GetResolution();
-        ImGui::SetNextWindowPos(ImVec2(0, (FLOAT)res.bottom - 380.0f), ImGuiCond_FirstUseEver);
         ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_AlwaysAutoResize);
         FLOAT profW = ImGui::GetWindowHeight();
+
+        ImGui::SetWindowPos(ImVec2(0, (FLOAT)res.bottom - profW), ImGuiCond_Always);
         {
             ImGui::Columns(2, "profiler");
             ImGui::Separator();

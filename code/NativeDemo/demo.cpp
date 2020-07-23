@@ -83,6 +83,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
 
+        if (!ENGINE->IsRunning())
+            break;
+
         if (INPUT->GetKeyDown(VK_ESCAPE)) {
             ENGINE->Shutdown();
             break;
@@ -90,6 +93,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
         FLOAT currTime = GetTime();
         FLOAT dt = currTime - lastTime;
+
+        ENGINE->UpdateProfilers(dt);
 
         D3DXMatrixRotationY(&worldMat, currTime);
 
@@ -102,10 +107,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             UI->Render();
         }
         RENDERER->EndRender();
+        ENGINE->IncrementFrame();
 
         VM->PassTime(dt);
         lastTime = GetTime();
         INPUT->Update();
+
+        Sleep(10);
     }
 
     demoFont->Release();
