@@ -339,7 +339,7 @@ VOID CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
 	
     SetMatrix(MATRIXKIND_WORLD, mat);
 
-	D3DXCreateBox(mDevice, ::abs(dims.x), ::abs(dims.y), ::abs(dims.z), &mDefaultBox, NULL);
+	D3DXCreateBox(mDevice, (FLOAT)::fabs((FLOAT)dims.x), (FLOAT)::fabs((FLOAT)dims.y), (FLOAT)::fabs((FLOAT)dims.z), &mDefaultBox, NULL);
 
 	if (!mDefaultBox)
 		return;

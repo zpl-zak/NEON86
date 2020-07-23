@@ -70,7 +70,7 @@ VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
         FDATA img = FILESYSTEM->GetResource(RESOURCEKIND_IMAGE, texName);
         if (!img.data)
         {
-            VM->PostError(std::string("Image not found: ") + texName);
+            VM->PostError(CString("Image not found: %s", texName));
             return;
         }
         D3DXCreateTextureFromFileInMemory(dev, img.data, img.size, &mTextureHandle[slot]);
@@ -83,7 +83,7 @@ VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, VOID* data, UINT size)
     
     if (!data)
     {
-        VM->PostError(std::string("Embedded image is empty!"));
+        VM->PostError(CString("Embedded image is empty!"));
         ENGINE->Shutdown();
         return;
     }
@@ -95,7 +95,7 @@ VOID CMaterial::SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle)
 {
     if (userSlot >= (MAX_TEXTURE_SLOTS))
     {
-        VM->PostError(std::string("User slot is invalid!"));
+        VM->PostError("User slot is invalid!");
         return;
     }
 

@@ -43,6 +43,8 @@ extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 /// lua
 #include "lua_macros.h"
 
+#define NOMINMAX
+#include <cstdio>
 
 /// helpers
 template <typename T>
@@ -139,25 +141,29 @@ private:
     BOOL mIsOwned;
 };
 
-#include <string>
-
 class ENGINE_API CString {
 public:
     CString() {
         mStr = NULL;
         mSize = 0;
     };
-    CString(LPCSTR str) {
-        Assign(str);
-    }
-    CString(LPSTR str) {
-        Assign((LPCSTR)str);
-    }
-    CString(std::string str) {
-        Assign(str.c_str());
-    }
     CString(const CString& rhs) {
         Assign(rhs.mStr);
+    }
+    CString(CString* s1, CString s2) {
+        Concatenate(s1->Str(), s2.Str());
+    }
+    CString(LPCSTR s1, LPCSTR s2) {
+        Concatenate(s1, s2);
+    }
+    CString(LPCSTR fmt, ...) {
+        static CHAR buf[4096] = "\n";
+        va_list va;
+        va_start(va, fmt);
+        vsnprintf_s(buf, 4096, fmt, va);
+        va_end(va);
+
+        Assign(buf);
     }
 
     ~CString() {
@@ -170,10 +176,6 @@ public:
 
     LPCSTR Str() {
         return mStr;
-    }
-
-    std::string SStr() {
-        return std::string(mStr);
     }
 
     BOOL operator== (LPCSTR str) {
@@ -191,6 +193,10 @@ public:
     VOID operator= (CString str) {
         Assign(str.Str());
     }
+
+    CString operator+= (CString str) {
+        return CString(this, str);
+    }
 private:
     LPSTR mStr;
     SSIZE_T mSize;
@@ -199,5 +205,12 @@ private:
         mSize = ::strlen(str);
         mStr = new CHAR[mSize + 1];
         ::strcpy_s(mStr, mSize + 1, str);
+    }
+
+    VOID Concatenate(LPCSTR s1, LPCSTR s2) {
+        mSize = ::strlen(s1) + ::strlen(s2);
+        mStr = new CHAR[mSize + 1];
+        ::strcat_s(mStr, mSize + 1, s1);
+        ::strcat_s(mStr, mSize + 1, s2);
     }
 };

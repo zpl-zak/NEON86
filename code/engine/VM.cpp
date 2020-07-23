@@ -342,7 +342,7 @@ inline VOID CVirtualMachine::PostError(LPCSTR err)
 #endif
 }
 
-inline VOID CVirtualMachine::PostError(std::string err)
+inline VOID CVirtualMachine::PostError(CString err)
 {
-	PostError(err.c_str());
+	PostError(err.Str());
 }

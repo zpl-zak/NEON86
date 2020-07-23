@@ -70,7 +70,7 @@ CEffect::CEffect(LPCSTR effectPath): CAllocable()
 
     if (!f.data)
     {
-        VM->PostError(std::string("No effect found:") + effectPath);
+        VM->PostError(CString("No effect found: %s", effectPath));
         return;
     }
 
@@ -93,11 +93,9 @@ CEffect::CEffect(LPCSTR effectPath): CAllocable()
 
     if (FAILED(hr))
     {
-        MessageBoxA(NULL, "Effect has issues!", "Effect error", MB_OK);
-
         if (errors)
         {
-            MessageBoxA(NULL, (LPCSTR)errors->GetBufferPointer(), "Effect error", MB_OK);
+            VM->PostError((LPCSTR)errors->GetBufferPointer());
             errors->Release();
         }
 
@@ -221,19 +219,6 @@ VOID CEffect::SetLight(LPCSTR name, CLight* value)
     else {
         SetBool(GetUniformName(name, "IsEnabled"), FALSE);
     }
-    /*int Type;
-    float3 Position;
-    float3 Direction;
-    float4 Diffuse;
-    float4 Ambient;
-    float4 Specular;
-
-    float Falloff;
-    float Range;
-
-    float ConstantAtten;
-    float LinearAtten;
-    float QuadraticAtten;*/
 }
 
 VOID CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value)

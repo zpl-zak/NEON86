@@ -152,7 +152,7 @@ VOID CUserInterface::PushErrorMessage(LPCSTR err)
     mShowError = TRUE;
 
     if (err)
-        mErrorMessage = mErrorMessage.SStr() + std::string(err) + "\n";
+        mErrorMessage = CString("%s %s\n", mErrorMessage.Str(), err);
 #endif
 }
 
@@ -290,5 +290,5 @@ CString CUserInterface::FormatBytes(UINT64 bytes)
     ss.precision(2);
     ss << std::fixed << formattedBytes << " " << suffixes[suffixId];
 
-    return ss.str();
+    return ss.str().c_str();
 }

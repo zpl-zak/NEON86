@@ -38,7 +38,7 @@ BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
 
     if (!ok)
     {
-        VM->PostError(std::string("Could not load model file: ") + modelPath);
+        VM->PostError(CString("Could not load model file: %s", modelPath));
         return FALSE;
     }
 

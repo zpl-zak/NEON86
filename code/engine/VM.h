@@ -2,8 +2,6 @@
 
 #include "system.h"
 
-#include <string>
-
 #define VM CEngine::the()->GetVM()
 
 enum PLAYKIND
@@ -38,7 +36,7 @@ public:
 
 	inline BOOL CheckVMErrors(INT, BOOL canFail=FALSE);
 	inline VOID PostError(LPCSTR err);
-	inline VOID PostError(std::string err);
+	inline VOID PostError(CString err);
 	inline FLOAT GetRunTime() { return mRunTime; }
 	inline VOID PassTime(FLOAT dt) { mRunTime += dt; }
 	inline UCHAR GetStatus() { return mPlayKind; }
