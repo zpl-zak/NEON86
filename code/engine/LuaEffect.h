@@ -37,7 +37,7 @@ static INT effect_beginpass(lua_State* L)
     CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     UINT pass = -1;
 
-    if (lua_isstring(L, 2))
+    if (!lua_isinteger(L, 2))
     {
         LPCSTR passName = luaL_checkstring(L, 2);
         pass = fx->FindPass(passName);

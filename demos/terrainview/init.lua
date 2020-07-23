@@ -54,8 +54,8 @@ function _render()
 	EnableLighting(not useShaders)
 
 	if useShaders then
-		terrainEffect:start("PointLighting")
-		terrainEffect:beginPass("main")
+		terrainEffect:start("TerrainRender")
+		terrainEffect:beginPass(1)
 		terrainEffect:setVector3("campos", campos)
 		terrainEffect:setFloat("alphaValue", 1)
 		terrainEffect:setFloat("time", time)

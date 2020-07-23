@@ -56,7 +56,7 @@ struct VS_OUTPUT
 };
 
 /* Point TEST */
-VS_OUTPUT VS_PointLighting(VS_INPUT IN)
+VS_OUTPUT VS_TerrainRender(VS_INPUT IN)
 {
     VS_OUTPUT OUT;
 
@@ -105,7 +105,7 @@ float4 CalcSunLight(VS_OUTPUT IN)
             + (light.Diffuse * 4.0f * specular * power * s);
 }
 
-float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
+float4 PS_TerrainRender(VS_OUTPUT IN) : COLOR
 {
     float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
     float3 n = normalize(IN.normal);
@@ -135,11 +135,11 @@ float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
 }
 
 /* Techniques */
-technique PointLighting
+technique TerrainRender
 {
-    pass main
+    pass
     {
-        VertexShader = compile vs_3_0 VS_PointLighting();
-        PixelShader = compile ps_3_0 PS_PointLighting();
+        VertexShader = compile vs_3_0 VS_TerrainRender();
+        PixelShader = compile ps_3_0 PS_TerrainRender();
     }
 }
