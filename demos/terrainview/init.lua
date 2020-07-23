@@ -59,6 +59,7 @@ function _render()
 		terrainEffect:setVector3("campos", campos)
 		terrainEffect:setFloat("alphaValue", 1)
 		terrainEffect:setFloat("time", time)
+		terrainEffect:setLight("light", light)
 		terrainEffect:commit()
 	end
 

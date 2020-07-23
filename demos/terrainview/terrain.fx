@@ -6,8 +6,7 @@ float3 campos;
 float alphaValue;
 float time;
 
-float4 sunColor = float4(0.91f, 0.58f, 0.13f, 1.0f);
-float3 sunDir = float3(4.0f, 3.0f, -5.0f);
+TLIGHT light;
 
 sampler2D colorMap = sampler_state
 {
@@ -75,7 +74,7 @@ float CalcShininess(float3 n, float3 viewDir)
 {
     float3 v = normalize(viewDir);
     n = normalize(n);
-    float3 h = normalize(sunDir+v);
+    float3 h = normalize(-light.Direction+v);
 
     return saturate(dot(n,h));
 }
@@ -83,7 +82,7 @@ float CalcShininess(float3 n, float3 viewDir)
 float4 CalcSunLight(VS_OUTPUT IN)
 {
     float3 n = normalize(IN.normal);
-    float3 l = sunDir;
+    float3 l = -light.Direction;
     float3 v = normalize(IN.viewDir);
     float4 s = float4(0,0,0,0);
 
@@ -102,8 +101,8 @@ float4 CalcSunLight(VS_OUTPUT IN)
 
     float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
 
-	return (MAT.Diffuse * sunColor * 2.0f * diffuse)
-            + (sunColor * 4.0f * specular * power * s);
+	return (MAT.Diffuse * light.Diffuse * 2.0f * diffuse)
+            + (light.Diffuse * 4.0f * specular * power * s);
 }
 
 float4 PS_PointLighting(VS_OUTPUT IN) : COLOR
