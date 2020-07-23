@@ -214,13 +214,17 @@ VOID CUserInterface::DebugPanel(VOID)
 
             ImGui::Text("Profiler"); ImGui::NextColumn();
             ImGui::Text("Time"); ImGui::NextColumn();
-            ImGui::Separator();
 
-            for (INT i = 0; i < MAX_NEON_PROFILERS; i++)
+            if (ENGINE->GetProfilers().GetCount() > 0)
             {
-                CProfiler* profiler = ENGINE->GetProfilers()[i];
-                ImGui::Text("%s Time", profiler->GetName().Str()); ImGui::NextColumn();
-                ImGui::Text("%f ms", profiler->GetDelta()); ImGui::NextColumn();
+                ImGui::Separator();
+
+                for (UINT i = 0; i < ENGINE->GetProfilers().GetCount(); i++)
+                {
+                    CProfiler* profiler = ENGINE->GetProfilers()[i];
+                    ImGui::Text("%s Time", profiler->GetName().Str()); ImGui::NextColumn();
+                    ImGui::Text("%f ms", profiler->GetDelta()); ImGui::NextColumn();
+                }
             }
 
             ImGui::Separator();

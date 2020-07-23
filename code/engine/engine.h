@@ -8,15 +8,6 @@ class CUserInterface;
 class CAudioSystem;
 class CProfiler;
 
-enum {
-    NEON_PROFILER_UPDATE,
-    NEON_PROFILER_RENDER,
-	NEON_PROFILER_RENDER2D,
-    NEON_PROFILER_WINDOW,
-    NEON_PROFILER_SLEEP,
-    MAX_NEON_PROFILERS
-};
-
 #define ENGINE CEngine::the()
 
 class ENGINE_API CEngine {
@@ -33,6 +24,7 @@ public:
 	VOID Think();
 	VOID UpdateProfilers(FLOAT dt);
 	VOID IncrementFrame();
+	VOID SetupDefaultProfilers();
 	LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	CRenderer* GetRenderer() { return mRenderer; }
@@ -47,7 +39,7 @@ public:
 	inline VOID SetFPS(FLOAT fps) { if (fps) mUpdateDuration = 1.0f / fps; } 
 	inline FLOAT GetFPS() const { return 1.0f / mUpdateDuration; }
 
-	inline CProfiler** GetProfilers() { return mProfilers; }
+	inline CArray<CProfiler*> GetProfilers() { return mProfilers; }
 	inline FLOAT GetTotalRunTime() { return mTotalTime; };
 	inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
 	inline INT GetRunCycleCount() { return mRunCycle; }
@@ -74,7 +66,9 @@ private:
 	INT mFrames;
 	INT mRunCycle;
 
-	CProfiler* mProfilers[MAX_NEON_PROFILERS];
+	CArray<CProfiler*> mProfilers;
+
+	/// Internal profilers
 	CProfiler* mUpdateProfiler;
 	CProfiler* mRenderProfiler;
 	CProfiler* mRender2DProfiler;

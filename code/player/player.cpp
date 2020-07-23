@@ -45,6 +45,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         return 0;
     }
 
+    ENGINE->SetupDefaultProfilers();
+
     if (!FILESYSTEM->LoadGame(lpCmdLine))
     {
         MessageBox(NULL, "Failed to load game!", "Game load failure", MB_OK);

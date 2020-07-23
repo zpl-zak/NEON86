@@ -36,18 +36,7 @@ CEngine::CEngine(VOID)
     mFrameCounter = 0.0f;
     mRunCycle = 0;
 
-    mUpdateProfiler = new CProfiler("Update");
-    mRenderProfiler = new CProfiler("Render");
-    mRender2DProfiler = new CProfiler("RenderUI");
-    mWindowProfiler = new CProfiler("Window");
-    mSleepProfiler = new CProfiler("Sleep");
-    
-
-    mProfilers[NEON_PROFILER_RENDER] = mRenderProfiler;
-    mProfilers[NEON_PROFILER_RENDER2D] = mRender2DProfiler;
-    mProfilers[NEON_PROFILER_UPDATE] = mUpdateProfiler;
-    mProfilers[NEON_PROFILER_SLEEP] = mSleepProfiler;
-    mProfilers[NEON_PROFILER_WINDOW] = mWindowProfiler;
+    mProfilers.Release();
 }
 
 BOOL CEngine::Release()
@@ -58,13 +47,6 @@ BOOL CEngine::Release()
     SAFE_RELEASE(mRenderer);
     SAFE_RELEASE(mInput);
     SAFE_RELEASE(mAudioSystem);
-
-    SAFE_DELETE(mUpdateProfiler);
-    SAFE_DELETE(mRenderProfiler);
-    SAFE_DELETE(mRender2DProfiler);
-    SAFE_DELETE(mSleepProfiler);
-    SAFE_DELETE(mWindowProfiler);
-    ZeroMemory(mProfilers, MAX_NEON_PROFILERS);
 
     return TRUE;
 }
@@ -182,7 +164,7 @@ VOID CEngine::UpdateProfilers(FLOAT dt)
 
         if (logStats) OutputDebugStringA("==================\n");
 
-        for (INT i = 0; i < MAX_NEON_PROFILERS; i++)
+        for (UINT i = 0; i < mProfilers.GetCount(); i++)
         {
             mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(FLOAT(mFrames), logStats);
         }
@@ -205,6 +187,21 @@ VOID CEngine::UpdateProfilers(FLOAT dt)
 VOID CEngine::IncrementFrame()
 {
     mFrames++;
+}
+
+VOID CEngine::SetupDefaultProfilers()
+{
+    mUpdateProfiler = new CProfiler("Update");
+    mRenderProfiler = new CProfiler("Render");
+    mRender2DProfiler = new CProfiler("RenderUI");
+    mWindowProfiler = new CProfiler("Window");
+    mSleepProfiler = new CProfiler("Sleep");
+
+    mProfilers.Push(mUpdateProfiler);
+    mProfilers.Push(mRenderProfiler);
+    mProfilers.Push(mRender2DProfiler);
+    mProfilers.Push(mWindowProfiler);
+    mProfilers.Push(mSleepProfiler);
 }
 
 LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
