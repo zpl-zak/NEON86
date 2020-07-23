@@ -73,7 +73,7 @@ CUserInterface::CUserInterface()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 #ifdef _DEBUG
-    mErrorMessage = new std::string();
+    mErrorMessage = "";
 #endif // _DEBUG
 
     mDraw2DHook = new Draw2DHook();
@@ -97,10 +97,6 @@ BOOL CUserInterface::Release(VOID)
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
     SAFE_DELETE(mDraw2DHook);
-    
-#ifdef _DEBUG
-    SAFE_DELETE(mErrorMessage);
-#endif // _DEBUG
 
     return TRUE;
 }
@@ -146,7 +142,7 @@ VOID CUserInterface::ClearErrorWindow()
 {
 #ifdef _DEBUG
     mShowError = FALSE;
-    *mErrorMessage = "";
+    mErrorMessage = "";
 #endif
 }
 
@@ -156,7 +152,7 @@ VOID CUserInterface::PushErrorMessage(LPCSTR err)
     mShowError = TRUE;
 
     if (err)
-        *mErrorMessage += std::string(err) + "\n";
+        mErrorMessage = mErrorMessage.SStr() + std::string(err) + "\n";
 #endif
 }
 
@@ -177,7 +173,7 @@ VOID CUserInterface::DebugPanel(VOID)
         ImGui::Separator();
         ImGui::Text("RESOURCES: %d", gResourceCount);
         ImGui::Separator();
-        ImGui::Text("MEM ENGINE: %s LUA: %s TOTAL: %s PEAK: %s", FormatBytes(gMemUsed).c_str(), FormatBytes(gMemUsedLua).c_str(), FormatBytes((INT64)gMemUsed+gMemUsedLua).c_str(), FormatBytes(gMemPeak).c_str());
+        ImGui::Text("MEM ENGINE: %s LUA: %s TOTAL: %s PEAK: %s", FormatBytes(gMemUsed).Str(), FormatBytes(gMemUsedLua).Str(), FormatBytes((INT64)gMemUsed+gMemUsedLua).Str(), FormatBytes(gMemPeak).Str());
         ImGui::Separator();
     }
     ImGui::EndMainMenuBar();
@@ -187,7 +183,7 @@ VOID CUserInterface::DebugPanel(VOID)
         ImGui::SetNextWindowSize(ImVec2(500, 150), ImGuiCond_FirstUseEver);
         ImGui::Begin("Error messages", NULL, ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_NoCollapse|ImGuiWindowFlags_AlwaysAutoResize);
         {
-            ImGui::TextWrapped("%s", mErrorMessage->c_str());
+            ImGui::TextWrapped("%s", mErrorMessage.Str());
             
             if (ImGui::Button("Restart VM"))
                 VM->Restart();
@@ -270,7 +266,7 @@ VOID CUserInterface::DebugPanel(VOID)
 #endif
 }
 
-std::string CUserInterface::FormatBytes(UINT64 bytes)
+CString CUserInterface::FormatBytes(UINT64 bytes)
 {
     const std::string suffixes[] = { "B", "KB", "MB", "GB", "TB" };
     BYTE suffixId;

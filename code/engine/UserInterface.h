@@ -1,7 +1,6 @@
 #pragma once
 
 #include "system.h"
-#include <string>
 
 #define UI CEngine::the()->GetUI()
 
@@ -28,12 +27,12 @@ public:
     inline Draw2DHook GetDraw2DHook() { return *mDraw2DHook; }
 private:
     VOID DebugPanel(VOID);
-    std::string FormatBytes(UINT64 bytes);
+    CString FormatBytes(UINT64 bytes);
 
 #if _DEBUG
     // Error handling
     BOOL mShowError;
-    std::string *mErrorMessage;
+    CString mErrorMessage;
 #endif
 
     ID3DXSprite* mTextSurface;

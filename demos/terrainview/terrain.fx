@@ -1,5 +1,4 @@
 #include <neon>
-#include "noise.fx"
 
 /* Uniforms */
 float3 campos;

@@ -62,6 +62,7 @@ public:
         inline FLOAT GetTotalRunTime() { return mTotalTime; };
         inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
         inline INT GetRunCycleCount() { return mRunCycle; }
+		inline CProfiler* INTERNAL_GetRender2DProfiler() { return mRender2DProfiler; }
 	protected:
 		INT mFrames;
         FLOAT mFrameCounter;

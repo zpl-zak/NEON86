@@ -30,6 +30,7 @@
 #include "Renderer.h"
 #include "UserInterface.h"
 #include "engine.h"
+#include "ProfileManager.h"
 
 // DirectX
 #include <d3d9.h>
@@ -181,8 +182,11 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     IDirect3DStateBlock9* neonsbt = NULL;
     RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
     UI->GetTextSurface()->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_DONOTMODIFY_RENDERSTATE);
-    UI->RenderHook();
-    VM->Render2D();
+    {
+        CProfileScope scope(ENGINE->DefaultProfiling.INTERNAL_GetRender2DProfiler());
+        UI->RenderHook();
+        VM->Render2D();
+    }
     UI->GetTextSurface()->End(); 
 
     neonsbt->Apply();

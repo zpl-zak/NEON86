@@ -312,10 +312,7 @@ VOID CEngine::Render()
         mVirtualMachine->Render();
     }
 
-    {
-        CProfileScope scope(DefaultProfiling.mRender2DProfiler);
-        mDebugUI->Render();
-    }
+    mDebugUI->Render();
 
     {
         CProfileScope scope(DefaultProfiling.mWindowProfiler);
