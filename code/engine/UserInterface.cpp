@@ -161,6 +161,9 @@ VOID CUserInterface::DebugPanel(VOID)
 #ifdef _DEBUG
     ImGui::BeginMainMenuBar();
     {
+        if (ImGui::Button("X"))
+            ENGINE->Shutdown();
+
         if (ImGui::Button("Restart VM"))
             VM->Restart();
 
