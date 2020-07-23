@@ -72,7 +72,7 @@ HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR t
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wc.lpszClassName = className;
 
     RegisterClassEx(&wc);

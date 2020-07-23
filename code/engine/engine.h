@@ -52,13 +52,13 @@ public:
             mRenderProfiler = NULL;
             mRender2DProfiler = NULL;
             mWindowProfiler = NULL;
-            mSleepProfiler = NULL;
 		}
         VOID UpdateProfilers(FLOAT dt);
         VOID IncrementFrame();
         VOID SetupDefaultProfilers();
+		VOID PushProfiler(CProfiler* profile);
 
-		inline CArray<CProfiler*> GetProfilers() { return mProfilers; }
+		inline const CArray<CProfiler*> GetProfilers() const { return mProfilers; }
         inline FLOAT GetTotalRunTime() { return mTotalTime; };
         inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
         inline INT GetRunCycleCount() { return mRunCycle; }
@@ -74,7 +74,6 @@ public:
         CProfiler* mUpdateProfiler;
         CProfiler* mRenderProfiler;
         CProfiler* mRender2DProfiler;
-        CProfiler* mSleepProfiler;
         CProfiler* mWindowProfiler;
 	} DefaultProfiling;
 protected:

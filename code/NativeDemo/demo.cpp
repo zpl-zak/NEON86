@@ -9,6 +9,7 @@
 #include "Scene.h"
 #include "Light.h"
 #include "Font.h"
+#include "ProfileManager.h"
 
 #pragma comment (lib, "d3dx9.lib")
 
@@ -75,8 +76,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         demoFont->RenderText(0xFFFFFFFF, "This demo is running from the native C++ side", 15, 30);
     });
 
+    CProfiler demoProfiler("Demo");
+    ENGINE->DefaultProfiling.PushProfiler(&demoProfiler);
+
     while (ENGINE->IsRunning())
     {
+        CProfileScope scope(&demoProfiler);
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);

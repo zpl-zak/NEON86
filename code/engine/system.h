@@ -72,8 +72,8 @@ public:
         Release();
     }
 
-    iterator begin() { return &mData[0]; }
-    iterator end() { return &mData[mCount]; }
+    iterator begin() const { return &mData[0]; }
+    iterator end() const { return &mData[mCount]; }
 
     inline VOID Release()
     {
@@ -105,7 +105,7 @@ public:
         return ERROR_SUCCESS;
     }
 
-    inline T Find(LPCSTR name)
+    inline T Find(LPCSTR name) const
     {
         for (UINT i = 0; i < mCount; i++)
         {
@@ -126,11 +126,11 @@ public:
 
     inline VOID Clear() { mCount = 0; }
 
-    inline UINT GetCount() { return mCount; }
-    inline UINT GetCapacity() { return mCapacity; }
+    inline UINT GetCount() const { return mCount; }
+    inline UINT GetCapacity() const { return mCapacity; }
 
-    inline T operator[] (UINT index) { return mData[index]; }
-    inline T* GetData() { return mData; }
+    inline T operator[] (UINT index) const { return mData[index]; }
+    inline T* GetData() const { return mData; }
 
 private:
     T* mData;

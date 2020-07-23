@@ -135,7 +135,7 @@ VOID CEngine::Think()
     }
     else
     {
-        CProfileScope scope(DefaultProfiling.mSleepProfiler);
+        CProfileScope scope(DefaultProfiling.mWindowProfiler);
         Sleep(1); // Let CPU sleep a bit
     }
 }
@@ -185,13 +185,16 @@ VOID CEngine::CDefaultProfiling::SetupDefaultProfilers()
     mRenderProfiler = new CProfiler("Render");
     mRender2DProfiler = new CProfiler("RenderUI");
     mWindowProfiler = new CProfiler("Window");
-    mSleepProfiler = new CProfiler("Sleep");
 
     mProfilers.Push(mUpdateProfiler);
     mProfilers.Push(mRenderProfiler);
     mProfilers.Push(mRender2DProfiler);
     mProfilers.Push(mWindowProfiler);
-    mProfilers.Push(mSleepProfiler);
+}
+
+VOID CEngine::CDefaultProfiling::PushProfiler(CProfiler* profile)
+{
+    mProfilers.Push(profile);
 }
 
 LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
