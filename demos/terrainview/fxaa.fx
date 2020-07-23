@@ -10,9 +10,9 @@ texture2D srcTex;
 sampler2D srcMap = sampler_state
 {
     Texture = <srcTex>;
-    MagFilter = Linear;
+    MagFilter = Anisotropic;
     MinFilter = Anisotropic;
-    MipFilter = Linear;
+    MipFilter = Anisotropic;
     MaxAnisotropy = 16;
 };
 

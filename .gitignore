@@ -9,6 +9,7 @@ Release/
 data
 libs/*.dll
 imgui.ini
+desktop.ini
 
 *.pdb
 *.ilk
