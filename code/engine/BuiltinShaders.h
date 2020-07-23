@@ -84,6 +84,22 @@ static LPCSTR _shader_common = _M(
     texture dispTex;
     bool hasDispTex;
 
+
+    /* VS proxy */
+    struct VS_PROXY {
+        float4 position : POSITION;
+        float2 texCoord : TEXCOORD0;
+    };
+
+    VS_PROXY VS_ProxyPass(VS_INPUT IN)
+    {
+        VS_PROXY OUT;
+
+        OUT.position = float4(IN.position, 1.0f);
+        OUT.texCoord = IN.texCoord;
+
+        return OUT;
+    }
 );
 
 #undef _M

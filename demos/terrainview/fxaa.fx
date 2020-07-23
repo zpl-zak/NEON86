@@ -16,23 +16,7 @@ sampler2D srcMap = sampler_state
     MaxAnisotropy = 16;
 };
 
-struct VS_OUTPUT
-{
-    float4 position : POSITION;
-    float2 texCoord : TEXCOORD0;
-};
-
-VS_OUTPUT VS_FXAA(VS_INPUT IN)
-{
-    VS_OUTPUT OUT;
-
-    OUT.position = float4(IN.position, 1.0f);
-    OUT.texCoord = IN.texCoord;
-    
-    return OUT;
-}
-
-float4 PS_FXAA(VS_OUTPUT IN) : COLOR
+float4 PS_FXAA(VS_PROXY IN) : COLOR
 {
     float2 uvoffs = inverseTexSize.xy;
     float2 uv = IN.texCoord;
@@ -88,7 +72,7 @@ technique FXAA
 {
     pass
     {
-        VertexShader = compile vs_3_0 VS_FXAA();
+        VertexShader = compile vs_3_0 VS_ProxyPass();
         PixelShader = compile ps_3_0 PS_FXAA();
     }
 }
