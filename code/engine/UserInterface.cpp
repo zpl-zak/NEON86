@@ -167,13 +167,19 @@ VOID CUserInterface::DebugPanel(VOID)
         if (ImGui::Button("Pause VM"))
             VM->Pause();
 
+        ImGui::Text("RESOURCES: %d", gResourceCount);
+        ImGui::Separator();
+        ImGui::Text("MEM ENGINE: %s", FormatBytes(gMemUsed).Str());
+        ImGui::Separator();
+        ImGui::Text("LUA: %s", FormatBytes(gMemUsedLua).Str());
+        ImGui::Separator();
+        ImGui::Text("TOTAL: %s", FormatBytes((INT64)gMemUsed+gMemUsedLua).Str());
+        ImGui::Separator();
+        ImGui::Text("PEAK: %s", FormatBytes(gMemPeak).Str());
+        ImGui::Separator();
         ImGui::Text("CPU %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::Separator();
         ImGui::Text("TIME: %.2fs", VM->GetRunTime());
-        ImGui::Separator();
-        ImGui::Text("RESOURCES: %d", gResourceCount);
-        ImGui::Separator();
-        ImGui::Text("MEM ENGINE: %s LUA: %s TOTAL: %s PEAK: %s", FormatBytes(gMemUsed).Str(), FormatBytes(gMemUsedLua).Str(), FormatBytes((INT64)gMemUsed+gMemUsedLua).Str(), FormatBytes(gMemPeak).Str());
         ImGui::Separator();
     }
     ImGui::EndMainMenuBar();
