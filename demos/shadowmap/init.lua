@@ -2,43 +2,11 @@ time = 0
 
 shadowMapSize = 4096.0
 
+cam = require "camera" (Vector(1,2,3)*4, {math.pi, -0.5})
 Camera = require "camera"
-Class = require "class"
+shadowGen = require "shadow" (shadowMapSize)
 require "helpers"
 
-Class "ShadowGen" {
-  __init__ = function (self, shadowMapSize)
-    self.shadowmap = RenderTarget(shadowMapSize, shadowMapSize, true)
-    self.shader = Effect("fx/shadowPass.fx")
-  end,
-
-  build = function (self, view, proj, drawfn)
-    oldView = GetMatrix(VIEW)
-    oldProj = GetMatrix(PROJ)
-
-    view:bind(VIEW)
-    proj:bind(PROJ)
-
-    self.shadowmap:bind()
-    ClearScene(0,0,0)
-    CullMode(CULLKIND_CW)
-
-    self.shader:begin("Shadow")
-    self.shader:beginPass(1)
-    drawfn()
-    self.shader:endPass()
-    self.shader:finish()
-
-    oldView:bind(VIEW)
-    oldProj:bind(PROJ)
-
-    -- TODO: Restore old RT
-    ClearTarget()
-    CullMode(CULLKIND_CCW)
-  end,
-}
-
-cam = Camera(Vector(1,2,3)*4, {math.pi, -0.5})
 
 lightDir = Vector3(-0.33,-1,1)
 scene = Scene("scene.fbx")
@@ -52,7 +20,6 @@ light:enable(true, 0)
 EnableLighting(true)
 
 shader = Effect("fx/main.fx")
-shadowGen = ShadowGen(shadowMapSize)
 
 RegisterFontFile("slkscr.ttf")
 testFont = Font("Silkscreen", 24, 1, false)
