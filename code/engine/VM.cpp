@@ -321,9 +321,7 @@ BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)
 
 #ifdef _DEBUG
 		if (!canFail)
-		{
-			Stop();
-		}
+			Pause();
 #endif
 		return TRUE;
 	}

@@ -1,46 +1,46 @@
-local sphere
-local sphereModel
-local time = 0
-local light
-local testFont
+-- Minimal NEON86 game template
 
-function _init()
-  sphereModel = Model("sphere.fbx", false) -- load mesh w/o material
-  sphere = sphereModel:getRootNode()
+testFont = Font("Times New Roman", 36, 2000, false)
+sphere = Model("sphere.fbx")
+bgColor = Color(20,20,69)
+toggleLighting = true
+light = Light()
 
-  light = Light()
-  light:setDirection(Vector(-1,-1,1))
-  light:setType(LIGHTKIND_DIRECTIONAL)
-  light:enable(true, 0)
-  EnableLighting(true)
+light:setDirection(Vector(-1,-1,1))
+light:enable(true, 0)
 
-  RegisterFontFile("slkscr.ttf")
-  testFont = Font("Silkscreen", 36, 1, false)
-end
-
-function _update(dt)
-  if GetKeyDown(KEY_ESCAPE) then
-      ExitGame()
-  end
-
-  time = time + dt
-  sphere:setTransform(Matrix():rotate(math.sin(time), 0, 0))
-end
-
-function _render()
-  ClearScene(20,20,69)
-  AmbientColor(16,16,16)
-
-  Matrix():lookAt(
+viewMat = Matrix():lookAt(
       Vector(0,0,-5),
       Vector(),
       Vector(0,1,0)
-  ):bind(VIEW)
-  CameraPerspective(62, 0.1, 100)
+)
 
-  sphere:draw()
+function _update(dt)
+  if GetKeyDown(KEY_ESCAPE) then
+    ExitGame()
+  end
+
+  if GetKeyDown("l") then
+    toggleLighting = not toggleLighting
+  end
+end
+
+function _render()
+  ClearScene(bgColor)
+  AmbientColor(bgColor)
+  CameraPerspective(62, 0.1, 100)
+  EnableLighting(toggleLighting)
+  viewMat:bind(VIEW)
+
+  sphere:draw(
+    Matrix():rotate(getTime()/4,0,0)
+  )
 end
 
 function _render2d()
-  testFont:drawText(0xFFFFFFFF, "Welcome to the NEON86 basic template!", 15, 30)
+  testFont:drawText(0xFFFFFFFF, [[
+    Welcome to the NEON86 basic template!
+
+    Press L to toggle lighting
+  ]], 0, 30)
 end

@@ -95,13 +95,14 @@ function drawScene()
 end
 
 function _render()
+  local ldir = lightDir * Matrix():rotate(time/4,0,0)
   lightProj = Matrix():orthoEx(-20, 20, -20, 20, -20, 20)
   lightView = Matrix():lookAt(
-    lightDir * Matrix():rotate(time/4,0,0),
+    ldir,
     Vector(),
     Vector(0,1,0)
   )
-  light:setDirection(lightDir * Matrix():rotate(time/4,0,0))
+  light:setDirection(ldir)
   light:enable(true, 0)
 
   shadowGen:build(lightView, lightProj, drawScene)
@@ -111,19 +112,16 @@ function _render()
   CameraPerspective(62, 0.1, 100)
   cam.mat:bind(VIEW)
   
-  for _, obj in pairs(sceneNodes) do
-    hh.drawEffect(shader, "Scene", function (fx)
-      fx:setLight("sun", light)
-      fx:setTexture("shadowTex", shadowGen.shadowmap)
-      fx:setMatrix("shadowView", lightView)
-      fx:setMatrix("shadowProj", lightProj)
-      fx:setFloat("shadowMapSize", shadowMapSize)
-      fx:setFloat("shadowMethod", shadowMethod)
-      fx:commit()
-      obj:draw()
-    end)
-  end
-  
+  drawEffect(shader, "Scene", function (fx)
+    fx:setLight("sun", light)
+    fx:setTexture("shadowTex", shadowGen.shadowmap)
+    fx:setMatrix("shadowView", lightView)
+    fx:setMatrix("shadowProj", lightProj)
+    fx:setFloat("shadowMapSize", shadowMapSize)
+    fx:setFloat("shadowMethod", shadowMethod)
+    fx:commit()
+    drawScene()
+  end)
 end
 
 function _render2d()

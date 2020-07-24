@@ -28,10 +28,12 @@ function cap3(v, m)
 end
 
 function drawEffect(fx, tech, drawfn)
-  fx:start(tech)
-  fx:beginPass(1)
-  drawfn(fx)
-  fx:endPass()
+  local numPasses = fx:start(tech)
+  for i=1,numPasses do
+    fx:beginPass(i)
+    drawfn(fx)
+    fx:endPass()
+  end
   fx:finish()
 end
 
