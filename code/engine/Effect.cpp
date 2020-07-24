@@ -62,15 +62,18 @@ HRESULT CD3DIncludeImpl::Close(LPCVOID pData)
     return S_OK;
 }
 
-CEffect::CEffect(LPCSTR effectPath): CAllocable()
+CEffect::CEffect(): CAllocable()
 {
     mEffect = NULL;
+}
 
+VOID CEffect::LoadEffect(LPCSTR effectPath)
+{
     FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_USER, effectPath);
 
     if (!f.data)
     {
-        VM->PostError(CString("No effect found: %s", effectPath));
+        VM->PostError(CString::Format("No effect found: %s", effectPath));
         return;
     }
 
@@ -99,7 +102,6 @@ CEffect::CEffect(LPCSTR effectPath): CAllocable()
             errors->Release();
         }
 
-        ENGINE->Shutdown();
         return;
     }
 
@@ -114,6 +116,9 @@ VOID CEffect::Release()
 
 UINT CEffect::Begin(LPCSTR technique)
 {
+    if (!mEffect)
+        return 0;
+
     UINT numPasses=0;
     D3DXHANDLE techniqueID = mEffect->GetTechniqueByName(technique);
 
@@ -131,12 +136,18 @@ UINT CEffect::Begin(LPCSTR technique)
 
 HRESULT CEffect::End()
 {
+    if (!mEffect)
+        return -1;
+
     RENDERER->SetActiveEffect(NULL);
     return mEffect->End();
 }
 
 UINT CEffect::FindPass(LPCSTR passName)
 {
+    if (!mEffect)
+        return 0;
+
     D3DXHANDLE curTech = mEffect->GetCurrentTechnique();
     D3DXTECHNIQUE_DESC td;
     mEffect->GetTechniqueDesc(curTech, &td);
@@ -156,6 +167,9 @@ UINT CEffect::FindPass(LPCSTR passName)
 
 HRESULT CEffect::BeginPass(UINT passID)
 {
+    if (!mEffect)
+        return -1;
+
     HRESULT ok = mEffect->BeginPass(passID);
     SetDefaults();
 
@@ -164,26 +178,41 @@ HRESULT CEffect::BeginPass(UINT passID)
 
 HRESULT CEffect::EndPass()
 {
+    if (!mEffect)
+        return -1;
+
     return mEffect->EndPass();
 }
 
 HRESULT CEffect::CommitChanges()
 {
+    if (!mEffect)
+        return -1;
+
     return mEffect->CommitChanges();
 }
 
 VOID CEffect::SetInteger(LPCSTR name, DWORD value)
 {
+    if (!mEffect)
+        return;
+
     mEffect->SetInt(name, value);
 }
 
 VOID CEffect::SetFloat(LPCSTR name, FLOAT value)
 {
+    if (!mEffect)
+        return;
+
     mEffect->SetFloat(name, value);
 }
 
 VOID CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose)
 {
+    if (!mEffect)
+        return;
+
     if (transpose)
         mEffect->SetMatrixTranspose(name, &value);
     else
@@ -192,16 +221,25 @@ VOID CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose)
 
 VOID CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value)
 {
+    if (!mEffect)
+        return;
+
     mEffect->SetValue(name, &value, sizeof(value));
 }
 
 VOID CEffect::SetTexture(LPCSTR name, IDirect3DTexture9* value)
 {
+    if (!mEffect)
+        return;
+
     mEffect->SetTexture(name, value);
 }
 
 VOID CEffect::SetLight(LPCSTR name, CLight* value)
 {
+    if (!mEffect)
+        return;
+
     if (value) {
         SetBool(GetUniformName(name, "IsEnabled"), TRUE);
         SetInteger(GetUniformName(name, "Type"), value->GetLightData().Type);
@@ -223,22 +261,34 @@ VOID CEffect::SetLight(LPCSTR name, CLight* value)
 
 VOID CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value)
 {
+    if (!mEffect)
+        return;
+
     D3DXVECTOR4 vec4 = D3DXVECTOR4(value, 1.0f);
     mEffect->SetVector(name, &vec4);
 }
 
 VOID CEffect::SetVector4(LPCSTR name, D3DXVECTOR4 value)
 {
+    if (!mEffect)
+        return;
+
     mEffect->SetVector(name, &value);
 }
 
 VOID CEffect::SetBool(LPCSTR name, BOOL value)
 {
+    if (!mEffect)
+        return;
+
     mEffect->SetBool(name, value);
 }
 
 VOID CEffect::SetDefaults()
 {
+    if (!mEffect)
+        return;
+
     D3DXMATRIX p = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);
     D3DXMATRIX v = RENDERER->GetDeviceMatrix(MATRIXKIND_VIEW);
     D3DXMATRIX w;

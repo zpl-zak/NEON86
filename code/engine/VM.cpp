@@ -66,8 +66,8 @@ VOID CVirtualMachine::Play(VOID)
 
 	mMainScript = (UCHAR*)f.data;
 
-	InitVM();
 	mPlayKind = PLAYKIND_PLAYING;
+	InitVM();
 
 	Init();
 }
@@ -107,6 +107,9 @@ VOID CVirtualMachine::Init(VOID)
 {
     if (!mLuaVM)
         return;
+
+	if (mPlayKind == PLAYKIND_STOPPED)
+		return;
 
 	mRunTime = 0.0f;
 
@@ -319,8 +322,7 @@ BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)
 #ifdef _DEBUG
 		if (!canFail)
 		{
-			VM->Stop();
-			VM->Release();
+			Stop();
 		}
 #endif
 		return TRUE;
@@ -332,10 +334,8 @@ BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)
 inline VOID CVirtualMachine::PostError(LPCSTR err)
 {
 #ifdef _DEBUG
-    UI->PushErrorMessage(err);
-	
-	if (mLuaVM)
-		lua_error(mLuaVM);
+	UI->PushErrorMessage(err);
+	Pause();
 #else
     MessageBoxA(NULL, err, "Engine error", MB_OK);
     ENGINE->Shutdown();

@@ -9,7 +9,8 @@ class CLight;
 class ENGINE_API CEffect: public CAllocable<CEffect>
 {
 public:
-    CEffect(LPCSTR effectPath);
+    CEffect();
+    VOID LoadEffect(LPCSTR effectPath);
     VOID Release();
 
     UINT Begin(LPCSTR technique);

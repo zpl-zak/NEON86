@@ -147,25 +147,16 @@ public:
         mStr = NULL;
         mSize = 0;
     };
+    CString(LPCSTR str) {
+        Assign(str);
+    }
     CString(const CString& rhs) {
         Assign(rhs.mStr);
     }
     CString(CString* s1, CString s2) {
         Concatenate(s1->Str(), s2.Str());
     }
-    CString(LPCSTR s1, LPCSTR s2) {
-        Concatenate(s1, s2);
-    }
-    CString(LPCSTR fmt, ...) {
-        static CHAR buf[4096] = "\n";
-        va_list va;
-        va_start(va, fmt);
-        vsnprintf_s(buf, 4096, fmt, va);
-        va_end(va);
-
-        Assign(buf);
-    }
-
+    
     ~CString() {
         SAFE_DELETE_ARRAY(mStr);
     }
@@ -196,6 +187,16 @@ public:
 
     CString operator+= (CString str) {
         return CString(this, str);
+    }
+
+    static CString Format(LPCSTR fmt, ...) {
+        CHAR buf[4096] = { 0 };
+        va_list va;
+        va_start(va, fmt);
+        vsnprintf_s(buf, 4096, fmt, va);
+        va_end(va);
+
+        return CString(buf);
     }
 private:
     LPSTR mStr;

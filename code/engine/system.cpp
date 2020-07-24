@@ -78,8 +78,8 @@ void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style)
 	gPanicHandler(window, text, caption, style);
 }
 
-UINT64 gMemUsed = 0;
 UINT64 gMemUsedLua = 0;
+UINT64 gMemUsed = 0;
 UINT64 gMemPeak = 0;
 UINT64 gResourceCount = 0;
 neon_panic_ptr* gPanicHandler = NULL;

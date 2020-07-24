@@ -162,8 +162,8 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
         if (logStats)
         {
             OutputDebugStringA("\n");
-            OutputDebugStringA(CString("Other Time: %f ms\n", (mTotalTime - mTotalMeasuredTime)).Str());
-            OutputDebugStringA(CString("Total Time: %f ms (%f fps)\n", mTotalTime, (1000.0f / mTotalTime)).Str());
+            OutputDebugStringA(CString::Format("Other Time: %f ms\n", (mTotalTime - mTotalMeasuredTime)).Str());
+            OutputDebugStringA(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, (1000.0f / mTotalTime)).Str());
         }
 
         UI->PushMS(mTotalTime);

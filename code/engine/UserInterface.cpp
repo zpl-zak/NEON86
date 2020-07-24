@@ -142,7 +142,7 @@ VOID CUserInterface::ClearErrorWindow()
 {
 #ifdef _DEBUG
     mShowError = FALSE;
-    mErrorMessage = "";
+    mErrorMessage = "\0";
 #endif
 }
 
@@ -152,7 +152,7 @@ VOID CUserInterface::PushErrorMessage(LPCSTR err)
     mShowError = TRUE;
 
     if (err)
-        mErrorMessage = CString("%s %s\n", mErrorMessage.Str(), err);
+        mErrorMessage = CString::Format("%s %s\n", mErrorMessage.Str(), err);
 #endif
 }
 

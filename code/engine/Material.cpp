@@ -70,7 +70,7 @@ VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
         FDATA img = FILESYSTEM->GetResource(RESOURCEKIND_IMAGE, texName);
         if (!img.data)
         {
-            VM->PostError(CString("Image not found: %s", texName));
+            VM->PostError(CString::Format("Image not found: %s", texName));
             return;
         }
         D3DXCreateTextureFromFileInMemory(dev, img.data, img.size, &mTextureHandle[slot]);

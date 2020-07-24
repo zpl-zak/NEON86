@@ -41,7 +41,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
 
     if (!fp)
     {
-        VM->PostError(CString("Sound file: %s does not exist!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s does not exist!", wavPath).Str());
         return;
     }
 
@@ -49,63 +49,63 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     if (count != 1)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid!", wavPath).Str());
         return;
     }
 
     if (strncmp("RIFF", waveFileHeader.chunkId, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong ID)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong ID)!", wavPath).Str());
         return;
     }
 
     if (strncmp("WAVE", waveFileHeader.format, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong format)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong format)!", wavPath).Str());
         return;
     }
 
     if (strncmp("fmt ", waveFileHeader.subChunkId, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong SubID)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong SubID)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.audioFormat != WAVE_FORMAT_PCM)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong audio format)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong audio format)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.numChannels != 2)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (needs 2 audio channels)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs 2 audio channels)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.sampleRate != 44100)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (needs to be 44.1KHz)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs to be 44.1KHz)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.bitsPerSample != 16)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (needs to be 16-bit stereo)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs to be 16-bit stereo)!", wavPath).Str());
         return;
     }
 
     if (strncmp("data", waveFileHeader.dataChunkId, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (missing DATA marker)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (missing DATA marker)!", wavPath).Str());
         return;
     }
 
@@ -128,7 +128,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     if (FAILED(result))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to create temporary sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to create temporary sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -137,7 +137,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     {
         tempBuffer->Release();
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to create sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to create sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -150,7 +150,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     if (!waveData)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to allocate data for sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to allocate data for sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -161,7 +161,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     if (count != waveFileHeader.dataSize)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to read data for sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to read data for sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -171,7 +171,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     if (FAILED(result))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to lock sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to lock sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -181,7 +181,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     if (FAILED(result))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to unlock sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to unlock sound buffer for file: %s!", wavPath).Str());
         return;
     }
 }
@@ -203,7 +203,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
 
     if (!fp)
     {
-        VM->PostError(CString("Sound file: %s does not exist!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s does not exist!", wavPath).Str());
         return;
     }
 
@@ -211,63 +211,63 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     if (count != 1)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid!", wavPath).Str());
         return;
     }
 
     if (strncmp("RIFF", waveFileHeader.chunkId, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong ID)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong ID)!", wavPath).Str());
         return;
     }
 
     if (strncmp("WAVE", waveFileHeader.format, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong format)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong format)!", wavPath).Str());
         return;
     }
 
     if (strncmp("fmt ", waveFileHeader.subChunkId, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong subID)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong subID)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.audioFormat != WAVE_FORMAT_PCM)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (wrong audio format)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (wrong audio format)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.numChannels != 1)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (needs 1 audio channel)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs 1 audio channel)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.sampleRate != 44100)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (needs to be 44.1KHz)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs to be 44.1KHz)!", wavPath).Str());
         return;
     }
 
     if (waveFileHeader.bitsPerSample != 16)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (needs to be 16-bit stereo)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs to be 16-bit stereo)!", wavPath).Str());
         return;
     }
 
     if (strncmp("data", waveFileHeader.dataChunkId, 4))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Sound file: %s is invalid (missing DATA marker)!", wavPath).Str());
+        VM->PostError(CString::Format("Sound file: %s is invalid (missing DATA marker)!", wavPath).Str());
         return;
     }
 
@@ -290,7 +290,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     if (FAILED(result))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to create temporary sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to create temporary sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -299,7 +299,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     {
         tempBuffer->Release();
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to create sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to create sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -312,7 +312,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     if (!waveData)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to allocate data for sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to allocate data for sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -323,7 +323,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     if (count != waveFileHeader.dataSize)
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to read data for sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to read data for sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -333,7 +333,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     if (FAILED(result))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to lock sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to lock sound buffer for file: %s!", wavPath).Str());
         return;
     }
 
@@ -343,7 +343,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     if (FAILED(result))
     {
         FILESYSTEM->CloseResource(fp);
-        VM->PostError(CString("Failed to unlock sound buffer for file: %s!", wavPath).Str());
+        VM->PostError(CString::Format("Failed to unlock sound buffer for file: %s!", wavPath).Str());
         return;
     }
 }

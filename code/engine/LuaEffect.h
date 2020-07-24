@@ -9,7 +9,9 @@ INT effect_new(lua_State* L)
 {
     LPCSTR effectPath = luaL_checkstring(L, 1);
     
-    *(CEffect**)lua_newuserdata(L, sizeof(CEffect*)) = new CEffect(effectPath);
+    CEffect** fx = (CEffect**)lua_newuserdata(L, sizeof(CEffect*));
+    *fx = new CEffect();
+    (*fx)->LoadEffect(effectPath);
 
     luaL_setmetatable(L, L_EFFECT);
     return 1;

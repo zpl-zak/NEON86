@@ -35,7 +35,7 @@ FLOAT CProfiler::DisplayAndReset(FLOAT divisor, BOOL logStats)
 
     if (logStats)
     {
-        CString stats = CString("%s Time: %f ms", mName.Str(), mDeltaTime);
+        CString stats = CString::Format("%s Time: %f ms", mName.Str(), mDeltaTime);
         OutputDebugStringA(stats.Str());
     }
 
