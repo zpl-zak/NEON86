@@ -46,22 +46,8 @@ BOOL CEngine::Release()
 
 VOID CEngine::Run()
 {
-    MSG msg;
-
     while (IsRunning())
-    {
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            CProfileScope scope(DefaultProfiling.mWindowProfiler);
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-     
-        if (!IsRunning())
-            break;
-
         Think();
-    }
 
     mVirtualMachine->Stop();
     Release();
@@ -122,8 +108,20 @@ VOID CEngine::Think()
 
     DefaultProfiling.UpdateProfilers(deltaTime);
 
-    if (mUnprocessedTime > mUpdateDuration)
+    MSG msg;
+
+    while (mUnprocessedTime > mUpdateDuration)
     {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            CProfileScope scope(DefaultProfiling.mWindowProfiler);
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+
+        if (!IsRunning())
+            break;
+
         Update(mUpdateDuration);
         render = TRUE;
         mUnprocessedTime -= mUpdateDuration;
@@ -136,7 +134,7 @@ VOID CEngine::Think()
     else
     {
         CProfileScope scope(DefaultProfiling.mWindowProfiler);
-        Sleep(1); // Let CPU sleep a bit
+        Sleep((DWORD)(mUnprocessedTime));
     }
 }
 
