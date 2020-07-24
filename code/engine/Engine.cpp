@@ -110,7 +110,7 @@ VOID CEngine::Think()
 
     MSG msg;
 
-    while (mUnprocessedTime > mUpdateDuration)
+    if (mUnprocessedTime > mUpdateDuration)
     {
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
@@ -120,7 +120,7 @@ VOID CEngine::Think()
         }
 
         if (!IsRunning())
-            break;
+            return;
 
         Update(mUpdateDuration);
         render = TRUE;
@@ -134,7 +134,7 @@ VOID CEngine::Think()
     else
     {
         CProfileScope scope(DefaultProfiling.mWindowProfiler);
-        Sleep((DWORD)(mUnprocessedTime));
+        Sleep(1);
     }
 }
 
