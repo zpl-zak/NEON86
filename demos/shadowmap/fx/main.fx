@@ -65,11 +65,14 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
 
     float2 shadowCoord = CalcShadowCoord(vpl);
     
-    if (shadowMethod == 0) lamt = max(CalcShadowPCF2x2(shadowMap, vpl.z/vpl.w, shadowCoord, shadowMapSize), 0.15);
-    if (shadowMethod == 1) lamt = max(CalcShadowSimple(shadowMap, vpl.z/vpl.w, shadowCoord), 0.15);
+    if (shadowMethod == 0) lamt = CalcShadowPCF2x2(shadowMap, vpl.z/vpl.w, shadowCoord, shadowMapSize);
+    if (shadowMethod == 1) lamt = CalcShadowSimple(shadowMap, vpl.z/vpl.w, shadowCoord);
+
+    // lamt = ApplyPoissonSampling(vpl, lamt, 0.2, 700, shadowCoord, shadowMap, vpl.z/vpl.w);
 
     float4 diffuse = dot(n,l);
-    OUT = NEON.AmbientColor + sun.Diffuse * diffuse * lamt;
+    OUT = NEON.AmbientColor + sun.Diffuse * diffuse;
+    OUT = lerp(OUT, NEON.AmbientColor, 1-lamt);
 
     if (hasDiffuseTex)
         OUT *= s;
