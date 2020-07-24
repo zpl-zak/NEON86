@@ -42,6 +42,7 @@ cam = Camera(Vector(1,2,3)*4, {math.pi, -0.5})
 
 lightDir = Vector3(-0.33,-1,1)
 scene = Scene("scene.fbx")
+sceneNodes = scene:getFlattenNodes()
 
 light = Light()
 light:setDirection(lightDir)
@@ -90,7 +91,7 @@ function _update(dt)
 end
 
 function drawScene()
-    scene:draw()
+  scene:draw()
 end
 
 function _render()
@@ -110,16 +111,19 @@ function _render()
   CameraPerspective(62, 0.1, 100)
   cam.mat:bind(VIEW)
   
-  hh.drawEffect(shader, "Scene", function (fx)
-    fx:setLight("sun", light)
-    fx:setTexture("shadowTex", shadowGen.shadowmap)
-    fx:setMatrix("shadowView", lightView)
-    fx:setMatrix("shadowProj", lightProj)
-    fx:setFloat("shadowMapSize", shadowMapSize)
-    fx:setFloat("shadowMethod", shadowMethod)
-    fx:commit()
-    drawScene()
-  end)
+  for _, obj in pairs(sceneNodes) do
+    hh.drawEffect(shader, "Scene", function (fx)
+      fx:setLight("sun", light)
+      fx:setTexture("shadowTex", shadowGen.shadowmap)
+      fx:setMatrix("shadowView", lightView)
+      fx:setMatrix("shadowProj", lightProj)
+      fx:setFloat("shadowMapSize", shadowMapSize)
+      fx:setFloat("shadowMethod", shadowMethod)
+      fx:commit()
+      obj:draw()
+    end)
+  end
+  
 end
 
 function _render2d()
