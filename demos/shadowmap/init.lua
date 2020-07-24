@@ -77,10 +77,10 @@ function _update(dt)
   end
 
   if GetKeyDown("m") then
-    if shadowMapSize == 128.0 then
+    if shadowMapSize == 256.0 then
       shadowMapSize = 4096.0
     else
-      shadowMapSize = 128.0
+      shadowMapSize = 256.0
     end
     shadowGen = ShadowGen(shadowMapSize)
   end

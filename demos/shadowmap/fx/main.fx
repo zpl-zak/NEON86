@@ -66,9 +66,9 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     float diffuse = saturate(dot(n,l));
 
     float bias = SHADOW_EPSILON*tan(acos(diffuse));
-    bias = clamp(bias, 0, 0.01);
+    bias = clamp(bias, 0.01, 0.1);
 
-    if (shadowMethod == 0) lamt = CalcShadowPCF2x2(shadowMap, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
+    if (shadowMethod == 0) lamt = CalcShadowPCF(shadowMap, 6, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
     if (shadowMethod == 1) lamt = CalcShadowVariance(shadowMap, bias, vpl.z/vpl.w, shadowCoord, 0.0002, 0.94);
     if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
 

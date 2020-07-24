@@ -1,4 +1,4 @@
-float SHADOW_EPSILON = 0.01f;
+float SHADOW_EPSILON = 0.005f;
 
 float2 CalcShadowCoord(float4 vPosLight)
 {
@@ -9,7 +9,7 @@ float2 CalcShadowCoord(float4 vPosLight)
 
 float CalcShadowSimple(sampler2D shadowMap, float bias, float depth, float2 shadowCoord)
 {
-    return tex2D(shadowMap, shadowCoord).r < depth + bias;
+    return step(tex2D(shadowMap, shadowCoord).x, depth+bias);
 }
 
 float CalcShadowPCF2x2(sampler2D shadowMap, float bias, float depth, float2 shadowCoord, float shadowMapSize)
@@ -18,16 +18,34 @@ float CalcShadowPCF2x2(sampler2D shadowMap, float bias, float depth, float2 shad
     float2 lerps = frac(tpos);
 
     float srcvals[4];
-    srcvals[0] = (tex2D(shadowMap, shadowCoord) > depth + bias) ? 0.0f : 1.0f;
-    srcvals[1] = (tex2D(shadowMap, shadowCoord + float2(1.0/shadowMapSize, 0.0)) > depth + bias) ? 0.0f : 1.0f;
-    srcvals[2] = (tex2D(shadowMap, shadowCoord + float2(0.0, 1.0/shadowMapSize)) > depth + bias) ? 0.0f : 1.0f;
-    srcvals[3] = (tex2D(shadowMap, shadowCoord + float2(1.0/shadowMapSize, 1.0/shadowMapSize)) > depth + bias) ? 0.0f : 1.0f;
+    srcvals[0] = CalcShadowSimple(shadowMap, bias, depth, shadowCoord);
+    srcvals[1] = CalcShadowSimple(shadowMap, bias, depth, shadowCoord + float2(1.0/shadowMapSize, 0.0));
+    srcvals[2] = CalcShadowSimple(shadowMap, bias, depth, shadowCoord + float2(0.0, 1.0/shadowMapSize));
+    srcvals[3] = CalcShadowSimple(shadowMap, bias, depth, shadowCoord + float2(1.0/shadowMapSize, 1.0/shadowMapSize));
 
     return lerp(
-        lerp(srcvals[0], srcvals[1], lerps.x),
-        lerp(srcvals[2], srcvals[3], lerps.x),
-        lerps.y
+        lerp(srcvals[0], srcvals[2], lerps.y),
+        lerp(srcvals[1], srcvals[3], lerps.y),
+        lerps.x
     );
+}
+
+float CalcShadowPCF(sampler2D shadowMap, float numSamples, float bias, float depth, float2 shadowCoord, float shadowMapSize)
+{
+    float start = (numSamples-1)/2.0;
+    float2 tpos = shadowCoord/shadowMapSize;
+    float result = 0.0;
+
+    for (float y = -start; y <= start; y += 1.0)
+    {
+        for (float x = -start; x <= start; x += 1.0)
+        {
+            float2 uv = float2(x,y)*tpos;
+            result += CalcShadowPCF2x2(shadowMap, bias, depth, shadowCoord+uv, shadowMapSize);
+        }
+    }
+
+    return result/(numSamples*numSamples);
 }
 
 float linstep(float low, float high, float v)
