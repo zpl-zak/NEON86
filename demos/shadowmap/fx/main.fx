@@ -1,0 +1,85 @@
+#include <neon>
+
+float4x4 shadowView;
+float4x4 shadowProj;
+
+float shadowMapSize = 512.0;
+int shadowMethod;
+
+#include "fx/shadow.fx"
+
+sampler2D diffuseMap = sampler_state
+{
+    Texture = <diffuseTex>;
+    MipFilter = Linear;
+    MagFilter = Linear;
+    MinFilter = Linear;
+};
+
+texture2D shadowTex;
+
+sampler2D shadowMap = sampler_state
+{
+    Texture = <shadowTex>;
+    MipFilter = Point;
+    MagFilter = Point;
+    MinFilter = Point;
+    AddressU = Border;
+    AddressV = Border;
+};
+
+struct VS_OUTPUT
+{
+    float4 position : POSITION;
+    float4 viewPos : TEXCOORD1;
+    float4 lightViewPos : TEXCOORD2;
+    float2 texCoord : TEXCOORD;
+    float4 normal   : NORMAL;
+};
+
+TLIGHT sun;
+
+VS_OUTPUT VS_ScenePass(VS_INPUT IN)
+{
+    VS_OUTPUT OUT;
+    OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
+    OUT.viewPos = mul(float4(IN.position, 1.0f), NEON.WorldView);
+    OUT.normal = mul(float4(IN.normal, 1.0f), NEON.InverseWorld);
+    OUT.texCoord = IN.texCoord;
+
+    OUT.lightViewPos = mul(float4(IN.position, 1.0f), NEON.World);
+    OUT.lightViewPos = mul(OUT.lightViewPos, shadowView);
+    OUT.lightViewPos = mul(OUT.lightViewPos, shadowProj);
+    
+    return OUT;
+}
+
+float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
+{
+    float4 OUT;
+    float4 s = tex2D(diffuseMap, IN.texCoord);
+    float4 n = normalize(IN.normal);
+    float3 l = normalize(-sun.Direction);
+    float4 vpl = IN.lightViewPos;
+    float lamt = 1.0f;
+
+    float2 shadowCoord = CalcShadowCoord(vpl);
+    
+    if (shadowMethod == 0) lamt = max(CalcShadowPCF2x2(shadowMap, vpl.z/vpl.w, shadowCoord, shadowMapSize), 0.15);
+    if (shadowMethod == 1) lamt = max(CalcShadowSimple(shadowMap, vpl.z/vpl.w, shadowCoord), 0.15);
+
+    float4 diffuse = dot(n,l);
+    OUT = NEON.AmbientColor + sun.Diffuse * diffuse * lamt;
+
+    if (hasDiffuseTex)
+        OUT *= s;
+
+    return OUT;
+}
+
+technique Scene {
+    pass {
+        VertexShader = compile vs_3_0 VS_ScenePass();
+        PixelShader = compile ps_3_0 PS_ScenePass();
+    }
+};

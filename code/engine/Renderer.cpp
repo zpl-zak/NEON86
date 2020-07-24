@@ -151,7 +151,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 
 	Resize(winres);
 
-	mMainTarget = new CRenderTarget(winres.right, winres.bottom, TRUE);
+	mMainTarget = new CRenderTarget(winres.right, winres.bottom, FALSE);
 	SetRenderTarget(NULL);
     mDefaultMaterial = new CMaterial();
 
@@ -468,19 +468,19 @@ VOID CRenderer::ResetMatrices()
 	mDevice->SetTransform(D3DTS_PROJECTION, &mat);
 }
 
-VOID CRenderer::SetRenderTarget(CRenderTarget* target, BOOL depth)
+VOID CRenderer::SetRenderTarget(CRenderTarget* target)
 {
 	if (target && target->GetSurfaceHandle())
 	{
 		mDevice->SetRenderTarget(0, target->GetSurfaceHandle());
-
-        if (depth)
-            mDevice->SetDepthStencilSurface(target->GetDepthSurfaceHandle());
+		mDevice->SetDepthStencilSurface(target->HasDepth() ? NULL : target->GetDepthStencilSurfaceHandle());
+		mActiveTarget = target;
 	}
 	else
 	{
 		mDevice->SetRenderTarget(0, mMainTarget->GetSurfaceHandle());
-		mDevice->SetDepthStencilSurface(mMainTarget->GetDepthSurfaceHandle());
+		mDevice->SetDepthStencilSurface(mMainTarget->GetDepthStencilSurfaceHandle());
+		mActiveTarget = mMainTarget;
 	}
 }
 
@@ -515,6 +515,18 @@ VOID CRenderer::SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end)
 VOID CRenderer::ClearFog()
 {
 	mDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+}
+
+RECT CRenderer::GetSurfaceResolution()
+{
+	D3DSURFACE_DESC desc;
+	mActiveTarget->GetTextureHandle()->GetLevelDesc(0, &desc);
+
+	RECT r;
+	r.left = r.top = 0;
+	r.right = desc.Width;
+	r.bottom = desc.Height;
+	return r;
 }
 
 VOID CRenderer::SetDefaultRenderStates()

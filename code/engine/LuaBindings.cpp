@@ -333,7 +333,7 @@ LUAF(Rend, CameraPerspective)
 	}
 
 	D3DXMATRIX matProjection;    
-	RECT res = RENDERER->GetResolution();
+	RECT res = RENDERER->GetSurfaceResolution();
 
 	if (flipHandedness)
 	{
@@ -358,7 +358,7 @@ LUAF(Rend, CameraPerspective)
 }
 LUAF(Rend, CameraOrthographic)
 {
-	RECT res = RENDERER->GetResolution();
+	RECT res = RENDERER->GetSurfaceResolution();
 	FLOAT w=(FLOAT)res.right, h=(FLOAT)res.bottom;
     BOOL flipHandedness = FALSE;
 
@@ -368,7 +368,7 @@ LUAF(Rend, CameraOrthographic)
         h = (FLOAT)luaL_checknumber(L, 2);
 	}
 
-	FLOAT zNear=1.0f, zFar=100.0f;
+	FLOAT zNear=0.01f, zFar=100.0f;
 
 	if (lua_gettop(L) >= 4)
 	{
@@ -404,6 +404,55 @@ LUAF(Rend, CameraOrthographic)
 
 	return 0;
 }
+LUAF(Rend, CameraOrthographicEx)
+{
+    RECT res = RENDERER->GetSurfaceResolution();
+	FLOAT l = 0.0f, t = 0.0f;
+    FLOAT r = (FLOAT)res.right, b = (FLOAT)res.bottom;
+    BOOL flipHandedness = FALSE;
+
+    if (lua_gettop(L) >= 4)
+    {
+		l = (FLOAT)luaL_checknumber(L, 1);
+		r = (FLOAT)luaL_checknumber(L, 2);
+		b = (FLOAT)luaL_checknumber(L, 3);
+		t = (FLOAT)luaL_checknumber(L, 4);
+    }
+
+    FLOAT zNear = 0.01f, zFar = 100.0f;
+
+    if (lua_gettop(L) >= 5)
+    {
+        zNear = (FLOAT)luaL_checknumber(L, 5);
+        zFar = (FLOAT)luaL_checknumber(L, 6);
+    }
+
+    if (lua_gettop(L) >= 7)
+    {
+        flipHandedness = (BOOL)lua_toboolean(L, 7);
+    }
+
+    D3DXMATRIX matProjection;
+
+    if (flipHandedness)
+    {
+        D3DXMatrixOrthoOffCenterRH(&matProjection,
+            l, r, b, t,
+            zNear,
+            zFar);
+    }
+    else
+    {
+        D3DXMatrixOrthoOffCenterLH(&matProjection,
+			l, r, b, t,
+            zNear,
+            zFar);
+    }
+
+    RENDERER->SetMatrix(MATRIXKIND_PROJECTION, matProjection);
+
+    return 0;
+}
 LUAF(Rend, BindTexture)
 {
 	DWORD stage = (DWORD)luaL_checknumber(L, 1);
@@ -412,7 +461,7 @@ LUAF(Rend, BindTexture)
 	if (luaL_testudata(L, 2, L_RENDERTARGET))
 	{
 		CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 2);
-		RENDERER->SetTexture(stage, rtt->GetTextureHandle());
+		RENDERER->SetTexture(stage, rtt->GetTextureHandle());	
 	}
 	else if (luaL_testudata(L, 2, L_MATERIAL))
 	{
@@ -470,6 +519,12 @@ LUAF(Rend, RenderState)
 	BOOL state = (BOOL)lua_toboolean(L, 2);
 
 	RENDERER->SetRenderState(kind, state);
+	return 0;
+}
+LUAF(Rend, ToggleDepthTest)
+{
+	BOOL state = (BOOL)lua_toboolean(L, 1);
+	RENDERER->SetRenderState(D3DRS_ZENABLE, state);
 	return 0;
 }
 LUAF(Rend, ToggleWireframe)
@@ -610,6 +665,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearScene);
 	REGF(Rend, CameraPerspective);
 	REGF(Rend, CameraOrthographic);
+	REGF(Rend, CameraOrthographicEx);
 	REGF(Rend, GetMatrix);
 	REGF(Rend, GetResolution);
 	REGF(Rend, IsFocused);
@@ -618,6 +674,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearFog);
 	REGF(Rend, SamplerState);
 	REGF(Rend, ToggleWireframe);
+	REGF(Rend, ToggleDepthTest);
 	REGF(Rend, EnableLighting);
 	REGF(Rend, CullMode);
 	REGF(Rend, AmbientColor);

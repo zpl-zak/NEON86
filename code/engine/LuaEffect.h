@@ -157,6 +157,7 @@ static INT effect_settexture(lua_State* L)
     if (luaL_testudata(L, 3, L_RENDERTARGET))
     {
         CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 3);
+        
         fx->SetTexture(name, rtt->GetTextureHandle());
     }
     else if (luaL_testudata(L, 3, L_MATERIAL))

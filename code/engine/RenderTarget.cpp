@@ -26,8 +26,7 @@ VOID CRenderTarget::Release(VOID)
             RENDERER->SetRenderTarget(NULL);
 
         SAFE_RELEASE(mTextureHandle);
-        SAFE_RELEASE(mDepthTextureHandle);
-        SAFE_RELEASE(mDepthSurfaceHandle);
+        SAFE_RELEASE(mDepthStencilSurfaceHandle);
 
         mSurfaceHandle = NULL;
     }
@@ -35,7 +34,7 @@ VOID CRenderTarget::Release(VOID)
 
 VOID CRenderTarget::Bind(VOID)
 {
-    RENDERER->SetRenderTarget(this, mDepth);
+    RENDERER->SetRenderTarget(this);
 }
 
 VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
@@ -43,39 +42,22 @@ VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
     mDepth = depth;
     mTextureHandle = NULL;
     mSurfaceHandle = NULL;
-    mDepthSurfaceHandle = NULL;
-    mDepthTextureHandle = NULL;
+    mDepthStencilSurfaceHandle = NULL;
 
     D3DSURFACE_DESC dp = RENDERER->GetDisplayDesc();
 
-    LRESULT res = RENDERER->GetDevice()->CreateTexture(
-        w ? w : dp.Width,
-        h ? h : dp.Height,
-        1,
-        D3DUSAGE_RENDERTARGET,
-        dp.Format,
-        D3DPOOL_DEFAULT,
-        &mTextureHandle,
-        NULL
-    );
-
-    if (FAILED(res))
-    {
-        MessageBoxA(NULL, "Failed to create render target!", "Renderer error", MB_OK);
-        ENGINE->Shutdown();
-        return;
-    }
+    LRESULT res;
 
     if (depth)
     {
         res = RENDERER->GetDevice()->CreateTexture(
             w ? w : dp.Width,
             h ? h : dp.Height,
-            0,
+            1,
             D3DUSAGE_RENDERTARGET,
             D3DFMT_R32F,
             D3DPOOL_DEFAULT,
-            &mDepthTextureHandle,
+            &mTextureHandle,
             NULL
         );
 
@@ -85,10 +67,29 @@ VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, BOOL depth)
             ENGINE->Shutdown();
             return;
         }
-
-
-        RENDERER->GetDevice()->CreateDepthStencilSurface(w, h, D3DFMT_D24X8, dp.MultiSampleType, dp.MultiSampleQuality, TRUE, &mDepthSurfaceHandle, NULL);
     }
+    else
+    {
+        res = RENDERER->GetDevice()->CreateTexture(
+            w ? w : dp.Width,
+            h ? h : dp.Height,
+            1,
+            D3DUSAGE_RENDERTARGET,
+            dp.Format,
+            D3DPOOL_DEFAULT,
+            &mTextureHandle,
+            NULL
+        );
+
+        if (FAILED(res))
+        {
+            MessageBoxA(NULL, "Failed to create render target!", "Renderer error", MB_OK);
+            ENGINE->Shutdown();
+            return;
+        }
+    }
+
+    RENDERER->GetDevice()->CreateDepthStencilSurface(w, h, D3DFMT_D24S8, D3DMULTISAMPLE_NONE, 0, TRUE, &mDepthStencilSurfaceHandle, NULL);
 
     mTextureHandle->GetSurfaceLevel(0, &mSurfaceHandle);
 }

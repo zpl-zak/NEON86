@@ -27,8 +27,17 @@ local function cap3(v, m)
   return v
 end
 
+local function drawEffect(fx, tech, drawfn)
+  fx:start(tech)
+  fx:beginPass(1)
+  drawfn(fx)
+  fx:endPass()
+  fx:finish()
+end
+
 return {
   lerp = lerp,
   clamp = clamp,
-  cap3 = cap3
+  cap3 = cap3,
+  drawEffect = drawEffect
 }

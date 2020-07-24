@@ -18,15 +18,15 @@ public:
     inline LPDIRECT3DTEXTURE9 GetTextureHandle() { return mTextureHandle; }
     inline LPDIRECT3DSURFACE9 GetSurfaceHandle() { return mSurfaceHandle; }
 
-    inline LPDIRECT3DTEXTURE9 GetDepthTextureHandle() { return mDepthTextureHandle; }
-    inline LPDIRECT3DSURFACE9 GetDepthSurfaceHandle() { return mDepthSurfaceHandle; }
+    inline LPDIRECT3DSURFACE9 GetDepthStencilSurfaceHandle() { return mDepthStencilSurfaceHandle; }
+    inline BOOL HasDepth() { return mDepth; }
 
     VOID Bind(VOID);
     
 private:
     BOOL mDepth;
-    LPDIRECT3DTEXTURE9 mTextureHandle, mDepthTextureHandle;
-    LPDIRECT3DSURFACE9 mSurfaceHandle, mDepthSurfaceHandle;
+    LPDIRECT3DTEXTURE9 mTextureHandle;
+    LPDIRECT3DSURFACE9 mSurfaceHandle, mDepthStencilSurfaceHandle;
 
     VOID CreateRenderTarget(UINT w, UINT h, BOOL depth=FALSE);
 };

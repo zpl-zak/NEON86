@@ -38,11 +38,12 @@ public:
     VOID SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
     VOID SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
     VOID ResetMatrices();
-    VOID SetRenderTarget(CRenderTarget* target, BOOL depth = FALSE);
+    VOID SetRenderTarget(CRenderTarget* target);
     VOID SetRenderState(DWORD kind, DWORD value);
     VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
     VOID SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end=0.0f);
     VOID ClearFog();
+    RECT GetSurfaceResolution();
     
     inline VOID EnableLighting(BOOL state) { mEnableLighting = state; }
     inline BOOL GetLightingState() { return mEnableLighting; }
@@ -72,6 +73,7 @@ protected:
     HWND mWindow;
     CEffect* mActiveEffect;
     CRenderTarget* mMainTarget;
+    CRenderTarget* mActiveTarget;
     CMaterial *mDefaultMaterial;
     LPD3DXMESH mDefaultBox;
     BOOL mUsesMaterialOverride;

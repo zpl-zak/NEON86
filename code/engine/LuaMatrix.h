@@ -86,7 +86,7 @@ static INT matrix_mul(lua_State* L)
 	D3DXMATRIX* matRHS = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 
 	D3DXMATRIX* out = (D3DXMATRIX*)lua_newuserdata(L, sizeof(D3DXMATRIX));
-	*out = *mat * *matRHS;
+	D3DXMatrixMultiply(out, mat, matRHS);
 
 	luaL_setmetatable(L, L_MATRIX);
 	return 1;
@@ -115,6 +115,143 @@ static INT matrix_lookat(lua_State* L)
 	*mat *= t;
 	lua_pushvalue(L, 1);
 	return 1;
+}
+
+static INT matrix_persp(lua_State* L)
+{
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    FLOAT fov = (FLOAT)luaL_checknumber(L, 2);
+    FLOAT zNear = 0.1f, zFar = 1000.0f;
+    BOOL flipHandedness = FALSE;
+
+    if (lua_gettop(L) >= 4)
+    {
+        zNear = (FLOAT)luaL_checknumber(L, 3);
+        zFar = (FLOAT)luaL_checknumber(L, 4);
+    }
+
+    if (lua_gettop(L) >= 5)
+    {
+        flipHandedness = (BOOL)lua_toboolean(L, 5);
+    }
+
+    RECT res = RENDERER->GetSurfaceResolution();
+
+    if (flipHandedness)
+    {
+        D3DXMatrixPerspectiveFovRH(mat,
+            D3DXToRadian(fov),
+            (FLOAT)res.right / (FLOAT)res.bottom,
+            zNear,
+            zFar);
+    }
+    else
+    {
+        D3DXMatrixPerspectiveFovLH(mat,
+            D3DXToRadian(fov),
+            (FLOAT)res.right / (FLOAT)res.bottom,
+            zNear,
+            zFar);
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static INT matrix_ortho(lua_State* L)
+{
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    RECT res = RENDERER->GetSurfaceResolution();
+    FLOAT w = (FLOAT)res.right, h = (FLOAT)res.bottom;
+    BOOL flipHandedness = FALSE;
+
+    if (lua_gettop(L) >= 3)
+    {
+        w = (FLOAT)luaL_checknumber(L, 2) * ((FLOAT)res.right / (FLOAT)res.bottom);
+        h = (FLOAT)luaL_checknumber(L, 3);
+    }
+
+    FLOAT zNear = 0.01f, zFar = 100.0f;
+
+    if (lua_gettop(L) >= 5)
+    {
+        zNear = (FLOAT)luaL_checknumber(L, 4);
+        zFar = (FLOAT)luaL_checknumber(L, 5);
+    }
+
+    if (lua_gettop(L) >= 6)
+    {
+        flipHandedness = (BOOL)lua_toboolean(L, 6);
+    }
+
+    if (flipHandedness)
+    {
+        D3DXMatrixOrthoRH(mat,
+            w,
+            h,
+            zNear,
+            zFar);
+    }
+    else
+    {
+        D3DXMatrixOrthoLH(mat,
+            w,
+            h,
+            zNear,
+            zFar);
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+
+static INT matrix_orthoex(lua_State* L)
+{
+    D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    RECT res = RENDERER->GetSurfaceResolution();
+    FLOAT l = 0.0f, t = 0.0f;
+    FLOAT r = (FLOAT)res.right, b = (FLOAT)res.bottom;
+    BOOL flipHandedness = FALSE;
+
+    if (lua_gettop(L) >= 5)
+    {
+        l = (FLOAT)luaL_checknumber(L, 2);
+        r = (FLOAT)luaL_checknumber(L, 3);
+        b = (FLOAT)luaL_checknumber(L, 4);
+        t = (FLOAT)luaL_checknumber(L, 5);
+    }
+
+    FLOAT zNear = 0.01f, zFar = 100.0f;
+
+    if (lua_gettop(L) >= 6)
+    {
+        zNear = (FLOAT)luaL_checknumber(L, 6);
+        zFar = (FLOAT)luaL_checknumber(L, 7);
+    }
+
+    if (lua_gettop(L) >= 8)
+    {
+        flipHandedness = (BOOL)lua_toboolean(L, 8);
+    }
+
+    if (flipHandedness)
+    {
+        D3DXMatrixOrthoOffCenterRH(mat,
+            l, r, b, t,
+            zNear,
+            zFar);
+    }
+    else
+    {
+        D3DXMatrixOrthoOffCenterLH(mat,
+            l, r, b, t,
+            zNear,
+            zFar);
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
 }
 
 static INT matrix_getfield(lua_State* L)
@@ -230,6 +367,9 @@ static VOID LuaMatrix_register(lua_State* L)
 	REGC("scale", matrix_scale);
 	REGC("bind", matrix_bind);
 	REGC("lookAt", matrix_lookat);
+	REGC("persp", matrix_persp);
+	REGC("ortho", matrix_ortho);
+	REGC("orthoEx", matrix_orthoex);
 	REGC("__mul", matrix_mul);
 	REGC("m", matrix_getfield);
 	REGC("inverse", matrix_inverse);

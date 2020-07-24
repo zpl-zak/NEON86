@@ -26,7 +26,7 @@ function _init()
   testFont = Font("Silkscreen", 18, 1, false)
 
   local res = GetResolution()
-  rt = RenderTarget(2048, 2048, true)
+  rt = RenderTarget(2048, 2048, false)
   rtMat = Material()
   rtMat:setHandle(1, rt:getHandle())
 
@@ -62,9 +62,10 @@ function _render()
   testModel:getMeshes()[1]:setMaterial(0, rtMat)
   testModel:draw()
 
+  ClearTarget()
+  CameraPerspective(62, 0.1, 500)
   rt:bind()
   CullMode(3)
-  CameraPerspective(62, 0.1, 500)
   EnableLighting(false)
   ClearScene(20,20,69)
 
