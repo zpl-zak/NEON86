@@ -57,7 +57,7 @@ float CalcShadowVariance(sampler2D shadowMap, float bias, float depth, float2 sh
 {
     float2 m = tex2D(shadowMap, shadowCoord).xy;
 
-    float p = CalcShadowPCF(shadowMap, 3, bias, depth, shadowCoord, shadowMapSize);
+    float p = CalcShadowPCF2x2(shadowMap, bias, depth, shadowCoord, shadowMapSize);
     float variance = max(m.y - m.x * m.x, minVariance);
 
     float d = depth + bias - m.x;
