@@ -44,7 +44,7 @@ VS_OUTPUT VS_ScenePass(VS_INPUT IN)
     VS_OUTPUT OUT;
     OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
     OUT.viewPos = mul(float4(IN.position, 1.0f), NEON.WorldView);
-    OUT.normal = mul(float4(IN.normal, 1.0f), NEON.InverseWorld);
+    OUT.normal = mul(IN.normal, NEON.World);
     OUT.texCoord = IN.texCoord;
 
     OUT.lightViewPos = mul(float4(IN.position, 1.0f), NEON.World);
@@ -64,15 +64,17 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     float lamt = 1.0f;
 
     float2 shadowCoord = CalcShadowCoord(vpl);
+    float diffuse = saturate(dot(n,l));
+
+    float bias = SHADOW_EPSILON*tan(acos(diffuse));
+    bias = clamp(bias, 0, 0.01);
     
-    if (shadowMethod == 0) lamt = CalcShadowPCF2x2(shadowMap, vpl.z/vpl.w, shadowCoord, shadowMapSize);
-    if (shadowMethod == 1) lamt = CalcShadowSimple(shadowMap, vpl.z/vpl.w, shadowCoord);
+    if (shadowMethod == 0) lamt = CalcShadowPCF2x2(shadowMap, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
+    if (shadowMethod == 1) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
 
     // lamt = ApplyPoissonSampling(vpl, lamt, 0.2, 700, shadowCoord, shadowMap, vpl.z/vpl.w);
 
-    float4 diffuse = dot(n,l);
-    OUT = NEON.AmbientColor + sun.Diffuse * diffuse;
-    OUT = lerp(OUT, NEON.AmbientColor, 1-lamt);
+    OUT = NEON.AmbientColor + sun.Diffuse * diffuse * lamt;
 
     if (hasDiffuseTex)
         OUT *= s;

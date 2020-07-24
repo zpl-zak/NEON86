@@ -96,18 +96,20 @@ end
 function _render()
   lightProj = Matrix():orthoEx(-20, 20, -20, 20, -20, 20)
   lightView = Matrix():lookAt(
-    lightDir,
+    lightDir * Matrix():rotate(time/4,0,0),
     Vector(),
     Vector(0,1,0)
   )
+  light:setDirection(lightDir * Matrix():rotate(time/4,0,0))
+  light:enable(true, 0)
 
   shadowGen:build(lightView, lightProj, drawScene)
 
-  ClearScene(20,20,69)
+  ClearScene(80,80,60)
   AmbientColor(20,20,69)
   CameraPerspective(62, 0.1, 100)
   cam.mat:bind(VIEW)
-
+  
   hh.drawEffect(shader, "Scene", function (fx)
     fx:setLight("sun", light)
     fx:setTexture("shadowTex", shadowGen.shadowmap)
