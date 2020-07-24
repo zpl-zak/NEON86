@@ -57,13 +57,13 @@ float CalcShadowVariance(sampler2D shadowMap, float bias, float depth, float2 sh
 {
     float2 m = tex2D(shadowMap, shadowCoord).xy;
 
-    float p = step(m.x, depth + bias);
+    float p = CalcShadowPCF(shadowMap, 3, bias, depth, shadowCoord, shadowMapSize);
     float variance = max(m.y - m.x * m.x, minVariance);
 
     float d = depth + bias - m.x;
     float pMax = linstep(lightReduction, 1.0, variance / (variance + d*d));
 
-    return min(max(p, 1-pMax), 1.0);
+    return min(max(p/(d*d), 1-pMax), 1.0);
 }
 
 float2 poissonDisk[4] = {
