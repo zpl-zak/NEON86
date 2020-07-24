@@ -4,7 +4,7 @@ shadowMapSize = 4096.0
 
 Camera = require "camera"
 Class = require "class"
-hh = require "helpers"
+require "helpers"
 
 Class "ShadowGen" {
   __init__ = function (self, shadowMapSize)
@@ -22,16 +22,16 @@ Class "ShadowGen" {
     self.shadowmap:bind()
     ClearScene(0,0,0)
     CullMode(CULLKIND_CW)
-    
+
     self.shader:begin("Shadow")
     self.shader:beginPass(1)
     drawfn()
     self.shader:endPass()
     self.shader:finish()
-    
+
     oldView:bind(VIEW)
     oldProj:bind(PROJ)
-    
+
     -- TODO: Restore old RT
     ClearTarget()
     CullMode(CULLKIND_CCW)
@@ -95,6 +95,7 @@ function drawScene()
 end
 
 function _render()
+  -- 1st pass, generate shadowmap
   local ldir = lightDir * Matrix():rotate(time/4,0,0)
   lightProj = Matrix():orthoEx(-20, 20, -20, 20, -20, 20)
   lightView = Matrix():lookAt(
@@ -107,11 +108,13 @@ function _render()
 
   shadowGen:build(lightView, lightProj, drawScene)
 
+  -- 2nd pass, render scene w/ shadows
+  ClearTarget()
   ClearScene(80,80,60)
   AmbientColor(20,20,69)
   CameraPerspective(62, 0.1, 100)
   cam.mat:bind(VIEW)
-  
+
   drawEffect(shader, "Scene", function (fx)
     fx:setLight("sun", light)
     fx:setTexture("shadowTex", shadowGen.shadowmap)
