@@ -1,4 +1,4 @@
-float shadowEpsilon = 0.00005f;
+float shadowEpsilon = 0.01f;
 
 float2 CalcShadowCoord(float4 vPosLight)
 {
@@ -9,7 +9,7 @@ float2 CalcShadowCoord(float4 vPosLight)
 
 float CalcShadowSimple(sampler2D shadowMap, float depth, float2 shadowCoord)
 {
-    return tex2D(shadowMap, shadowCoord).r + shadowEpsilon < depth;
+    return tex2D(shadowMap, shadowCoord).r < depth + shadowEpsilon;
 }
 
 float CalcShadowPCF2x2(sampler2D shadowMap, float depth, float2 shadowCoord, float shadowMapSize)
