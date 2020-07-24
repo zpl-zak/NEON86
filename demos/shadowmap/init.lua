@@ -73,7 +73,7 @@ function _update(dt)
   end
 
   if GetKeyDown("p") then
-    shadowMethod = (shadowMethod + 1) % 2
+    shadowMethod = (shadowMethod + 1) % 3
   end
 
   if GetKeyDown("m") then
@@ -138,7 +138,8 @@ Hold RMB to look around
 WASD to move
 
 Techniques available:
-  A/B Test
   PCF 2x2
+  Variance
+  A/B Test
   ]], 15, 30)
 end

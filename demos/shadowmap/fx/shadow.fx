@@ -15,7 +15,7 @@ float CalcShadowSimple(sampler2D shadowMap, float bias, float depth, float2 shad
 float CalcShadowPCF2x2(sampler2D shadowMap, float bias, float depth, float2 shadowCoord, float shadowMapSize)
 {
     float2 tpos = shadowMapSize * shadowCoord;
-    float2 lerps = frac(tpos); 
+    float2 lerps = frac(tpos);
 
     float srcvals[4];
     srcvals[0] = (tex2D(shadowMap, shadowCoord) > depth + bias) ? 0.0f : 1.0f;
@@ -28,6 +28,24 @@ float CalcShadowPCF2x2(sampler2D shadowMap, float bias, float depth, float2 shad
         lerp(srcvals[2], srcvals[3], lerps.x),
         lerps.y
     );
+}
+
+float linstep(float low, float high, float v)
+{
+    return clamp((v-low)/(high-low), 0.0, 1.0);
+}
+
+float CalcShadowVariance(sampler2D shadowMap, float bias, float depth, float2 shadowCoord, float minVariance, float lightReduction)
+{
+    float2 m = tex2D(shadowMap, shadowCoord).xy;
+
+    float p = step(m.x, depth + bias);
+    float variance = max(m.y - m.x * m.x, minVariance);
+
+    float d = depth + bias - m.x;
+    float pMax = linstep(lightReduction, 1.0, variance / (variance + d*d));
+
+    return min(max(p, 1-pMax), 1.0);
 }
 
 float2 poissonDisk[4] = {
