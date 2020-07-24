@@ -50,14 +50,13 @@ VS_OUTPUT VS_ScenePass(VS_INPUT IN)
     OUT.lightViewPos = mul(float4(IN.position, 1.0f), NEON.World);
     OUT.lightViewPos = mul(OUT.lightViewPos, shadowView);
     OUT.lightViewPos = mul(OUT.lightViewPos, shadowProj);
-    
+
     return OUT;
 }
 
 float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
 {
     float4 OUT;
-    float4 s = tex2D(diffuseMap, IN.texCoord);
     float4 n = normalize(IN.normal);
     float3 l = normalize(-sun.Direction);
     float4 vpl = IN.lightViewPos;
@@ -68,7 +67,7 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
 
     float bias = SHADOW_EPSILON*tan(acos(diffuse));
     bias = clamp(bias, 0, 0.01);
-    
+
     if (shadowMethod == 0) lamt = CalcShadowPCF2x2(shadowMap, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
     if (shadowMethod == 1) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
 
@@ -77,7 +76,7 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     OUT = NEON.AmbientColor + sun.Diffuse * diffuse * lamt;
 
     if (hasDiffuseTex)
-        OUT *= s;
+        OUT *= tex2D(diffuseMap, IN.texCoord);
 
     return OUT;
 }
