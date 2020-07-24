@@ -3,7 +3,6 @@ time = 0
 shadowMapSize = 4096.0
 
 cam = require "camera" (Vector(1,2,3)*4, {math.pi, -0.5})
-Camera = require "camera"
 shadowGen = require "shadow" (shadowMapSize)
 require "helpers"
 
