@@ -168,7 +168,7 @@ public:
     VOID Render() {
         RECT res = RENDERER->GetResolution();
 
-        ImGui::SetNextWindowSizeConstraints({220, 100}, {(FLOAT)res.right, (FLOAT)res.bottom});
+        ImGui::SetNextWindowSizeConstraints({220, 300}, {(FLOAT)res.right, (FLOAT)res.bottom});
         ImGui::Begin("Output", NULL);
         FLOAT profW = ImGui::GetWindowWidth();
         FLOAT profH = ImGui::GetWindowHeight();
