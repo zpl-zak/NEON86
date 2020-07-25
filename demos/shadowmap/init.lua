@@ -24,6 +24,7 @@ RegisterFontFile("slkscr.ttf")
 testFont = Font("Silkscreen", 24, 1, false)
 
 shadowMethod = 0
+noShadows = 0
 
 function _update(dt)
   if GetKeyDown(KEY_ESCAPE) then
@@ -49,6 +50,10 @@ function _update(dt)
       shadowMapSize = 256.0
     end
     shadowGen = ShadowGen(shadowMapSize)
+  end
+
+  if GetKeyDown("n") then
+    noShadows = 1 - noShadows
   end
 
   cam:update(dt)
@@ -88,6 +93,7 @@ function _render()
     fx:setMatrix("shadowProj", lightProj)
     fx:setFloat("shadowMapSize", shadowMapSize)
     fx:setFloat("shadowMethod", shadowMethod)
+    fx:setFloat("noShadows", noShadows)
     fx:commit()
     drawScene()
   end)
@@ -98,7 +104,7 @@ function _render2d()
 Shadowmap demo
 
 Press P to cycle between shadow techniques
-Press M to switch between 128x128 and 4096x4096 resolution
+Press M to switch between 256x256 and 4096x4096 resolution
 
 Hold RMB to look around
 WASD to move

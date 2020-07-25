@@ -5,6 +5,7 @@ float4x4 shadowProj;
 
 float shadowMapSize = 512.0;
 int shadowMethod;
+int noShadows;
 
 #include "fx/shadow.fx"
 
@@ -68,11 +69,12 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     float bias = SHADOW_EPSILON*tan(acos(diffuse));
     bias = clamp(bias, 0.01, 0.1);
 
-    if (shadowMethod == 0) lamt = CalcShadowPCF(shadowMap, 6, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
-    if (shadowMethod == 1) lamt = CalcShadowVariance(shadowMap, bias, vpl.z/vpl.w, shadowCoord, 0.0002, 0.94);
-    if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
-
-    // lamt = ApplyPoissonSampling(vpl, lamt, 0.2, 700, shadowCoord, shadowMap, vpl.z/vpl.w);
+    if (!noShadows)
+    {
+        if (shadowMethod == 0) lamt = CalcShadowPCF(shadowMap, 6, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
+        if (shadowMethod == 1) lamt = CalcShadowVariance(shadowMap, bias, vpl.z/vpl.w, shadowCoord, 0.0002, 0.94);
+        if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
+    }
 
     OUT = NEON.AmbientColor + sun.Diffuse * diffuse * lamt;
 
