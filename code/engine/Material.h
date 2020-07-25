@@ -11,7 +11,7 @@ class ENGINE_API CMaterial: public CReferenceCounter, CAllocable<CMaterial>
 public:
     CMaterial(UINT slot, LPSTR texName);
     CMaterial(UINT slot, UINT w, UINT h);
-    CMaterial(UINT slot, VOID* data, UINT size = 1);
+    CMaterial(UINT slot, LPVOID data, UINT size = 1);
     CMaterial();
     ~CMaterial() { Release(); }
 
@@ -19,12 +19,11 @@ public:
     VOID Release(VOID);
 
     VOID CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);
-    VOID CreateEmbeddedTextureForSlot(UINT slot, VOID* data, UINT size);
+    VOID CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size);
     
     inline VOID SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
     inline UINT GetSamplerState(UINT state) const { return mStats[state]; }
     inline LPDIRECT3DTEXTURE9 GetTextureHandle(UINT slot=TEXTURESLOT_ALBEDO) { return mTextureHandle[slot]; }
-    inline LPDIRECT3DTEXTURE9 GetUserTextureHandle(UINT userSlot) { return mTextureHandle[userSlot]; }
 
     VOID SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
     VOID Bind(DWORD stage);

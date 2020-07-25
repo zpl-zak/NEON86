@@ -46,7 +46,7 @@ static INT material_getres(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
-    LPDIRECT3DTEXTURE9 h = mat->GetUserTextureHandle(userSlot);
+    LPDIRECT3DTEXTURE9 h = mat->GetTextureHandle(userSlot);
     D3DSURFACE_DESC a;
 
     h->GetLevelDesc(0, &a);
@@ -84,7 +84,7 @@ static INT material_getdata(lua_State* L)
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     D3DSURFACE_DESC a;
-    mat->GetUserTextureHandle(userSlot)->GetLevelDesc(0, &a);
+    mat->GetTextureHandle(userSlot)->GetLevelDesc(0, &a);
 
     UINT* buf = (UINT*)mat->Lock(userSlot);
 

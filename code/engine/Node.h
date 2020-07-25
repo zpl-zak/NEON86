@@ -28,16 +28,13 @@ public:
         mTransform = new D3DXMATRIX();
         mCachedTransform = new D3DXMATRIX();
         mMetadata = new METADATA();
+        mMetadata->clear();
 
         D3DXMatrixIdentity(mTransform);
         D3DXMatrixIdentity(mCachedTransform);
         SetName("(unknown)");
         mIsTransformDirty = TRUE;
         mParent = NULL;
-
-        mMeshes.Release();
-        mLights.Release();
-        mNodes.Release();
     }
 
     CNode(D3DXMATRIX mat, CString name): CAllocable()
@@ -46,10 +43,6 @@ public:
         mTransform = new D3DXMATRIX(mat);
         mCachedTransform = new D3DXMATRIX();
         mMetadata = new METADATA();
-
-        mMeshes.Release();
-        mLights.Release();
-        mNodes.Release();
         mMetadata->clear();
 
         mParent = NULL;
@@ -96,8 +89,11 @@ public:
 
     inline UINT GetNumNodes() { return mNodes.GetCount(); }
     inline CNode** GetNodeData() { return mNodes.GetData(); }
+
     CNode* FindNode(LPCSTR name);
+    
     VOID AddNode(CNode* tgt);
+    
     CNode* Clone();
 
     BOOL IsEmpty();

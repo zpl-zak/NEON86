@@ -9,7 +9,7 @@ class ENGINE_API CNodeComponent
 public:
     CNodeComponent() 
     {
-        mName = CString("(unknown)");
+        mName = "(unknown)";
         mOwner = NULL;
     }
 

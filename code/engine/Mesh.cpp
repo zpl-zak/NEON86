@@ -13,8 +13,7 @@
 
 CMesh::CMesh(VOID): CAllocable()
 {
-    mFaceGroups.Release();
-    mTransforms.Release();
+
 }
 
 VOID CMesh::Release(VOID)

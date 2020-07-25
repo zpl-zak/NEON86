@@ -18,26 +18,29 @@ constexpr SSIZE_T sFramerateMaxSamples = 30;
 class CGraphData {
 public:
     CGraphData() {
-        mData.Release();
-
-        /*for (UINT i=0; i<sFramerateMaxSamples; i++)
-            mData.Push(0.0f);*/
-
         mMaxima = FLT_MIN;
         mMinima = FLT_MAX;
 
         mSelectionStart = 0;
         mSelectionLength = 0;
+        mPaused = FALSE;
     }
 
     VOID Push(FLOAT ms) {
         if (VM->GetStatus() != PLAYKIND_PLAYING)
             return;
 
+        if (mPaused)
+            return;
+
         mData.Push(ms);
 
         if (mData.GetCount() > sFramerateMaxSamples) {
             mData.RemoveByIndex(0);
+
+            if (mSelectionStart > 0) {
+                mSelectionStart--;
+            }
         }
     }
 
@@ -99,6 +102,7 @@ public:
 
             ImGui::Columns(1);
             ImGui::Separator();
+            ImGui::Checkbox("Is paused", &mPaused);
             {
                 ImGui::PlotConfig conf;
                 conf.values.count = (int)::fmin(sFramerateMaxSamples, mData.GetCount());
@@ -157,6 +161,7 @@ private:
     FLOAT mMaxima, mMinima;
     UINT32 mSelectionStart;
     UINT32 mSelectionLength;
+    bool mPaused;
 } sFramerateStats;
 
 class CLogWindow {

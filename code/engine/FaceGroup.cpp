@@ -10,8 +10,6 @@
 CFaceGroup::CFaceGroup(VOID): CAllocable()
 {
 	ZeroMemory(&mData, sizeof(RENDERDATA));
-    mVerts.Release();
-    mIndices.Release();
 	mData.kind = PRIMITIVEKIND_TRIANGLELIST;
 	mIsDirty = FALSE;
 }

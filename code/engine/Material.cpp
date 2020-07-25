@@ -23,7 +23,7 @@ CMaterial::CMaterial(): CAllocable()
     DefaultMaterial();
 }
 
-CMaterial::CMaterial(UINT slot, VOID* data, UINT size): CMaterial()
+CMaterial::CMaterial(UINT slot, LPVOID data, UINT size): CMaterial()
 {
     CreateEmbeddedTextureForSlot(slot, data, size);
 }
@@ -77,14 +77,13 @@ VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
     }
 }
 
-VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, VOID* data, UINT size)
+VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size)
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
     
     if (!data)
     {
         VM->PostError(CString("Embedded image is empty!"));
-        ENGINE->Shutdown();
         return;
     }
 
@@ -133,7 +132,7 @@ VOID CMaterial::UploadARGB(UINT slot, VOID* data, UINT size)
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, NULL, D3DLOCK_DISCARD);
-    memcpy(r.pBits, data, size);
+    ::memcpy(r.pBits, data, size);
     mTextureHandle[slot]->UnlockRect(0);
 }
 
@@ -144,22 +143,22 @@ VOID CMaterial::Unlock(UINT slot)
 
 VOID CMaterial::SetAmbient(D3DCOLORVALUE color)
 {
-    memcpy(&mMaterialData.Ambient, &color, sizeof(D3DCOLORVALUE));
+    ::memcpy(&mMaterialData.Ambient, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetDiffuse(D3DCOLORVALUE color)
 {
-    memcpy(&mMaterialData.Diffuse, &color, sizeof(D3DCOLORVALUE));
+    ::memcpy(&mMaterialData.Diffuse, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetSpecular(D3DCOLORVALUE color)
 {
-    memcpy(&mMaterialData.Specular, &color, sizeof(D3DCOLORVALUE));
+    ::memcpy(&mMaterialData.Specular, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetEmission(D3DCOLORVALUE color)
 {
-    memcpy(&mMaterialData.Emissive, &color, sizeof(D3DCOLORVALUE));
+    ::memcpy(&mMaterialData.Emissive, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetPower(FLOAT val)
