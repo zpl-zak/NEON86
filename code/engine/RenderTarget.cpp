@@ -26,9 +26,10 @@ VOID CRenderTarget::Release(VOID)
             RENDERER->SetRenderTarget(NULL);
 
         SAFE_RELEASE(mTextureHandle);
+        SAFE_RELEASE(mSurfaceHandle);
         SAFE_RELEASE(mDepthStencilSurfaceHandle);
 
-        mSurfaceHandle = NULL;
+        delete this;
     }
 }
 

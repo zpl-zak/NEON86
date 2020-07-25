@@ -316,7 +316,7 @@ VOID CUserInterface::Render(VOID)
     DebugPanel();
 
     ImGui::EndFrame();
-    
+
     ImGui::Render();
     ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
@@ -372,7 +372,7 @@ VOID CUserInterface::DebugPanel(VOID)
 #ifdef _DEBUG
     ImGui::BeginMainMenuBar();
     {
-        if (ImGui::Button("X"))
+        if (ImGui::Button(" X "))
             ENGINE->Shutdown();
 
         if (ImGui::Button("Restart VM"))
@@ -404,7 +404,7 @@ VOID CUserInterface::DebugPanel(VOID)
         ImGui::Begin("Error messages", NULL, ImGuiWindowFlags_NoSavedSettings|ImGuiWindowFlags_NoCollapse|ImGuiWindowFlags_AlwaysAutoResize);
         {
             ImGui::TextWrapped("%s", mErrorMessage.Str());
-            
+
             if (ImGui::Button("Restart VM"))
                 VM->Restart();
 
