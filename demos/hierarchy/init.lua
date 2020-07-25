@@ -2,10 +2,10 @@ local root
 local clonedRoot
 local time = 0
 local light
+local model = Model("sphere.fbx"):getMeshes()[1]
 
 function _init()
   root = Node()
-  local model = Model("sphere.fbx"):getMeshes()[1]
 
   local child = Node()
   child:setTransform(Matrix():translate(0, 2, 0):rotate(3.14,0,0))

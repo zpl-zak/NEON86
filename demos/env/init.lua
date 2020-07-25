@@ -59,7 +59,7 @@ function _render()
 
   skybox:draw(Matrix():translate(camera.pos))
   sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
-  testModel:getMeshes()[1]:setMaterial(0, rtMat)
+  testModel:getMeshes()[1]:setMaterial(rtMat)
   testModel:draw()
 
   ClearTarget()

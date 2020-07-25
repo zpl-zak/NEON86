@@ -110,7 +110,6 @@ struct RENDERDATA
 	union 
 	{
 		UINT flags;
-        DWORD stage;
         DWORD state;
 	};
 	

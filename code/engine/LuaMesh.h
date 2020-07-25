@@ -107,18 +107,17 @@ static INT mesh_getname(lua_State* L)
 static INT mesh_setmaterial(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    DWORD stage = (DWORD)luaL_checkinteger(L, 2);
     CMaterial* mat = NULL;
 
-    if (lua_gettop(L) == 3)
+    if (lua_gettop(L) == 2)
     {
-        mat = *(CMaterial**)luaL_checkudata(L, 3, L_MATERIAL);
+        mat = *(CMaterial**)luaL_checkudata(L, 2, L_MATERIAL);
     }
 
     for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
     {
-        mesh->GetFGroupData()[i]->SetMaterial(stage, mat ? mat : NULL);
-        mat->AddRef();
+        mesh->GetFGroupData()[i]->SetMaterial(mat ? mat : NULL);
+        if (mat) mat->AddRef();
     }
     
     lua_pushvalue(L, 1);

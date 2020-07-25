@@ -70,7 +70,7 @@ CNode* CNode::Clone()
 {
     CNode* clonedNode = new CNode();
 
-    clonedNode->mMetadata = mMetadata;
+    *clonedNode->mMetadata = *mMetadata;
     clonedNode->SetName(GetName());
 
     for (auto a : mMeshes)

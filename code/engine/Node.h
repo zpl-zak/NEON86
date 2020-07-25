@@ -28,7 +28,6 @@ public:
         mTransform = new D3DXMATRIX();
         mCachedTransform = new D3DXMATRIX();
         mMetadata = new METADATA();
-        mMetadata->clear();
 
         D3DXMatrixIdentity(mTransform);
         D3DXMatrixIdentity(mCachedTransform);

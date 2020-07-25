@@ -26,9 +26,8 @@ VOID CFaceGroup::Release(VOID)
 	}
 }
 
-VOID CFaceGroup::SetMaterial(DWORD stage, CMaterial* tex)
+VOID CFaceGroup::SetMaterial(CMaterial* tex)
 {
-	mData.stage = stage;
 	mData.mat = tex;
 }
 
@@ -64,14 +63,14 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
     RENDERER->SetDefaultRenderStates();
 
 	if (!RENDERER->UsesMaterialOverride())
-		mData.mat->Bind(mData.stage);
+		mData.mat->Bind(0);
 
 	RENDERER->DrawMesh(mData);
 
     RENDERER->EnableLighting(isGlobalShadingEnabled);
 
 	if (!RENDERER->UsesMaterialOverride())
-		mData.mat->Unbind(mData.stage);
+		mData.mat->Unbind(0);
 }
 
 VOID CFaceGroup::CalculateNormals()
@@ -158,7 +157,7 @@ VOID CFaceGroup::Clear(VOID)
 CFaceGroup* CFaceGroup::Clone()
 {
 	CFaceGroup* clonedFG = new CFaceGroup();
-	clonedFG->SetMaterial(mData.stage, mData.mat); // TODO: Clone material
+	clonedFG->SetMaterial(mData.mat);
 	mData.mat->AddRef();
 
 	for (auto v : mVerts)

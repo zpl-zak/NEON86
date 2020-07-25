@@ -265,7 +265,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_OPACITY, opacity);
         newMaterial->SetOpacity(opacity);
 
-        newFGroup->SetMaterial(0, newMaterial);
+        newFGroup->SetMaterial(newMaterial);
     }
 
     return newFGroup;
