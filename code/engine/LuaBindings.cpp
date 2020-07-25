@@ -137,7 +137,7 @@ LUAF(Base, ShowMessage)
 LUAF(Base, LogString)
 {
     const char* text = luaL_checkstring(L, 1);
-	PushLog(text);
+	PushLog(CString::Format("%s\n", text).Str());
     return 0;
 }
 LUAF(Base, ExitGame)

@@ -137,12 +137,32 @@ private:
 class CLogWindow {
 public:
     CLogWindow() {
-        mLines.Release();
+        Clear();
         mAutoScroll = TRUE;
+        mPaused = FALSE;
+    }
+
+    VOID Clear() {
+        mBuffer.clear();
+        mLineOffsets.clear();
+        mLineOffsets.push_back(0);
     }
 
     VOID Push(LPCSTR msg) {
-        mLines.Push(msg);
+        if (mPaused)
+            return;
+
+        INT oldSize = mBuffer.size();
+        mBuffer.append(msg);
+        for (INT newSize = mBuffer.size(); oldSize < newSize; oldSize++)
+        {
+            if (mBuffer[oldSize] == '\n')
+                mLineOffsets.push_back(oldSize + 1);
+        }
+    }
+
+    VOID Pause() {
+        mPaused = !mPaused;
     }
 
     VOID Render() {
@@ -165,17 +185,44 @@ public:
                 ImGui::OpenPopup("Options");
             ImGui::SameLine();
             if (ImGui::Button("Clear")) {
-                mLines.Clear();
+                Clear();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Pause")) {
+                Pause();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Copy to clipboard")) {
+                ImGui::LogToClipboard();
+            }
+            if (mPaused)
+            {
+                ImGui::SameLine();
+                ImGui::Text("(paused)");
             }
 
             ImGui::BeginChildFrame(0xDEADC0DE, ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
             {
-                for (auto msg : mLines)
-                {
-                    ImGui::Text(msg.Str());
-                }
+                ImGuiListClipper clipper;
+                LPCSTR buf = mBuffer.begin();
+                LPCSTR bufEnd = mBuffer.end();
 
-                if (mAutoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+                clipper.Begin(mLineOffsets.Size);
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+
+                while (clipper.Step())
+                {
+                    for (INT line = clipper.DisplayStart; line < clipper.DisplayEnd; line++)
+                    {
+                        LPCSTR start = buf + mLineOffsets[line];
+                        LPCSTR end = (line + 1 < mLineOffsets.Size) ? (buf + mLineOffsets[line + 1] - 1) : bufEnd;
+                        ImGui::TextUnformatted(start, end);
+                    }
+                }
+                clipper.End();
+                ImGui::PopStyleVar();
+
+                if (mAutoScroll && ImGui::GetScrollY()+20 >= ImGui::GetScrollMaxY())
                     ImGui::SetScrollHereY(1.0f);
             }
             ImGui::EndChildFrame();
@@ -183,8 +230,10 @@ public:
         ImGui::End();
     }
 private:
-    CArray<CString> mLines;
+    ImGuiTextBuffer mBuffer;
+    ImVector<INT> mLineOffsets;
     bool mAutoScroll;
+    bool mPaused;
 } sLogWindow;
 
 #include <sstream>
