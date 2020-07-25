@@ -150,7 +150,7 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
         mTotalMeasuredTime = 0.0f;
         BOOL logStats = mRunCycle % (INT(sFrameWindow * 10.0f)) == 0;
 
-        if (logStats) OutputDebugStringA("==================\n");
+        if (logStats) PushLog("==================\n", TRUE);
 
         for (UINT i = 0; i < mProfilers.GetCount(); i++)
         {
@@ -159,9 +159,9 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
 
         if (logStats)
         {
-            OutputDebugStringA("\n");
-            OutputDebugStringA(CString::Format("Other Time: %f ms\n", (mTotalTime - mTotalMeasuredTime)).Str());
-            OutputDebugStringA(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, (1000.0f / mTotalTime)).Str());
+            PushLog("\n", TRUE);
+            PushLog(CString::Format("Other Time: %f ms\n", ((DOUBLE)mTotalTime - mTotalMeasuredTime)).Str(), TRUE);
+            PushLog(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, (1000.0f / mTotalTime)).Str(), TRUE);
         }
 
         UI->PushMS(mTotalTime);

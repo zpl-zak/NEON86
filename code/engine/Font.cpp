@@ -51,6 +51,7 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h,
         rect.bottom = y + h;
     }
 
+    RENDERER->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
     mFontHandle->DrawTextA(UI->GetTextSurface(), text, -1, &rect, flags, color);
 }
 

@@ -25,6 +25,9 @@ public:
 
         mMaxima = FLT_MIN;
         mMinima = FLT_MAX;
+
+        mSelectionStart = 0;
+        mSelectionLength = 0;
     }
 
     VOID Push(FLOAT ms) {
@@ -60,10 +63,129 @@ public:
 
     FLOAT* GetData() { return mData.GetData(); }
     UINT GetCount() { return mData.GetCount(); }
+
+    VOID Render() {
+        RECT res = RENDERER->GetResolution();
+        ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+        FLOAT profW = ImGui::GetWindowHeight();
+
+        ImGui::SetWindowPos(ImVec2(0, (FLOAT)res.bottom - profW), ImGuiCond_Always);
+        {
+            ImGui::Columns(2, "profiler");
+            ImGui::Separator();
+
+            ImGui::Text("Profiler"); ImGui::NextColumn();
+            ImGui::Text("Time"); ImGui::NextColumn();
+
+            if (ENGINE->DefaultProfiling.GetRunCycleCount() > 0 && ENGINE->DefaultProfiling.GetProfilers().GetCount() > 0)
+            {
+                ImGui::Separator();
+
+                for (UINT i = 0; i < ENGINE->DefaultProfiling.GetProfilers().GetCount(); i++)
+                {
+                    CProfiler* profiler = ENGINE->DefaultProfiling.GetProfilers()[i];
+                    ImGui::Text("%s Time", profiler->GetName().Str()); ImGui::NextColumn();
+                    ImGui::Text("%f ms", profiler->GetDelta()); ImGui::NextColumn();
+                }
+            }
+
+            ImGui::Separator();
+
+            ImGui::Text("Other Time"); ImGui::NextColumn();
+            ImGui::Text("%f ms", ((DOUBLE)ENGINE->DefaultProfiling.GetTotalRunTime() - ENGINE->DefaultProfiling.GetTotalMeasuredRunTime())); ImGui::NextColumn();
+
+            ImGui::Text("Total Time"); ImGui::NextColumn();
+            ImGui::Text("%f ms (%.02f fps)", ENGINE->DefaultProfiling.GetTotalRunTime(), (1000.0f / ENGINE->DefaultProfiling.GetTotalRunTime())); ImGui::NextColumn();
+
+            ImGui::Columns(1);
+            ImGui::Separator();
+            {
+                ImGui::PlotConfig conf;
+                conf.values.count = sFramerateMaxSamples;
+                conf.values.ys = sFramerateStats.GetData();
+                conf.values.offset = 0;
+                conf.values.color = ImColor(0, 0, 0);
+                conf.scale.min = sFramerateStats.GetMinMS();
+                conf.scale.max = sFramerateStats.GetMaxMS();
+                conf.scale.type = ImGui::PlotConfig::Scale::Linear;
+                conf.tooltip.show = true;
+                conf.tooltip.format = "%.0s%.02f ms";
+                conf.grid_x.show = true;
+                conf.grid_x.size = 10.0f;
+                conf.grid_x.subticks = 5;
+                conf.grid_y.show = true;
+                conf.grid_y.size = 10.0f;
+                conf.grid_y.subticks = 5;
+                conf.selection.show = true;
+                conf.selection.start = &mSelectionStart;
+                conf.selection.length = &mSelectionLength;
+                conf.frame_size = ImVec2(sFramerateMaxSamples * 10, 200);
+                conf.line_thickness = 4.0f;
+                conf.overlay_text = "Total Time (ms)";
+                ImGui::Plot("frameratePlot", conf);
+            }
+        }
+        ImGui::End();
+    }
 private:
     CArray<FLOAT> mData;
     FLOAT mMaxima, mMinima;
+    UINT32 mSelectionStart;
+    UINT32 mSelectionLength;
 } sFramerateStats;
+
+class CLogWindow {
+public:
+    CLogWindow() {
+        mLines.Release();
+        mAutoScroll = TRUE;
+    }
+
+    VOID Push(LPCSTR msg) {
+        mLines.Push(msg);
+    }
+
+    VOID Render() {
+        RECT res = RENDERER->GetResolution();
+
+        ImGui::SetNextWindowSizeConstraints({220, 100}, {(FLOAT)res.right, (FLOAT)res.bottom});
+        ImGui::Begin("Output", NULL);
+        FLOAT profW = ImGui::GetWindowWidth();
+        FLOAT profH = ImGui::GetWindowHeight();
+
+        ImGui::SetWindowPos(ImVec2((FLOAT)res.right - profW, (FLOAT)res.bottom - profH), ImGuiCond_Always);
+        {
+            if (ImGui::BeginPopup("Options"))
+            {
+                ImGui::Checkbox("Auto-scroll", &mAutoScroll);
+                ImGui::EndPopup();
+            }
+
+            if (ImGui::Button("Options"))
+                ImGui::OpenPopup("Options");
+            ImGui::SameLine();
+            if (ImGui::Button("Clear")) {
+                mLines.Clear();
+            }
+
+            ImGui::BeginChildFrame(0xDEADC0DE, ImVec2(0, 0), ImGuiWindowFlags_HorizontalScrollbar);
+            {
+                for (auto msg : mLines)
+                {
+                    ImGui::Text(msg.Str());
+                }
+
+                if (mAutoScroll && ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+                    ImGui::SetScrollHereY(1.0f);
+            }
+            ImGui::EndChildFrame();
+        }
+        ImGui::End();
+    }
+private:
+    CArray<CString> mLines;
+    bool mAutoScroll;
+} sLogWindow;
 
 #include <sstream>
 
@@ -129,6 +251,16 @@ VOID CUserInterface::RenderHook(VOID)
 VOID CUserInterface::PushMS(FLOAT ms)
 {
     sFramerateStats.Push(ms);
+}
+
+VOID CUserInterface::PushLog(LPCSTR msg, BOOL noHist)
+{
+    OutputDebugStringA(msg);
+
+#ifdef _DEBUG
+    if (!noHist)
+        sLogWindow.Push(msg);
+#endif
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -205,73 +337,8 @@ VOID CUserInterface::DebugPanel(VOID)
         ImGui::End();
     }
 
-    // Profiler window
-    if (ENGINE->DefaultProfiling.GetRunCycleCount() > 0)
-    {
-        RECT res = RENDERER->GetResolution();
-        ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-        FLOAT profW = ImGui::GetWindowHeight();
-
-        ImGui::SetWindowPos(ImVec2(0, (FLOAT)res.bottom - profW), ImGuiCond_Always);
-        {
-            ImGui::Columns(2, "profiler");
-            ImGui::Separator();
-
-            ImGui::Text("Profiler"); ImGui::NextColumn();
-            ImGui::Text("Time"); ImGui::NextColumn();
-
-            if (ENGINE->DefaultProfiling.GetProfilers().GetCount() > 0)
-            {
-                ImGui::Separator();
-
-                for (UINT i = 0; i < ENGINE->DefaultProfiling.GetProfilers().GetCount(); i++)
-                {
-                    CProfiler* profiler = ENGINE->DefaultProfiling.GetProfilers()[i];
-                    ImGui::Text("%s Time", profiler->GetName().Str()); ImGui::NextColumn();
-                    ImGui::Text("%f ms", profiler->GetDelta()); ImGui::NextColumn();
-                }
-            }
-
-            ImGui::Separator();
-
-            ImGui::Text("Other Time"); ImGui::NextColumn();
-            ImGui::Text("%f ms", ((DOUBLE)ENGINE->DefaultProfiling.GetTotalRunTime() - ENGINE->DefaultProfiling.GetTotalMeasuredRunTime())); ImGui::NextColumn();
-            
-            ImGui::Text("Total Time"); ImGui::NextColumn();
-            ImGui::Text("%f ms (%.02f fps)", ENGINE->DefaultProfiling.GetTotalRunTime(), (1000.0f / ENGINE->DefaultProfiling.GetTotalRunTime())); ImGui::NextColumn();
-
-            ImGui::Columns(1);
-            ImGui::Separator();
-            {
-                static UINT32 selection_start = 0, selection_length = 0;
-                
-                ImGui::PlotConfig conf;
-                conf.values.count = sFramerateMaxSamples;
-                conf.values.ys = sFramerateStats.GetData();
-                conf.values.offset = 0;
-                conf.values.color = ImColor(0, 0, 0);
-                conf.scale.min = sFramerateStats.GetMinMS();
-                conf.scale.max = sFramerateStats.GetMaxMS();
-                conf.scale.type = ImGui::PlotConfig::Scale::Linear;
-                conf.tooltip.show = true;
-                conf.tooltip.format = "%.0s%.02f ms";
-                conf.grid_x.show = true;
-                conf.grid_x.size = 10.0f;
-                conf.grid_x.subticks = 5;
-                conf.grid_y.show = true;
-                conf.grid_y.size = 10.0f;
-                conf.grid_y.subticks = 5;
-                conf.selection.show = true;
-                conf.selection.start = &selection_start;
-                conf.selection.length = &selection_length;
-                conf.frame_size = ImVec2(sFramerateMaxSamples*10, 200);
-                conf.line_thickness = 4.0f;
-                conf.overlay_text = "Total Time (ms)";
-                ImGui::Plot("frameratePlot", conf);
-            }
-        }
-        ImGui::End();
-    }
+    sFramerateStats.Render();
+    sLogWindow.Render();
 #endif
 }
 

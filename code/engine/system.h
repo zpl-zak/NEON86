@@ -37,6 +37,8 @@ typedef NEON_PANIC_FN(neon_panic_ptr);
 extern neon_panic_ptr* gPanicHandler;
 extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
+extern VOID PushLog(LPCSTR msg, BOOL noHist=FALSE);
+
 /// zpl
 #include "zpl_macros.h"
 

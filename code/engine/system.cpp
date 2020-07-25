@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "system.h"
+#include "engine.h"
+#include "UserInterface.h"
 
 FLOAT GetTime()
 {
@@ -76,6 +78,11 @@ void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style)
 	}
 
 	gPanicHandler(window, text, caption, style);
+}
+
+VOID PushLog(LPCSTR msg, BOOL noHist)
+{
+	UI->PushLog(msg, noHist);
 }
 
 UINT64 gMemUsedLua = 0;
