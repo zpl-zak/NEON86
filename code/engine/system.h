@@ -27,9 +27,9 @@ ENGINE_API extern FLOAT ScaleBetween(FLOAT x, FLOAT a, FLOAT b, FLOAT na, FLOAT 
 
 extern UINT64 gMemUsed, gMemUsedLua, gMemPeak, gResourceCount;
 extern VOID neon_mempeak_update();
-extern LPVOID neon_malloc(size_t size);
-extern LPVOID neon_realloc(LPVOID mem, size_t newSize);
-extern VOID neon_free(LPVOID mem);
+extern ENGINE_API LPVOID neon_malloc(size_t size);
+extern ENGINE_API LPVOID neon_realloc(LPVOID mem, size_t newSize);
+extern ENGINE_API VOID neon_free(LPVOID mem);
 
 /// panic handling
 #define NEON_PANIC_FN(name) VOID name(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
