@@ -15,7 +15,7 @@ set "proj=basic"
 if not exist build mkdir build
 if exist build\.proj (
 	set /p proj=<build\.proj
-	
+
 	if not exist "demos\%proj%" (
 		set "proj=basic"
 		echo %proj% > build\.proj
@@ -28,7 +28,7 @@ set proj=%proj: =%
 
 :begin
 	cls
-	
+
 	echo NEON86
 	echo Active Project: %proj%
 	echo =======================
@@ -50,11 +50,11 @@ set proj=%proj: =%
 	echo  G. Open in explorer
 	echo  H. Switch to base template
 	echo  I. Open itch.io page
-	echo  J. Open libs in lite
+	echo  J. Edit docs
 	echo =======================
 	choice /C 123456789ABCDEFGHIJ /N /M "Your choice:"
 	echo.
-	
+
 	if %errorlevel%==1 goto :EOF
 	if %errorlevel%==2 call :build
 	if %errorlevel%==3 call :debug
@@ -73,7 +73,7 @@ set proj=%proj: =%
 	if %errorlevel%==16 call :open_explorer
 	if %errorlevel%==17 call :toggle_base
 	if %errorlevel%==18 start "" "https://zaklaus.itch.io/neon-86"
-	if %errorlevel%==19 call :open_in_lite_libs
+	if %errorlevel%==19 call :open_docs
 
 goto :begin
 
@@ -91,7 +91,7 @@ exit /B 0
 	echo =======================
 	choice /C 12 /N /M "Your choice:"
 	echo.
-	
+
 	if %errorlevel%==1 exit /B 1
 exit /B 0
 
@@ -125,7 +125,7 @@ exit /B 0
 	xcopy /Y /E /I /exclude:.gitignore docs build\deploy\docs
 	del   /S /Q /F build\deploy\*.blend
 	echo.
-	
+
 	:package_prompt
 		echo NEON86 DEPLOY
 		echo Active Project: %proj%
@@ -164,7 +164,7 @@ goto :package_prompt
 	echo =======================
 	choice /C 123456789AB /N /M "Your choice:"
 	echo.
-	
+
 	if %errorlevel%==1 exit /B 0
 	if %errorlevel%==3 set "proj=minimal"
 	if %errorlevel%==4 set "proj=mafia"
@@ -175,23 +175,23 @@ goto :package_prompt
 	if %errorlevel%==9 set "proj=collisions"
 	if %errorlevel%==10 set "proj=desert"
 	if %errorlevel%==11 set "proj=shadowmap"
-	
+
 	if %errorlevel%==2 (
 		set /p a="Enter name: "
 		if "%a%"=="" goto :change_project
 		set "proj=%a%"
 	)
-	
+
 	echo %proj% > build\.proj
 exit /B 0
 
 :deploy
 	call :build_release
 	if %errorlevel%==0 exit /B 0
-	
+
 	call :package
 	if %errorlevel%==0 exit /B 0
-	
+
 	rem Upload process
 	pushd build\
 		echo Deploying to itch.io ...
@@ -219,8 +219,8 @@ exit /B 0
 	start lite demos\%proj%
 exit /B 0
 
-:open_in_lite_libs
-	start lite libs\
+:open_docs
+	start docs\neon86_cheatsheet.docx
 exit /B 0
 
 :git_pull
