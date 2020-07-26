@@ -67,7 +67,8 @@ VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, UCHAR kind)
         return;
     }
 
-    RENDERER->GetDevice()->CreateDepthStencilSurface(w, h, D3DFMT_D24S8, D3DMULTISAMPLE_NONE, 0, TRUE, &mDepthStencilSurfaceHandle, NULL);
+    if (kind != RTKIND_DEPTH)
+        RENDERER->GetDevice()->CreateDepthStencilSurface(w, h, D3DFMT_D24S8, D3DMULTISAMPLE_NONE, 0, TRUE, &mDepthStencilSurfaceHandle, NULL);
 
     mTextureHandle->GetSurfaceLevel(0, &mSurfaceHandle);
 }
