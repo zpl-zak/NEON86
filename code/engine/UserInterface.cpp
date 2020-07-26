@@ -69,8 +69,8 @@ public:
 
     VOID Render() {
         RECT res = RENDERER->GetResolution();
-        ImGui::SetNextWindowSize({316, 408}, ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowPos(ImVec2(0, (FLOAT)res.bottom - 408), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize({316, 440}, ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(0, (FLOAT)res.bottom - 440), ImGuiCond_FirstUseEver);
         ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_AlwaysAutoResize);
         {
             ImGui::Columns(2, "profiler");
@@ -105,11 +105,11 @@ public:
             {
                 ImGui::PlotConfig conf;
                 conf.values.count = (int)::fmin(sFramerateMaxSamples, mData.GetCount());
-                conf.values.ys = sFramerateStats.GetData();
+                conf.values.ys = GetData();
                 conf.values.offset = 0;
                 conf.values.color = ImColor(0, 0, 0);
-                conf.scale.min = sFramerateStats.GetMinMS();
-                conf.scale.max = sFramerateStats.GetMaxMS();
+                conf.scale.min = GetMinMS();
+                conf.scale.max = GetMaxMS();
                 conf.scale.type = ImGui::PlotConfig::Scale::Linear;
                 conf.tooltip.show = true;
                 conf.tooltip.format = "%.0s%.02f ms";
@@ -152,6 +152,9 @@ public:
 
                 ImGui::Text("Average Time: %f ms", avgMs);
             }
+
+            ImGui::Text("Min Time: %f ms", GetMinMS());
+            ImGui::Text("Max Time: %f ms", GetMaxMS());
         }
         ImGui::End();
     }
