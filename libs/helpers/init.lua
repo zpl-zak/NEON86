@@ -37,6 +37,10 @@ function drawEffect(fx, tech, drawfn)
   fx:finish()
 end
 
+function withEffect(fx, tech, drawfn)
+  drawEffect(fx, tech, drawfn)
+end
+
 function spairs(t, order)
   -- collect the keys
   local keys = {}
@@ -60,10 +64,18 @@ function spairs(t, order)
   end
 end
 
+function withTexture(tex, fn)
+  BindTexture(0, tex)
+  fn()
+  BindTexture(0)
+end
+
 return {
   lerp = lerp,
   clamp = clamp,
   cap3 = cap3,
   drawEffect = drawEffect,
-  spairs = spairs
+  spairs = spairs,
+  withTexture = withTexture,
+  withEffect = withEffect
 }

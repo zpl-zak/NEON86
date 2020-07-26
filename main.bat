@@ -27,6 +27,7 @@ if exist build\.proj (
 set proj=%proj: =%
 
 :begin
+	color
 	cls
 
 	echo NEON86
@@ -51,8 +52,9 @@ set proj=%proj: =%
 	echo  H. Switch to base template
 	echo  I. Open itch.io page
 	echo  J. Edit docs
+	echo  K. Search on StackOverflow (lol)
 	echo =======================
-	choice /C 123456789ABCDEFGHIJ /N /M "Your choice:"
+	choice /C 123456789ABCDEFGHIJK /N /M "Your choice:"
 	echo.
 
 	if %errorlevel%==1 goto :EOF
@@ -74,6 +76,7 @@ set proj=%proj: =%
 	if %errorlevel%==17 call :toggle_base
 	if %errorlevel%==18 start "" "https://zaklaus.itch.io/neon-86"
 	if %errorlevel%==19 call :open_docs
+	if %errorlevel%==20 call :search_so
 
 goto :begin
 
@@ -237,6 +240,8 @@ exit /B 0
 exit /B 0
 
 :new_project
+	set /P AREYOUSURE="Are you sure (Y/[N])? "
+	IF /I "%AREYOUSURE%" NEQ "Y" exit /B 0
 	set /p a="Enter name: "
 	if "%a%"=="" exit /B 0
 	set proj=%a%
@@ -254,4 +259,10 @@ exit /B 0
 
 :open_explorer
 	start explorer.exe demos\%proj%\
+exit /B 0
+
+:search_so
+	set /p a="so> "
+	if "%a%"=="" exit /B 0
+	call cmd /C "so %a%"
 exit /B 0

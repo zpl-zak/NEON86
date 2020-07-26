@@ -14,7 +14,7 @@ Class "ShadowGen" {
       proj:bind(PROJ)
 
       self.shadowmap:bind()
-      ClearScene(0,0,0)
+      ClearScene(0xFFFFFFFF)
       CullMode(CULLKIND_CW)
 
       self.shader:begin("Shadow")
