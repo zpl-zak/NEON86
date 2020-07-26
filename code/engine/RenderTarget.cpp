@@ -47,7 +47,7 @@ VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, UCHAR kind)
 
     D3DSURFACE_DESC dp = RENDERER->GetDisplayDesc();
 
-    D3DFORMAT formats[] = {dp.Format, D3DFMT_R32F, D3DFMT_A32B32G32R32F};
+    D3DFORMAT formats[] = {dp.Format, D3DFMT_R32F, D3DFMT_A16B16G16R16F, D3DFMT_A32B32G32R32F};
 
     LRESULT res = RENDERER->GetDevice()->CreateTexture(
         w ? w : dp.Width,
