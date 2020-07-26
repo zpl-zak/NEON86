@@ -69,10 +69,9 @@ public:
 
     VOID Render() {
         RECT res = RENDERER->GetResolution();
+        ImGui::SetNextWindowSize({316, 408}, ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(0, (FLOAT)res.bottom - 408), ImGuiCond_FirstUseEver);
         ImGui::Begin("Profiler", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-        FLOAT profW = ImGui::GetWindowHeight();
-
-        ImGui::SetWindowPos(ImVec2(0, (FLOAT)res.bottom - profW), ImGuiCond_Always);
         {
             ImGui::Columns(2, "profiler");
             ImGui::Separator();
@@ -199,11 +198,9 @@ public:
         RECT res = RENDERER->GetResolution();
 
         ImGui::SetNextWindowSizeConstraints({220, 300}, {(FLOAT)res.right, (FLOAT)res.bottom});
+        ImGui::SetNextWindowSize({576, 408}, ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2((FLOAT)res.right - 576, (FLOAT)res.bottom - 408), ImGuiCond_FirstUseEver);
         ImGui::Begin("Output", NULL);
-        FLOAT profW = ImGui::GetWindowWidth();
-        FLOAT profH = ImGui::GetWindowHeight();
-
-        ImGui::SetWindowPos(ImVec2((FLOAT)res.right - profW, (FLOAT)res.bottom - profH), ImGuiCond_Always);
         {
             if (ImGui::BeginPopup("Options"))
             {
@@ -293,7 +290,7 @@ CUserInterface::CUserInterface()
 BOOL CUserInterface::Release(VOID)
 {
 #ifdef _DEBUG
-    ImGui::SaveIniSettingsToDisk(NULL);
+    ImGui::SaveIniSettingsToDisk("imgui.ini");
 #endif
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
