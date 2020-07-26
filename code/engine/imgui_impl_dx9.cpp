@@ -187,7 +187,7 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
         UI->RenderHook();
         VM->Render2D();
     }
-    UI->GetTextSurface()->End(); 
+    UI->GetTextSurface()->End();
 
     neonsbt->Apply();
     neonsbt->Release();

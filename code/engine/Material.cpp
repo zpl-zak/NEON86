@@ -80,7 +80,7 @@ VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
 VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size)
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
-    
+
     if (!data)
     {
         VM->PostError(CString("Embedded image is empty!"));
@@ -121,7 +121,7 @@ VOID CMaterial::Unbind(DWORD stage)
     RENDERER->SetMaterial(stage, NULL);
 }
 
-VOID* CMaterial::Lock(UINT slot)
+LPVOID CMaterial::Lock(UINT slot)
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, NULL, 0);

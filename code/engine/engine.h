@@ -33,7 +33,7 @@ public:
 
 	BOOL IsRunning() const { return mIsRunning; }
 
-	inline VOID SetFPS(FLOAT fps) { if (fps) mUpdateDuration = 1.0f / fps; } 
+	inline VOID SetFPS(FLOAT fps) { if (fps) mUpdateDuration = 1.0f / fps; }
 	inline FLOAT GetFPS() const { return 1.0f / mUpdateDuration; }
 
 	class ENGINE_API CDefaultProfiling {

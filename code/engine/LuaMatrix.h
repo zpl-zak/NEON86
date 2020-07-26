@@ -17,10 +17,10 @@ static INT matrix_translate(lua_State* L)
 {
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
 	D3DXVECTOR3 vec = luaH_getcomps(L);
-	
+
 	D3DXMATRIX t;
 	D3DXMatrixTranslation(&t, vec.x, vec.y, vec.z);
-	
+
 	*mat *= t;
 
 	lua_pushvalue(L, 1);
@@ -36,7 +36,7 @@ static INT matrix_rotate(lua_State* L)
 	D3DXMatrixRotationYawPitchRoll(&t, vec.x, vec.y, vec.z);
 
 	*mat *= t;
-	
+
 	lua_pushvalue(L, 1);
 	return 1;
 }

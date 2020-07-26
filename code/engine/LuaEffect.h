@@ -8,7 +8,7 @@
 INT effect_new(lua_State* L)
 {
     LPCSTR effectPath = luaL_checkstring(L, 1);
-    
+
     CEffect** fx = (CEffect**)lua_newuserdata(L, sizeof(CEffect*));
     *fx = new CEffect();
     (*fx)->LoadEffect(effectPath);
@@ -21,7 +21,7 @@ static INT effect_begin(lua_State* L)
 {
     CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR technique = luaL_checkstring(L, 2);
-    
+
     lua_pushinteger(L, fx->Begin(technique));
     return 1;
 }
@@ -134,7 +134,7 @@ static INT effect_setvector4(lua_State* L)
 {
     CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
-    
+
     if (lua_gettop(L) == 4)
     {
         D3DXVECTOR3* value = (D3DXVECTOR3*)luaL_checkudata(L, 3, L_VECTOR);
@@ -146,7 +146,7 @@ static INT effect_setvector4(lua_State* L)
         D3DXVECTOR4* value = (D3DXVECTOR4*)luaL_checkudata(L, 3, L_VECTOR);
         fx->SetVector4(name, *value);
     }
-        
+
 
     return 0;
 }
@@ -155,11 +155,11 @@ static INT effect_settexture(lua_State* L)
 {
     CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
     LPCSTR name = luaL_checkstring(L, 2);
-    
+
     if (luaL_testudata(L, 3, L_RENDERTARGET))
     {
         CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 3);
-        
+
         fx->SetTexture(name, rtt->GetTextureHandle());
     }
     else if (luaL_testudata(L, 3, L_MATERIAL))
@@ -176,14 +176,14 @@ static INT effect_settexture(lua_State* L)
         LPDIRECT3DTEXTURE9 handle = (LPDIRECT3DTEXTURE9)lua_touserdata(L, 3);
         fx->SetTexture(name, handle);
     }
-    
+
     return 0;
 }
 
 static INT effect_delete(lua_State* L)
 {
     CEffect* fx = *(CEffect**)luaL_checkudata(L, 1, L_EFFECT);
-    
+
     fx->Release();
     return 0;
 }

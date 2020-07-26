@@ -50,7 +50,7 @@ static INT material_getres(lua_State* L)
     D3DSURFACE_DESC a;
 
     h->GetLevelDesc(0, &a);
-    
+
     lua_newtable(L);
 
     lua_pushinteger(L, 1);
@@ -72,7 +72,7 @@ static INT material_loaddata(lua_State* L)
     UINT userSlot = (UINT)luaL_checkinteger(L, 3) - 1;
     UINT width = (UINT)luaL_checkinteger(L, 4);
     UINT height = (UINT)luaL_checkinteger(L, 5);
-    
+
     mat->CreateTextureForSlot(userSlot, NULL, width, height);
     //mat->UploadARGB(userSlot, 2, 2);
 
@@ -119,7 +119,7 @@ static INT material_getsampler(lua_State* L)
 {
     CMaterial* mat = *(CMaterial**)luaL_checkudata(L, 1, L_MATERIAL);
     UINT sampler = (UINT)luaL_checkinteger(L, 2);
-    
+
     lua_pushinteger(L, mat->GetSamplerState(sampler));
     return 1;
 }
@@ -243,7 +243,7 @@ static VOID LuaMaterial_register(lua_State* L)
 	lua_register(L, L_MATERIAL, material_new);
 	luaL_newmetatable(L, L_MATERIAL);
 	lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
-	
+
     REGC("setSamplerState", material_setsampler);
     REGC("getSamplerState", material_getsampler);
 

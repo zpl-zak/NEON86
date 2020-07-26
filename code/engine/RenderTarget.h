@@ -22,7 +22,7 @@ public:
     inline BOOL HasDepth() { return mDepth; }
 
     VOID Bind(VOID);
-    
+
 private:
     BOOL mDepth;
     LPDIRECT3DTEXTURE9 mTextureHandle;

@@ -49,7 +49,7 @@ static INT facegroup_addtriangle(lua_State* L)
 	SHORT i1 = (SHORT)luaL_checkinteger(L, 2);
 	SHORT i2 = (SHORT)luaL_checkinteger(L, 3);
 	SHORT i3 = (SHORT)luaL_checkinteger(L, 4);
-	
+
 	mesh->AddIndex(i1);
 	mesh->AddIndex(i2);
 	mesh->AddIndex(i3);
@@ -127,7 +127,7 @@ static INT facegroup_calcnormals(lua_State* L)
 	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 
 	mesh->CalculateNormals();
-	
+
 	return 0;
 }
 
@@ -161,7 +161,7 @@ static INT facegroup_getbounds(lua_State* L)
 {
 	CFaceGroup* mesh = *(CFaceGroup**)luaL_checkudata(L, 1, L_FACEGROUP);
 	D3DXVECTOR4* b = mesh->GetBounds();
-	
+
 	lua_newtable(L);
 
 	lua_pushinteger(L, 1);

@@ -165,7 +165,7 @@ static INT scene_findmesh(lua_State* L)
 {
     CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
     LPSTR meshName = (LPSTR)luaL_checkstring(L, 2);
-    
+
     CMesh* mg = scene->FindMesh(meshName);
 
     if (mg)
@@ -212,7 +212,7 @@ static INT scene_findtarget(lua_State* L)
 static INT scene_getrootnode(lua_State* L)
 {
     CScene* scene = *(CScene**)luaL_checkudata(L, 1, L_SCENE);
-    
+
     CNode* mg = scene->GetRootNode();
 
     if (mg) {

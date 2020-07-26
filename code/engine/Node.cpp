@@ -113,7 +113,7 @@ D3DXMATRIX CNode::GetFinalTransform()
 VOID CNode::InvalidateTransformRecursively()
 {
     InvalidateTransform();
-    
+
     for (UINT i=0; i<mNodes.GetCount(); ++i)
     {
         mNodes[i]->InvalidateTransformRecursively();

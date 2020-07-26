@@ -103,7 +103,7 @@ VOID CFaceGroup::Build(VOID)
 	}
 
 	DWORD numFaces = mIndices.GetCount()/3;
-	
+
 	D3DXCreateMesh(numFaces,
 		mVerts.GetCount(),
 		D3DXMESH_MANAGED,
@@ -117,7 +117,7 @@ VOID CFaceGroup::Build(VOID)
         ENGINE->Shutdown();
         return;
 	}
-	
+
     mData.mesh->LockVertexBuffer(0, (VOID**)&vidMem);
     memcpy(vidMem, mVerts.GetData(), mVerts.GetCount() * sizeof(VERTEX));
 

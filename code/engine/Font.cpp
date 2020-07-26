@@ -42,7 +42,7 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h,
     RECT rect;
     rect.left = x;
     rect.top = y;
-    
+
     if (w == 0 || h == 0)
         CalculateRect(text, &rect);
     else

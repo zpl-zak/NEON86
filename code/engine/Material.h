@@ -20,7 +20,7 @@ public:
 
     VOID CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);
     VOID CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size);
-    
+
     inline VOID SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
     inline UINT GetSamplerState(UINT state) const { return mStats[state]; }
     inline LPDIRECT3DTEXTURE9 GetTextureHandle(UINT slot=TEXTURESLOT_ALBEDO) { return mTextureHandle[slot]; }
@@ -28,7 +28,7 @@ public:
     VOID SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
     VOID Bind(DWORD stage);
     VOID Unbind(DWORD stage);
-    VOID* Lock(UINT slot=TEXTURESLOT_ALBEDO);
+    LPVOID Lock(UINT slot=TEXTURESLOT_ALBEDO);
     VOID UploadARGB(UINT slot, VOID* data, UINT size);
     VOID Unlock(UINT slot = TEXTURESLOT_ALBEDO);
 

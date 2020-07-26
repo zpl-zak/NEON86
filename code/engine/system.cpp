@@ -46,14 +46,14 @@ extern LPVOID neon_malloc(size_t size)
 extern LPVOID neon_realloc(LPVOID mem, size_t newSize)
 {
 	if (gMemoryMap.find(mem) != gMemoryMap.end())
-	{	
+	{
 		gMemUsed += (newSize - gMemoryMap[mem]);
 		neon_mempeak_update();
 		gMemoryMap.erase(mem);
 	}
 
 	LPVOID newMem = realloc(mem, newSize);
-	
+
 	gMemoryMap[newMem] = newSize;
 	return newMem;
 }

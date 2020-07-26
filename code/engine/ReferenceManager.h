@@ -2,7 +2,7 @@
 
 #include "system.h"
 
-class ENGINE_API CReferenceCounter 
+class ENGINE_API CReferenceCounter
 {
 public:
     CReferenceCounter() :
@@ -15,7 +15,7 @@ public:
 
     inline VOID AddRef() { mRefCount++; }
     inline BOOL DelRef() { mRefCount--; return mRefCount == 0; }
-    
+
 private:
     INT mRefCount;
 };

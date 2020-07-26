@@ -145,7 +145,7 @@ VOID CVirtualMachine::Update(FLOAT dt)
         Release();
 
         mScheduledTermination = FALSE;
-		
+
 		if (term == 2) /* Restart was requested */
 			Play();
 
@@ -254,7 +254,7 @@ static VOID _lua_openlibs(lua_State *L) {
 		luaL_requiref(L, lib->name, lib->func, 1);
 		lua_pop(L, 1);
 	}
-	
+
 	static char path[MAX_PATH] = { 0 };
 	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua;libs/?/init.lua;%s/?.lua'", FILESYSTEM->GetCanonicalGamePath(), FILESYSTEM->GetCanonicalGamePath());
 	luaL_dostring(L, path);
@@ -273,9 +273,9 @@ VOID CVirtualMachine::InitVM(VOID)
 	INT result;
 	mLuaVM = luaL_newstate();
     if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);
-	
+
 	_lua_openlibs(mLuaVM);
-	
+
 	/// Bindings
 	CLuaBindings::BindBase(mLuaVM);
 	CLuaBindings::BindMath(mLuaVM);
@@ -308,7 +308,7 @@ VOID CVirtualMachine::PrintVMError()
 #else
     MessageBoxA(NULL, msg, "Lua error", MB_OK);
     ENGINE->Shutdown();
-#endif	
+#endif
 }
 
 BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)

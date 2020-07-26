@@ -127,7 +127,7 @@ D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset)
 #include "LuaSound.h"
 
 /// BASE METHODS
-LUAF(Base, ShowMessage) 
+LUAF(Base, ShowMessage)
 {
 	const char* caption = luaL_checkstring(L, 1);
 	const char* text = luaL_checkstring(L, 2);
@@ -239,7 +239,7 @@ LUAF(Math, Color)
 
 	if (lua_gettop(L) == 4)
 		a = (UINT)luaL_checknumber(L, 4);
-	
+
 	lua_pushnumber(L, D3DCOLOR_ARGB(a,r,g,b));
 	return 1;
 }
@@ -281,7 +281,7 @@ LUAF(Math, str2vec)
 		nums[i] = (FLOAT)::atof(comps.at(i).c_str());
 		i++;
 	}
-	
+
 	vector4_new(L);
 	*(D3DXVECTOR4*)lua_touserdata(L, -1) = D3DXVECTOR4(nums[0], nums[1], nums[2], nums[3]);
 	return 1;
@@ -332,7 +332,7 @@ LUAF(Rend, CameraPerspective)
 		flipHandedness = (BOOL)lua_toboolean(L, 4);
 	}
 
-	D3DXMATRIX matProjection;    
+	D3DXMATRIX matProjection;
 	RECT res = RENDERER->GetSurfaceResolution();
 
 	if (flipHandedness)
@@ -381,7 +381,7 @@ LUAF(Rend, CameraOrthographic)
         flipHandedness = (BOOL)lua_toboolean(L, 5);
     }
 
-	D3DXMATRIX matProjection;    
+	D3DXMATRIX matProjection;
 
 	if (flipHandedness)
 	{
@@ -391,7 +391,7 @@ LUAF(Rend, CameraOrthographic)
             zNear,
             zFar);
 	}
-	else 
+	else
 	{
         D3DXMatrixOrthoLH(&matProjection,
             w,
@@ -461,7 +461,7 @@ LUAF(Rend, BindTexture)
 	if (luaL_testudata(L, 2, L_RENDERTARGET))
 	{
 		CRenderTarget* rtt = *(CRenderTarget**)lua_touserdata(L, 2);
-		RENDERER->SetTexture(stage, rtt->GetTextureHandle());	
+		RENDERER->SetTexture(stage, rtt->GetTextureHandle());
 	}
 	else if (luaL_testudata(L, 2, L_MATERIAL))
 	{
@@ -501,11 +501,11 @@ LUAF(Rend, GetResolution)
 LUAF(Rend, GetMatrix)
 {
     DWORD kind = (DWORD)luaL_checkinteger(L, 1);
-    
+
 	matrix_new(L);
 	D3DXMATRIX* mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
 	*mat = RENDERER->GetDeviceMatrix(kind);
-    
+
     return 1;
 }
 LUAF(Rend, IsFocused)
@@ -530,7 +530,7 @@ LUAF(Rend, ToggleDepthTest)
 LUAF(Rend, ToggleWireframe)
 {
 	BOOL state = (BOOL)lua_toboolean(L, 1);
-    
+
 	RENDERER->SetRenderState(D3DRS_FILLMODE, state ? D3DFILL_WIREFRAME : D3DFILL_SOLID);
 	RENDERER->SetRenderState(D3DRS_CULLMODE, state ? D3DCULL_NONE : D3DCULL_CCW);
 	RENDERER->SetRenderState(D3DRS_ZENABLE, state ? FALSE : TRUE);

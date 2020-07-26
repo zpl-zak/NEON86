@@ -206,7 +206,7 @@ static INT node_findtarget(lua_State* L)
 static INT node_gettransform(lua_State* L)
 {
     CNode* node = *(CNode**)luaL_checkudata(L, 1, L_NODE);
-    
+
     matrix_new(L);
     *(D3DXMATRIX*)lua_touserdata(L, 2) = node->GetTransform();
 

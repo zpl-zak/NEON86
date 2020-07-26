@@ -107,12 +107,12 @@ struct ENGINE_API MATERIAL : D3DMATERIAL9
 struct RENDERDATA
 {
 	D3DCOLOR color;
-	union 
+	union
 	{
 		UINT flags;
         DWORD state;
 	};
-	
+
     UINT kind;
 
 	BOOL usesMatrix;

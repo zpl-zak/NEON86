@@ -10,7 +10,7 @@ public:
     VOID StartInvocation();
     VOID StopInvocation();
     FLOAT DisplayAndReset(FLOAT divisor = 0, BOOL logStats = FALSE);
-    
+
     inline FLOAT GetDelta() { return mDeltaTime; }
     inline CString GetName() { return mName; }
 private:

@@ -31,14 +31,14 @@ static INT font_drawtext(lua_State* L)
     LPCSTR text = (LPCSTR)luaL_checkstring(L, 3);
     UINT x = (UINT)luaL_checkinteger(L, 4);
     UINT y = (UINT)luaL_checkinteger(L, 5);
-    
+
     UINT w = 0, h = 0;
     if (lua_gettop(L) >= 6)
     {
         w = (UINT)luaL_checkinteger(L, 6);
         h = (UINT)luaL_checkinteger(L, 7);
     }
-    
+
     DWORD flags = DT_WORDBREAK;
     if (lua_gettop(L) >= 8)
     {
@@ -54,7 +54,7 @@ static INT font_measuretext(lua_State* L)
     CFont* font = *(CFont**)luaL_checkudata(L, 1, L_FONT);
     LPCSTR text = (LPCSTR)luaL_checkstring(L, 2);
     DWORD flags = (DWORD)luaL_checkinteger(L, 3);
-    
+
     RECT rect = { 0 };
     if (lua_gettop(L) >= 4)
     {

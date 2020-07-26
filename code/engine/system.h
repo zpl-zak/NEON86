@@ -158,7 +158,7 @@ public:
     CString(CString* s1, CString s2) {
         Concatenate(s1->Str(), s2.Str());
     }
-    
+
     ~CString() {
         SAFE_DELETE_ARRAY(mStr);
     }

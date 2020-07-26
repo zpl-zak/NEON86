@@ -53,7 +53,7 @@ static INT vector4_newrgba(lua_State* L)
 
     D3DXVECTOR4* vec = (D3DXVECTOR4*)lua_newuserdata(L, sizeof(D3DXVECTOR4));
     *vec = D3DXVECTOR4(r,g,b,a);
- 
+
     luaL_setmetatable(L, L_VECTOR);
     return 1;
 }
@@ -167,7 +167,7 @@ static INT vector4_dot(lua_State* L)
 	{
 		FLOAT num = D3DXVec4Dot(vec, vecRHS);
 		lua_pushnumber(L, num);
-		return 1;	
+		return 1;
 	}
 
 	if ((matRHS = (D3DXMATRIX*)luaL_testudata(L, 2, L_MATRIX)))
@@ -177,7 +177,7 @@ static INT vector4_dot(lua_State* L)
 		D3DXVec3TransformCoord(out, (D3DXVECTOR3*)vec, matRHS);
 		return 1;
 	}
-	
+
 	return 0;
 }
 
@@ -186,7 +186,7 @@ static INT vector4_get(lua_State* L)
 	D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
     UINT onlyThreeComponents = (UINT)lua_tointeger(L, 2);
 	FLOAT arr[4] = { vec->x, vec->y, vec->z, vec->w };
-	
+
 	lua_newtable(L);
 	for (UINT i=0; i<(UINT)(onlyThreeComponents ? 3 : 4); i++)
 	{
@@ -203,7 +203,7 @@ static INT vector4_field(lua_State* L)
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
     INT idx = (INT)luaL_checkinteger(L, 2);
     FLOAT val = (FLOAT)luaL_checknumber(L, 3);
-    
+
     D3DXVECTOR4 *out = vector4_ctor(L);
     *out = *vec;
     switch (idx) {
@@ -253,7 +253,7 @@ static INT vector4_lerp(lua_State* L)
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
 	D3DXVECTOR4* vecRHS = (D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
 	FLOAT t = (FLOAT)luaL_checknumber(L, 3);
-    
+
 	vector4_new(L);
 	D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 4, L_VECTOR);
 	D3DXVec4Lerp(out, vec, vecRHS, t);
@@ -263,7 +263,7 @@ static INT vector4_lerp(lua_State* L)
 static INT vector4_neg(lua_State* L)
 {
     D3DXVECTOR4* vec = (D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
-    
+
 	vector4_new(L);
 	D3DXVECTOR4* out = (D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
 	*out = *vec * -1;

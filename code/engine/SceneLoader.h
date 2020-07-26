@@ -13,7 +13,7 @@ struct aiNode;
 struct aiLight;
 struct aiMaterial;
 
-class ENGINE_API CSceneLoader 
+class ENGINE_API CSceneLoader
 {
 public:
     static VOID LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials);

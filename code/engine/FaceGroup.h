@@ -33,7 +33,7 @@ public:
 	inline D3DXVECTOR4* GetBounds() { if (mData.meshBounds[0] == mData.meshBounds[1] && !D3DXVec4LengthSq(&mData.meshBounds[0])) Build(); return mData.meshBounds; }
 private:
 	RENDERDATA mData;
-	
+
 	CArray<VERTEX> mVerts;
 	CArray<SHORT> mIndices;
 	BOOL mIsDirty;

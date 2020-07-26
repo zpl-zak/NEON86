@@ -44,7 +44,7 @@ public:
     VOID SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end=0.0f);
     VOID ClearFog();
     RECT GetSurfaceResolution();
-    
+
     inline VOID EnableLighting(BOOL state) { mEnableLighting = state; }
     inline BOOL GetLightingState() { return mEnableLighting; }
     inline VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }

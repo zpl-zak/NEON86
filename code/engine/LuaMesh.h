@@ -119,7 +119,7 @@ static INT mesh_setmaterial(lua_State* L)
         mesh->GetFGroupData()[i]->SetMaterial(mat ? mat : NULL);
         if (mat) mat->AddRef();
     }
-    
+
     lua_pushvalue(L, 1);
     return 1;
 }
@@ -128,10 +128,10 @@ static INT mesh_getmaterial(lua_State* L)
 {
     CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
     DWORD matid = (DWORD)luaL_checkinteger(L, 2) - 1;
-    
+
     if (matid < 0 || matid >= mesh->GetNumFGroups())
         lua_pushnil(L);
-    else 
+    else
     {
         CFaceGroup* fg = mesh->GetFGroupData()[matid];
 
@@ -161,6 +161,6 @@ static VOID LuaMesh_register(lua_State* L)
     REGC("getMaterial", mesh_getmaterial);
     REGC("getName", mesh_getname);
     REGC("__gc", mesh_delete);
-    
+
     lua_pop(L, 1);
 }

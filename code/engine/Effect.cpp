@@ -38,7 +38,7 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
             *pBytes = (UINT)strlen(_shader_common);
             return S_OK;
         }
-        
+
         return E_FAIL;
     }
 

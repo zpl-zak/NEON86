@@ -7,7 +7,7 @@ class CNode;
 class ENGINE_API CNodeComponent
 {
 public:
-    CNodeComponent() 
+    CNodeComponent()
     {
         mName = "(unknown)";
         mOwner = NULL;
