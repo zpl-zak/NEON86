@@ -2,7 +2,7 @@ local Class = require "class"
 
 Class "ShadowGen" {
     __init__ = function (self, shadowMapSize)
-      self.shadowmap = RenderTarget(shadowMapSize, shadowMapSize, true)
+      self.shadowmap = RenderTarget(shadowMapSize, shadowMapSize, RTKIND_DEPTH)
       self.shader = Effect("fx/shadowPass.fx")
     end,
 

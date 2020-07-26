@@ -25,7 +25,7 @@ function _init()
 	fxaaEffect = Effect("fxaa.fx")
 
 	local res = GetResolution()
-	screenRT = RenderTarget(res[1], res[2], false)
+	screenRT = RenderTarget(res[1], res[2])
 	local aspect = res[1] / res[2]
 	local hAdd = aspect * 150.0
 	invTexSize = Vector3(

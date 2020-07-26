@@ -481,7 +481,7 @@ VOID CRenderer::SetRenderTarget(CRenderTarget* target)
     if (target && target->GetSurfaceHandle())
     {
         mDevice->SetRenderTarget(0, target->GetSurfaceHandle());
-        mDevice->SetDepthStencilSurface(target->HasDepth() ? NULL : target->GetDepthStencilSurfaceHandle());
+        mDevice->SetDepthStencilSurface(target->GetKind() == RTKIND_DEPTH ? NULL : target->GetDepthStencilSurfaceHandle());
         mActiveTarget = target;
     }
     else

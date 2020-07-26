@@ -26,7 +26,7 @@ function _init()
   testFont = Font("Silkscreen", 18, 1, false)
 
   local res = GetResolution()
-  rt = RenderTarget(2048, 2048, false)
+  rt = RenderTarget(2048, 2048)
   rtMat = Material()
   rtMat:setHandle(1, rt:getHandle())
 
