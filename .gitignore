@@ -10,6 +10,7 @@ data
 libs/*.dll
 imgui.ini
 desktop.ini
+save.neon
 
 *.pdb
 *.ilk
