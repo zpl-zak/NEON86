@@ -56,7 +56,7 @@ VOID CVirtualMachine::Play(VOID)
 
 	UI->ClearErrorWindow();
 
-	FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_SCRIPT);
+	FDATA f = FILESYSTEM->GetResource(RESOURCE_SCRIPT);
 
 	if (!f.data)
 	{

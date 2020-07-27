@@ -7,6 +7,11 @@
 	lua_setglobal(L, #NAME); \
 	lua_settop(L, 0);
 
+#define REGFN(MODULE, ALTNAME, NAME) \
+	lua_pushcfunction(L, ZPL_JOIN4(l_,MODULE,_,NAME)); \
+	lua_setglobal(L, ALTNAME); \
+	lua_settop(L, 0);
+
 #define REGE(VALUE) \
 	lua_pushnumber(L, VALUE); \
 	lua_setglobal(L, #VALUE); \

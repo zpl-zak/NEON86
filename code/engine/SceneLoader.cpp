@@ -145,7 +145,7 @@ BOOL CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials
             | aiProcess_RemoveRedundantMaterials;
     }
 
-    const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(RESOURCEKIND_USER, modelPath), meshFlags);
+    const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(modelPath), meshFlags);
 
     if (!model)
         return FALSE;
@@ -331,7 +331,7 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
             newMaterial->CreateEmbeddedTextureForSlot(slot, tex->pcData, tex->mWidth);
         }
     }
-    else if (FILESYSTEM->Exists(RESOURCEKIND_USER, (LPSTR)path.C_Str()))
+    else if (FILESYSTEM->Exists((LPSTR)path.C_Str()))
     {
         newMaterial->CreateTextureForSlot(slot, (LPSTR)path.C_Str());
     }

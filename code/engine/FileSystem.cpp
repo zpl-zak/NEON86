@@ -17,39 +17,28 @@ BOOL CFileSystem::LoadGameInternal()
 	return (ft & FILE_ATTRIBUTE_DIRECTORY);
 }
 
-VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
+VOID CFileSystem::FixName(LPCSTR* resName)
 {
 	static CHAR fixedTmpName[MAX_PATH] = { 0 };
 
 	if (!resName)
 		return;
 
-    switch (kind)
-    {
-		case RESOURCEKIND_UDATA:
-			*resName = RESOURCE_UDATA;
-			break;
-        case RESOURCEKIND_SCRIPT:
-            *resName = RESOURCE_SCRIPT;
-            break;
-		default:
-			ZeroMemory(fixedTmpName, MAX_PATH);
+	ZeroMemory(fixedTmpName, MAX_PATH);
 
-			LPCSTR p = *resName;
-			UINT i = 0;
-			while (*p != 0)
-			{
-				if (*p == '/')
-					fixedTmpName[i] = '\\';
-				else fixedTmpName[i] = *p;
+	LPCSTR p = *resName;
+	UINT i = 0;
+	while (*p != 0)
+	{
+		if (*p == '/')
+			fixedTmpName[i] = '\\';
+		else fixedTmpName[i] = *p;
 
-				p++;
-				i++;
-			}
+		p++;
+		i++;
+	}
 
-			*resName = fixedTmpName;
-			break;
-    }
+	*resName = fixedTmpName;
 }
 
 BOOL CFileSystem::LoadGame(LPSTR gamePath)
@@ -97,11 +86,11 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath)
 	return ok;
 }
 
-FDATA CFileSystem::GetResource(UCHAR kind, LPCSTR resName/*=NULL*/)
+FDATA CFileSystem::GetResource(LPCSTR resName/*=NULL*/)
 {
 	FDATA res={NULL, 0L};
 
-	FILE* fp = OpenResource(kind, resName);
+	FILE* fp = OpenResource(resName);
 
 	UCHAR* data = NULL;
 	UINT size = 0L;
@@ -126,11 +115,8 @@ FDATA CFileSystem::GetResource(UCHAR kind, LPCSTR resName/*=NULL*/)
 	return res;
 }
 
-VOID CFileSystem::SaveResource(UCHAR kind, LPCSTR data, UINT64 size)
+VOID CFileSystem::SaveResource(LPCSTR data, UINT64 size)
 {
-	if (kind != RESOURCEKIND_UDATA)
-		return;
-
 	FILE* fp = NULL;
 	fopen_s(&fp, CString::Format("%s\\%s", mGamePath, RESOURCE_UDATA).Str(), "wb");
 
@@ -138,12 +124,12 @@ VOID CFileSystem::SaveResource(UCHAR kind, LPCSTR data, UINT64 size)
 	fclose(fp);
 }
 
-FILE* CFileSystem::OpenResource(UCHAR kind, LPCSTR resName /*= NULL*/)
+FILE* CFileSystem::OpenResource(LPCSTR resName /*= NULL*/)
 {
     if (!mLoadDone)
         return NULL;
 
-    FixName(kind, &resName);
+    FixName(&resName);
 
 	FILE* fp = NULL;
 	fopen_s(&fp, CString::Format("%s\\%s", mGamePath, resName).Str(), "rb");
@@ -157,12 +143,12 @@ VOID CFileSystem::CloseResource(FILE* handle)
 		fclose(handle);
 }
 
-LPCSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
+LPCSTR CFileSystem::ResourcePath(LPCSTR resName /*= NULL*/)
 {
     if (!mLoadDone)
         return NULL;
 
-    FixName(kind, &resName);
+    FixName(&resName);
 
 	static CHAR path[MAX_PATH] = { 0 };
 	sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
@@ -185,9 +171,9 @@ LPCSTR CFileSystem::GetCanonicalGamePath()
 	return path;
 }
 
-BOOL CFileSystem::Exists(UCHAR kind, LPCSTR resName)
+BOOL CFileSystem::Exists(LPCSTR resName)
 {
-	FILE* res = OpenResource(kind, resName);
+	FILE* res = OpenResource(resName);
 
 	if (res)
 	{

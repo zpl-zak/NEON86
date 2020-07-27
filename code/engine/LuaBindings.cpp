@@ -171,7 +171,7 @@ LUAF(Base, dofile)
 {
 	const char* scriptName = luaL_checkstring(L, 1);
 
-	FDATA fd = FILESYSTEM->GetResource(RESOURCEKIND_TEXT, (LPSTR)scriptName);
+	FDATA fd = FILESYSTEM->GetResource((LPSTR)scriptName);
 
 	if (!fd.data)
 	{
@@ -190,7 +190,7 @@ LUAF(Base, loadfile)
 {
     const char* scriptName = luaL_checkstring(L, 1);
 
-    FDATA fd = FILESYSTEM->GetResource(RESOURCEKIND_USER, (LPSTR)scriptName);
+    FDATA fd = FILESYSTEM->GetResource((LPSTR)scriptName);
 
     if (!fd.data)
     {
@@ -203,6 +203,42 @@ LUAF(Base, loadfile)
     FILESYSTEM->FreeResource(fd.data);
 
     return 1;
+}
+LUAF(Base, SaveState)
+{
+	LPCSTR data = (LPCSTR)luaL_checkstring(L, 1);
+	size_t len = ::strlen(data);
+
+	LPCSTR out = b64_encode((unsigned char*)data, len);
+	len = ::strlen(out);
+
+	FILESYSTEM->SaveResource(out, len);
+	neon_free((LPVOID)out);
+	return 0;
+}
+LUAF(Base, LoadState)
+{
+	FDATA f = FILESYSTEM->GetResource(RESOURCE_UDATA);
+
+	if (f.data == NULL)
+	{
+		lua_pushnil(L);
+		return 1;
+	}
+
+	LPCSTR out = (LPCSTR)neon_malloc(f.size+1);
+	ZeroMemory((LPVOID)out, f.size+1);
+
+	if (!b64_decode((const char*)f.data, (unsigned char*)out, f.size))
+	{
+		neon_free((LPVOID)out);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushstring(L, out);
+	neon_free((LPVOID)out);
+	return 1;
 }
 LUAF(Base, getTime)
 {
@@ -221,7 +257,10 @@ VOID CLuaBindings::BindBase(lua_State* L)
 	REGF(Base, SetFPS);
 	REGF(Base, dofile);
 	REGF(Base, loadfile);
+	REGF(Base, SaveState);
+	REGF(Base, LoadState);
 	REGF(Base, getTime);
+	REGFN(Base, "GetTime", getTime);
 }
 
 VOID CLuaBindings::BindAudio(lua_State* L)

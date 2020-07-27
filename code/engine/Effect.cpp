@@ -42,7 +42,7 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
         return E_FAIL;
     }
 
-    FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_USER, pFileName);
+    FDATA f = FILESYSTEM->GetResource(pFileName);
 
     if (!f.data)
         return E_FAIL;
@@ -69,7 +69,7 @@ CEffect::CEffect(): CAllocable()
 
 VOID CEffect::LoadEffect(LPCSTR effectPath)
 {
-    FDATA f = FILESYSTEM->GetResource(RESOURCEKIND_USER, effectPath);
+    FDATA f = FILESYSTEM->GetResource(effectPath);
 
     if (!f.data)
     {

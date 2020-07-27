@@ -37,7 +37,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     UCHAR* bufferPtr;
     ULONG bufferSize;
 
-    fp = FILESYSTEM->OpenResource(RESOURCEKIND_USER, wavPath);
+    fp = FILESYSTEM->OpenResource(wavPath);
 
     if (!fp)
     {
@@ -199,7 +199,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     UCHAR* bufferPtr;
     ULONG bufferSize;
 
-    fp = FILESYSTEM->OpenResource(RESOURCEKIND_USER, wavPath);
+    fp = FILESYSTEM->OpenResource(wavPath);
 
     if (!fp)
     {
