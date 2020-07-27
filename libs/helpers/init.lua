@@ -37,8 +37,6 @@ local function drawEffect(fx, tech, drawfn)
   fx:finish()
 end
 
-local withEffect = drawEffect
-
 local function spairs(t, order)
   -- collect the keys
   local keys = {}
@@ -154,7 +152,7 @@ local helpers = {
 
   drawEffect = drawEffect,
   withTexture = withTexture,
-  withEffect = withEffect,
+  withEffect = drawEffect,
 }
 
 helpers.global = function()
