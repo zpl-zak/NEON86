@@ -88,7 +88,7 @@ local function merge(a, b)
   return a
 end
 
-local function serializeTable(val, name, skipnewlines, depth)
+local function serializeTable(val, name, skipnewlines, depth, skipfuncs)
   skipnewlines = skipnewlines or false
   depth = depth or 0
 
@@ -115,6 +115,8 @@ local function serializeTable(val, name, skipnewlines, depth)
     tmp = tmp .. string.format("%q", val)
   elseif type(val) == "boolean" then
     tmp = tmp .. (val and "true" or "false")
+  elseif not skipfuncs and type(val) == "function" then
+    tmp = tmp .. string.format("%q", "fn:"..tostring(string.dump(val, true)))
   else
       tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
   end
@@ -122,13 +124,21 @@ local function serializeTable(val, name, skipnewlines, depth)
   return tmp
 end
 
-local function encode(table)
-	return "return"..serializeTable(table)
+local function encode(table, skipfuncs)
+  skipfuncs = skipfuncs or false
+	return "return"..serializeTable(table, nil, nil, nil, skipfuncs)
 end
 
 local function decode(str)
-	local f = load(str)
-	return f()
+  local f = load(str)()
+  local fndump = "fn:"
+
+  for k, v in pairs(f) do
+    if type(v) == "string" and v:sub(1, #fndump) == fndump then
+      f[k] = load(v:sub(#fndump+1, #v))
+    end
+  end
+	return f
 end
 
 local helpers = {
