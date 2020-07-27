@@ -39,6 +39,9 @@ extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
 extern VOID PushLog(LPCSTR msg, BOOL noHist=FALSE);
 
+extern int b64_decode(const char* in, unsigned char* out, size_t outlen);
+extern char* b64_encode(const unsigned char* in, size_t len);
+
 /// zpl
 #include "zpl_macros.h"
 

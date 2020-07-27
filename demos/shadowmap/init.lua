@@ -5,7 +5,7 @@ debugVis = false
 
 cam = require "camera" (Vector(1,2,3)*4, {math.pi, -0.5})
 shadowGen = require "shadow" (shadowMapSize)
-require "helpers"
+require "helpers".global()
 
 res = GetResolution()
 

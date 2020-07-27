@@ -9,10 +9,6 @@
       <UniqueIdentifier>{111d3eef-b943-4498-8698-56de0882220a}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{6abf0bec-d343-406d-b6fe-0d1d79693cfe}</UniqueIdentifier>
-      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
-    </Filter>
     <Filter Include="Header Files\Core">
       <UniqueIdentifier>{8fd3a648-105d-47e6-a4d4-1b6fc0e7acd3}</UniqueIdentifier>
     </Filter>
@@ -51,6 +47,10 @@
     </Filter>
     <Filter Include="Source Files\Editor">
       <UniqueIdentifier>{1c4f0e0d-2956-4f52-b4e3-80c203477a24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{6abf0bec-d343-406d-b6fe-0d1d79693cfe}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +94,6 @@
       <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_demo.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
@@ -143,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="imgui_plot.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="base64.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

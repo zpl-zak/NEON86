@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "FileSystem.h"
 #include "UserInterface.h"
+#include "Renderer.h"
 
 #include "LuaBindings.h"
 
@@ -304,6 +305,7 @@ VOID CVirtualMachine::PrintVMError()
 {
 	const char* msg = lua_tostring(mLuaVM, -1);
 #ifdef _DEBUG
+	RENDERER->SetRenderTarget(NULL);
 	UI->PushErrorMessage(msg);
 #else
     MessageBoxA(NULL, msg, "Lua error", MB_OK);

@@ -2,18 +2,13 @@
 
 #include "system.h"
 
-enum LOADKIND
-{
-	LOADKIND_FOLDER,
-	LOADKIND_PAK,
-};
-
 enum RESOURCEKIND
 {
 	RESOURCEKIND_META,
 	RESOURCEKIND_TEXT,
 	RESOURCEKIND_SCRIPT,
 	RESOURCEKIND_USER,
+	RESOURCEKIND_UDATA,
 	RESOURCEKIND_IMAGE,
 };
 
@@ -23,7 +18,7 @@ struct FDATA
 	UINT size;
 };
 
-#define RESOURCE_META "meta.yaml"
+#define RESOURCE_UDATA "save.neon"
 #define RESOURCE_SCRIPT "init.lua"
 
 #ifndef _FILE_DEFINED
@@ -40,8 +35,9 @@ class ENGINE_API CFileSystem
 {
 public:
 	CFileSystem(VOID);
-	BOOL LoadGame(LPSTR gamePath, UCHAR loadKind = LOADKIND_FOLDER);
+	BOOL LoadGame(LPSTR gamePath);
 	FDATA GetResource(UCHAR kind, LPCSTR resName=NULL);
+	VOID SaveResource(UCHAR kind, LPCSTR data, UINT64 size);
 	FILE* OpenResource(UCHAR kind, LPCSTR resName = NULL);
 	VOID CloseResource(FILE* handle);
 	LPCSTR ResourcePath(UCHAR kind, LPCSTR resName = NULL);
@@ -52,11 +48,9 @@ public:
 	VOID Release(VOID);
 
 private:
-	UCHAR mLoadKind;
 	LPSTR mGamePath;
 	BOOL mLoadDone;
 
 	BOOL LoadGameInternal();
 	VOID FixName(UCHAR kind, LPCSTR* resName);
-	BOOL ValidatePath(LPCSTR path, LPCSTR dir=NULL);
 };

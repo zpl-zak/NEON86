@@ -7,28 +7,14 @@
 
 CFileSystem::CFileSystem(VOID)
 {
-	mLoadKind = LOADKIND_FOLDER;
 	mGamePath = "";
 	mLoadDone = FALSE;
 }
 
 BOOL CFileSystem::LoadGameInternal()
 {
-	switch (mLoadKind)
-	{
-	case LOADKIND_FOLDER:
-		{
-			DWORD ft = GetFileAttributesA(mGamePath);
-
-			if (ft & FILE_ATTRIBUTE_DIRECTORY)
-				return TRUE;
-		}
-	case LOADKIND_PAK:
-		// todo
-		break;
-	}
-
-	return FALSE;
+	DWORD ft = GetFileAttributesA(mGamePath);
+	return (ft & FILE_ATTRIBUTE_DIRECTORY);
 }
 
 VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
@@ -40,9 +26,9 @@ VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
 
     switch (kind)
     {
-        case RESOURCEKIND_META:
-            *resName = RESOURCE_META;
-            break;
+		case RESOURCEKIND_UDATA:
+			*resName = RESOURCE_UDATA;
+			break;
         case RESOURCEKIND_SCRIPT:
             *resName = RESOURCE_SCRIPT;
             break;
@@ -66,56 +52,7 @@ VOID CFileSystem::FixName(UCHAR kind, LPCSTR* resName)
     }
 }
 
-BOOL CFileSystem::ValidatePath(LPCSTR path, LPCSTR dir)
-{
-	CHAR buf[MAX_PATH] = { 0 };
-    WIN32_FIND_DATAA data;
-
-	if (!dir)
-	{
-		sprintf_s(buf, MAX_PATH, "%s\\*", mGamePath);
-	}
-	else
-		sprintf_s(buf, MAX_PATH, "%s\\%s\\*", mGamePath, dir);
-    HANDLE hFind = FindFirstFileA(buf, &data);
-
-    if (hFind != INVALID_HANDLE_VALUE) {
-        do {
-			if (!strcmp(data.cFileName, ".") || !strcmp(data.cFileName, ".."))
-				continue;
-
-			if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			{
-				if (dir)
-					sprintf_s(buf, MAX_PATH, "%s\\%s", dir, data.cFileName);
-				else
-					sprintf_s(buf, MAX_PATH, "%s", data.cFileName);
-
-				if (ValidatePath(path, buf))
-				{
-					FindClose(hFind);
-					return TRUE;
-				}
-			}
-
-			if (dir)
-				sprintf_s(buf, MAX_PATH, "%s\\%s", dir, data.cFileName);
-			else
-				sprintf_s(buf, MAX_PATH, "%s", data.cFileName);
-
-			if (!strcmp(buf, path))
-			{
-				FindClose(hFind);
-				return TRUE;
-			}
-        } while (FindNextFileA(hFind, &data));
-        FindClose(hFind);
-    }
-
-	return FALSE;
-}
-
-BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
+BOOL CFileSystem::LoadGame(LPSTR gamePath)
 {
 	if (!gamePath)
 		return FALSE;
@@ -147,8 +84,6 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath, UCHAR loadKind)
 	if (*p!=0)
 		*p=0;
 
-	mLoadKind = loadKind;
-
 	if (mLoadDone)
 		SAFE_DELETE(mGamePath);
 
@@ -171,34 +106,36 @@ FDATA CFileSystem::GetResource(UCHAR kind, LPCSTR resName/*=NULL*/)
 	UCHAR* data = NULL;
 	UINT size = 0L;
 
-	switch (mLoadKind)
-	{
-	case LOADKIND_FOLDER:
-		{
-			if (!fp)
-				return res;
+	if (!fp)
+		return res;
 
-			fseek(fp, 0, SEEK_END);
-			DWORD fileSize = ftell(fp);
-			fseek(fp, 0, SEEK_SET);
+	fseek(fp, 0, SEEK_END);
+	DWORD fileSize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 
-			data = (UCHAR*)neon_malloc(fileSize+1);
-			fread((UCHAR*)data, 1, fileSize, fp);
-			data[fileSize] = NULL;
-			fclose(fp);
+	data = (UCHAR*)neon_malloc(fileSize+1);
+	fread((UCHAR*)data, 1, fileSize, fp);
+	data[fileSize] = NULL;
+	fclose(fp);
 
-			size = fileSize;
-		}
-		break;
-	case LOADKIND_PAK:
-		// todo use memory mapping technique
-		break;
-	}
+	size = fileSize;
 
 	res.data = data;
 	res.size = size;
 
 	return res;
+}
+
+VOID CFileSystem::SaveResource(UCHAR kind, LPCSTR data, UINT64 size)
+{
+	if (kind != RESOURCEKIND_UDATA)
+		return;
+
+	FILE* fp = NULL;
+	fopen_s(&fp, CString::Format("%s\\%s", mGamePath, RESOURCE_UDATA).Str(), "wb");
+
+	fwrite(data, size, 1, fp);
+	fclose(fp);
 }
 
 FILE* CFileSystem::OpenResource(UCHAR kind, LPCSTR resName /*= NULL*/)
@@ -208,28 +145,10 @@ FILE* CFileSystem::OpenResource(UCHAR kind, LPCSTR resName /*= NULL*/)
 
     FixName(kind, &resName);
 
-	if (!ValidatePath(resName))
-		return NULL;
+	FILE* fp = NULL;
+	fopen_s(&fp, CString::Format("%s\\%s", mGamePath, resName).Str(), "rb");
 
-    switch (mLoadKind)
-    {
-        case LOADKIND_FOLDER:
-        {
-            static CHAR path[MAX_PATH] = { 0 };
-            sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
-
-            FILE* fp = NULL;
-            fopen_s(&fp, path, "rb");
-
-			return fp;
-        }
-        break;
-        case LOADKIND_PAK:
-            // todo use memory mapping technique
-            break;
-    }
-
-	return NULL;
+	return fp;
 }
 
 VOID CFileSystem::CloseResource(FILE* handle)
@@ -245,22 +164,9 @@ LPCSTR CFileSystem::ResourcePath(UCHAR kind, LPCSTR resName /*= NULL*/)
 
     FixName(kind, &resName);
 
-    switch (mLoadKind)
-    {
-        case LOADKIND_FOLDER:
-        {
-            static CHAR path[MAX_PATH] = { 0 };
-            sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
-			return path;
-        }
-        break;
-        case LOADKIND_PAK:
-            // todo use memory mapping technique
-			// we might also need to expose the file temporarily here
-            break;
-    }
-
-    return NULL;
+	static CHAR path[MAX_PATH] = { 0 };
+	sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
+	return path;
 }
 
 LPCSTR CFileSystem::GetCanonicalGamePath()
@@ -294,15 +200,7 @@ BOOL CFileSystem::Exists(UCHAR kind, LPCSTR resName)
 
 VOID CFileSystem::FreeResource(LPVOID data)
 {
-	switch (mLoadKind)
-	{
-	case LOADKIND_FOLDER:
-		SAFE_FREE(data);
-		break;
-	case LOADKIND_PAK:
-		// todo: unmap file
-		break;
-	}
+	SAFE_FREE(data);
 }
 
 VOID CFileSystem::Release(VOID)
