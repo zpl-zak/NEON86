@@ -72,7 +72,8 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     float2 shadowCoord = CalcShadowCoord(vpl);
     float diffuse = saturate(dot(n,l));
     float specular = saturate(dot(n,h));
-    float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power);
+    float powerFactor = 0.12;
+    float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power * powerFactor);
 
     float bias = SHADOW_EPSILON*tan(acos(diffuse));
     bias = clamp(bias, 0.01, 0.3);
@@ -84,11 +85,10 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
         if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
     }
 
-    float powerFactor = 5;
 
     OUT = NEON.AmbientColor
         + (sun.Diffuse * diffuse * lamt)
-        + (sun.Specular * specular * power * powerFactor * lamt);
+        + (sun.Specular * specular * power * lamt);
 
     if (hasDiffuseTex)
         OUT *= tex2D(diffuseMap, IN.texCoord);

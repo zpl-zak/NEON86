@@ -191,6 +191,16 @@ VOID CRenderer::Blit(VOID)
 
 VOID CRenderer::BeginRender(VOID)
 {
+    if (mDevice->TestCooperativeLevel() == D3DERR_DEVICELOST)
+        return;
+
+    if (mDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
+    {
+        MessageBoxA(mWindow, "Device has been lost. (Don't leave the game on next time :( )", "Direct3D Error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
+
     SetDefaultRenderStates();
     GetDevice()->BeginScene();
 }
