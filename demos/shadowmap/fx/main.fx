@@ -84,9 +84,11 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
         if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
     }
 
+    float powerFactor = 5;
+
     OUT = NEON.AmbientColor
         + (sun.Diffuse * diffuse * lamt)
-        + (sun.Diffuse * specular * power * lamt);
+        + (sun.Specular * specular * power * powerFactor * lamt);
 
     if (hasDiffuseTex)
         OUT *= tex2D(diffuseMap, IN.texCoord);

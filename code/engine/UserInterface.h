@@ -7,6 +7,7 @@
 #include <functional>
 
 using Draw2DHook = std::function<void()>;
+using DrawUIHook = std::function<void()>;
 
 class ENGINE_API CUserInterface
 {
@@ -26,6 +27,9 @@ public:
 
     inline VOID SetDraw2DHook(Draw2DHook hook) { *mDraw2DHook = hook; }
     inline Draw2DHook GetDraw2DHook() { return *mDraw2DHook; }
+
+    inline VOID SetDrawUIHook(DrawUIHook hook) { *mDrawUIHook = hook; }
+    inline DrawUIHook GetDrawUIHook() { return *mDrawUIHook; }
 private:
     VOID DebugPanel(VOID);
     CString FormatBytes(UINT64 bytes);
@@ -38,5 +42,6 @@ private:
 
     ID3DXSprite* mTextSurface;
     Draw2DHook* mDraw2DHook;
+    DrawUIHook* mDrawUIHook;
 };
 

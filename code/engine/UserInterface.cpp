@@ -278,6 +278,7 @@ CUserInterface::CUserInterface()
 #endif // _DEBUG
 
     mDraw2DHook = new Draw2DHook();
+    mDrawUIHook = new DrawUIHook();
 
     ImGui::StyleColorsDark();
 
@@ -298,6 +299,7 @@ BOOL CUserInterface::Release(VOID)
     ImGui_ImplDX9_Shutdown();
     SAFE_RELEASE(mTextSurface);
     SAFE_DELETE(mDraw2DHook);
+    SAFE_DELETE(mDrawUIHook);
 
     return TRUE;
 }
@@ -314,6 +316,9 @@ VOID CUserInterface::Render(VOID)
     ImGui::NewFrame();
 
     DebugPanel();
+
+    if (*mDrawUIHook)
+        (*mDrawUIHook)();
 
     ImGui::EndFrame();
 

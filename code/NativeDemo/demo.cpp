@@ -10,6 +10,7 @@
 #include "Light.h"
 #include "Font.h"
 #include "ProfileManager.h"
+#include "imgui.h"
 
 #pragma comment (lib, "d3dx9.lib")
 
@@ -74,6 +75,14 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     UI->SetDraw2DHook([&]() {
         demoFont->RenderText(0xFFFFFFFF, "This demo is running from the native C++ side", 15, 30);
+    });
+
+    UI->SetDrawUIHook([&]() {
+        ImGui::Begin("Hello world");
+        {
+            ImGui::Text("It works!");
+        }
+        ImGui::End();
     });
 
     CProfiler demoProfiler("Demo");

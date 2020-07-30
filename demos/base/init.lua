@@ -42,5 +42,5 @@ function _render2d()
     Welcome to the NEON86 basic template!
 
     Press L to toggle lighting
-  ]], 0, 30)
+  ]], 0, 30, 0, 0, FF_NOCLIP)
 end

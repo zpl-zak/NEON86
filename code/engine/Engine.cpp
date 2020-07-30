@@ -148,7 +148,7 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
     {
         mTotalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
         mTotalMeasuredTime = 0.0f;
-        BOOL logStats = mRunCycle % (INT(sFrameWindow * 10.0f)) == 0;
+        BOOL logStats = mRunCycle % (INT(sFrameWindow * 120.0f)) == 0;
 
         if (logStats) PushLog("==================\n", TRUE);
 
