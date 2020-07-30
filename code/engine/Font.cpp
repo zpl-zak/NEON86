@@ -43,7 +43,7 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h,
     rect.left = x;
     rect.top = y;
 
-    if ((w == 0 || h == 0) && flags & ~0x00000100) // FF_DONTCLIP
+    if ((w == 0 || h == 0) && flags & ~FF_NOCLIP)
         CalculateRect(text, &rect);
     else
     {
