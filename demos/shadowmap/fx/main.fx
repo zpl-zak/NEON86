@@ -29,6 +29,7 @@ sampler2D shadowMap = sampler_state
     MinFilter = Point;
     AddressU = Border;
     AddressV = Border;
+    BorderColor = float4(0,0,0,0);
 };
 
 struct VS_OUTPUT
@@ -67,6 +68,7 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     float3 v = normalize(IN.viewDir);
     float3 h = normalize(l+v);
     float4 vpl = IN.lightViewPos;
+    float depth = vpl.z/vpl.w;
     float lamt = 1.0f;
 
     float2 shadowCoord = CalcShadowCoord(vpl);
@@ -75,16 +77,15 @@ float4 PS_ScenePass(VS_OUTPUT IN) : COLOR
     float powerFactor = 0.12;
     float power = (diffuse == 0.0f) ? 0.0f : pow(specular, MAT.Power * powerFactor);
 
-    float bias = SHADOW_EPSILON*tan(acos(diffuse));
-    bias = clamp(bias, 0.01, 0.3);
-
-    if (!noShadows)
+    float bias = max(0.05 * (1.0 - diffuse), 0.005);
+    if (!noShadows && depth > 0.0)
     {
-        if (shadowMethod == 0) lamt = CalcShadowPCF(shadowMap, 6, bias, vpl.z/vpl.w, shadowCoord, shadowMapSize);
-        if (shadowMethod == 1) lamt = CalcShadowVariance(shadowMap, bias, vpl.z/vpl.w, shadowCoord, 0.0002, 0.94);
-        if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, vpl.z/vpl.w, shadowCoord);
+        if (shadowMethod == 0) lamt = CalcShadowPCF(shadowMap, 6, bias, depth, shadowCoord, shadowMapSize);
+        if (shadowMethod == 1) lamt = CalcShadowVariance(shadowMap, bias, depth, shadowCoord, 0.0002, 0.94);
+        if (shadowMethod == 2) lamt = CalcShadowSimple(shadowMap, bias, depth, shadowCoord);
     }
 
+    // lamt = lerp(lamt, 1.0, vpl.z/10.0);
 
     OUT = NEON.AmbientColor
         + (sun.Diffuse * diffuse * lamt)

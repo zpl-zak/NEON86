@@ -87,10 +87,10 @@ end
 function _render()
   -- 1st pass, generate shadowmap
   local ldir = lightDir * Matrix():rotate(time/4,0,0)
-  lightProj = Matrix():orthoEx(-20, 20, -20, 20, -20, 20)
+  lightProj = Matrix():orthoEx(-40, 40, -40, 40, -40, 40)
   lightView = Matrix():lookAt(
-    ldir,
-    Vector(),
+    ldir+cam.pos,
+    Vector()+cam.pos,
     Vector(0,1,0)
   )
   light:setDirection(ldir)

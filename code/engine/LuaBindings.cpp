@@ -597,7 +597,7 @@ LUAF(Rend, SamplerState)
 {
     DWORD stage = (DWORD)luaL_checkinteger(L, 1);
     DWORD kind = (DWORD)luaL_checkinteger(L, 2);
-    BOOL state = (BOOL)lua_toboolean(L, 3);
+    DWORD state = (DWORD)luaL_checkinteger(L, 3);
 
     RENDERER->SetSamplerState(stage, kind, state);
     return 0;
