@@ -63,8 +63,8 @@ VS_OUTPUT VS_TerrainRender(VS_INPUT IN)
     OUT.worldPos = mul(float4(IN.position, 1.0f), NEON.World);
     OUT.viewDir = (campos - OUT.worldPos);
     OUT.texCoord = IN.texCoord;
-    OUT.normal = mul(IN.normal, NEON.InverseWorld);
-    OUT.tangent = mul(IN.tangent, NEON.InverseWorld);
+    OUT.normal = mul(IN.normal, NEON.World);
+    OUT.tangent = mul(IN.tangent, NEON.World);
 
     return OUT;
 }

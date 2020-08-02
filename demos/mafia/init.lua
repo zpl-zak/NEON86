@@ -1,12 +1,16 @@
 local mapModel, colsModel
 local camera
 
-local bgColor = VectorRGBA(42, 16, 9)
+local bgColor = VectorRGBA(42, 16, 23)
 
 local cols = require "collisions"
 
 local world = cols.newWorld()
 local lights = {}
+
+shader = Effect("fx/main.fx")
+
+require "helpers".global()
 
 -- Create a sunlight
 sun = Light()
@@ -77,14 +81,22 @@ end
 function _render()
   ClearScene(bgColor:color())
   AmbientColor(bgColor:color())
-
+  
+  sun:enable(true, 0)
   for i, l in pairs(lights) do
     l:enable(true, i)
   end
-
+  
   camera.mat:bind(VIEW)
   CameraPerspective(62, 0.1, 9000)
-  mapModel:draw(Matrix())
+  withEffect(shader, "Lit", function (fx)
+    fx:setLight("sun", sun)
+    for i, l in pairs(lights) do
+      fx:setLight("lights["..(i-1).."]", l)
+    end
+    fx:commit()
+    mapModel:draw()
+  end)
 end
 
 function _render2d()

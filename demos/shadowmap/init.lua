@@ -123,8 +123,8 @@ function _render()
     ClearScene(0xFF202069)
     lightProj:bind(PROJ)
     Matrix():lookAt(
-      ldir,
-      Vector(),
+      ldir+cam.pos,
+      Vector()+cam.pos,
       Vector(0,1,0)
     ):bind(VIEW)
     drawScene()
@@ -133,8 +133,8 @@ function _render()
     ClearScene(0xFF692020)
     lightProj:bind(PROJ)
     Matrix():lookAt(
-      ldir:neg(),
-      Vector(),
+      ldir:neg()+cam.pos,
+      Vector()+cam.pos,
       Vector(0,1,0)
     ):bind(VIEW)
     drawScene()
