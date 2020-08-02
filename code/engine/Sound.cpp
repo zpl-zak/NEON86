@@ -14,7 +14,7 @@ CSound::CSound(LPSTR wavPath): CAllocable()
 
     std::string path(wavPath);
 
-    if (path.find_last_of(".ogg")) {
+    if (path.rfind(".ogg") != std::string::npos) {
         CSoundLoader::LoadOGG(wavPath, &mBuffer, &mData, &mDataSize);
     }
     else {
@@ -64,18 +64,35 @@ VOID CSound::SetPan(LONG pan)
     mBuffer->SetPan(realPan);
 }
 
+VOID CSound::SetFrequency(DWORD freq)
+{
+    if (freq == 0)
+    {
+        freq = DSBFREQUENCY_ORIGINAL;
+    }
+
+    mBuffer->SetFrequency(freq);
+}
+
 LONG CSound::GetVolume()
 {
     LONG vol;
     mBuffer->GetVolume(&vol);
-    return (LONG)ScaleBetween((FLOAT)vol, 0, 100, DSBVOLUME_MIN, DSBVOLUME_MAX);;
+    return (LONG)ScaleBetween((FLOAT)vol, 0, 100, DSBVOLUME_MIN, DSBVOLUME_MAX);
 }
 
 LONG CSound::GetPan()
 {
     LONG pan;
     mBuffer->GetPan(&pan);
-    return (LONG)ScaleBetween((FLOAT)pan, -100, 100, DSBVOLUME_MIN, DSBVOLUME_MAX);;
+    return (LONG)ScaleBetween((FLOAT)pan, -100, 100, DSBPAN_LEFT, DSBPAN_RIGHT);
+}
+
+DWORD CSound::GetFrequency()
+{
+    DWORD freq = 0;
+    mBuffer->GetFrequency(&freq);
+    return freq;
 }
 
 BOOL CSound::IsPlaying()

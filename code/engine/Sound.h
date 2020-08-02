@@ -16,8 +16,10 @@ public:
     VOID Update();
     VOID SetVolume(LONG vol);
     VOID SetPan(LONG pan);
+    VOID SetFrequency(DWORD freq);
     LONG GetVolume();
     LONG GetPan();
+    DWORD GetFrequency();
     BOOL IsPlaying();
     DWORD GetCurrentPosition();
     VOID SetCurrentPosition(DWORD cursor);

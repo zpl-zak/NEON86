@@ -62,6 +62,14 @@ INT sound_setpan(lua_State* L)
     return 0;
 }
 
+INT sound_setfrequency(lua_State* L)
+{
+    CSound* snd = *(CSound**)luaL_checkudata(L, 1, L_SOUND);
+    DWORD val = (DWORD)luaL_checkinteger(L, 2);
+    snd->SetFrequency(val);
+    return 0;
+}
+
 INT sound_setcursor(lua_State* L)
 {
     CSound* snd = *(CSound**)luaL_checkudata(L, 1, L_SOUND);
@@ -81,6 +89,13 @@ INT sound_getpan(lua_State* L)
 {
     CSound* snd = *(CSound**)luaL_checkudata(L, 1, L_SOUND);
     lua_pushinteger(L, snd->GetPan());
+    return 1;
+}
+
+INT sound_getfrequency(lua_State* L)
+{
+    CSound* snd = *(CSound**)luaL_checkudata(L, 1, L_SOUND);
+    lua_pushinteger(L, snd->GetFrequency());
     return 1;
 }
 
@@ -132,12 +147,14 @@ static VOID LuaSound_register(lua_State* L)
     REGC("stop", sound_stop);
     REGC("setVolume", sound_setvolume);
     REGC("setPan", sound_setpan);
+    REGC("setFrequency", sound_setfrequency);
     REGC("setCursor", sound_setcursor);
     REGC("loop", sound_setloop);
     REGC("isLooping", sound_looping);
     REGC("isPlaying", sound_playing);
     REGC("getVolume", sound_getvolume);
     REGC("getPan", sound_getpan);
+    REGC("getFrequency", sound_getfrequency);
     REGC("getCursor", sound_getcursor);
     REGC("getData", sound_getdata);
     REGC("__gc", sound_delete);

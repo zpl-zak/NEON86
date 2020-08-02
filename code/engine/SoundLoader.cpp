@@ -121,7 +121,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     waveFormat.cbSize = 0;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
+    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY;
     bufferDesc.dwBufferBytes = waveFileHeader.dataSize;
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = &waveFormat;
@@ -231,7 +231,7 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     waveFormat.cbSize = 0;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
+    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY;
     bufferDesc.dwBufferBytes = (DWORD)(count * channels * (sizeof(int16) / sizeof(uint8)));
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = &waveFormat;
