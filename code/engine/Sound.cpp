@@ -3,13 +3,23 @@
 #include "Sound.h"
 #include "SoundLoader.h"
 
+#include <string>
+
 CSound::CSound(LPSTR wavPath): CAllocable()
 {
     mBuffer = NULL;
     mIsLooping = FALSE;
     mData = NULL;
     mDataSize = 0;
-    CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize);
+
+    std::string path(wavPath);
+
+    if (path.find_last_of(".ogg")) {
+        CSoundLoader::LoadOGG(wavPath, &mBuffer, &mData, &mDataSize);
+    }
+    else {
+        CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize);
+    }
 }
 
 VOID CSound::Release()
