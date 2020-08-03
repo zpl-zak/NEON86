@@ -352,7 +352,7 @@ VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
     mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 }
 
-VOID CRenderer::DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD color, BOOL flipY)
+VOID CRenderer::DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD color, BOOL usesDepth, BOOL flipY)
 {
     VERTEX_2D verts[] =
     {
@@ -372,7 +372,7 @@ VOID CRenderer::DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD co
     if (!vertsDecl)
         mDevice->CreateVertexDeclaration(meshVertex2DFormat, &vertsDecl);
 
-    mDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+    mDevice->SetRenderState(D3DRS_ZENABLE, usesDepth);
     mDevice->SetVertexDeclaration(vertsDecl);
     mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, (VOID*)verts, sizeof(VERTEX_2D));
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);

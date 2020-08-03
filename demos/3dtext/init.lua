@@ -70,7 +70,7 @@ function _render2d()
 
   if tagPos:z() < 1 then
     local dist = (cam.pos - tag3DPos):mag() * 0.2
-    tagPos:x(tagPos:x() - nicknameMeasuredWidth/2)
+    tagPos:x(tagPos:x() - nicknameMeasuredWidth/2/dist)
     withTexture(nicknameTex, function ()
       DrawQuadEx(tagPos, nicknameWidth/dist, nicknameHeight/dist, 0xFFFFFFFF)
     end)

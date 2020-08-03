@@ -710,9 +710,10 @@ LUAF(Rend, DrawQuadEx)
 	FLOAT w = (FLOAT)luaL_checknumber(L, 2);
 	FLOAT h = (FLOAT)luaL_checknumber(L, 3);
 	DWORD color = (DWORD)luaL_checkinteger(L, 4);
-	BOOL flipY = (BOOL)lua_toboolean(L, 5);
+	BOOL usesDepth = (BOOL)lua_toboolean(L, 5);
+	BOOL flipY = (BOOL)lua_toboolean(L, 6);
 
-	RENDERER->DrawQuadEx(pos.x, pos.y, pos.z, w, h, color, flipY);
+	RENDERER->DrawQuadEx(pos.x, pos.y, pos.z, w, h, color, usesDepth, flipY);
     return 0;
 }
 LUAF(Rend, DrawQuad3D)
