@@ -316,22 +316,16 @@ LUAF(Math, WorldToScreen)
 LUAF(Math, ScreenToWorld)
 {
 	D3DXVECTOR3* pos2D = (D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR);
-    D3DXMATRIX proj = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);
-    D3DXMATRIX view = RENDERER->GetDeviceMatrix(MATRIXKIND_VIEW);
-    D3DXMATRIX world = RENDERER->GetDeviceMatrix(MATRIXKIND_WORLD);
-
-    if (lua_gettop(L) == 4) {
-        proj = *(D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
-        view = *(D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
-        world = *(D3DXMATRIX*)luaL_checkudata(L, 4, L_MATRIX);
-    }
+    D3DXMATRIX view = *(D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+    D3DXMATRIX proj = *(D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+    D3DXMATRIX world;
+	D3DXMatrixIdentity(&world);
 
 	D3DXVECTOR3* pos3D = (D3DXVECTOR3*)vector4_ctor(L);
     D3DVIEWPORT9 viewport;
-    RENDERER->GetDevice()->GetViewport(&viewport);
+	RENDERER->GetDevice()->GetViewport(&viewport);
 
     D3DXVec3Unproject(pos2D, pos3D, &viewport, &proj, &view, &world);
-
 	return 1;
 }
 LUAF(Math, str2vec)
