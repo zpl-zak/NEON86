@@ -46,7 +46,8 @@ static INT font_drawtext(lua_State* L)
     }
 
     font->RenderText(color, text, x, y, w, h, flags);
-    return 0;
+
+    return 1;
 }
 
 static INT font_measuretext(lua_State* L)

@@ -7,7 +7,11 @@ toggleLighting = true
 light = Light()
 mat = Matrix()
 proj = Matrix():persp(62, 0.1, 100)
+
 nicknameTex = nil
+nicknameWidth = 200
+nicknameHeight = 40
+nicknameMeasuredWidth = 0
 
 light:setDirection(Vector(-1,-1,1))
 light:enable(true, 0)
@@ -56,17 +60,19 @@ function _render2d()
     nicknameTex = RenderTarget(200,40, RTKIND_COLOR16)
     nicknameTex:bind()
     ClearScene(0x550000)
-    testFont:drawText(0xFFFFFFFF, "Nickname", 0, 0, 0, 0, FF_SINGLELINE)
+    nicknameMeasuredWidth = testFont:measureText("Nickname", FF_SINGLELINE|FF_CENTER, nicknameWidth)[1]
+    testFont:drawText(0xFFFFFFFF, "Nickname", 0, 0, nicknameWidth, nicknameHeight, FF_SINGLELINE|FF_CENTER)
     ClearTarget()
   end
 
-  local tag3DPos = mat:translate(0,1.2,0):row(4)
+  local tag3DPos = mat:translate(0,1.4,0):row(4)
   local tagPos = WorldToScreen(tag3DPos, cam.mat, proj)
 
   if tagPos:z() < 1 then
     local dist = (cam.pos - tag3DPos):mag() * 0.2
+    tagPos:x(tagPos:x() - nicknameMeasuredWidth/2)
     withTexture(nicknameTex, function ()
-      DrawQuadEx(tagPos, 200/dist, 40/dist, 0xFFFFFFFF)
+      DrawQuadEx(tagPos, nicknameWidth/dist, nicknameHeight/dist, 0xFFFFFFFF)
     end)
   end
 end
