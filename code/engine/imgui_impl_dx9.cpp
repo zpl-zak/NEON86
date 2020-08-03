@@ -181,13 +181,12 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     // NEON86: Render 2D
     IDirect3DStateBlock9* neonsbt = NULL;
     RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
-    UI->GetTextSurface()->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_DONOTMODIFY_RENDERSTATE);
+    neonsbt->Capture();
     {
         CProfileScope scope(ENGINE->DefaultProfiling.INTERNAL_GetRender2DProfiler());
         UI->RenderHook();
         VM->Render2D();
     }
-    UI->GetTextSurface()->End();
 
     neonsbt->Apply();
     neonsbt->Release();

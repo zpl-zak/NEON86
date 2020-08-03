@@ -8,8 +8,11 @@
 #include "FaceGroup.h"
 #include "Effect.h"
 #include "RenderTarget.h"
+#include "ProfileManager.h"
 
 #include "engine.h"
+#include "UserInterface.h"
+#include "VM.h"
 
 #if !defined(_DEBUG) || defined(NEON_FORCE_D3DX9)
 #pragma comment (lib, "d3d9/d3dx9.lib")
@@ -349,6 +352,32 @@ VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
     mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 }
 
+VOID CRenderer::DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD color, BOOL flipY)
+{
+    VERTEX_2D verts[] =
+    {
+        {x, (y+h), z, 1, color, 0.0f, flipY - 0.0f},
+        {(x+w), y, z, 1, color, 1.0f, flipY - 1.0f},
+        {(x+w), (y+h), z, 1, color, 1.0f, flipY - 0.0f},
+
+        {x, (y+h), z, 1, color, 0.0f, flipY - 0.0f},
+        {x, y, z, 1, color, 0.0f, flipY - 1.0f},
+        {(x+w), y, z, 1, color, 1.0f, flipY - 1.0f},
+    };
+
+    mDevice->SetRenderState(D3DRS_LIGHTING, IsLightingEnabled());
+
+    static IDirect3DVertexDeclaration9* vertsDecl = NULL;
+
+    if (!vertsDecl)
+        mDevice->CreateVertexDeclaration(meshVertex2DFormat, &vertsDecl);
+
+    mDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+    mDevice->SetVertexDeclaration(vertsDecl);
+    mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, (VOID*)verts, sizeof(VERTEX_2D));
+    mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+}
+
 VOID CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
 {
     SAFE_RELEASE(mDefaultBox);
@@ -378,7 +407,7 @@ VOID CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
 
 VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
 {
-    mDevice->Clear(0, NULL, flags, color, 1.0f, 1);
+    mDevice->Clear(0, NULL, flags, color, 1.0f, 0);
 }
 
 VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
@@ -556,6 +585,7 @@ VOID CRenderer::SetDefaultRenderStates()
 
     mDevice->SetRenderState(D3DRS_LIGHTING, (DWORD)IsLightingEnabled());
     mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+    mDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA);
     mDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
     mDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
     mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);

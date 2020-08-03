@@ -73,7 +73,7 @@ DWORD luaH_getcolor(lua_State* L, UINT offset)
         r = (UINT)luaL_checknumber(L, 1+offset);
         g = (UINT)luaL_checknumber(L, 2+offset);
         b = (UINT)luaL_checknumber(L, 3+offset);
-        color = D3DCOLOR_XRGB(r, g, b);
+        color = D3DCOLOR_ARGB(255, r, g, b);
         lua_remove(L, 2 + offset);
         lua_remove(L, 2 + offset);
     }
@@ -298,6 +298,42 @@ LUAF(Math, ColorLinear)
 	lua_pushnumber(L, a);
     return 4;
 }
+LUAF(Math, WorldToScreen)
+{
+	D3DXVECTOR3* pos3D = (D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR);
+    D3DXMATRIX view = *(D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+    D3DXMATRIX proj = *(D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+    D3DXMATRIX world;
+	D3DXMatrixIdentity(&world);
+
+	D3DXVECTOR3* pos2D = (D3DXVECTOR3*)vector4_ctor(L);
+    D3DVIEWPORT9 viewport;
+	RENDERER->GetDevice()->GetViewport(&viewport);
+
+    D3DXVec3Project(pos2D, pos3D, &viewport, &proj, &view, &world);
+	return 1;
+}
+LUAF(Math, ScreenToWorld)
+{
+	D3DXVECTOR3* pos2D = (D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR);
+    D3DXMATRIX proj = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);
+    D3DXMATRIX view = RENDERER->GetDeviceMatrix(MATRIXKIND_VIEW);
+    D3DXMATRIX world = RENDERER->GetDeviceMatrix(MATRIXKIND_WORLD);
+
+    if (lua_gettop(L) == 4) {
+        proj = *(D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+        view = *(D3DXMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+        world = *(D3DXMATRIX*)luaL_checkudata(L, 4, L_MATRIX);
+    }
+
+	D3DXVECTOR3* pos3D = (D3DXVECTOR3*)vector4_ctor(L);
+    D3DVIEWPORT9 viewport;
+    RENDERER->GetDevice()->GetViewport(&viewport);
+
+    D3DXVec3Unproject(pos2D, pos3D, &viewport, &proj, &view, &world);
+
+	return 1;
+}
 LUAF(Math, str2vec)
 {
 	std::string str = std::string(luaL_checkstring(L, 1));
@@ -343,6 +379,8 @@ VOID CLuaBindings::BindMath(lua_State* L)
 	LuaVector_register(L);
 
 	REGF(Math, Color);
+	REGF(Math, WorldToScreen);
+	REGF(Math, ScreenToWorld)
 	REGF(Math, ColorLinear);
 	REGF(Math, str2vec);
 	REGF(Math, vec2str);
@@ -636,6 +674,24 @@ LUAF(Rend, DrawBox)
     RENDERER->DrawBox(mat, dims, color);
     return 0;
 }
+LUAF(Rend, ReadyAlphaBlend)
+{
+	RENDERER->GetDevice()->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    RENDERER->GetDevice()->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    RENDERER->GetDevice()->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    RENDERER->GetDevice()->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    RENDERER->GetDevice()->SetRenderState(D3DRS_ALPHAREF, 0x08);
+    RENDERER->GetDevice()->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+    RENDERER->GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    RENDERER->GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    RENDERER->GetDevice()->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    RENDERER->GetDevice()->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    RENDERER->GetDevice()->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    RENDERER->GetDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+    RENDERER->GetDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC);
+    RENDERER->GetDevice()->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_ANISOTROPIC);
+    return 0;
+}
 LUAF(Rend, DrawQuad)
 {
 	FLOAT x1 = (FLOAT)luaL_checknumber(L, 1);
@@ -646,6 +702,17 @@ LUAF(Rend, DrawQuad)
 	BOOL flipY = (BOOL)lua_toboolean(L, 6);
 
 	RENDERER->DrawQuad(x1, x2, y1, y2, color, flipY);
+    return 0;
+}
+LUAF(Rend, DrawQuadEx)
+{
+	D3DXVECTOR3 pos = *(D3DXVECTOR3*)luaL_checkudata(L, 1, L_VECTOR);
+	FLOAT w = (FLOAT)luaL_checknumber(L, 2);
+	FLOAT h = (FLOAT)luaL_checknumber(L, 3);
+	DWORD color = (DWORD)luaL_checkinteger(L, 4);
+	BOOL flipY = (BOOL)lua_toboolean(L, 5);
+
+	RENDERER->DrawQuadEx(pos.x, pos.y, pos.z, w, h, color, flipY);
     return 0;
 }
 LUAF(Rend, DrawQuad3D)
@@ -711,6 +778,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, RenderState);
 	REGF(Rend, SetFog);
 	REGF(Rend, ClearFog);
+	REGF(Rend, ReadyAlphaBlend)
 	REGF(Rend, SamplerState);
 	REGF(Rend, ToggleWireframe);
 	REGF(Rend, ToggleDepthTest);
@@ -720,6 +788,7 @@ VOID CLuaBindings::BindRenderer(lua_State* L)
 	REGF(Rend, ClearTarget);
 	REGF(Rend, DrawBox)
 	REGF(Rend, DrawQuad);
+	REGF(Rend, DrawQuadEx)
 	REGF(Rend, DrawQuad3D);
 	REGF(Rend, DrawPolygon);
 	REGF(Rend, FillScreen);

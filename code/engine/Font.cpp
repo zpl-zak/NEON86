@@ -52,7 +52,9 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h,
     }
 
     RENDERER->GetDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+    UI->GetTextSurface()->Begin(D3DXSPRITE_ALPHABLEND | D3DXSPRITE_DONOTMODIFY_RENDERSTATE);
     mFontHandle->DrawTextA(UI->GetTextSurface(), text, -1, &rect, flags, color);
+    UI->GetTextSurface()->End();
 }
 
 BOOL CFont::AddFontToDatabase(LPCSTR path)

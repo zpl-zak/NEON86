@@ -16,5 +16,4 @@ public:
     static BOOL AddFontToDatabase(LPCSTR path);
 private:
     ID3DXFont* mFontHandle;
-
 };
