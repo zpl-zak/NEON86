@@ -295,6 +295,7 @@ VOID CEngine::Update(FLOAT deltaTime)
     {
         CProfileScope scope(DefaultProfiling.mUpdateProfiler);
         mVirtualMachine->Update(deltaTime);
+        mAudioSystem->Update();
     }
 
     mDebugUI->Update(deltaTime);

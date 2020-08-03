@@ -61,6 +61,7 @@ static INT NAME(lua_State* L) {\
 #define L_LIGHT "Light"
 #define L_FONT "Font"
 #define L_SOUND "Sound"
+#define L_MUSIC "Music"
 
 #define ENDF {0,0}
 

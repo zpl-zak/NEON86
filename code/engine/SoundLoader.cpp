@@ -436,3 +436,114 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
         return;
     }
 }
+
+VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events, LPVOID waveInfo)
+{
+    WAVEFORMATEX waveFormat;
+    DSBUFFERDESC bufferDesc;
+    HRESULT result;
+    IDirectSoundBuffer* tempBuffer;
+
+    int error;
+    stb_vorbis* decoder = stb_vorbis_open_filename(FILESYSTEM->ResourcePath(path), &error, NULL);
+
+    if (decoder->channels != 2)
+    {
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs 2 audio channels)!", path).Str());
+        return;
+    }
+
+    if (decoder->sample_rate != 44100)
+    {
+        VM->PostError(CString::Format("Sound file: %s is invalid (needs to be 44.1KHz)!", path).Str());
+        return;
+    }
+
+    waveFormat.wFormatTag = WAVE_FORMAT_PCM;
+    waveFormat.nSamplesPerSec = 44100;
+    waveFormat.wBitsPerSample = 16;
+    waveFormat.nChannels = 2;
+    waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
+    waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
+    waveFormat.cbSize = 0;
+    *(WAVEFORMATEX*)waveInfo = waveFormat;
+
+    bufferDesc.dwSize = sizeof(DSBUFFERDESC);
+    bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLPOSITIONNOTIFY;
+    bufferDesc.dwBufferBytes = 2*waveFormat.nAvgBytesPerSec;
+    bufferDesc.dwReserved = 0;
+    bufferDesc.lpwfxFormat = &waveFormat;
+    bufferDesc.guid3DAlgorithm = GUID_NULL;
+
+    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
+    if (FAILED(result))
+    {
+        VM->PostError(CString::Format("Failed to create temporary sound buffer for file: %s!", path).Str());
+        return;
+    }
+
+    result = tempBuffer->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&*sndBuffer);
+    if (FAILED(result))
+    {
+        tempBuffer->Release();
+        VM->PostError(CString::Format("Failed to create sound buffer for file: %s!", path).Str());
+        return;
+    }
+
+    LPDIRECTSOUNDNOTIFY notify;
+    result = tempBuffer->QueryInterface(IID_IDirectSoundNotify, (LPVOID*)&notify);
+    if (FAILED(result))
+    {
+        tempBuffer->Release();
+        VM->PostError(CString::Format("Failed to query for notify object for file: %s!", path).Str());
+        return;
+    }
+
+    tempBuffer->Release();
+
+    IDirectSoundBuffer8* snd = *sndBuffer;
+
+    DSBPOSITIONNOTIFY notifyDesc[2];
+    notifyDesc[0].dwOffset = waveFormat.nAvgBytesPerSec / 2 - 1;
+    notifyDesc[1].dwOffset = 3*waveFormat.nAvgBytesPerSec / 2 - 1;
+    notifyDesc[0].hEventNotify = events[0];
+    notifyDesc[1].hEventNotify = events[1];
+
+    result = notify->SetNotificationPositions(2, notifyDesc);
+    if (FAILED(result))
+    {
+        tempBuffer->Release();
+        VM->PostError(CString::Format("Failed to set up notifications for file: %s!", path).Str());
+        return;
+    }
+
+    notify->Release();
+
+    *outDecoder = decoder;
+}
+
+VOID CSoundLoader::ResetBuffer(stb_vorbis* decoder)
+{
+    stb_vorbis_seek_start(decoder);
+}
+
+ULONG CSoundLoader::DecodeOGG(stb_vorbis* decoder, ULONG reqBytes, short** outData)
+{
+    short* data = new short[reqBytes*2];
+    int n = stb_vorbis_get_samples_short_interleaved(decoder, 2, data, reqBytes);
+
+    if (n == 0)
+    {
+        delete[] data;
+        return 0;
+    }
+
+    *outData = data;
+
+    return n*2;
+}
+
+VOID CSoundLoader::CloseOGG(stb_vorbis* decoder)
+{
+    stb_vorbis_close(decoder);
+}

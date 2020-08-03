@@ -318,6 +318,7 @@
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="LuaBindings.cpp" />
+    <ClCompile Include="Music.cpp" />
     <ClCompile Include="ProfileManager.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundLoader.cpp" />
@@ -359,6 +360,7 @@
     <ClInclude Include="LuaFont.h" />
     <ClInclude Include="LuaLight.h" />
     <ClInclude Include="LuaMesh.h" />
+    <ClInclude Include="LuaMusic.h" />
     <ClInclude Include="LuaNode.h" />
     <ClInclude Include="LuaScene.h" />
     <ClInclude Include="LuaRenderTarget.h" />
@@ -367,6 +369,7 @@
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="LuaBindings.h" />
+    <ClInclude Include="Music.h" />
     <ClInclude Include="ProfileManager.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundLoader.h" />

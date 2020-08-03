@@ -1,6 +1,7 @@
 
 #include "StdAfx.h"
 #include "AudioSystem.h"
+#include "Music.h"
 
 #include <mmsystem.h>
 #include <dsound.h>
@@ -11,6 +12,13 @@ CAudioSystem::CAudioSystem()
     mDirectSound = NULL;
     mPrimaryBuffer = NULL;
     mListener = NULL;
+    mTrackId = 0;
+}
+
+VOID CAudioSystem::Update()
+{
+    for (auto track : mTracks)
+        track->Update();
 }
 
 HRESULT CAudioSystem::CreateDevice(HWND window)
@@ -78,4 +86,15 @@ VOID CAudioSystem::Release()
     SAFE_RELEASE(mPrimaryBuffer);
     SAFE_RELEASE(mDirectSound);
     mIsInitialized = FALSE;
+}
+
+UINT CAudioSystem::RegisterTrack(CMusic* track)
+{
+    mTracks.Push(track);
+    return mTrackId++;
+}
+
+VOID CAudioSystem::UnregisterTrack(UINT idx)
+{
+    mTracks.RemoveByIndex(idx);
 }

@@ -13,7 +13,6 @@ public:
     VOID Play();
     VOID Pause();
     VOID Stop();
-    VOID Update();
     VOID SetVolume(LONG vol);
     VOID SetPan(LONG pan);
     VOID SetFrequency(DWORD freq);
@@ -27,7 +26,7 @@ public:
     BOOL IsLooping();
 
     UCHAR* GetData(ULONG* sizeOut);
-private:
+protected:
     IDirectSoundBuffer8* mBuffer;
     BOOL mIsLooping;
     UCHAR* mData;

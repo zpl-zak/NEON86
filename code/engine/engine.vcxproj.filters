@@ -144,6 +144,9 @@
     <ClCompile Include="base64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Music.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NeonEngine.h">
@@ -307,6 +310,12 @@
     </ClInclude>
     <ClInclude Include="imgui_plot.h">
       <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Music.h">
+      <Filter>Header Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="LuaMusic.h">
+      <Filter>Header Files\Lua\Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

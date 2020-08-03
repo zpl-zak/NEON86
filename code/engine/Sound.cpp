@@ -48,10 +48,6 @@ VOID CSound::Stop()
     SetCurrentPosition(0);
 }
 
-VOID CSound::Update()
-{
-}
-
 VOID CSound::SetVolume(LONG vol)
 {
     LONG realVol = (LONG)ScaleBetween((FLOAT)vol, DSBVOLUME_MIN, DSBVOLUME_MAX, 0, 100);

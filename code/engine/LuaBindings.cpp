@@ -7,6 +7,7 @@
 #include "Input.h"
 #include "FileSystem.h"
 #include "Sound.h"
+#include "Music.h"
 
 #include <lua/lua.hpp>
 #include <sstream>
@@ -125,6 +126,7 @@ D3DCOLORVALUE luaH_getcolorlinear(lua_State* L, UINT offset)
 #include "LuaEffect.h"
 #include "LuaFont.h"
 #include "LuaSound.h"
+#include "LuaMusic.h"
 
 /// BASE METHODS
 LUAF(Base, ShowMessage)
@@ -266,6 +268,7 @@ VOID CLuaBindings::BindBase(lua_State* L)
 VOID CLuaBindings::BindAudio(lua_State* L)
 {
 	LuaSound_register(L);
+	LuaMusic_register(L);
 }
 
 /// MATH METHODS

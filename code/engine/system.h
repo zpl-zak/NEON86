@@ -123,6 +123,21 @@ public:
         return NULL;
     }
 
+    inline VOID RemoveByValue(T val) {
+        UINT idx = -1;
+
+        for (UINT i=0; i<mCount; i++)
+        {
+            if (mData[idx] == val) {
+                idx = i;
+                break;
+            }
+        }
+
+        if (idx != -1)
+            RemoveByIndex(idx);
+    }
+
     inline T RemoveByIndex(UINT idx) {
         T* ptr = (mData + idx);
         ::memmove(mData + idx, mData + idx + 1, (mCount - idx - 1) * sizeof(T));
