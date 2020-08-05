@@ -28,6 +28,8 @@ public:
     inline IDirectSound8* GetDevice() { return mDirectSound; }
     inline IDirectSound3DListener8* GetListener() { return mListener; }
 
+    // TODO: Expose audio listener for 3D audio support
+
 private:
     BOOL mIsInitialized;
     IDirectSound8* mDirectSound;
