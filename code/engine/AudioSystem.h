@@ -18,6 +18,7 @@ class ENGINE_API CAudioSystem
 {
 public:
     CAudioSystem();
+    ~CAudioSystem();
     HRESULT CreateDevice(HWND);
     VOID Release();
     VOID Update();

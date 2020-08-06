@@ -15,6 +15,11 @@ CAudioSystem::CAudioSystem()
     mTrackId = 0;
 }
 
+CAudioSystem::~CAudioSystem()
+{
+    mIsInitialized = FALSE;
+}
+
 VOID CAudioSystem::Update()
 {
     for (auto track : mTracks)
@@ -90,11 +95,14 @@ VOID CAudioSystem::Release()
 
 UINT CAudioSystem::RegisterTrack(CMusic* track)
 {
+    if (!mIsInitialized) return INT_MAX;
     mTracks.Push(track);
     return mTrackId++;
 }
 
 VOID CAudioSystem::UnregisterTrack(UINT idx)
 {
+    if (!mIsInitialized) return;
     mTracks.RemoveByIndex(idx);
+    --mTrackId;
 }
