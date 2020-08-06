@@ -16,13 +16,13 @@ viewMat = Matrix():lookAt(
 )
 
 function _update(dt)
-  if GetKeyDown(KEY_ESCAPE) then
-    ExitGame()
-  end
+    if GetKeyDown(KEY_ESCAPE) then
+        ExitGame()
+    end
 
-  if GetKeyDown("l") then
-    toggleLighting = not toggleLighting
-  end
+    if GetKeyDown("l") then
+        toggleLighting = not toggleLighting
+    end
 end
 
 function _render()
