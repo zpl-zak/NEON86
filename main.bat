@@ -159,8 +159,8 @@ goto :package_prompt
 	echo  4. Mafia
 	echo  5. Terrain view
 	echo  6. Space
-	echo  7. Scene graph
-	echo  8. Environment mapping
+	echo  7. Music demo
+	echo  8. RTT demo
 	echo  9. Collisions
 	echo  A. Desert terrain FPS demo
 	echo  B. Shadows
@@ -173,8 +173,8 @@ goto :package_prompt
 	if %errorlevel%==4 set "proj=mafia"
 	if %errorlevel%==5 set "proj=terrainview"
 	if %errorlevel%==6 set "proj=space"
-	if %errorlevel%==7 set "proj=hierarchy"
-	if %errorlevel%==8 set "proj=env"
+	if %errorlevel%==7 set "proj=music"
+	if %errorlevel%==8 set "proj=rtt"
 	if %errorlevel%==9 set "proj=collisions"
 	if %errorlevel%==10 set "proj=desert"
 	if %errorlevel%==11 set "proj=shadowmap"
@@ -183,6 +183,9 @@ goto :package_prompt
 		set /p a="Enter name: "
 		if "%a%"=="" goto :change_project
 		set "proj=%a%"
+		rem Avoid weird bug
+		echo %proj% > build\.proj
+		exit /B 0
 	)
 
 	echo %proj% > build\.proj

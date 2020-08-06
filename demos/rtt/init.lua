@@ -10,6 +10,8 @@ local camera
 
 local Camera = require "camera"
 
+require "helpers".global()
+
 local changeRot = 0
 
 function _init()
@@ -58,8 +60,11 @@ function _render()
   camera.mat:bind(VIEW)
 
   skybox:draw(Matrix():translate(camera.pos))
-  sphere:draw(Matrix():translate(2+math.cos(time)*1.2,0,-4))
+  withTexture(rt, function()
+    sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
+  end)
   testModel:getMeshes()[1]:setMaterial(rtMat)
+  sphere:getMeshes()[1]:setMaterial(rtMat)
   testModel:draw()
 
   ClearTarget()
@@ -70,16 +75,21 @@ function _render()
   ClearScene(20,20,69)
 
   skybox:draw(Matrix():translate(camera.pos))
-  sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
+  withTexture(rt, function()
+    sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
+  end)
   testModel:draw()
 
   ClearTarget()
   ClearScene(120,20,69)
   skybox:draw(Matrix():translate(camera.pos))
-  sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
+
+  withTexture(rt, function()
+    sphere:draw(Matrix():translate(2 +math.cos(time)*1.2,0,-4))
+  end)
   testModel:draw()
 end
 
 function _render2d()
-  testFont:drawText(0xFFFFFFFF, "RTT mirrors test (no shaders)\nWASD to move around\nM to toggle mirror rotation", 15, 30)
+  testFont:drawText(0xFFFFFFFF, "RTT test (no shaders)\nWASD to move around\nM to toggle mirror rotation", 15, 30)
 end
