@@ -144,6 +144,8 @@ exit /B 0
 		if %errorlevel%==3 (
 			pushd build\deploy\
 				player.exe data
+				rem Delete save files
+				del /Q /F data\save.neon
 			popd
 		)
 	cls
