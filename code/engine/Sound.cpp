@@ -48,18 +48,6 @@ VOID CSound::Stop()
     SetCurrentPosition(0);
 }
 
-VOID CSound::SetVolume(LONG vol)
-{
-    LONG realVol = (LONG)ScaleBetween((FLOAT)vol, DSBVOLUME_MIN, DSBVOLUME_MAX, 0, 100);
-    mBuffer->SetVolume(realVol);
-}
-
-VOID CSound::SetPan(LONG pan)
-{
-    LONG realPan = (LONG)ScaleBetween((FLOAT)pan, DSBPAN_LEFT, DSBPAN_RIGHT, -100, 100);
-    mBuffer->SetPan(realPan);
-}
-
 VOID CSound::SetFrequency(DWORD freq)
 {
     if (freq == 0)
@@ -70,32 +58,11 @@ VOID CSound::SetFrequency(DWORD freq)
     mBuffer->SetFrequency(freq);
 }
 
-LONG CSound::GetVolume()
-{
-    LONG vol;
-    mBuffer->GetVolume(&vol);
-    return (LONG)ScaleBetween((FLOAT)vol, 0, 100, DSBVOLUME_MIN, DSBVOLUME_MAX);
-}
-
-LONG CSound::GetPan()
-{
-    LONG pan;
-    mBuffer->GetPan(&pan);
-    return (LONG)ScaleBetween((FLOAT)pan, -100, 100, DSBPAN_LEFT, DSBPAN_RIGHT);
-}
-
 DWORD CSound::GetFrequency()
 {
     DWORD freq = 0;
     mBuffer->GetFrequency(&freq);
     return freq;
-}
-
-BOOL CSound::IsPlaying()
-{
-    DWORD playStatus = 0x000000;
-    mBuffer->GetStatus(&playStatus);
-    return playStatus & DSBSTATUS_PLAYING;
 }
 
 DWORD CSound::GetCurrentPosition()

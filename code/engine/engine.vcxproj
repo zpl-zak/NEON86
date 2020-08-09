@@ -321,6 +321,7 @@
     <ClCompile Include="Music.cpp" />
     <ClCompile Include="ProfileManager.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SoundBuffer.cpp" />
     <ClCompile Include="SoundLoader.cpp" />
     <ClCompile Include="VM.cpp" />
     <ClCompile Include="FaceGroup.cpp" />
@@ -395,6 +396,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="UserInterface.h" />
+    <ClInclude Include="SoundBuffer.h" />
     <ClInclude Include="zpl_macros.h" />
   </ItemGroup>
   <ItemGroup>

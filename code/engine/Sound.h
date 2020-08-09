@@ -3,23 +3,19 @@
 #include "system.h"
 #include "AudioSystem.h"
 #include "ReferenceManager.h"
+#include "SoundBuffer.h"
 
-class CSound: public CReferenceCounter, CAllocable<CSound>
+class CSound: public CReferenceCounter, CAllocable<CSound>, public CSoundBuffer
 {
 public:
     CSound(LPSTR wavPath);
     VOID Release();
 
-    VOID Play();
-    VOID Pause();
-    VOID Stop();
-    VOID SetVolume(LONG vol);
-    VOID SetPan(LONG pan);
+    VOID Play() override;
+    VOID Pause() override;
+    VOID Stop() override;
     VOID SetFrequency(DWORD freq);
-    LONG GetVolume();
-    LONG GetPan();
     DWORD GetFrequency();
-    BOOL IsPlaying();
     DWORD GetCurrentPosition();
     VOID SetCurrentPosition(DWORD cursor);
     VOID SetLoop(BOOL state);
@@ -27,7 +23,6 @@ public:
 
     UCHAR* GetData(ULONG* sizeOut);
 protected:
-    IDirectSoundBuffer8* mBuffer;
     BOOL mIsLooping;
     UCHAR* mData;
     ULONG mDataSize;
