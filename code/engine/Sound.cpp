@@ -15,10 +15,10 @@ CSound::CSound(LPSTR wavPath): CAllocable()
     std::string path(wavPath);
 
     if (path.rfind(".ogg") != std::string::npos) {
-        CSoundLoader::LoadOGG(wavPath, &mBuffer, &mData, &mDataSize);
+        CSoundLoader::LoadOGG(wavPath, &mBuffer, &mData, &mDataSize, &mWaveInfo);
     }
     else {
-        CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize);
+        CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize, &mWaveInfo);
     }
 }
 
@@ -63,18 +63,6 @@ DWORD CSound::GetFrequency()
     DWORD freq = 0;
     mBuffer->GetFrequency(&freq);
     return freq;
-}
-
-DWORD CSound::GetCurrentPosition()
-{
-    DWORD playPos = 0x000000;
-    mBuffer->GetCurrentPosition(&playPos, NULL);
-    return playPos;
-}
-
-VOID CSound::SetCurrentPosition(DWORD cursor)
-{
-    mBuffer->SetCurrentPosition(cursor);
 }
 
 VOID CSound::SetLoop(BOOL state)

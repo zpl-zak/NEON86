@@ -3,9 +3,9 @@
 #include "system.h"
 #include "AudioSystem.h"
 #include "ReferenceManager.h"
-#include "SoundBuffer.h"
+#include "SoundBase.h"
 
-class CSound: public CReferenceCounter, CAllocable<CSound>, public CSoundBuffer
+class CSound: public CReferenceCounter, CAllocable<CSound>, public CSoundBase
 {
 public:
     CSound(LPSTR wavPath);
@@ -16,8 +16,6 @@ public:
     VOID Stop() override;
     VOID SetFrequency(DWORD freq);
     DWORD GetFrequency();
-    DWORD GetCurrentPosition();
-    VOID SetCurrentPosition(DWORD cursor);
     VOID SetLoop(BOOL state);
     BOOL IsLooping();
 

@@ -66,6 +66,28 @@ INT music_playing(lua_State* L)
     return 1;
 }
 
+INT music_setpos(lua_State* L)
+{
+    CMusic* snd = *(CMusic**)luaL_checkudata(L, 1, L_MUSIC);
+    DWORD pos = (DWORD)luaL_checkinteger(L, 2);
+    snd->SetCurrentPosition(pos);
+    return 0;
+}
+
+INT music_getpos(lua_State* L)
+{
+    CMusic* snd = *(CMusic**)luaL_checkudata(L, 1, L_MUSIC);
+    lua_pushinteger(L, snd->GetCurrentPosition());
+    return 1;
+}
+
+INT music_getsize(lua_State* L)
+{
+    CMusic* snd = *(CMusic**)luaL_checkudata(L, 1, L_MUSIC);
+    lua_pushinteger(L, snd->GetTotalSize());
+    return 1;
+}
+
 static INT music_delete(lua_State* L)
 {
     CMusic* snd = *(CMusic**)luaL_checkudata(L, 1, L_MUSIC);
@@ -88,6 +110,9 @@ static VOID LuaMusic_register(lua_State* L)
     REGC("isPlaying", music_playing);
     REGC("getVolume", music_getvolume);
     REGC("getPan", music_getpan);
+    REGC("setPosition", music_setpos);
+    REGC("getPosition", music_getpos);
+    REGC("getTotalSize", music_getsize);
     REGC("__gc", music_delete);
 
     lua_pop(L, 1);

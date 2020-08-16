@@ -147,7 +147,7 @@
     <ClCompile Include="Music.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="SoundBuffer.cpp">
+    <ClCompile Include="SoundBase.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
   </ItemGroup>
@@ -320,7 +320,7 @@
     <ClInclude Include="LuaMusic.h">
       <Filter>Header Files\Lua\Modules</Filter>
     </ClInclude>
-    <ClInclude Include="SoundBuffer.h">
+    <ClInclude Include="SoundBase.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
   </ItemGroup>

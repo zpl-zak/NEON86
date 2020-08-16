@@ -27,7 +27,7 @@ struct WAVEHEADER
     ULONG dataSize;
 };
 
-VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
+VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo)
 {
     FILE* fp;
     size_t count;
@@ -119,6 +119,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
+    *(WAVEFORMATEX*)waveInfo = waveFormat;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY;
@@ -189,7 +190,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     }
 }
 
-VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
+VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo)
 {
     size_t count;
     WAVEFORMATEX waveFormat;
@@ -229,10 +230,11 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
+    *(WAVEFORMATEX*)waveInfo = waveFormat;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY;
-    bufferDesc.dwBufferBytes = (DWORD)(count * channels * (sizeof(int16) / sizeof(uint8)));
+    bufferDesc.dwBufferBytes = (DWORD)(count * channels * (waveFormat.wBitsPerSample / 8));
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = &waveFormat;
     bufferDesc.guid3DAlgorithm = GUID_NULL;
@@ -275,7 +277,7 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     }
 }
 
-VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize)
+VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo)
 {
     FILE* fp;
     size_t count;
@@ -367,6 +369,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
+    *(WAVEFORMATEX*)waveInfo = waveFormat;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
@@ -437,7 +440,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     }
 }
 
-VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events, LPVOID waveInfo)
+VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events, LPVOID waveInfo, DWORD* dataSize)
 {
     WAVEFORMATEX waveFormat;
     DSBUFFERDESC bufferDesc;
@@ -446,6 +449,12 @@ VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
 
     int error;
     stb_vorbis* decoder = stb_vorbis_open_filename(FILESYSTEM->ResourcePath(path), &error, NULL);
+
+    if (!decoder) 
+    {
+        VM->PostError(CString::Format("Sound file: %s is invalid!", path).Str());
+        return;
+    }
 
     if (decoder->channels != 2)
     {
@@ -467,6 +476,7 @@ VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
     *(WAVEFORMATEX*)waveInfo = waveFormat;
+    *dataSize = (DWORD)decoder->stream_len;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLPOSITIONNOTIFY;
@@ -541,6 +551,11 @@ ULONG CSoundLoader::DecodeOGG(stb_vorbis* decoder, ULONG reqBytes, short** outDa
     *outData = data;
 
     return n*2;
+}
+
+DWORD CSoundLoader::TellOGG(stb_vorbis* decoder)
+{
+    return (DWORD)stb_vorbis_get_file_offset(decoder);
 }
 
 VOID CSoundLoader::CloseOGG(stb_vorbis* decoder)

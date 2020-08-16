@@ -3,7 +3,7 @@
 #include "system.h"
 #include "AudioSystem.h"
 
-class CSoundBuffer
+class CSoundBase
 {
 public:
     VOID SetVolume(LONG vol);
@@ -13,8 +13,12 @@ public:
     virtual VOID Stop();
     VOID SetPan(LONG pan);
     LONG GetPan();
+    virtual DWORD GetCurrentPosition();
+    virtual VOID SetCurrentPosition(DWORD cursor);
     virtual BOOL IsPlaying();
+    virtual DWORD GetTotalSize();
 
 protected:
     IDirectSoundBuffer8* mBuffer;
+    WAVEFORMATEX mWaveInfo;
 };

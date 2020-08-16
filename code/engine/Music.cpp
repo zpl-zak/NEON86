@@ -18,7 +18,7 @@ CMusic::CMusic(LPSTR path) : CAllocable()
     mEvents[0] = CreateEventA(NULL, FALSE, FALSE, NULL);
     mEvents[1] = CreateEventA(NULL, FALSE, FALSE, NULL);
 
-    CSoundLoader::OpenOGG(&mDecoder, path, &mBuffer, mEvents, &mWaveInfo);
+    CSoundLoader::OpenOGG(&mDecoder, path, &mBuffer, mEvents, &mWaveInfo, &mDataSize);
     PullSamples(0, mWaveInfo.nAvgBytesPerSec, true);
     mId = AUDIO->RegisterTrack(this);
 }
@@ -54,6 +54,21 @@ VOID CMusic::Stop()
 {
     Pause();
     ResetPosition();
+}
+
+DWORD CMusic::GetCurrentPosition()
+{
+    return CSoundLoader::TellOGG(mDecoder);
+}
+
+VOID CMusic::SetCurrentPosition(DWORD cursor)
+{
+    PushLog("Can't seek in OGG yet!");
+}
+
+DWORD CMusic::GetTotalSize()
+{
+    return mDataSize;
 }
 
 VOID CMusic::ResetPosition()

@@ -1,6 +1,9 @@
 music = Music("music.ogg")
 music:play()
 music:setVolume(80)
+size = music:getTotalSize()
+
+require "helpers".global()
 
 function _update(dt)
   if GetKeyDown(KEY_ESCAPE) then
@@ -21,6 +24,11 @@ function _update(dt)
   end
 end
 
-function _render()
+res = GetResolution()
+pos = 0
+
+function _render ()
   ClearScene(0x0)
+  pos = lerp(pos, music:getPosition() / size, 0.01)
+  DrawQuad(0, lerp(0, res[1], pos), 0, res[2], 0xFFFFFFFF)
 end
