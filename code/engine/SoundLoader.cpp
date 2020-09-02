@@ -539,8 +539,8 @@ VOID CSoundLoader::ResetBuffer(stb_vorbis* decoder)
 
 ULONG CSoundLoader::DecodeOGG(stb_vorbis* decoder, ULONG reqBytes, short** outData)
 {
-    short* data = new short[reqBytes*2];
-    int n = stb_vorbis_get_samples_short_interleaved(decoder, 2, data, reqBytes);
+    short* data = new short[reqBytes/2];
+    int n = stb_vorbis_get_samples_short_interleaved(decoder, 2, data, reqBytes/2);
 
     if (n == 0)
     {

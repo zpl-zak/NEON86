@@ -96,7 +96,7 @@ VOID CMusic::PullSamples(ULONG offset, ULONG reqBytes, BOOL initCursors)
     HRESULT result;
 
     UCHAR* data;
-    UINT n = (UINT)CSoundLoader::DecodeOGG(mDecoder, reqBytes/2, (short**)&data);
+    UINT n = (UINT)CSoundLoader::DecodeOGG(mDecoder, reqBytes, (short**)&data);
 
     if (n == 0)
     {
