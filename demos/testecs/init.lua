@@ -1,51 +1,61 @@
 local ecs = require "ecs"
-local e1 = ecs.ent()
+
+local MODELS = {
+    sphere = Model("sphere.fbx")
+}
 
 local function drawable(modelName)
-  return ecs.cmp("drawable", {
-    model = Model(modelName)
-  })
+    return ecs.cmp("drawable", {
+        model = function () return MODELS[modelName] end
+    })
 end
 
 local function spatial(mat)
-  return ecs.cmp("spatial", {
-    mat=mat
-  })
+    return ecs.cmp("spatial", {
+        mat=mat
+    })
 end
 
-e1:add(spatial(Matrix():translate(0,0,5)))
-e1:add(drawable("sphere.fbx"))
-e1:add(ecs.cmp("spinner", {
-  val=0
-}))
+local world = {}
+
+for i = -5, 5 do
+    local e = ecs.ent()
+    e:add(drawable("sphere"))
+    e:add(spatial(Matrix():translate(i*2.5, 0, 5)))
+    e:add(ecs.cmp("spinner", { val=0 }))
+    table.insert(world, e)
+end
 
 local draw = ecs.sys({"drawable"}, function (e)
-  local mat = Matrix()
+    local mat = Matrix()
 
-  if e.spatial then
-    mat=e.spatial.mat
-  end
+    if e.spatial then
+        mat=e.spatial.mat
+    end
 
-  e.drawable.model:draw(mat)
+    if e.spinner then
+        mat=Matrix():rotate(e.spinner.val,0,0) * mat
+    end
+
+    e.drawable.model():draw(mat)
 end)
 
 local spin = ecs.sys({"spatial", "spinner"}, function (e, dt)
-  e.spatial.mat = Matrix():rotate(e.spinner.val,0,0):translate(0,0,5)
-  e.spinner.val = e.spinner.val + dt
+    e.spinner.val = e.spinner.val + dt
 end)
 
 function _update(dt)
-  spin({e1}, dt)
+    spin(world, dt)
 end
 
 function _render()
-  ClearScene(0,0,0)
-  CameraPerspective(62, 0.1, 100)
-  Matrix():lookAt(
-    Vector3(0,0,-5),
-    Vector3(0,0,0),
-    Vector3(0,1,0)
-  ):bind(VIEW)
+    ClearScene(0,0,0)
+    CameraPerspective(62, 0.1, 100)
+    Matrix():lookAt(
+        Vector3(0,0,-5),
+        Vector3(0,0,0),
+        Vector3(0,1,0)
+    ):bind(VIEW)
 
-  draw({e1})
+    draw(world)
 end
