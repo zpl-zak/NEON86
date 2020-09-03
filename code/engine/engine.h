@@ -46,6 +46,7 @@ public:
             mFrames = 0;
             mFrameCounter = 0.0f;
             mRunCycle = 0;
+            mVerboseLogging = FALSE;
 
 			mProfilers.Release();
             mUpdateProfiler = NULL;
@@ -57,6 +58,7 @@ public:
         VOID IncrementFrame();
         VOID SetupDefaultProfilers();
 		VOID PushProfiler(CProfiler* profile);
+        VOID SetVerboseLogging(BOOL state) { mVerboseLogging = state; }
 
 		inline const CArray<CProfiler*> GetProfilers() const { return mProfilers; }
         inline FLOAT GetTotalRunTime() { return mTotalTime; };
@@ -70,6 +72,7 @@ public:
         FLOAT mTotalMeasuredTime;
         INT mRunCycle;
         CArray<CProfiler*> mProfilers;
+        BOOL mVerboseLogging;
 
         /// Internal profilers
         CProfiler* mUpdateProfiler;

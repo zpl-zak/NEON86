@@ -149,8 +149,7 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
         mTotalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
         mTotalMeasuredTime = 0.0f;
 
-        // TODO: Add a switch here instead
-        BOOL logStats = FALSE; //mRunCycle % (INT(sFrameWindow * 120.0f)) == 0;
+        BOOL logStats = mVerboseLogging ? mRunCycle % (INT(sFrameWindow * 120.0f)) == 0 : FALSE;
 
         if (logStats) PushLog("==================\n", TRUE);
 
