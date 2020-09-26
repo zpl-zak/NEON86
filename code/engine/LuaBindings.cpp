@@ -187,8 +187,7 @@ LUAF(Base, dofile)
 
 	if (!fd.data)
 	{
-		MessageBoxA(NULL, "No dofile game script found!", "Resource error", MB_OK);
-		ENGINE->Shutdown();
+		VM->PostError("No dofile game script found!");
 		return 0;
 	}
 
@@ -206,8 +205,7 @@ LUAF(Base, loadfile)
 
 	if (!fd.data)
 	{
-		MessageBoxA(NULL, "No loadfile content found!", "Resource error", MB_OK);
-		ENGINE->Shutdown();
+        VM->PostError("No loadfile content found!");
 		return 0;
 	}
 

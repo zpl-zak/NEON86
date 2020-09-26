@@ -2,8 +2,8 @@
 
 #include "Sound.h"
 #include "SoundLoader.h"
-
-#include <string>
+#include "engine.h"
+#include "VM.h"
 
 CSound::CSound(LPSTR wavPath): CAllocable()
 {
@@ -12,13 +12,16 @@ CSound::CSound(LPSTR wavPath): CAllocable()
     mData = NULL;
     mDataSize = 0;
 
-    std::string path(wavPath);
+    CString path(wavPath);
 
-    if (path.rfind(".ogg") != std::string::npos) {
+    if (path.Find(".ogg")) {
         CSoundLoader::LoadOGG(wavPath, &mBuffer, &mData, &mDataSize, &mWaveInfo);
     }
-    else {
+    if (path.Find(".wav")) {
         CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize, &mWaveInfo);
+    }
+    else {
+        VM->PostError(CString::Format("Unsupported sound file: %s !", path).Str());
     }
 }
 

@@ -189,6 +189,11 @@ public:
         return mStr;
     }
 
+    LPCSTR Find(LPCSTR str) {
+        LPCSTR out = ::strstr(mStr, str);
+        return out ? out : NULL;
+    }
+
     BOOL operator== (LPCSTR str) {
         return (::strcmp(mStr, str) == 0);
     }
