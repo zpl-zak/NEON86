@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeDemo", "NativeDemo\Na
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Networking", "plugsrc\Networking\Networking.vcxproj", "{31566E6E-9E40-4415-A138-F590F34AFA29}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luac", "luac\luac.vcxproj", "{803D3FC4-8434-46D6-94F3-3A5535A44817}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -79,6 +81,14 @@ Global
 		{31566E6E-9E40-4415-A138-F590F34AFA29}.Release|x64.Build.0 = Release|x64
 		{31566E6E-9E40-4415-A138-F590F34AFA29}.Release|x86.ActiveCfg = Release|Win32
 		{31566E6E-9E40-4415-A138-F590F34AFA29}.Release|x86.Build.0 = Release|Win32
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Debug|x64.ActiveCfg = Debug|x64
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Debug|x64.Build.0 = Debug|x64
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Debug|x86.ActiveCfg = Debug|Win32
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Debug|x86.Build.0 = Debug|Win32
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Release|x64.ActiveCfg = Release|x64
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Release|x64.Build.0 = Release|x64
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Release|x86.ActiveCfg = Release|Win32
+		{803D3FC4-8434-46D6-94F3-3A5535A44817}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +100,7 @@ Global
 		{D574FD6B-DEA3-4560-B2A2-A201D5D8CE4A} = {69D23771-5BCF-4A4E-8EE2-DC71EBA06B80}
 		{A4609ED2-8000-4096-9CF2-ACE6E4D95B6A} = {A6A667BC-C4C7-451E-97BE-D80A8A931F0A}
 		{31566E6E-9E40-4415-A138-F590F34AFA29} = {69D23771-5BCF-4A4E-8EE2-DC71EBA06B80}
+		{803D3FC4-8434-46D6-94F3-3A5535A44817} = {A6A667BC-C4C7-451E-97BE-D80A8A931F0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2B302A4-9B6E-4F11-83D1-4BB9C1C0ECE4}

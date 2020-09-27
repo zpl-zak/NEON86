@@ -47,17 +47,17 @@ BOOL CFileSystem::LoadGame(LPSTR gamePath)
 		return FALSE;
 
 	LPSTR p = gamePath;
-	UINT vdD = 0;
+	UINT validPathI = 0;
 
 	while (*p != 0)
 	{
 		if (!isspace(*p))
-			vdD++;
+			validPathI++;
 
 		++p;
 	}
 
-	if (!vdD)
+	if (!validPathI)
 	{
 		// path is empty, default to data
 		gamePath = "data";
