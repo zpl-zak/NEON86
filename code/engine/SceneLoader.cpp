@@ -26,7 +26,6 @@
     aiProcess_ConvertToLeftHanded |\
     aiProcess_Triangulate |\
     aiProcess_CalcTangentSpace |\
-    aiProcess_FlipUVs |\
     aiProcess_SplitLargeMeshes |\
     0
 

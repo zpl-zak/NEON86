@@ -68,6 +68,7 @@ VOID CRenderer::PrepareEffectDraw()
 {
     if (GetActiveEffect())
     {
+        CEffect* activeEffect = GetActiveEffect();
         D3DXMATRIX world = GetDeviceMatrix(MATRIXKIND_WORLD);
         D3DXMATRIX view = GetDeviceMatrix(MATRIXKIND_VIEW);
         D3DXMATRIX proj = GetDeviceMatrix(MATRIXKIND_PROJECTION);
@@ -79,17 +80,17 @@ VOID CRenderer::PrepareEffectDraw()
 
         D3DXMatrixInverse(&inverseMV, NULL, &mv);
 
-        GetActiveEffect()->SetMatrix("NEON.World", world);
-        GetActiveEffect()->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
-        GetActiveEffect()->SetMatrix("NEON.InverseWorldView", inverseMV, TRUE);
-        GetActiveEffect()->SetMatrix("NEON.WorldView", mv);
-        GetActiveEffect()->SetMatrix("NEON.MVP", mvp);
+        activeEffect->SetMatrix("NEON.World", world);
+        activeEffect->SetMatrix("NEON.InverseWorld", inverseWorld, TRUE);
+        activeEffect->SetMatrix("NEON.InverseWorldView", inverseMV, TRUE);
+        activeEffect->SetMatrix("NEON.WorldView", mv);
+        activeEffect->SetMatrix("NEON.MVP", mvp);
 
         D3DCOLOR ambience = 0x0;
         GetDevice()->GetRenderState(D3DRS_AMBIENT, &ambience);
-        GetActiveEffect()->SetInteger("NEON.AmbientColor", ambience);
+        activeEffect->SetInteger("NEON.AmbientColor", ambience);
 
-        GetActiveEffect()->CommitChanges();
+        activeEffect->CommitChanges();
     }
 }
 
