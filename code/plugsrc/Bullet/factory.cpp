@@ -21,10 +21,10 @@ INT bullet_body_create_plane(lua_State* L) {
 }
 
 INT bullet_body_create_static_cols(lua_State* L) {
-    D3DXVECTOR4 origin = *(D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+    D3DXMATRIX mat = *(D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
     CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
 
-    btTriangleMesh* mesh = new btTriangleMesh();
+    btTriangleMesh* mesh = new btTriangleMesh(false, false);
 
     for (UINT i = 0; i < fg->GetNumVertices(); i += 3)
     {
@@ -49,7 +49,7 @@ INT bullet_body_create_static_cols(lua_State* L) {
 
     btTransform tr;
     tr.setIdentity();
-    tr.setOrigin(btVector3(origin.x, origin.y, origin.z));
+    tr.setFromOpenGLMatrix(&mat[0]);
     btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, true);
     btDefaultMotionState* motion = new btDefaultMotionState(tr);
     btRigidBody::btRigidBodyConstructionInfo ci(0.0f, motion, shape);

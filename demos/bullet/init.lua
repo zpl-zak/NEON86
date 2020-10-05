@@ -35,9 +35,10 @@ Class "GameCamera" (Camera) {
 local cam = GameCamera(Vector3(0,3,-10))
 local balls = {}
 
-local bowl = Model("bowl.fbx", false, true)
-local fg = bowl:getRootNode():getMeshParts()[1][1]
-local plane = world.createMesh(Vector(), fg)
+local bowl = Model("bowl.fbx")
+local node = bowl:getRootNode():findNode("Cube")
+local fg = node:getMeshParts()[1][1]
+local plane = world.createMesh(node:getFinalTransform(), fg)
 world.setRestitution(plane, 0.9)
 
 function addBall()
@@ -49,10 +50,11 @@ end
 addBall()
 
 sphere = Model("sphere.fbx")
-bgColor = Color(40,40,69)
+bgColor = Color(60, 60,69)
+ambColor = Color(40,40,69)
 
 light = Light()
-light:setDirection(Vector(-1,-1,1))
+light:setDirection(Vector(-0.5,-0.5,1))
 light:enable(true, 0)
 
 function _update(dt)
@@ -79,7 +81,7 @@ end
 
 function _render()
   ClearScene(bgColor)
-  AmbientColor(bgColor)
+  AmbientColor(ambColor)
   CameraPerspective(62, 0.1, 100)
   EnableLighting(true)
   cam.mat:bind(VIEW)
