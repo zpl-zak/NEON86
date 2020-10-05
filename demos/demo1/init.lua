@@ -1,7 +1,6 @@
 local Level = require "Level"
 local fsm = require "fsm"
 
-local levelID = 1
 local levels = {
     Level("level1"),
     Level("level2"),
@@ -15,7 +14,7 @@ local levels = {
 }
 
 local menu = fsm.create({
-    initial = "level1",
+    initial = {state = "menu", event = "init_menu"},
     events = {
         {name = "cycle_menu", from = "level2", to = "level1"},
         {name = "cycle_menu", from = "level1", to = "level2"},
@@ -25,13 +24,16 @@ local menu = fsm.create({
     callbacks = {
         on_cycle_menu = function (self, event, from, to)
             if to == "level2" then
-                levelID = 2
+                self.level = levels[2]
             elseif to == "menu" then
                 LogString("menu")
-                levelID = 3
+                self.level = levels[3]
             elseif to == "level1" then
-                levelID = 1
+                self.level = levels[1]
             end
+        end,
+        on_init_menu = function (self)
+            self.level = levels[3]
         end
     }
 })
@@ -53,11 +55,11 @@ function _update(dt)
         menu.cycle_menu()
     end
 
-    levels[levelID]:update(dt)
+    menu.level:update(dt)
 end
 
 function _render()
-    levels[levelID]:render()
+    menu.level:render()
 end
 
 local testFont = Font("Arial", 18, 1, false)
