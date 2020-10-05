@@ -1,5 +1,7 @@
 local _ = {}
 
+local nmath = require "nativemath"
+
 -- Sphere API
 
 local Sphere = {}
@@ -45,19 +47,25 @@ function TriangleMesh.clone(self)
 end
 
 function TriangleMesh.testSphere(self, pos, radius, move, fn)
-  pos = pos + move
-  
-  local aabbContacts = self.bounds:testSphere(pos, radius, move, function ()
-    return true
-  end)
+--   local aabbContacts = self.bounds:testSphere(pos, radius, move, function ()
+--     return true
+--   end)
 
-  if #aabbContacts < 1 then
-    return {}
-  end
+--   if #aabbContacts < 1 then
+--     return {}
+--   end
 
   local contacts = {}
 
   for _, tr in pairs(self.tris) do
+    local ok, t, p, n = nmath.IntersectSphereTriangle(pos, radius, move, tr[1], tr[2], tr[3])
+
+    if ok then
+        table.insert(contacts, {fn(t,p,n,tr)})
+    end
+  end
+
+  --[[ for _, tr in pairs(self.tris) do
     local v1 = tr[1]
     local v2 = tr[2]
     local v3 = tr[3]
@@ -83,7 +91,7 @@ function TriangleMesh.testSphere(self, pos, radius, move, fn)
           table.insert(contacts, {fn(n, pd, tr, pp)})
         end
     end
-  end
+  end ]]
 
   return contacts
 end
