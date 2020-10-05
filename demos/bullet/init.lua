@@ -10,8 +10,9 @@ Class "GameCamera" (Camera) {
         self.speed = 50
         self.body = world.createSphere(pos, 1, 2)
         world.disableSleep(self.body)
-        world.setDamping(self.body, 0.8, 1)
+        world.setDamping(self.body, 0.9, 1)
         world.setFriction(self.body, 0.6)
+        -- world.setGravity(self.body, Vector())
     end,
 
     movement = function (self, dt)
@@ -70,7 +71,7 @@ function _update(dt)
         SetCursorMode(CURSORMODE_DEFAULT)
     end
 
-    if GetKeyDown(KEY_SPACE) then
+    if GetKey(KEY_SPACE) then
         addBall()
     end
 
