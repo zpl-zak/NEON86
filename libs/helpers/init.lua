@@ -139,6 +139,21 @@ local function decode(str)
 	return f
 end
 
+local function deepcopy(orig)
+    local origType = type(orig)
+    local copy
+    if origType == 'table' then
+        copy = {}
+        for origKey, origValue in next, orig, nil do
+            copy[deepcopy(origKey)] = deepcopy(origValue)
+        end
+        setmetatable(copy, deepcopy(getmetatable(orig)))
+    else
+        copy = orig
+    end
+    return copy
+end
+
 local helpers = {
   lerp = lerp,
   clamp = clamp,
@@ -149,6 +164,7 @@ local helpers = {
   encode = encode,
   decode = decode,
   serializeTable = serializeTable,
+  deepcopy = deepcopy,
 
   drawEffect = drawEffect,
   withTexture = withTexture,
