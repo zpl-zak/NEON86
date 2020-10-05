@@ -45,16 +45,18 @@ class "Level" {
         self.camera.controller.mat:bind(VIEW)
 
         for _, light in pairs(self.lights) do
-            light.light:enable(light.enabled, self.scenery.lightOffset + light.index)
-            self:doFunctor(light, "onRender")
+            if not self:doFunctor(light, "onRender", self.scenery.lightOffset) then
+                light.light:enable(light.enabled, self.scenery.lightOffset + light.index)
+            end
         end
 
         for _, model in pairs(self.models) do
             if model.enabled == true then
                 self:loadModel(model)
-                model.model:draw(model.transform)
+                if not self:doFunctor(model, "onRender") then
+                    model.model:draw(model.transform)
+                end
             end
-            self:doFunctor(model, "onRender")
         end
     end,
 
@@ -185,7 +187,9 @@ class "Level" {
     doFunctor = function (self, ent, functionName, arg0)
         if ent[functionName] ~= nil then
             ent[functionName](ent, arg0)
+            return true
         end
+        return false
     end,
 
     getAtten = function (atten)
@@ -196,8 +200,7 @@ class "Level" {
         if a.quadratic == nil then a.quadratic = 0.0 end
 
         return a
-    end
-
+    end,
 }
 
 return Level
