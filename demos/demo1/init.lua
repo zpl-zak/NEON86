@@ -17,22 +17,21 @@ local levels = {
 local menu = fsm.create({
     initial = "level1",
     events = {
-        {name = "level1", from = "level2", to = "level1"},
-        {name = "level2", from = "level1", to = "level2"},
-
-        {name = "menu", from = "*", to = "menu"},
-        {name = "level1", from = "menu", to = "level1"},
+        {name = "cycle_menu", from = "level2", to = "level1"},
+        {name = "cycle_menu", from = "level1", to = "level2"},
+        {name = "cycle_menu", from = "level2", to = "menu"},
+        {name = "cycle_menu", from = "menu", to = "level1"},
     },
     callbacks = {
-        on_level1 = function ()
-            levelID = 1
-        end,
-        on_level2 = function ()
-            levelID = 2
-        end,
-        on_menu = function ()
-            LogString("menu")
-            levelID = 3
+        on_cycle_menu = function (self, event, from, to)
+            if to == "level2" then
+                levelID = 2
+            elseif to == "menu" then
+                LogString("menu")
+                levelID = 3
+            elseif to == "level1" then
+                levelID = 1
+            end
         end
     }
 })
@@ -51,13 +50,7 @@ function _update(dt)
     end
 
     if GetKeyDown(KEY_SPACE) then
-        if menu.current == "level1" then
-            menu.level2()
-        elseif menu.current == "level2" then
-            menu.menu()
-        elseif menu.current == "menu" then
-            menu.level1()
-        end
+        menu.cycle_menu()
     end
 
     levels[levelID]:update(dt)
