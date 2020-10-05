@@ -21,29 +21,14 @@ Class "GameCamera" (Camera) {
         self.vel:z(self.vel:z() + self.movedir:z())
 
         self.cols:forEach(function (shape)
-            local vy = Vector3(0, self.vel:y(), 0)
             shape:testSphere(
                 self.pos,
-                0,
-                vy,
-                function (t, p, n, tr)
+                3,
+                self.vel,
+                function (n)
                     local push = n
-                    local pp = push * ((vy * push) / (push * push))
-                    self.vel:y(self.vel:y() - pp:y())
-                    self.grounded = true
-                end
-            )
-
-            local vxz = Vector3(self.vel:x(), 0, self.vel:z())
-            shape:testSphere(
-                self.pos,
-                0,
-                vxz,
-                function (t, p, n, tr)
-                    local push = n
-                    local pp = push * ((vxz * push) / (push * push))
-                    self.vel:x(self.vel:x() - pp:x())
-                    self.vel:z(self.vel:z() - pp:z())
+                    local pp = push * ((self.vel * push) / (push * push))
+                    self.vel = self.vel - pp
                     self.grounded = true
                 end
             )
