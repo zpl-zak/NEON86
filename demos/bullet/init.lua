@@ -35,7 +35,7 @@ Class "GameCamera" (Camera) {
 
 local cam = GameCamera(Vector3(0,3,-10))
 local balls = {}
-
+local ballSize = 1.0
 local bowl = Model("bowl.fbx")
 local node = bowl:getRootNode():findNode("Cube")
 local fg = node:getMeshParts()[1][1]
@@ -43,7 +43,7 @@ local plane = world.createMesh(node:getFinalTransform(), fg)
 world.setRestitution(plane, 0.9)
 
 function addBall()
-    local ball = world.createSphere(Vector(math.random()*0.1,5,math.random()*0.1), 1, 1)
+    local ball = world.createSphere(Vector(math.random()*0.1,5,math.random()*0.1), ballSize, 1)
     world.setRestitution(ball, 0.9)
     table.insert(balls, ball)
 end
@@ -75,7 +75,7 @@ function _update(dt)
         addBall()
     end
 
-    world:update()
+    world.update()
     cam:update(dt)
     cam:update2(dt)
 end
@@ -91,7 +91,7 @@ function _render()
 
   for _, handle in pairs(balls) do
     sphere:draw(
-        world.getWorldTransform(handle)
+        Matrix():scale(ballSize, ballSize, ballSize) * world.getWorldTransform(handle)
     )
   end
 end

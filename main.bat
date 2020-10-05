@@ -164,7 +164,7 @@ goto :package_prompt
 	echo  7. Music demo
 	echo  8. RTT demo
 	echo  9. Collisions
-	echo  A. Desert terrain FPS demo
+	echo  A. Bullet physics
 	echo  B. Shadows
 	echo =======================
 	choice /C 123456789AB /N /M "Your choice:"
@@ -178,7 +178,7 @@ goto :package_prompt
 	if %errorlevel%==7 set "proj=music"
 	if %errorlevel%==8 set "proj=rtt"
 	if %errorlevel%==9 set "proj=collisions"
-	if %errorlevel%==10 set "proj=desert"
+	if %errorlevel%==10 set "proj=bullet"
 	if %errorlevel%==11 set "proj=shadowmap"
 
 	if %errorlevel%==2 (
