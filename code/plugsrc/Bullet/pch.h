@@ -11,8 +11,8 @@
 #include "framework.h"
 
 #include <NeonEngine.h>
+#include <FaceGroup.h>
 #include <lua_macros.h>
 #include <lua/lua.hpp>
-#include <btBulletDynamicsCommon.h>
 
 #endif //PCH_H
