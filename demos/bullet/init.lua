@@ -10,6 +10,7 @@ Class "GameCamera" (Camera) {
         self.grounded = false
         self.speed = 500
         self.body = world.createCapsule(Matrix():translate(pos), 1, 2, 2)
+        self.shift = false
         world.setActivationState(self.body, world.DISABLE_DEACTIVATION)
         -- world.setDamping(self.body, 0.9, 1)
         world.setFriction(self.body, 0.9)
@@ -17,11 +18,22 @@ Class "GameCamera" (Camera) {
     end,
 
     movement = function (self, dt)
-        local hvel = world.getVelocity(self.body)
-        self.vel = helpers.lerp(self.vel, self.movedir, 0.4)
-        self.vel:y(hvel:y())
-        -- world.addImpulse(self.body, self.movedir)
-        world.setVelocity(self.body, self.vel)
+        if self.shift then
+            local dpos = helpers.lerp(self.pos, self.shiftEnd, self.shiftValue)
+            dpos:y(dpos:y() + math.cos(self.shiftValue)*0.25)
+            self:setPos(dpos)
+            self.shiftValue = self.shiftValue + 0.01
+
+            if (self.pos-self.shiftEnd):magSq() < 1 then
+                self.shift = false
+            end
+        else
+            local hvel = world.getVelocity(self.body)
+            self.vel = helpers.lerp(self.vel, self.movedir, 0.4)
+            self.vel:y(hvel:y())
+            -- world.addImpulse(self.body, self.movedir)
+            world.setVelocity(self.body, self.vel)
+        end
     end,
 
     updateMatrix = function (self)
@@ -34,6 +46,20 @@ Class "GameCamera" (Camera) {
 
     update2 = function (self, dt)
         self.grounded = false
+
+        if GetMouseDown(MOUSE_RIGHT_BUTTON) then
+            local handle, dpos = world.rayTest(self.pos, self.dirs.fwd * 100)
+            if handle ~= nil then
+                self.shiftEnd = dpos+Vector(0,2,0)
+                self.shift = true
+                self.shiftValue = 0
+            end
+        end
+
+        if GetMouseDown(MOUSE_LEFT_BUTTON) then
+            local handle = addBall(Matrix():translate(self.pos + self.dirs.fwd*2))
+            world.addImpulse(handle, self.dirs.fwd*20)
+        end
     end,
 
     setPos = function (self, pos)
@@ -92,22 +118,10 @@ function _update(dt)
         addBall(Matrix():translate(Vector(math.random()*0.1,5,math.random()*0.1)))
     end
     
-    if GetMouseDown(MOUSE_RIGHT_BUTTON) then
-        local handle, dpos = world.rayTest(cam.pos, cam.dirs.fwd * 100)
-        
-        if handle ~= nil then
-            cam:setPos(dpos+Vector(0,1,0))
-        end
-    end
     
-    if GetMouseDown(MOUSE_LEFT_BUTTON) then
-        local handle = addBall(Matrix():translate(cam.pos + cam.dirs.fwd*2))
-        world.addImpulse(handle, cam.dirs.fwd*20)
-    end
-    
+    cam:update2(dt)
     world.update()
     cam:update(dt)
-    cam:update2(dt)
 end
 
 function _render()
