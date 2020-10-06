@@ -12,6 +12,7 @@
 
 #include <NeonEngine.h>
 #include <FaceGroup.h>
+#include <Mesh.h>
 #include <lua_macros.h>
 #include <lua/lua.hpp>
 

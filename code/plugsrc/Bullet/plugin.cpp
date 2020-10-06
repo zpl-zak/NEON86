@@ -223,7 +223,8 @@ static const luaL_Reg bullet[] = {
     { "createSphere", bullet_body_create_sphere },
     { "createCapsule", bullet_body_create_capsule },
     { "createBox", bullet_body_create_box },
-    { "createMesh", bullet_body_create_static_cols },
+    { "createMesh", bullet_body_create_static_cols_mesh },
+    { "createMeshFromPart", bullet_body_create_static_cols },
     ENDF
 };
 

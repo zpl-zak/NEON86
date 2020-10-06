@@ -44,8 +44,7 @@ local balls = {}
 local ballSize = 1.0
 local bowl = Model("bowl.fbx")
 local node = bowl:getRootNode():findNode("Cube")
-local fg = node:getMeshParts()[1][1]
-local plane = world.createMesh(node:getFinalTransform(), fg)
+local plane = world.createMesh(node:getFinalTransform(), node:getMeshes()[1])
 world.setRestitution(plane, 0.9)
 
 function addBall(pos)
