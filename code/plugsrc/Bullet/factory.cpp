@@ -1,6 +1,17 @@
 #include "pch.h"
 #include "factory.h"
 
+VOID bullet_body_create_generic(lua_State* L, btCollisionShape* shape, FLOAT mass, btTransform tr, btVector3 inertia = btVector3(0, 0, 0)) {
+    btDefaultMotionState* motion = new btDefaultMotionState(tr);
+    btRigidBody::btRigidBodyConstructionInfo ci(mass, motion, shape, inertia);
+    btRigidBody* body = new btRigidBody(ci);
+    int index = (int)bodies.size();
+    body->setUserIndex(index);
+    bodies.push_back(body);
+    world->addRigidBody(body);
+    lua_pushinteger(L, index);
+}
+
 INT bullet_body_create_plane(lua_State* L) {
     D3DXVECTOR4 origin = *(D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
     D3DXVECTOR4 plane = *(D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
@@ -9,14 +20,7 @@ INT bullet_body_create_plane(lua_State* L) {
     tr.setIdentity();
     tr.setOrigin(btVector3(origin.x, origin.y, origin.z));
     btCollisionShape* shape = new btStaticPlaneShape(btVector3(plane.x, plane.y, plane.z), plane.w);
-    btDefaultMotionState* motion = new btDefaultMotionState(tr);
-    btRigidBody::btRigidBodyConstructionInfo ci(0.0f, motion, shape);
-    btRigidBody* body = new btRigidBody(ci);
-    int index = (int)bodies.size();
-    body->setUserIndex(index);
-    bodies.push_back(body);
-    world->addRigidBody(body);
-    lua_pushinteger(L, index);
+    bullet_body_create_generic(L, shape, 0.0f, tr);
     return 1;
 }
 
@@ -51,14 +55,7 @@ INT bullet_body_create_static_cols(lua_State* L) {
     tr.setIdentity();
     tr.setFromOpenGLMatrix(&mat[0]);
     btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, true);
-    btDefaultMotionState* motion = new btDefaultMotionState(tr);
-    btRigidBody::btRigidBodyConstructionInfo ci(0.0f, motion, shape);
-    btRigidBody* body = new btRigidBody(ci);
-    int index = (int)bodies.size();
-    body->setUserIndex(index);
-    bodies.push_back(body);
-    world->addRigidBody(body);
-    lua_pushinteger(L, index);
+    bullet_body_create_generic(L, shape, 0.0f, tr);
     return 1;
 }
 
@@ -71,15 +68,24 @@ INT bullet_body_create_sphere(lua_State* L) {
     tr.setIdentity();
     tr.setOrigin(btVector3(origin.x, origin.y, origin.z));
     btCollisionShape* shape = new btSphereShape(radius);
-    btDefaultMotionState* motion = new btDefaultMotionState(tr);
     btVector3 localInertia;
     shape->calculateLocalInertia(mass, localInertia);
-    btRigidBody::btRigidBodyConstructionInfo ci(mass, motion, shape, localInertia);
-    btRigidBody* body = new btRigidBody(ci);
-    int index = (int)bodies.size();
-    body->setUserIndex(index);
-    bodies.push_back(body);
-    world->addRigidBody(body);
-    lua_pushinteger(L, index);
+    bullet_body_create_generic(L, shape, mass, tr, localInertia);
+    return 1;
+}
+
+INT bullet_body_create_capsule(lua_State* L) {
+    D3DXVECTOR4 origin = *(D3DXVECTOR4*)luaL_checkudata(L, 1, L_VECTOR);
+    FLOAT radius = (FLOAT)luaL_checknumber(L, 2);
+    FLOAT height = (FLOAT)luaL_checknumber(L, 3);
+    FLOAT mass = (FLOAT)luaL_checknumber(L, 4);
+
+    btTransform tr;
+    tr.setIdentity();
+    tr.setOrigin(btVector3(origin.x, origin.y, origin.z));
+    btCollisionShape* shape = new btCapsuleShape(radius, height);
+    btVector3 localInertia;
+    shape->calculateLocalInertia(mass, localInertia);
+    bullet_body_create_generic(L, shape, mass, tr, localInertia);
     return 1;
 }

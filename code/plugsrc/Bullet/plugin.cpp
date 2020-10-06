@@ -100,10 +100,27 @@ static INT bullet_add_impulse(lua_State* L) {
     return 0;
 }
 
-static INT bullet_disable_sleep(lua_State* L) {
+static INT bullet_set_angular_factor(lua_State* L) {
     size_t index = (size_t)luaL_checkinteger(L, 1);
+    D3DXVECTOR4 factor = *(D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
     btRigidBody* body = bodies[index];
-    body->setActivationState(DISABLE_DEACTIVATION);
+    body->setAngularFactor(btVector3(factor.x, factor.y, factor.z));
+    return 0;
+}
+
+static INT bullet_set_activation_state(lua_State* L) {
+    size_t index = (size_t)luaL_checkinteger(L, 1);
+    int state = (int)luaL_checkinteger(L, 2);
+    btRigidBody* body = bodies[index];
+    body->setActivationState(state);
+    return 0;
+}
+
+static INT bullet_set_linear_factor(lua_State* L) {
+    size_t index = (size_t)luaL_checkinteger(L, 1);
+    D3DXVECTOR4 factor = *(D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
+    btRigidBody* body = bodies[index];
+    body->setLinearFactor(btVector3(factor.x, factor.y, factor.z));
     return 0;
 }
 
@@ -139,14 +156,17 @@ static const luaL_Reg bullet[] = {
     { "setDamping", bullet_set_damping },
     { "setGravity", bullet_set_gravity },
     { "setVelocity", bullet_set_velocity },
+    { "setLinearFactor", bullet_set_linear_factor },
+    { "setAngularFactor", bullet_set_angular_factor },
     { "addForce", bullet_add_force },
     { "addImpulse", bullet_add_impulse },
-    { "disableSleep", bullet_disable_sleep },
+    { "setActivationState", bullet_set_activation_state },
     { "setWorldGravity", bullet_world_set_gravity },
     { "getWorldTransform", bullet_get_world_transform },
 
     { "createPlane", bullet_body_create_plane },
     { "createSphere", bullet_body_create_sphere },
+    { "createCapsule", bullet_body_create_capsule },
     { "createMesh", bullet_body_create_static_cols },
     ENDF
 };
@@ -154,5 +174,20 @@ static const luaL_Reg bullet[] = {
 extern "C" INT PLUGIN_API luaopen_bullet(lua_State* L) {
     luaL_newlib(L, bullet);
     world->setGravity(btVector3(0, -10, 0));
+
+    lua_pushnumber(L, ACTIVE_TAG);
+    lua_setfield(L, -2, "ACTIVE_TAG");
+
+    lua_pushnumber(L, ISLAND_SLEEPING);
+    lua_setfield(L, -2, "ISLAND_SLEEPING");
+
+    lua_pushnumber(L, WANTS_DEACTIVATION);
+    lua_setfield(L, -2, "WANTS_DEACTIVATION");
+
+    lua_pushnumber(L, DISABLE_DEACTIVATION);
+    lua_setfield(L, -2, "DISABLE_DEACTIVATION");
+
+    lua_pushnumber(L, DISABLE_SIMULATION);
+    lua_setfield(L, -2, "DISABLE_SIMULATION");
     return 1;
 }

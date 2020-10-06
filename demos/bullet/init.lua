@@ -8,10 +8,11 @@ Class "GameCamera" (Camera) {
         Camera:__init__(pos, angles)
         self.grounded = false
         self.speed = 50
-        self.body = world.createSphere(pos, 1, 2)
-        world.disableSleep(self.body)
+        self.body = world.createCapsule(pos, 1, 2, 2)
+        world.setActivationState(self.body, world.DISABLE_DEACTIVATION)
         world.setDamping(self.body, 0.9, 1)
         world.setFriction(self.body, 0.6)
+        world.setAngularFactor(self.body, Vector(0,1,0))
         -- world.setGravity(self.body, Vector())
     end,
 
