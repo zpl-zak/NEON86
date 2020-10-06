@@ -8,17 +8,20 @@ Class "GameCamera" (Camera) {
     __init__ = function (self, pos, angles)
         Camera:__init__(pos, angles)
         self.grounded = false
-        self.speed = 50
+        self.speed = 500
         self.body = world.createCapsule(Matrix():translate(pos), 1, 2, 2)
         world.setActivationState(self.body, world.DISABLE_DEACTIVATION)
-        world.setDamping(self.body, 0.9, 1)
-        world.setFriction(self.body, 0.6)
-        world.setAngularFactor(self.body, Vector(0.4,0.02,0))
+        -- world.setDamping(self.body, 0.9, 1)
+        world.setFriction(self.body, 0.9)
+        world.setAngularFactor(self.body, Vector(0,1,0))
     end,
 
     movement = function (self, dt)
-        self.movedir:y(0)
-        world.addImpulse(self.body, self.movedir)
+        local hvel = world.getVelocity(self.body)
+        self.vel = helpers.lerp(self.vel, self.movedir, 0.4)
+        self.vel:y(hvel:y())
+        -- world.addImpulse(self.body, self.movedir)
+        world.setVelocity(self.body, self.vel)
     end,
 
     updateMatrix = function (self)
@@ -36,6 +39,7 @@ Class "GameCamera" (Camera) {
     setPos = function (self, pos)
         self.pos = pos
         world.setWorldTransform(self.body, Matrix():translate(pos))
+        world.setVelocity(self.body, Vector())
     end
 }
 
@@ -56,6 +60,10 @@ for _, mesh in pairs(node:getMeshes()) do
 end
 
 function addBall(pos)
+    if #balls >= 50 then
+        world.destroy(balls[1])
+        table.remove(balls, 1)
+    end
     local ball = world.createSphere(pos, ballSize, 1)
     world.setRestitution(ball, 0.7)
     table.insert(balls, ball)
@@ -76,68 +84,56 @@ function _update(dt)
     if GetKeyDown(KEY_ESCAPE) then
         ExitGame()
     end
-
+    
     ShowCursor(false)
     SetCursorMode(CURSORMODE_CENTERED)
-
+    
     if GetKey(KEY_SPACE) then
         addBall(Matrix():translate(Vector(math.random()*0.1,5,math.random()*0.1)))
     end
-
+    
     if GetMouseDown(MOUSE_RIGHT_BUTTON) then
         local handle, dpos = world.rayTest(cam.pos, cam.dirs.fwd * 100)
-
+        
         if handle ~= nil then
             cam:setPos(dpos+Vector(0,1,0))
         end
     end
-
+    
     if GetMouseDown(MOUSE_LEFT_BUTTON) then
         local handle = addBall(Matrix():translate(cam.pos + cam.dirs.fwd*2))
         world.addImpulse(handle, cam.dirs.fwd*20)
     end
-
+    
     world.update()
     cam:update(dt)
     cam:update2(dt)
 end
 
-local res = GetResolution()
-local resDiv = 2
-local retroView = RenderTarget(math.floor(res[1]/resDiv), math.floor(res[2]/resDiv))
-
 function _render()
-    retroView:bind()
     ClearScene(bgColor)
     AmbientColor(ambColor)
     CameraPerspective(62, 0.1, 100)
     EnableLighting(true)
     cam.mat:bind(VIEW)
-
+    
     bowl:draw()
-
-    for _, handle in pairs(balls) do
+    
+    for i, handle in pairs(balls) do
         sphere:draw(
             Matrix():scale(ballSize, ballSize, ballSize) * world.getWorldTransform(handle)
         )
     end
-
-    ClearTarget()
-    helpers.withTexture(retroView, function ()
-        SamplerState(0, SAMPLERSTATE_MAGFILTER, TEXF_POINT)
-        SamplerState(0, SAMPLERSTATE_MINFILTER, TEXF_POINT)
-        SamplerState(0, SAMPLERSTATE_MIPFILTER, TEXF_POINT)
-        FillScreen()
-    end)
 end
 
 local testFont = Font("Arial", 33, 2000, false)
 
 function _render2d()
     testFont:drawText(0xFFFFFFFF, [[
-WASD to move around
-LMB to shoot balls
-RMB to teleport at aimed location
-SPACE for waterfall
-    ]], 15, 30)
-end
+        WASD to move around
+        LMB to shoot balls
+        RMB to teleport at aimed location
+        SPACE for waterfall
+        ]], 15, 30)
+    end
+    

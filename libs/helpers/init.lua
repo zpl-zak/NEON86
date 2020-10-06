@@ -154,6 +154,14 @@ local function deepcopy(orig)
     return copy
 end
 
+local function slice(tbl, first, last, step)
+    local sliced = {}
+    for i = first or 1, last or #tbl, step or 1 do
+      sliced[#sliced+1] = tbl[i]
+    end
+    return sliced
+  end
+
 local helpers = {
   lerp = lerp,
   clamp = clamp,
@@ -165,6 +173,7 @@ local helpers = {
   decode = decode,
   serializeTable = serializeTable,
   deepcopy = deepcopy,
+  slice = slice,
 
   drawEffect = drawEffect,
   withTexture = withTexture,

@@ -3,7 +3,7 @@
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files
 #include <windows.h>
-#include <vector>
+#include <unordered_map>
 #include <btBulletDynamicsCommon.h>
 
 extern btDefaultCollisionConfiguration* collisionConfiguration;
@@ -12,4 +12,5 @@ extern btBroadphaseInterface* overlappingPairCache;
 extern btSequentialImpulseConstraintSolver* solver;
 extern btDiscreteDynamicsWorld* world;
 
-extern std::vector<btRigidBody*> bodies;
+extern size_t bodyIndex;
+extern std::unordered_map<size_t, btRigidBody*> bodies;

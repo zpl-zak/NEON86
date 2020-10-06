@@ -5,10 +5,10 @@ VOID bullet_body_create_generic(lua_State* L, btCollisionShape* shape, FLOAT mas
     btDefaultMotionState* motion = new btDefaultMotionState(tr);
     btRigidBody::btRigidBodyConstructionInfo ci(mass, motion, shape, inertia);
     btRigidBody* body = new btRigidBody(ci);
-    int index = (int)bodies.size();
-    shape->setUserIndex(index);
-    body->setUserIndex(index);
-    bodies.push_back(body);
+    size_t index = bodyIndex++;
+    shape->setUserIndex((int)index);
+    body->setUserIndex((int)index);
+    bodies[index] = body;
     world->addRigidBody(body);
     lua_pushinteger(L, index);
 }

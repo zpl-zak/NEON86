@@ -7,7 +7,8 @@ btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
 btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 btDiscreteDynamicsWorld* world = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
 
-std::vector<btRigidBody*> bodies;
+size_t bodyIndex = 0;
+std::unordered_map<size_t, btRigidBody*> bodies;
 
 static D3DXMATRIX getMatrix(const btTransform& tr) {
     FLOAT m[16];
@@ -29,7 +30,7 @@ static INT bullet_destroy(lua_State* L) {
     delete body;
     delete motion;
     delete shape;
-    bodies.erase(bodies.begin() + index);
+    bodies.erase(index);
     return 0;
 }
 
@@ -81,6 +82,22 @@ static INT bullet_set_velocity(lua_State* L) {
     btRigidBody* body = bodies[index];
     body->setLinearVelocity(btVector3(force.x, force.y, force.z));
     return 0;
+}
+
+static INT bullet_set_push_velocity(lua_State* L) {
+    size_t index = (size_t)luaL_checkinteger(L, 1);
+    D3DXVECTOR4 force = *(D3DXVECTOR4*)luaL_checkudata(L, 2, L_VECTOR);
+    btRigidBody* body = bodies[index];
+    body->setPushVelocity(btVector3(force.x, force.y, force.z));
+    return 0;
+}
+
+static INT bullet_get_velocity(lua_State* L) {
+    size_t index = (size_t)luaL_checkinteger(L, 1);
+    btRigidBody* body = bodies[index];
+    btVector3 bVel = body->getLinearVelocity();
+    *vector4_ctor(L) = D3DXVECTOR4(bVel.x(), bVel.y(), bVel.z(), bVel.w());
+    return 1;
 }
 
 static INT bullet_set_friction(lua_State* L) {
@@ -211,6 +228,8 @@ static const luaL_Reg bullet[] = {
     { "setDamping", bullet_set_damping },
     { "setGravity", bullet_set_gravity },
     { "setVelocity", bullet_set_velocity },
+    { "setPushVelocity", bullet_set_push_velocity },
+    { "getVelocity", bullet_get_velocity },
     { "setLinearFactor", bullet_set_linear_factor },
     { "setAngularFactor", bullet_set_angular_factor },
     { "addForce", bullet_add_force },
