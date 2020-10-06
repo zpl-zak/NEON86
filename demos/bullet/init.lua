@@ -1,6 +1,7 @@
 local world = require "bullet"
 local Camera = require "camera"
 local Class = require "class"
+local helpers = require "helpers"
 
 Class "GameCamera" (Camera) {
     -- Override movement method for collisions
@@ -12,8 +13,7 @@ Class "GameCamera" (Camera) {
         world.setActivationState(self.body, world.DISABLE_DEACTIVATION)
         world.setDamping(self.body, 0.9, 1)
         world.setFriction(self.body, 0.6)
-        world.setAngularFactor(self.body, Vector(0,1,0))
-        -- world.setGravity(self.body, Vector())
+        world.setAngularFactor(self.body, Vector(0.4,0.02,0))
     end,
 
     movement = function (self, dt)
@@ -46,6 +46,14 @@ local bowl = Model("bowl.fbx")
 local node = bowl:getRootNode():findNode("Cube")
 local plane = world.createMesh(node:getFinalTransform(), node:getMeshes()[1])
 world.setRestitution(plane, 0.9)
+
+for _, mesh in pairs(node:getMeshes()) do
+    for _, part in pairs(mesh:getParts()) do
+        part:getMaterial(1):setSamplerState(SAMPLERSTATE_MAGFILTER, TEXF_POINT)
+        part:getMaterial(1):setSamplerState(SAMPLERSTATE_MINFILTER, TEXF_POINT)
+        part:getMaterial(1):setSamplerState(SAMPLERSTATE_MIPFILTER, TEXF_POINT)
+    end
+end
 
 function addBall(pos)
     local ball = world.createSphere(pos, ballSize, 1)
@@ -94,20 +102,33 @@ function _update(dt)
     cam:update2(dt)
 end
 
+local res = GetResolution()
+local resDiv = 2
+local retroView = RenderTarget(math.floor(res[1]/resDiv), math.floor(res[2]/resDiv))
+
 function _render()
-  ClearScene(bgColor)
-  AmbientColor(ambColor)
-  CameraPerspective(62, 0.1, 100)
-  EnableLighting(true)
-  cam.mat:bind(VIEW)
+    retroView:bind()
+    ClearScene(bgColor)
+    AmbientColor(ambColor)
+    CameraPerspective(62, 0.1, 100)
+    EnableLighting(true)
+    cam.mat:bind(VIEW)
 
-  bowl:draw()
+    bowl:draw()
 
-  for _, handle in pairs(balls) do
-    sphere:draw(
-        Matrix():scale(ballSize, ballSize, ballSize) * world.getWorldTransform(handle)
-    )
-  end
+    for _, handle in pairs(balls) do
+        sphere:draw(
+            Matrix():scale(ballSize, ballSize, ballSize) * world.getWorldTransform(handle)
+        )
+    end
+
+    ClearTarget()
+    helpers.withTexture(retroView, function ()
+        SamplerState(0, SAMPLERSTATE_MAGFILTER, TEXF_POINT)
+        SamplerState(0, SAMPLERSTATE_MINFILTER, TEXF_POINT)
+        SamplerState(0, SAMPLERSTATE_MIPFILTER, TEXF_POINT)
+        FillScreen()
+    end)
 end
 
 local testFont = Font("Arial", 33, 2000, false)
