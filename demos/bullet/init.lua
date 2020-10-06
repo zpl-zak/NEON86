@@ -101,6 +101,7 @@ addBall(Matrix():translate(Vector(math.random()*0.1,5,math.random()*0.1)))
 sphere = Model("sphere.fbx")
 bgColor = Color(60, 60,69)
 ambColor = Color(40,40,69)
+showWireframe = false
 
 light = Light()
 light:setDirection(Vector(-0.5,-0.5,1))
@@ -117,12 +118,20 @@ function _update(dt)
     if GetKey(KEY_SPACE) then
         addBall(Matrix():translate(Vector(math.random()*0.1,5,math.random()*0.1)))
     end
+
+    if GetKeyDown("g") then
+        showWireframe = not showWireframe
+    end
     
     
     cam:update2(dt)
     world.update()
     cam:update(dt)
 end
+
+local debugMat = Material()
+debugMat:setDiffuse(0,255,0)
+debugMat:setEmission(0,255,0)
 
 function _render()
     ClearScene(bgColor)
@@ -138,6 +147,19 @@ function _render()
             Matrix():scale(ballSize, ballSize, ballSize) * world.getWorldTransform(handle)
         )
     end
+
+    if showWireframe == true then
+        helpers.withTexture(debugMat, function ()
+            ToggleWireframe(true)
+            for i, handle in pairs(balls) do
+                sphere:draw(
+                    Matrix():scale(ballSize, ballSize, ballSize) * world.getWorldTransform(handle)
+                )
+            end
+            bowl:draw()
+            ToggleWireframe(false)
+        end)
+    end
 end
 
 local testFont = Font("Arial", 33, 2000, false)
@@ -148,6 +170,7 @@ function _render2d()
         LMB to shoot balls
         RMB to teleport at aimed location
         SPACE for waterfall
+        G to toggle wireframe mode
         ]], 15, 30)
     end
     

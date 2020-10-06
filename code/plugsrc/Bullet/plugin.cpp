@@ -21,6 +21,13 @@ static INT bullet_update(lua_State* L) {
     return 0;
 }
 
+static INT bullet_update_body(lua_State* L) {
+    size_t index = (size_t)luaL_checkinteger(L, 1);
+    btRigidBody* body = bodies[index];
+    body->integrateVelocities(1 / 60.0f);
+    return 0;
+}
+
 static INT bullet_destroy(lua_State* L) {
     size_t index = (size_t)luaL_checkinteger(L, 1);
     btRigidBody* body = bodies[index];
@@ -222,6 +229,7 @@ static const luaL_Reg bullet[] = {
     { "rayTest", bullet_world_ray_test },
 
     { "setRestitution", bullet_set_restitution },
+    { "integrate", bullet_update_body },
     { "setCollisionMask", bullet_set_collision_mask },
     { "setMass", bullet_set_mass },
     { "setFriction", bullet_set_friction },
