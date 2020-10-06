@@ -1,44 +1,41 @@
 local Class = require "class"
 local Camera = require "camera"
-local Collisions = require "collisions"
+local world = require "bullet"
 
 Class "GameCamera" (Camera) {
     -- Override movement method for collisions
-
-    __init__ = function (self, pos, cols)
-        Camera:__init__(pos)
+    __init__ = function (self, pos, angles)
+        Camera:__init__(pos, angles)
         self.grounded = false
-        self.cols = cols
-        self.speed = 1
+        self.speed = 50
+        self.body = world.createCapsule(Matrix():translate(pos), 1, 2, 2)
+        world.setActivationState(self.body, world.DISABLE_DEACTIVATION)
+        world.setDamping(self.body, 0.9, 1)
+        world.setFriction(self.body, 0.6)
+        world.setAngularFactor(self.body, Vector(0,1,0))
+        -- world.setGravity(self.body, Vector())
     end,
 
     movement = function (self, dt)
         self.movedir:y(0)
-        if self.grounded == false then
-            self.vel:y(self.vel:y() - 2*dt)
-        end
-        self.vel:x(self.vel:x() + self.movedir:x())
-        self.vel:z(self.vel:z() + self.movedir:z())
+        world.addImpulse(self.body, self.movedir)
+    end,
 
-        self.cols:forEach(function (shape)
-            shape:testSphere(
-                self.pos,
-                3,
-                self.vel,
-                function (n)
-                    local push = n
-                    local pp = push * ((self.vel * push) / (push * push))
-                    self.vel = self.vel - pp
-                    self.grounded = true
-                end
-            )
-        end)
-
-        self.pos = self.pos + self.vel
+    updateMatrix = function (self)
+        self.pos = world.getWorldTransform(self.body):row(4)
+        self.mat = Matrix():translate(self.pos:neg()-Vector3(0,1,0))
+                            :rotate(-self.angles[1], 0, 0)
+                            :rotate(0, self.angles[2], 0)
+        self:updateDirVectors()
     end,
 
     update2 = function (self, dt)
         self.grounded = false
+    end,
+
+    setPos = function (self, pos)
+        self.pos = pos
+        world.setWorldTransform(self.body, Matrix():translate(pos))
     end
 }
 
@@ -52,9 +49,7 @@ Class "Game" {
             cament = self.root:findTarget("cament")
         }
         self.cols = self:buildCols()
-        self.cam = GameCamera(
-            self.nodes.cament:row(4),
-            self.cols)
+        self.cam = GameCamera(self.nodes.cament:row(4))
 
         self.sun = self:setupLight()
     end,
@@ -77,33 +72,19 @@ Class "Game" {
     -- Helpers
 
     buildCols = function (self)
-        local w = Collisions.newWorld()
-        
         -- Terrain
         local n = self.nodes.terrain
-        local mp = n:getMeshParts()[1][1]
-        w:addCollision(
-            Collisions.newTriangleMeshFromPart(
-                mp,
-                n:getFinalTransform()
-            )
-        )
+        local mp = n:getMeshes()[1]
+        local ground = world.createMesh(n:getFinalTransform(), mp)
+        world.setRestitution(ground, 0.9)
 
         -- Props
         n = self.nodes.props
         for _, pn in pairs(n:getNodes()) do
             local p = pn:getMeshes()[1]
-            for _, pp in pairs(p:getParts()) do
-                w:addCollision(
-                    Collisions.newTriangleMeshFromPart(
-                        pp,
-                        pn:getFinalTransform()
-                    )
-                )
-            end
+            local prop = world.createMesh(pn:getFinalTransform(), p)
+            world.setRestitution(prop, 0.7)
         end
-
-        return w
     end,
 
     setupLight = function (self)
@@ -133,6 +114,7 @@ function _update(dt)
     end
 
     g:update(dt)
+    world:update(dt)
 end
 
 function _render()

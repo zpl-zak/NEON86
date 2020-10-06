@@ -49,7 +49,7 @@ world.setRestitution(plane, 0.9)
 
 function addBall(pos)
     local ball = world.createSphere(pos, ballSize, 1)
-    world.setRestitution(ball, 0.9)
+    world.setRestitution(ball, 0.7)
     table.insert(balls, ball)
     return ball
 end
