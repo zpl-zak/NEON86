@@ -3,9 +3,6 @@ local camera
 
 local bgColor = VectorRGBA(42, 16, 23)
 
-local cols = require "collisions"
-
-local world = cols.newWorld()
 local lights = {}
 
 shader = Effect("fx/main.fx")

@@ -8,6 +8,7 @@
 #include "FileSystem.h"
 #include "Sound.h"
 #include "Music.h"
+#include "Node.h"
 
 #include <lua/lua.hpp>
 #include <sstream>

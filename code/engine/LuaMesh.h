@@ -143,6 +143,15 @@ static INT mesh_getmaterial(lua_State* L)
     return 1;
 }
 
+static INT mesh_getowner(lua_State* L)
+{
+    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    if (!mesh->GetOwner())
+        lua_pushnil(L);
+    else LUAP(L, L_NODE, CNode, mesh->GetOwner());
+    return 1;
+}
+
 static VOID LuaMesh_register(lua_State* L)
 {
     lua_register(L, L_MESH, mesh_new);
@@ -155,6 +164,7 @@ static VOID LuaMesh_register(lua_State* L)
     REGC("clone", mesh_clone);
     REGC("getFGroups", mesh_getfgroups);
     REGC("getParts", mesh_getfgroups);
+    REGC("getOwner", mesh_getowner);
     REGC("clear", mesh_clear);
     REGC("setName", mesh_setname);
     REGC("setMaterial", mesh_setmaterial);

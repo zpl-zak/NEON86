@@ -15,6 +15,12 @@ Class "GameCamera" (Camera) {
         -- world.setDamping(self.body, 0.9, 1)
         world.setFriction(self.body, 0.9)
         world.setAngularFactor(self.body, Vector(0,1,0))
+
+        local hit, dpos = world.rayTest(pos, Vector(0,-1,0)*10)
+
+        if hit then
+            self:setPos(dpos+Vector3(0,2,0))
+        end
     end,
 
     movement = function (self, dt)
@@ -69,12 +75,12 @@ Class "GameCamera" (Camera) {
     end
 }
 
-local cam = GameCamera(Vector3(0,3,-10))
 local balls = {}
 local ballSize = 1.0
 local bowl = Model("bowl.fbx")
 local node = bowl:getRootNode():findNode("Cube")
 local plane = world.createMesh(node:getFinalTransform(), node:getMeshes()[1])
+local cam = GameCamera(Vector3(0,3,-10))
 world.setRestitution(plane, 0.9)
 
 for _, mesh in pairs(node:getMeshes()) do
