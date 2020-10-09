@@ -45,18 +45,18 @@ local function spairs(t, order)
   -- if order function given, sort by it by passing the table and keys a, b,
   -- otherwise just sort the keys
   if order then
-      table.sort(keys, function(a,b) return order(t[a], t[b]) end)
+    table.sort(keys, function(a,b) return order(t[a], t[b]) end)
   else
-      table.sort(keys)
+    table.sort(keys)
   end
 
   -- return the iterator function
   local i = 0
   return function()
-      i = i + 1
-      if keys[i] then
-          return keys[i], t[keys[i]]
-      end
+    i = i + 1
+    if keys[i] then
+        return keys[i], t[keys[i]]
+    end
   end
 end
 
@@ -81,7 +81,7 @@ end
 
 local function merge(a, b)
   if type(a) == 'table' and type(b) == 'table' then
-      for k,v in pairs(b) do if type(v)=='table' and type(a[k] or false)=='table' then merge(a[k],v) else a[k]=v end end
+    for k,v in pairs(b) do if type(v)=='table' and type(a[k] or false)=='table' then merge(a[k],v) else a[k]=v end end
   end
   return a
 end
@@ -140,27 +140,27 @@ local function decode(str)
 end
 
 local function deepcopy(orig)
-    local origType = type(orig)
-    local copy
-    if origType == 'table' then
-        copy = {}
-        for origKey, origValue in next, orig, nil do
-            copy[deepcopy(origKey)] = deepcopy(origValue)
-        end
-        setmetatable(copy, deepcopy(getmetatable(orig)))
-    else
-        copy = orig
+  local origType = type(orig)
+  local copy
+  if origType == 'table' then
+    copy = {}
+    for origKey, origValue in next, orig, nil do
+        copy[deepcopy(origKey)] = deepcopy(origValue)
     end
-    return copy
+    setmetatable(copy, deepcopy(getmetatable(orig)))
+  else
+    copy = orig
+  end
+  return copy
 end
 
 local function slice(tbl, first, last, step)
-    local sliced = {}
-    for i = first or 1, last or #tbl, step or 1 do
-      sliced[#sliced+1] = tbl[i]
-    end
-    return sliced
+  local sliced = {}
+  for i = first or 1, last or #tbl, step or 1 do
+    sliced[#sliced+1] = tbl[i]
   end
+  return sliced
+end
 
 local helpers = {
   lerp = lerp,

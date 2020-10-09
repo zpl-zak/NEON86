@@ -28,7 +28,7 @@ camera.grounded = false
 
 function _init()
   mapModel = Model("map.fbx", true, false)
-  
+
   camera.updateMovement = function(self, dt)
     self.vel = self.movedir
     self.pos = self.pos + self.vel
@@ -78,12 +78,12 @@ end
 function _render()
   ClearScene(bgColor:color())
   AmbientColor(bgColor:color())
-  
+
   sun:enable(true, 0)
   for i, l in pairs(lights) do
     l:enable(true, i)
   end
-  
+
   camera.mat:bind(VIEW)
   CameraPerspective(62, 0.1, 9000)
   withEffect(shader, "Lit", function (fx)

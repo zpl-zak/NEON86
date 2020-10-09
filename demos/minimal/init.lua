@@ -16,13 +16,13 @@ function _init()
   globe:getMeshes()[1]:getMaterial(1):alphaIsTransparency(false)
 
   for _, n in pairs(scene:getFlattenNodes()) do
-      local shaded = n:getMeta("shaded")
+    local shaded = n:getMeta("shaded")
 
-      if shaded ~= nil then
-          for _, m in pairs(n:getMeshes()[1]:getParts()) do
-              m:getMaterial():setShaded(shaded == "true")
-          end
+    if shaded ~= nil then
+      for _, m in pairs(n:getMeshes()[1]:getParts()) do
+        m:getMaterial():setShaded(shaded == "true")
       end
+    end
   end
 
   addLight(LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.8, -1.0), Vector3(0.6,0.6,0.2,1))
@@ -30,15 +30,15 @@ function _init()
   local lightsNode = rootNode:findNode("Lights")
 
   for _, l in pairs(lightsNode:getNodes()) do
-      local c = VectorRGBA(240,240,240)
+    local c = VectorRGBA(240,240,240)
 
-      local p = l:getMeta("color")
+    local p = l:getMeta("color")
 
-      if p ~= nil then
-          c = str2vec(p) / 0xFF
-      end
+    if p ~= nil then
+        c = str2vec(p) / 0xFF
+    end
 
-      addLight(LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
+    addLight(LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
   end
 
   EnableLighting(true)
@@ -46,15 +46,15 @@ end
 
 function _update(dt)
   if GetKeyDown(KEY_ESCAPE) then
-      ExitGame()
+    ExitGame()
   end
 
   if GetKeyDown("r") then
-      RestartGame()
+    RestartGame()
   end
 
   for i, enemy in ipairs(enemies) do
-      enemy.model:update(dt)
+    enemy.model:update(dt)
   end
 
   time = getTime()
@@ -62,13 +62,13 @@ end
 
 function _render()
   Matrix()
-      :rotate(time/4, 0, 0)
-      :rotate(0, math.rad(-35), 0)
-      :translate(0,-2,20)
-      :bind(VIEW)
+    :rotate(time/4, 0, 0)
+    :rotate(0, math.rad(-35), 0)
+    :translate(0,-2,20)
+    :bind(VIEW)
 
   for i, l in ipairs(lights) do
-      l:enable(true, i-1)
+    l:enable(true, i-1)
   end
 
   ClearScene(20,20,69)
@@ -90,8 +90,8 @@ function addLight(kind, pos, dir, diffuse)
   l:setDiffuse(diffuse)
 
   if kind == LIGHTKIND_POINT then
-      l:setRange(50)
-      l:setAttenuation(0,0.2,0)
+    l:setRange(50)
+    l:setAttenuation(0,0.2,0)
   end
 
   table.insert(lights, l)
