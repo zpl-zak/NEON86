@@ -315,10 +315,12 @@ VOID CUserInterface::Render(VOID)
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    DebugPanel();
+    SetupRender2D();
 
     if (*mDrawUIHook)
         (*mDrawUIHook)();
+
+    DebugPanel();
 
     ImGui::EndFrame();
 
@@ -442,4 +444,43 @@ CString CUserInterface::FormatBytes(UINT64 bytes)
     ss << std::fixed << formattedBytes << " " << suffixes[suffixId];
 
     return ss.str().c_str();
+}
+
+VOID CUserInterface::SetupRender2D()
+{
+    LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
+    dev->SetPixelShader(NULL);
+    dev->SetVertexShader(NULL);
+    dev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    dev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    dev->SetRenderState(D3DRS_ZENABLE, FALSE);
+    dev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    dev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+    dev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+    dev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    dev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    dev->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+    dev->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
+    dev->SetRenderState(D3DRS_FOGENABLE, FALSE);
+    dev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    dev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    dev->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+    dev->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+    dev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    dev->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    dev->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    dev->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+
+    // NEON86: Render 2D
+    IDirect3DStateBlock9* neonsbt = NULL;
+    RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
+    neonsbt->Capture();
+    {
+        CProfileScope scope(ENGINE->DefaultProfiling.INTERNAL_GetRender2DProfiler());
+        UI->RenderHook();
+        VM->Render2D();
+    }
+
+    neonsbt->Apply();
+    neonsbt->Release();
 }

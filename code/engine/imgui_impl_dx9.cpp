@@ -178,19 +178,6 @@ void ImGui_ImplDX9_RenderDrawData(ImDrawData* draw_data)
     // Setup desired DX state
     ImGui_ImplDX9_SetupRenderState(draw_data);
 
-    // NEON86: Render 2D
-    IDirect3DStateBlock9* neonsbt = NULL;
-    RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
-    neonsbt->Capture();
-    {
-        CProfileScope scope(ENGINE->DefaultProfiling.INTERNAL_GetRender2DProfiler());
-        UI->RenderHook();
-        VM->Render2D();
-    }
-
-    neonsbt->Apply();
-    neonsbt->Release();
-
     // Render command lists
     // (Because we merged all buffers into a single one, we maintain our own offset into them)
     int global_vtx_offset = 0;

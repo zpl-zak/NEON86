@@ -33,6 +33,7 @@ public:
 private:
     VOID DebugPanel(VOID);
     CString FormatBytes(UINT64 bytes);
+    VOID SetupRender2D();
 
 #if _DEBUG
     // Error handling
