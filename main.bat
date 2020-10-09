@@ -10,7 +10,7 @@ set devenv_cmd=devenv.exe
 where /q devenv.exe
 if not %errorlevel%==0 set devenv_cmd="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"
 
-set "proj=basic"
+set "proj=base"
 
 if not exist build mkdir build
 if exist build\.proj (
@@ -61,7 +61,7 @@ set proj=%proj: =%
 	if %errorlevel%==2 call :build
 	if %errorlevel%==3 call :debug
 	if %errorlevel%==4 call :deploy
-7	if %errorlevel%==5 call :open_in_vs
+	if %errorlevel%==5 call :open_in_vs
 	if %errorlevel%==6 call :open_in_vscode
 	if %errorlevel%==7 call :open_in_lite
 	if %errorlevel%==8 call :git_pull
@@ -153,7 +153,6 @@ exit /B 0
 				player.exe data
 				rem Delete save files
 				del /Q /F data\save.neon
-                pause
 			popd
 		)
 	cls
