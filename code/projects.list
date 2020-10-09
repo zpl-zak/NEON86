@@ -1,8 +1,9 @@
-deps/lua/lua.vcxproj
+deps/lua/lua
 
-engine/engine.vcxproj
+engine/engine
 
-player/player.vcxproj
-NativeDemo/NativeDemo.vcxproj
+player/player
+NativeDemo/NativeDemo
 
-plugsrc/Bullet/Bullet.vcxproj
+plugsrc/Bullet/Bullet
+plugsrc/http/http

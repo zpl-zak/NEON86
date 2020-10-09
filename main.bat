@@ -83,7 +83,7 @@ goto :begin
 :build_list
     for /f "tokens=*" %%a in (code/projects.list) do (
         if not [%%a]==[] (
-            %msbuild_cmd% code/%%a /p:Configuration=%1 /p:Platform=x64 /m
+            %msbuild_cmd% code/%%a.vcxproj /p:Configuration=%1 /p:Platform=x64 /m
         )
     )
     pause
