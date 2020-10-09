@@ -61,7 +61,7 @@ set proj=%proj: =%
 	if %errorlevel%==2 call :build
 	if %errorlevel%==3 call :debug
 	if %errorlevel%==4 call :deploy
-	if %errorlevel%==5 call :open_in_vs
+7	if %errorlevel%==5 call :open_in_vs
 	if %errorlevel%==6 call :open_in_vscode
 	if %errorlevel%==7 call :open_in_lite
 	if %errorlevel%==8 call :git_pull
@@ -80,13 +80,21 @@ set proj=%proj: =%
 
 goto :begin
 
+:build_list
+    for /f "tokens=*" %%a in (code/projects.list) do (
+        if not [%%a]==[] (
+            %msbuild_cmd% code/%%a /p:Configuration=%1 /p:Platform=x64 /m
+        )
+    )
+    pause
+exit /B 0
+
 :build
-	%msbuild_cmd% code\neon86.sln /p:Configuration=Debug /p:Platform=x64 /m
-	pause
+	call :build_list Debug
 exit /B 0
 
 :build_release
-	%msbuild_cmd% code\neon86.sln /p:Configuration=Release /p:Platform=x64 /m
+	call :build_list Release
 	echo.
 	echo =======================
 	echo  1. Continue with deployment
@@ -128,7 +136,6 @@ exit /B 0
 	xcopy /Y /E /I /exclude:.gitignore docs build\deploy\docs
 	del   /S /Q /F build\deploy\*.blend
 	echo.
-
 	:package_prompt
 		echo NEON86 DEPLOY
 		echo Active Project: %proj%
@@ -146,6 +153,7 @@ exit /B 0
 				player.exe data
 				rem Delete save files
 				del /Q /F data\save.neon
+                pause
 			popd
 		)
 	cls

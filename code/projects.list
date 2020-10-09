@@ -1,0 +1,5 @@
+deps/lua/lua.vcxproj
+engine/engine.vcxproj
+player/player.vcxproj
+NativeDemo/NativeDemo.vcxproj
+plugsrc/Bullet/Bullet.vcxproj
