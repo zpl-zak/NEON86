@@ -24,7 +24,7 @@ public:
     void Resize(RECT res);
     void SetVSYNC(bool state);
     void Blit();
-    void BeginRender();
+    void BeginRender() const;
     void EndRender();
 
     /// Render commands
@@ -50,13 +50,13 @@ public:
     auto GetLightingState() const -> bool { return mEnableLighting; }
     void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
-    void SetDefaultRenderStates();
+    void SetDefaultRenderStates() const;
 
     /// Accessors
     auto GetDevice() const -> LPDIRECT3DDEVICE9 { return mDevice; }
     auto GetResolution() const -> RECT { return mLastRes; }
     auto GetLocalCoordinates() const -> RECT;
-    auto GetDeviceMatrix(unsigned int kind) -> D3DMATRIX;
+    auto GetDeviceMatrix(unsigned int kind) const -> D3DMATRIX;
     auto GetWindow() const -> HWND { return mWindow; }
     auto GetActiveEffect() const -> CEffect* { return mActiveEffect; }
     auto GetDisplayDesc() const -> D3DSURFACE_DESC { return mDisplayDesc; }
@@ -85,7 +85,6 @@ protected:
     bool mEnableLighting;
     VERTEX mImmediateBuffer[3];
 
-    void Clear();
     void BuildParams();
     void PrepareEffectDraw();
 };

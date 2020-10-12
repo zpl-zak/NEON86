@@ -327,7 +327,6 @@ void CEngine::Update(float deltaTime) const
         mAudioSystem->Update();
     }
 
-    mDebugUI->Update(deltaTime);
     mInput->Update();
 }
 
@@ -338,6 +337,11 @@ void CEngine::Render() const
     {
         CProfileScope scope(DefaultProfiling.mRenderProfiler);
         mVirtualMachine->Render();
+
+        if (mDebugUI->IsInError())
+        {
+            mRenderer->ClearBuffer(0x0);
+        }
     }
 
     mDebugUI->Render();

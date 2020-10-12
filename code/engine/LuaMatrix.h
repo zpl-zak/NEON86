@@ -104,7 +104,7 @@ static auto matrix_bind(lua_State* L) -> int
 
 static auto matrix_lookat(lua_State* L) -> int
 {
-    auto* const mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
+    auto* mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     auto* const eye = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 2, L_VECTOR));
     auto* const at = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 3, L_VECTOR));
     auto* const up = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 4, L_VECTOR));

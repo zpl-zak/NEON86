@@ -344,10 +344,6 @@ auto CUserInterface::Release(void) -> bool
     return TRUE;
 }
 
-void CUserInterface::Update(float dt)
-{
-}
-
 void CUserInterface::Render(void)
 {
     ImGui_ImplDX9_NewFrame();
@@ -384,7 +380,7 @@ void CUserInterface::PushLog(LPCSTR msg, bool noHist)
 
     #ifdef _DEBUG
     if (!noHist)
-        sLogWindow.Push(msg);
+        sLogWindow.Push(CString::Format("Error: %s\n", msg).Str());
     #endif
 }
 
@@ -409,7 +405,10 @@ void CUserInterface::PushErrorMessage(LPCSTR err)
     mShowError = TRUE;
 
     if (err)
+    {
         mErrorMessage = CString::Format("%s %s\n", mErrorMessage.Str(), err);
+        PushLog(err);
+    }
     #endif
 }
 
@@ -446,13 +445,12 @@ void CUserInterface::DebugPanel(void) const
 
     if (mShowError)
     {
-        ImGui::SetNextWindowSize(ImVec2(500, 150), ImGuiCond_FirstUseEver);
-        ImGui::Begin("Error messages", nullptr,
+        const auto res = RENDERER->GetResolution();
+        ImGui::SetNextWindowPos(ImVec2(res.right * 0.5f, res.bottom * 0.5f), ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+        ImGui::Begin("Error happened", nullptr,
                      ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse |
                      ImGuiWindowFlags_AlwaysAutoResize);
         {
-            ImGui::TextWrapped("%s", mErrorMessage.Str());
-
             if (ImGui::Button("Restart VM"))
                 VM->Restart();
 
@@ -515,13 +513,17 @@ void CUserInterface::SetupRender2D()
     // NEON86: Render 2D
     IDirect3DStateBlock9* neonsbt = nullptr;
     RENDERER->GetDevice()->CreateStateBlock(D3DSBT_ALL, &neonsbt);
-    neonsbt->Capture();
-    {
-        CProfileScope scope(ENGINE->DefaultProfiling.INTERNAL_GetRender2DProfiler());
-        UI->RenderHook();
-        VM->Render2D();
-    }
 
-    neonsbt->Apply();
-    neonsbt->Release();
+    if (neonsbt != nullptr)
+    {
+        neonsbt->Capture();
+        {
+            CProfileScope scope(ENGINE->DefaultProfiling.INTERNAL_GetRender2DProfiler());
+            UI->RenderHook();
+            VM->Render2D();
+        }
+
+        neonsbt->Apply();
+        neonsbt->Release();
+    }
 }

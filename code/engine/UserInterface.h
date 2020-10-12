@@ -14,11 +14,10 @@ class ENGINE_API CUserInterface
 public:
     CUserInterface();
     auto Release(void) -> bool;
-    void Update(float dt);
     void Render(void);
     void RenderHook(void) const;
-    void PushMS(float ms);
-    void PushLog(LPCSTR msg, bool noHist = FALSE);
+    static void PushMS(float ms);
+    static void PushLog(LPCSTR msg, bool noHist = FALSE);
     static auto ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     void ClearErrorWindow();
@@ -30,6 +29,12 @@ public:
 
     void SetDrawUIHook(DrawUIHook hook) const { *mDrawUIHook = hook; }
     auto GetDrawUIHook() const -> DrawUIHook { return *mDrawUIHook; }
+
+#ifdef _DEBUG
+    auto IsInError() const -> bool { return mShowError; }
+#else
+    auto IsInError() const -> bool { return false; }
+#endif
 private:
     void DebugPanel(void) const;
     static auto FormatBytes(UINT64 bytes) -> CString;

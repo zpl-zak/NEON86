@@ -201,7 +201,7 @@ void CRenderer::Blit()
     bbuf->Release();
 }
 
-void CRenderer::BeginRender()
+void CRenderer::BeginRender() const
 {
     if (mDevice->TestCooperativeLevel() == D3DERR_DEVICELOST)
     {
@@ -225,10 +225,6 @@ void CRenderer::EndRender()
     GetDevice()->EndScene();
     GetDevice()->Present(nullptr, nullptr, nullptr, nullptr);
     ENGINE->DefaultProfiling.IncrementFrame();
-}
-
-void CRenderer::Clear()
-{
 }
 
 auto CRenderer::Release() -> bool
@@ -610,7 +606,7 @@ auto CRenderer::GetSurfaceResolution() -> RECT
     return r;
 }
 
-void CRenderer::SetDefaultRenderStates()
+void CRenderer::SetDefaultRenderStates() const
 {
     mDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
     mDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
@@ -622,9 +618,7 @@ void CRenderer::SetDefaultRenderStates()
     mDevice->SetRenderState(D3DRS_COLORWRITEENABLE,
                             D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE |
                             D3DCOLORWRITEENABLE_ALPHA);
-    mDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
     mDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
-    mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -632,7 +626,7 @@ void CRenderer::SetDefaultRenderStates()
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
 }
 
-auto CRenderer::GetDeviceMatrix(unsigned int kind) -> D3DMATRIX
+auto CRenderer::GetDeviceMatrix(unsigned int kind) const -> D3DMATRIX
 {
     D3DMATRIX mat;
 
