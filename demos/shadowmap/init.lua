@@ -89,8 +89,8 @@ function _render()
   local ldir = lightDir * Matrix():rotate(time/4,0,0)
   lightProj = Matrix():orthoEx(-40, 40, -40, 40, -40, 40)
   lightView = Matrix():lookAt(
-    ldir+cam.pos,
-    Vector()+cam.pos,
+    ldir,
+    Vector(),
     Vector(0,1,0)
   )
   light:setDirection(ldir)

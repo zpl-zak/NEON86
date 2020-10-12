@@ -1,8 +1,8 @@
 #pragma once
 
-#define _M(...) #__VA_ARGS__
+#define M(...) #__VA_ARGS__
 
-static LPCSTR _shader_common = _M(
+static LPCSTR _shader_common = M(
     /* NEON structures */
     struct TNEON
     {
@@ -102,4 +102,4 @@ static LPCSTR _shader_common = _M(
     }
 );
 
-#undef _M
+#undef M
