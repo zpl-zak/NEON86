@@ -5,7 +5,7 @@
 class ENGINE_API CProfiler
 {
 public:
-    CProfiler(CString name);
+    CProfiler(const CString& name);
 
     void Reset();
     void StartInvocation();

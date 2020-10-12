@@ -36,7 +36,7 @@ public:
 
     inline auto CheckVMErrors(int, bool canFail = FALSE) -> bool;
     inline void PostError(LPCSTR err);
-    inline void PostError(CString err);
+    inline void PostError(const CString& err);
     auto GetRunTime() const -> float { return mRunTime; }
     void PassTime(float dt) { mRunTime += dt; }
     auto GetStatus() const -> UCHAR { return mPlayKind; }

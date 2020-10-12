@@ -3,7 +3,7 @@
 #include "engine.h"
 #include "Renderer.h"
 
-CInput::CInput(void)
+CInput::CInput()
 {
     ZeroMemory(mKeys, NUM_KEYS * sizeof(bool));
     ZeroMemory(mKeysDown, NUM_KEYS * sizeof(bool));
@@ -23,11 +23,11 @@ CInput::CInput(void)
     #endif
 }
 
-void CInput::Release(void)
+void CInput::Release()
 {
 }
 
-auto CInput::GetMouseXY(void) -> POINT
+auto CInput::GetMouseXY() -> POINT
 {
     POINT newPos = {0};
     GetCursorPos(&newPos);
@@ -39,17 +39,21 @@ auto CInput::GetMouseXY(void) -> POINT
 void CInput::SetCursor(bool state) const
 {
     if (GetCursor() == state)
+    {
         return;
+    }
 
     #ifdef _DEBUG
     if (mForceMouseCursor)
+    {
         return;
+    }
     #endif
 
-    ShowCursor(state);
+    ShowCursor(static_cast<BOOL>(state));
 }
 
-auto CInput::GetCursor(void) -> bool
+auto CInput::GetCursor() -> bool
 {
     CURSORINFO pci = {0};
     pci.cbSize = sizeof(CURSORINFO);
@@ -61,11 +65,15 @@ auto CInput::GetCursor(void) -> bool
 void CInput::SetCursorMode(UCHAR mode)
 {
     if (mCursorMode == mode)
+    {
         return;
+    }
 
     #ifdef _DEBUG
     if (mForceMouseCursor)
+    {
         return;
+    }
     #endif
 
     mCursorMode = mode;
@@ -73,7 +81,7 @@ void CInput::SetCursorMode(UCHAR mode)
     if (mCursorMode == CURSORMODE_CENTERED || mCursorMode == CURSORMODE_WRAPPED)
     {
         const auto res = RENDERER->GetResolution();
-        SetMouseXY(static_cast<short>(res.right / 2.0f), static_cast<short>(res.bottom / 2.0f));
+        SetMouseXY(static_cast<short>(res.right / 2.0F), static_cast<short>(res.bottom / 2.0F));
         mLastMousePos = GetMouseXY();
     }
 }
@@ -85,18 +93,22 @@ void CInput::SetMouseXY(short x, short y)
     SetCursorPos(pos.x, pos.y);
 }
 
-void CInput::Update(void)
+void CInput::Update()
 {
     #ifdef _DEBUG
     if (this->GetKeyDown(VK_F1))
     {
         const auto lastState = mForceMouseCursor;
         if (lastState)
+        {
             mForceMouseCursor = FALSE;
+        }
         this->SetCursor(!this->GetCursor());
         this->SetCursorMode(1 - this->GetCursorMode());
-        if (lastState == FALSE)
+        if (static_cast<int>(lastState) == FALSE)
+        {
             mForceMouseCursor = TRUE;
+        }
     }
     #endif
 
@@ -124,8 +136,8 @@ void CInput::Update(void)
         {
             const auto res = RENDERER->GetResolution();
             const POINT pos = {
-                static_cast<LONG>(res.right / 2.0f),
-                static_cast<LONG>(res.bottom / 2.0f)
+                static_cast<LONG>(res.right / 2.0F),
+                static_cast<LONG>(res.bottom / 2.0F)
             };
             SetMouseXY(static_cast<short>(pos.x), static_cast<short>(pos.y));
             mousePos = pos;
@@ -138,16 +150,24 @@ void CInput::Update(void)
             ClientToScreen(RENDERER->GetWindow(), &pos);
 
             while (pos.x > res.right)
+            {
                 pos.x -= res.right;
+            }
 
             while (pos.y > res.bottom)
+            {
                 pos.y -= res.bottom;
+            }
 
             while (pos.x < res.left)
+            {
                 pos.x += res.left;
+            }
 
             while (pos.y < res.top)
+            {
                 pos.y += res.top;
+            }
 
             ScreenToClient(RENDERER->GetWindow(), &pos);
 

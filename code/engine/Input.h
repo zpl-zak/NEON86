@@ -43,7 +43,7 @@ public:
 
     void SetMouseDown(DWORD code, bool state) { mMouseDown[code] = state; }
     void SetMouseUp(DWORD code, bool state) { mMouseUp[code] = state; }
-    void SetMouseXY(short x, short y);
+    static void SetMouseXY(short x, short y);
 
     void ClearKey(void) { mLastKey = -1; }
     void Update(void);

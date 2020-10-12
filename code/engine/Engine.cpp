@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "engine.h"
 
-#include "Renderer.h"
-#include "Input.h"
-#include "FileSystem.h"
-#include "VM.h"
-#include "UserInterface.h"
 #include "AudioSystem.h"
+#include "FileSystem.h"
+#include "Input.h"
 #include "ProfileManager.h"
+#include "Renderer.h"
+#include "UserInterface.h"
+#include "VM.h"
 
 #include <ctime>
 
-CEngine::CEngine(void)
+CEngine::CEngine()
     : mIsRunning(FALSE)
 {
     sInstance = this;
@@ -23,9 +23,9 @@ CEngine::CEngine(void)
     mDebugUI = nullptr;
     mAudioSystem = nullptr;
 
-    SetFPS(60.0f);
-    mUnprocessedTime = 0.0f;
-    mLastTime = 0.0f;
+    SetFPS(60.0F);
+    mUnprocessedTime = 0.0F;
+    mLastTime = 0.0F;
 }
 
 auto CEngine::Release() -> bool
@@ -43,7 +43,9 @@ auto CEngine::Release() -> bool
 void CEngine::Run()
 {
     while (IsRunning())
+    {
         Think();
+    }
 
     mVirtualMachine->Stop();
     Release();
@@ -56,8 +58,10 @@ void CEngine::Shutdown()
 
 auto CEngine::the() -> CEngine*
 {
-    if (!sInstance)
+    if (sInstance == nullptr)
+    {
         sInstance = new CEngine();
+    }
 
     return sInstance;
 }
@@ -65,7 +69,9 @@ auto CEngine::the() -> CEngine*
 auto CEngine::Init(HWND window, RECT resolution) -> bool
 {
     if (mIsInitialised)
+    {
         return TRUE;
+    }
 
     mRenderer = new CRenderer();
     mInput = new CInput();
@@ -116,14 +122,16 @@ void CEngine::Think()
         }
 
         if (!IsRunning())
+        {
             return;
+        }
 
         Update(mUpdateDuration);
         render = TRUE;
         mUnprocessedTime -= mUpdateDuration;
     }
 
-    if (render)
+    if (render != 0)
     {
         Render();
     }
@@ -136,37 +144,43 @@ void CEngine::Think()
 
 void CEngine::CDefaultProfiling::UpdateProfilers(float dt)
 {
-    static constexpr auto sFrameWindow = 0.5f;
+    static constexpr auto sFrameWindow = 0.5F;
 
     mFrameCounter += dt;
 
     if (mFrameCounter >= sFrameWindow)
     {
-        mTotalTime = 1000.0f * mFrameCounter / static_cast<float>(mFrames);
-        mTotalMeasuredTime = 0.0f;
+        mTotalTime = 1000.0F * mFrameCounter / static_cast<float>(mFrames);
+        mTotalMeasuredTime = 0.0F;
 
-        const auto logStats = mVerboseLogging ? mRunCycle % static_cast<int>(sFrameWindow * 120.0f) == 0 : FALSE;
+        const auto logStats = mVerboseLogging
+                                  ? static_cast<int>(mRunCycle % static_cast<int>(sFrameWindow * 120.0F) == 0
+                                  )
+                                  : FALSE;
 
-        if (logStats) PushLog("==================\n", TRUE);
+        if (logStats != 0)
+        {
+            PushLog("==================\n", TRUE);
+        }
 
         for (unsigned int i = 0; i < mProfilers.GetCount(); i++)
         {
-            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(static_cast<float>(mFrames), logStats);
+            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(static_cast<float>(mFrames), logStats != 0);
         }
 
-        if (logStats)
+        if (logStats != 0)
         {
             PushLog("\n", TRUE);
             PushLog(
                 CString::Format("Other Time: %f ms\n", static_cast<DOUBLE>(mTotalTime) - mTotalMeasuredTime).Str(),
                 TRUE);
-            PushLog(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, 1000.0f / mTotalTime).Str(), TRUE);
+            PushLog(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, 1000.0F / mTotalTime).Str(), TRUE);
         }
 
         UI->PushMS(mTotalTime);
 
         mFrames = 0;
-        mFrameCounter = 0.0f;
+        mFrameCounter = 0.0F;
         mRunCycle++;
     }
 }
@@ -196,10 +210,12 @@ void CEngine::CDefaultProfiling::PushProfiler(CProfiler* profile)
 
 auto CEngine::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) const -> LRESULT
 {
-    if (mDebugUI->ProcessEvents(hWnd, message, wParam, lParam))
+    if (CUserInterface::ProcessEvents(hWnd, message, wParam, lParam) != 0)
+    {
         return FALSE;
+    }
 
-    auto input = INPUT;
+    auto* input = INPUT;
 
     switch (message)
     {
@@ -220,7 +236,6 @@ auto CEngine::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPAR
             ENGINE->Shutdown();
             return FALSE;
         }
-        break;
 
     case WM_LBUTTONDOWN:
         {
@@ -265,8 +280,11 @@ auto CEngine::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPAR
         break;
 
     case WM_SYSCOMMAND:
-        if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
+        if ((wParam & 0xfff0) == SC_KEYMENU)
+        {
+            // Disable ALT application menu
             return 0;
+        }
         break;
 
     case WM_CHAR:
@@ -281,7 +299,9 @@ auto CEngine::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPAR
     case WM_KEYDOWN:
         {
             if (INPUT->GetKey(static_cast<DWORD>(wParam)))
+            {
                 break;
+            }
 
             INPUT->SetKey(static_cast<DWORD>(wParam), TRUE);
             INPUT->SetKeyDown(static_cast<DWORD>(wParam), TRUE);
@@ -331,7 +351,9 @@ void CEngine::Render() const
 void CEngine::Resize(RECT resolution) const
 {
     if (!mIsInitialised)
+    {
         return;
+    }
     mVirtualMachine->Resize(resolution);
     mRenderer->Resize(resolution);
 }

@@ -7,6 +7,8 @@
 #include "Input.h"
 #include "FileSystem.h"
 #include "Sound.h"
+#include "Material.h"
+#include "RenderTarget.h"
 #include "Music.h"
 #include "Node.h"
 
@@ -17,13 +19,20 @@
 inline auto split(const std::string& str, const std::string& delim) -> std::vector<std::string>
 {
     std::vector<std::string> tokens;
-    size_t prev = 0, pos = 0;
+    size_t prev = 0;
+    size_t pos = 0;
     do
     {
         pos = str.find(delim, prev);
-        if (pos == std::string::npos) pos = str.length();
+        if (pos == std::string::npos)
+        {
+            pos = str.length();
+        }
         auto token = str.substr(prev, pos - prev);
-        if (!token.empty()) tokens.push_back(token);
+        if (!token.empty())
+        {
+            tokens.push_back(token);
+        }
         prev = pos + delim.length();
     }
     while (pos < str.length() && prev < str.length());
@@ -37,10 +46,10 @@ auto luaH_getcomps(lua_State* L, unsigned int offset) -> D3DXVECTOR4
         return *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2 + offset, L_VECTOR));
     }
 
-    const auto x = static_cast<float>(lua_tonumber(L, 2+offset));
-    auto y = static_cast<float>(lua_tonumber(L, 3+offset));
-    auto z = static_cast<float>(lua_tonumber(L, 4+offset));
-    auto w = static_cast<float>(lua_tonumber(L, 5+offset));
+    const auto x = static_cast<float>(lua_tonumber(L, 2 + offset));
+    auto y = static_cast<float>(lua_tonumber(L, 3 + offset));
+    auto z = static_cast<float>(lua_tonumber(L, 4 + offset));
+    auto w = static_cast<float>(lua_tonumber(L, 5 + offset));
 
     if (lua_gettop(L) == 2 + offset)
         w = y = z = x;
@@ -73,7 +82,9 @@ auto luaH_getcolor(lua_State* L, unsigned int offset) -> DWORD
     }
     else if (static_cast<unsigned int>(lua_gettop(L)) == 3 + offset)
     {
-        unsigned int r = 0, g = 0, b = 0;
+        unsigned int r = 0;
+        unsigned int g = 0;
+        unsigned int b = 0;
 
         r = static_cast<unsigned int>(luaL_checknumber(L, 1 + offset));
         g = static_cast<unsigned int>(luaL_checknumber(L, 2 + offset));
@@ -88,7 +99,7 @@ auto luaH_getcolor(lua_State* L, unsigned int offset) -> DWORD
 
 auto luaH_getcolorlinear(lua_State* L, unsigned int offset) -> D3DCOLORVALUE
 {
-    D3DCOLORVALUE color = {0.0f, 0.0f, 0.0f, 1.0f};
+    D3DCOLORVALUE color = {0.0F, 0.0F, 0.0F, 1.0F};
 
     if (luaL_testudata(L, 1 + offset, L_VECTOR))
     {
@@ -97,7 +108,10 @@ auto luaH_getcolorlinear(lua_State* L, unsigned int offset) -> D3DCOLORVALUE
     else if (static_cast<unsigned int>(lua_gettop(L)) == 1 + offset)
     {
         const auto encodedColor = static_cast<DWORD>(luaL_checkinteger(L, 1 + offset));
-        BYTE r, g, b, a;
+        BYTE r;
+        BYTE g;
+        BYTE b;
+        BYTE a;
 
         if (encodedColor <= 0xFFFFFF)
         {
@@ -120,12 +134,14 @@ auto luaH_getcolorlinear(lua_State* L, unsigned int offset) -> D3DCOLORVALUE
     }
     else if (static_cast<unsigned int>(lua_gettop(L)) == 3 + offset)
     {
-        unsigned int r = 0, g = 0, b = 0;
+        unsigned int r = 0;
+        unsigned int g = 0;
+        unsigned int b = 0;
 
         r = static_cast<unsigned int>(luaL_checknumber(L, 1 + offset));
         g = static_cast<unsigned int>(luaL_checknumber(L, 2 + offset));
         b = static_cast<unsigned int>(luaL_checknumber(L, 3 + offset));
-        color = {static_cast<float>(r) / 0xFF, static_cast<float>(g) / 0xFF, static_cast<float>(b) / 0xFF, 1.0f};
+        color = {static_cast<float>(r) / 0xFF, static_cast<float>(g) / 0xFF, static_cast<float>(b) / 0xFF, 1.0F};
         lua_remove(L, 2 + offset);
         lua_remove(L, 2 + offset);
     }
@@ -151,15 +167,15 @@ auto luaH_getcolorlinear(lua_State* L, unsigned int offset) -> D3DCOLORVALUE
 /// BASE METHODS
 LUAF(Base, ShowMessage)
 {
-    const auto caption = luaL_checkstring(L, 1);
-    const auto text = luaL_checkstring(L, 2);
+    const auto* const caption = luaL_checkstring(L, 1);
+    const auto* const text = luaL_checkstring(L, 2);
     MessageBoxA(nullptr, text, caption, MB_OK);
     return 0;
 }
 
 LUAF(Base, LogString)
 {
-    const auto text = luaL_checkstring(L, 1);
+    const auto* const text = luaL_checkstring(L, 1);
     PushLog(CString::Format("%s\n", text).Str());
     return 0;
 }
@@ -197,11 +213,11 @@ LUAF(Base, SetFPS)
 
 LUAF(Base, dofile)
 {
-    const auto scriptName = luaL_checkstring(L, 1);
+    const auto* const scriptName = luaL_checkstring(L, 1);
 
     const auto fd = FILESYSTEM->GetResource((LPSTR)scriptName);
 
-    if (!fd.data)
+    if (fd.data == nullptr)
     {
         VM->PostError("No dofile game script found!");
         return 0;
@@ -216,11 +232,11 @@ LUAF(Base, dofile)
 
 LUAF(Base, loadfile)
 {
-    const auto scriptName = luaL_checkstring(L, 1);
+    const auto* const scriptName = luaL_checkstring(L, 1);
 
     const auto fd = FILESYSTEM->GetResource((LPSTR)scriptName);
 
-    if (!fd.data)
+    if (fd.data == nullptr)
     {
         VM->PostError("No loadfile content found!");
         return 0;
@@ -234,7 +250,7 @@ LUAF(Base, loadfile)
 
 LUAF(Base, SaveState)
 {
-    const auto data = static_cast<LPCSTR>(luaL_checkstring(L, 1));
+    const auto* const data = static_cast<LPCSTR>(luaL_checkstring(L, 1));
     auto len = strlen(data);
 
     const LPCSTR out = b64_encode((unsigned char*)data, len);
@@ -255,10 +271,10 @@ LUAF(Base, LoadState)
         return 1;
     }
 
-    const auto out = static_cast<LPCSTR>(neon_malloc(f.size + 1));
+    const auto* const out = static_cast<LPCSTR>(neon_malloc(f.size + 1));
     ZeroMemory((LPVOID)out, f.size+1);
 
-    if (!b64_decode(static_cast<const char*>(f.data), (unsigned char*)out, f.size))
+    if (b64_decode(static_cast<const char*>(f.data), (unsigned char*)out, f.size) == 0)
     {
         neon_free((LPVOID)out);
         lua_pushnil(L);
@@ -303,13 +319,15 @@ void CLuaBindings::BindAudio(lua_State* L)
 /// MATH METHODS
 LUAF(Math, Color)
 {
-    const unsigned int r = static_cast<unsigned int>(luaL_checknumber(L, 1));
-    const unsigned int g = static_cast<unsigned int>(luaL_checknumber(L, 2));
-    const unsigned int b = static_cast<unsigned int>(luaL_checknumber(L, 3));
+    const auto r = static_cast<unsigned int>(luaL_checknumber(L, 1));
+    const auto g = static_cast<unsigned int>(luaL_checknumber(L, 2));
+    const auto b = static_cast<unsigned int>(luaL_checknumber(L, 3));
     unsigned int a = 0xFF;
 
     if (lua_gettop(L) == 4)
+    {
         a = static_cast<unsigned int>(luaL_checknumber(L, 4));
+    }
 
     lua_pushnumber(L, D3DCOLOR_ARGB(a, r, g, b));
     return 1;
@@ -323,7 +341,9 @@ LUAF(Math, ColorLinear)
     float a = 0xFF;
 
     if (lua_gettop(L) == 4)
+    {
         a = static_cast<float>(luaL_checknumber(L, 4)) / static_cast<float>(0xFF);
+    }
 
     lua_pushnumber(L, r);
     lua_pushnumber(L, g);
@@ -367,7 +387,7 @@ LUAF(Math, ScreenToWorld)
 LUAF(Math, str2vec)
 {
     std::string str = std::string(luaL_checkstring(L, 1));
-    float nums[4] = {0.0f};
+    float nums[4] = {0.0F};
     unsigned int i = 0;
 
     // HACK
@@ -381,7 +401,9 @@ LUAF(Math, str2vec)
     while (i < 4)
     {
         if (i >= comps.size())
+        {
             break;
+        }
 
         nums[i] = static_cast<float>(atof(comps.at(i).c_str()));
         i++;
@@ -428,7 +450,8 @@ LUAF(Rend, ClearScene)
 LUAF(Rend, CameraPerspective)
 {
     const auto fov = static_cast<float>(luaL_checknumber(L, 1));
-    float zNear = 0.1f, zFar = 1000.0f;
+    float zNear = 0.1f;
+    float zFar = 1000.0f;
     bool flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 3)
@@ -470,7 +493,8 @@ LUAF(Rend, CameraPerspective)
 LUAF(Rend, CameraOrthographic)
 {
     const RECT res = RENDERER->GetSurfaceResolution();
-    auto w = static_cast<float>(res.right), h = static_cast<float>(res.bottom);
+    auto w = static_cast<float>(res.right);
+    auto h = static_cast<float>(res.bottom);
     bool flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 2)
@@ -480,7 +504,8 @@ LUAF(Rend, CameraOrthographic)
         h = static_cast<float>(luaL_checknumber(L, 2));
     }
 
-    float zNear = 0.01f, zFar = 100.0f;
+    float zNear = 0.01f;
+    float zFar = 100.0f;
 
     if (lua_gettop(L) >= 4)
     {
@@ -520,8 +545,10 @@ LUAF(Rend, CameraOrthographic)
 LUAF(Rend, CameraOrthographicEx)
 {
     const RECT res = RENDERER->GetSurfaceResolution();
-    float l = 0.0f, t = 0.0f;
-    auto r = static_cast<float>(res.right), b = static_cast<float>(res.bottom);
+    float l = 0.0f;
+    float t = 0.0f;
+    auto r = static_cast<float>(res.right);
+    auto b = static_cast<float>(res.bottom);
     bool flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 4)
@@ -532,7 +559,8 @@ LUAF(Rend, CameraOrthographicEx)
         t = static_cast<float>(luaL_checknumber(L, 4));
     }
 
-    float zNear = 0.01f, zFar = 100.0f;
+    float zNear = 0.01f;
+    float zFar = 100.0f;
 
     if (lua_gettop(L) >= 5)
     {
@@ -572,12 +600,12 @@ LUAF(Rend, BindTexture)
     const auto stage = static_cast<DWORD>(luaL_checknumber(L, 1));
     CMaterial* tex = nullptr;
 
-    if (luaL_testudata(L, 2, L_RENDERTARGET))
+    if (luaL_testudata(L, 2, L_RENDERTARGET) != nullptr)
     {
         CRenderTarget* rtt = *static_cast<CRenderTarget**>(lua_touserdata(L, 2));
         RENDERER->SetTexture(stage, rtt->GetTextureHandle());
     }
-    else if (luaL_testudata(L, 2, L_MATERIAL))
+    else if (luaL_testudata(L, 2, L_MATERIAL) != nullptr)
     {
         CMaterial* mat = *static_cast<CMaterial**>(lua_touserdata(L, 2));
         mat->Bind(stage);
@@ -585,7 +613,7 @@ LUAF(Rend, BindTexture)
     }
     else if (lua_gettop(L) == 2)
     {
-        const auto handle = static_cast<LPDIRECT3DTEXTURE9>(lua_touserdata(L, 2));
+        auto* const handle = static_cast<LPDIRECT3DTEXTURE9>(lua_touserdata(L, 2));
         RENDERER->SetTexture(stage, handle);
     }
     else
@@ -637,14 +665,14 @@ LUAF(Rend, RenderState)
     const auto kind = static_cast<DWORD>(luaL_checkinteger(L, 1));
     const bool state = static_cast<bool>(lua_toboolean(L, 2));
 
-    RENDERER->SetRenderState(kind, state);
+    RENDERER->SetRenderState(kind, static_cast<DWORD>(state));
     return 0;
 }
 
 LUAF(Rend, ToggleDepthTest)
 {
     const bool state = static_cast<bool>(lua_toboolean(L, 1));
-    RENDERER->SetRenderState(D3DRS_ZENABLE, state);
+    RENDERER->SetRenderState(D3DRS_ZENABLE, static_cast<DWORD>(state));
     return 0;
 }
 
@@ -663,10 +691,12 @@ LUAF(Rend, SetFog)
     const DWORD color = luaH_getcolor(L);
     const auto mode = static_cast<DWORD>(luaL_checkinteger(L, 2));
     const auto start = static_cast<float>(luaL_checknumber(L, 3));
-    float end = 0.0f;
+    float end = 0.0F;
 
     if (mode == D3DFOG_LINEAR)
+    {
         end = static_cast<float>(luaL_checknumber(L, 4));
+    }
 
     RENDERER->SetFog(color, mode, start, end);
     return 0;
@@ -797,7 +827,7 @@ LUAF(Rend, DrawPolygon)
 
 LUAF(Rend, CullMode)
 {
-    const unsigned int mode = static_cast<unsigned int>(luaL_checkinteger(L, 1));
+    const auto mode = static_cast<unsigned int>(luaL_checkinteger(L, 1));
     RENDERER->SetRenderState(D3DRS_CULLMODE, mode);
     return 0;
 }
@@ -808,10 +838,14 @@ LUAF(Rend, FillScreen)
     bool flipY = FALSE;
 
     if (lua_gettop(L) >= 1)
+    {
         color = static_cast<DWORD>(lua_tointeger(L, 1));
+    }
 
     if (lua_gettop(L) >= 2)
+    {
         flipY = static_cast<bool>(lua_toboolean(L, 2));
+    }
 
     const RECT res = RENDERER->GetResolution();
     RENDERER->DrawQuad(0, static_cast<float>(res.right), 0, static_cast<float>(res.bottom), color, flipY);
@@ -820,8 +854,8 @@ LUAF(Rend, FillScreen)
 
 LUAF(Rend, RegisterFontFile)
 {
-    const auto path = static_cast<LPCSTR>(luaL_checkstring(L, 1));
-    lua_pushboolean(L, CFont::AddFontToDatabase(path));
+    const auto* const path = static_cast<LPCSTR>(luaL_checkstring(L, 1));
+    lua_pushboolean(L, static_cast<int>(CFont::AddFontToDatabase(path)));
     return 1;
 }
 
@@ -930,25 +964,29 @@ void CLuaBindings::BindRenderer(lua_State* L)
 /// INPUT METHODS
 static auto GetScanCodeFromLua(lua_State* L) -> DWORD
 {
-    if (lua_isinteger(L, 1))
+    if (lua_isinteger(L, 1) != 0)
+    {
         return static_cast<DWORD>(lua_tointeger(L, 1));
+    }
 
-    if (lua_isstring(L, 1))
+    if (lua_isstring(L, 1) != 0)
     {
         const CHAR* str = lua_tostring(L, 1);
 
         if (strlen(str) != 1)
+        {
             return 0x0;
+        }
 
         const CHAR c = tolower(str[0]);
 
-        if (isalpha(c))
+        if (isalpha(c) != 0)
         {
             const CHAR dist = c - 'a';
             return 0x41 + dist;
         }
 
-        if (isdigit(c))
+        if (isdigit(c) != 0)
         {
             const CHAR dist = c - '0';
             return 0x30 + dist;

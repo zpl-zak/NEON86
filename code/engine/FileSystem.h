@@ -29,12 +29,12 @@ public:
     auto GetResource(LPCSTR resName = nullptr) const -> FDATA;
     void SaveResource(LPCSTR data, UINT64 size) const;
     auto OpenResource(LPCSTR resName = nullptr) const -> FILE*;
-    void CloseResource(FILE* handle);
+    static void CloseResource(FILE* handle);
     auto ResourcePath(LPCSTR resName = nullptr) const -> LPCSTR;
     auto GetGamePath() const -> LPCSTR { return mGamePath; }
     auto GetCanonicalGamePath() const -> LPCSTR;
     auto Exists(LPCSTR resName) -> bool;
-    void FreeResource(LPVOID data);
+    static void FreeResource(LPVOID data);
     void Release(void);
 
 private:
@@ -42,5 +42,5 @@ private:
     bool mLoadDone;
 
     auto LoadGameInternal() const -> bool;
-    void FixName(LPCSTR* resName) const;
+    static void FixName(LPCSTR* resName);
 };
