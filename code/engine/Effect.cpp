@@ -73,7 +73,7 @@ CEffect::CEffect()
     mEffect = nullptr;
 }
 
-void CEffect::LoadEffect(LPCSTR effectPath)
+void CEffect::LoadEffect(LPCSTR effectPath, bool debugMode)
 {
     FDATA f = FILESYSTEM->GetResource(effectPath);
 
@@ -84,7 +84,11 @@ void CEffect::LoadEffect(LPCSTR effectPath)
     }
 
     DWORD shaderFlags = D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER;
-    //shaderFlags |= D3DXSHADER_FORCE_VS_SOFTWARE_NOOPT | D3DXSHADER_FORCE_PS_SOFTWARE_NOOPT | D3DXSHADER_DEBUG;
+
+    if (debugMode)
+    {
+        shaderFlags |= D3DXSHADER_DEBUG;
+    }
 
     CD3DIncludeImpl inclHandler;
 
@@ -185,7 +189,7 @@ auto CEffect::FindPass(LPCSTR passName) const -> unsigned int
     return static_cast<unsigned int>(-1);
 }
 
-auto CEffect::BeginPass(unsigned int passID) -> HRESULT
+auto CEffect::BeginPass(unsigned int passID) const -> HRESULT
 {
     if (mEffect == nullptr)
     {

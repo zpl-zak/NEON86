@@ -10,14 +10,14 @@ class ENGINE_API CEffect : public CAllocable<CEffect>
 {
 public:
     CEffect();
-    void LoadEffect(LPCSTR effectPath);
+    void LoadEffect(LPCSTR effectPath, bool debugMode);
     void Release();
 
     auto Begin(LPCSTR technique) -> unsigned int;
     auto End() const -> HRESULT;
 
     auto FindPass(LPCSTR passName) const -> unsigned int;
-    auto BeginPass(unsigned int passID) -> HRESULT;
+    auto BeginPass(unsigned int passID) const -> HRESULT;
     auto EndPass() const -> HRESULT;
     auto CommitChanges() const -> HRESULT;
 
