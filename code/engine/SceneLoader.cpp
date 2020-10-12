@@ -29,7 +29,7 @@
     aiProcess_SplitLargeMeshes |\
     0
 
-extern aiMatrix4x4 ComputeFinalTransformation(const aiNode* node);
+extern auto ComputeFinalTransformation(const aiNode* node) -> aiMatrix4x4;
 
 void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node,
                                         bool loadMaterials)
@@ -37,15 +37,17 @@ void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     aiMatrix4x4 mat = impNode->mTransformation;
     mat = mat.Transpose();
 
-    CNode* newNode = new CNode(*(D3DXMATRIX*)&mat, impNode->mName.C_Str());
+    auto* newNode = new CNode(*(D3DXMATRIX*)&mat, impNode->mName.C_Str());
     node->AddNode(newNode);
 
     if (node != scene)
+    {
         scene->AddNode(newNode);
+    }
 
     newNode->SetParent(node);
 
-    if (impNode->mMetaData)
+    if (impNode->mMetaData != nullptr)
     {
         for (unsigned int i = 0; i < impNode->mMetaData->mNumProperties; ++i)
         {
@@ -88,9 +90,9 @@ void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     {
         const aiMesh* impMesh = impScene->mMeshes[impNode->mMeshes[i]];
 
-        if (!lastMesh || lastMeshName != impMesh->mName)
+        if ((lastMesh == nullptr) || lastMeshName != impMesh->mName)
         {
-            if (lastMesh)
+            if (lastMesh != nullptr)
             {
                 lastMesh->SetName(lastMeshName.C_Str());
                 scene->AddMesh(lastMesh);
@@ -107,7 +109,7 @@ void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         lastMesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *static_cast<D3DMATRIX*>(&identityMat));
     }
 
-    if (lastMesh)
+    if (lastMesh != nullptr)
     {
         lastMesh->SetName(lastMeshName.C_Str());
         scene->AddMesh(lastMesh);
@@ -118,7 +120,7 @@ void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     for (unsigned int i = 0; i < impScene->mNumLights; i++)
     {
         const aiLight* impLight = impScene->mLights[i];
-        if (!strcmp(impNode->mName.C_Str(), impLight->mName.C_Str()))
+        if (strcmp(impNode->mName.C_Str(), impLight->mName.C_Str()) == 0)
         {
             CLight* lit = LoadLight(impNode, impLight);
             scene->AddLight(lit);
@@ -133,7 +135,7 @@ void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     }
 }
 
-bool CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, bool loadMaterials, bool optimizeMeshes)
+auto CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, bool loadMaterials, bool optimizeMeshes) -> bool
 {
     Assimp::Importer imp;
     imp.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 32762);
@@ -148,23 +150,27 @@ bool CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, bool loadMaterials
 
     const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(modelPath), meshFlags);
 
-    if (!model)
+    if (model == nullptr)
+    {
         return FALSE;
+    }
 
     LoadNodesRecursively(model, model->mRootNode, scene, scene, loadMaterials);
     return TRUE;
 }
 
-CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, bool loadMaterials)
+auto CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, bool loadMaterials) -> CFaceGroup*
 {
-    CFaceGroup* newFGroup = new CFaceGroup();
+    auto* newFGroup = new CFaceGroup();
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         VERTEX vert = {0};
 
         const aiVector3D pos = mesh->mVertices[i];
-        aiVector3D nm, ta, tb;
+        aiVector3D nm;
+        aiVector3D ta;
+        aiVector3D tb;
 
         if (mesh->HasNormals())
         {
@@ -212,13 +218,16 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
             const aiColor4D tc = mesh->mColors[0][i];
 
             vert.color = D3DCOLOR_ARGB(
-                static_cast<BYTE>(tc.a * 255.0f),
-                static_cast<BYTE>(tc.r * 255.0f),
-                static_cast<BYTE>(tc.g * 255.0f),
-                static_cast<BYTE>(tc.b * 255.0f)
+                static_cast<BYTE>(tc.a * 255.0F),
+                static_cast<BYTE>(tc.r * 255.0F),
+                static_cast<BYTE>(tc.g * 255.0F),
+                static_cast<BYTE>(tc.b * 255.0F)
             );
         }
-        else vert.color = D3DCOLOR_XRGB(255, 255, 255);
+        else
+        {
+            vert.color = D3DCOLOR_XRGB(255, 255, 255);
+        }
 
         newFGroup->AddVertex(vert);
     }
@@ -235,7 +244,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
     if (mesh->mMaterialIndex < scene->mNumMaterials && loadMaterials)
     {
         const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-        CMaterial* newMaterial = new CMaterial();
+        auto* newMaterial = new CMaterial();
 
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_ALBEDO, aiTextureType_DIFFUSE);
         LoadTextureMap(scene, mat, newMaterial, TEXTURESLOT_SPECULAR, aiTextureType_SPECULAR);
@@ -252,7 +261,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_SHININESS, power);
 
         newMaterial->SetSpecular(D3DCOLORVALUE{specular.r, specular.g, specular.b});
-        newMaterial->SetPower(power * 5.0f);
+        newMaterial->SetPower(power * 5.0F);
 
         /* aiColor4D ambient;
          mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
@@ -262,7 +271,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
         newMaterial->SetEmission(D3DCOLORVALUE{emissive.r, emissive.g, emissive.b});
 
-        float opacity = 1.0f;
+        float opacity = 1.0F;
         mat->Get(AI_MATKEY_OPACITY, opacity);
         newMaterial->SetOpacity(opacity);
 
@@ -272,9 +281,9 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
     return newFGroup;
 }
 
-CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
+auto CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight) -> CLight*
 {
-    CLight* lit = new CLight();
+    auto* lit = new CLight();
 
     aiMatrix4x4 mat = ComputeFinalTransformation(impNode).Transpose();
 
@@ -314,14 +323,15 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
     return lit;
 }
 
-void CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, unsigned int slot,
+void CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial,
+                                  unsigned int slot,
                                   unsigned int texType)
 {
     aiString path;
     mat->GetTexture(static_cast<aiTextureType>(texType), 0, &path);
     const aiTexture* tex = scene->GetEmbeddedTexture(path.C_Str());
 
-    if (tex)
+    if (tex != nullptr)
     {
         if (tex->mHeight != 0)
         {
@@ -338,17 +348,19 @@ void CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
         newMaterial->CreateTextureForSlot(slot, (LPSTR)path.C_Str());
     }
 
-    if (slot != TEXTURESLOT_ALBEDO || !newMaterial->GetTextureHandle(slot))
+    if (slot != TEXTURESLOT_ALBEDO || (newMaterial->GetTextureHandle(slot) == nullptr))
+    {
         return;
+    }
 
     D3DSURFACE_DESC a;
     newMaterial->GetTextureHandle(slot)->GetLevelDesc(0, &a);
 
-    unsigned int* buf = static_cast<unsigned int*>(newMaterial->Lock(slot));
+    auto* buf = static_cast<unsigned int*>(newMaterial->Lock(slot));
 
     for (unsigned int i = 0; i < (a.Width * a.Height); i++)
     {
-        if (((buf[i] << 24) & 0xFF) < 1.0f)
+        if (((buf[i] << 24) & 0xFF) < 1.0F)
         {
             newMaterial->SetAlphaIsTransparency(TRUE);
             newMaterial->SetEnableAlphaTest(TRUE);
@@ -360,10 +372,12 @@ void CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
     newMaterial->Unlock(slot);
 }
 
-static aiMatrix4x4 ComputeFinalTransformation(const aiNode* node)
+static auto ComputeFinalTransformation(const aiNode* node) -> aiMatrix4x4
 {
-    if (!node->mParent)
-        return aiMatrix4x4();
+    if (node->mParent == nullptr)
+    {
+        return {};
+    }
 
     return node->mTransformation * ComputeFinalTransformation(node->mParent);
 }

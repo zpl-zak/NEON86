@@ -16,11 +16,16 @@ CMaterial::CMaterial(unsigned int slot, unsigned int w, unsigned int h): CMateri
     CreateTextureForSlot(slot, nullptr, w, h);
 }
 
-CMaterial::CMaterial(): CAllocable()
+CMaterial::CMaterial()
 {
     ZeroMemory(mTextureHandle, sizeof(mTextureHandle));
     ZeroMemory(mStats, sizeof(mStats));
     DefaultMaterial();
+}
+
+CMaterial::~CMaterial()
+{
+    Release();
 }
 
 CMaterial::CMaterial(unsigned int slot, LPVOID data, unsigned int size): CMaterial()
@@ -28,15 +33,15 @@ CMaterial::CMaterial(unsigned int slot, LPVOID data, unsigned int size): CMateri
     CreateEmbeddedTextureForSlot(slot, data, size);
 }
 
-void CMaterial::DefaultMaterial(void)
+void CMaterial::DefaultMaterial()
 {
     ZeroMemory(&mMaterialData, sizeof(mMaterialData));
 
-    mMaterialData.Ambient.r = mMaterialData.Ambient.g = mMaterialData.Ambient.b = mMaterialData.Ambient.a = 1.0f;
-    mMaterialData.Specular.r = mMaterialData.Specular.g = mMaterialData.Specular.b = mMaterialData.Specular.a = 1.0f;
-    mMaterialData.Diffuse.r = mMaterialData.Diffuse.g = mMaterialData.Diffuse.b = mMaterialData.Diffuse.a = 1.0f;
-    mMaterialData.Opacity = 1.0f;
-    mMaterialData.Power = 1.0f;
+    mMaterialData.Ambient.r = mMaterialData.Ambient.g = mMaterialData.Ambient.b = mMaterialData.Ambient.a = 1.0F;
+    mMaterialData.Specular.r = mMaterialData.Specular.g = mMaterialData.Specular.b = mMaterialData.Specular.a = 1.0F;
+    mMaterialData.Diffuse.r = mMaterialData.Diffuse.g = mMaterialData.Diffuse.b = mMaterialData.Diffuse.a = 1.0F;
+    mMaterialData.Opacity = 1.0F;
+    mMaterialData.Power = 1.0F;
     mMaterialData.Shaded = TRUE;
     mMaterialData.AlphaRef = 127;
 
@@ -46,7 +51,7 @@ void CMaterial::DefaultMaterial(void)
     SetSamplerState(D3DSAMP_MAXANISOTROPY, 16);
 }
 
-void CMaterial::Release(void)
+void CMaterial::Release()
 {
     if (DelRef())
     {
@@ -63,12 +68,14 @@ void CMaterial::CreateTextureForSlot(unsigned int slot, LPSTR texName, unsigned 
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 
-    if (!texName)
+    if (texName == nullptr)
+    {
         D3DXCreateTexture(dev, w, h, 0, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &mTextureHandle[slot]);
+    }
     else
     {
         FDATA img = FILESYSTEM->GetResource(texName);
-        if (!img.data)
+        if (img.data == nullptr)
         {
             VM->PostError(CString::Format("Image not found: %s", texName));
             return;
@@ -81,7 +88,7 @@ void CMaterial::CreateEmbeddedTextureForSlot(unsigned int slot, LPVOID data, uns
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 
-    if (!data)
+    if (data == nullptr)
     {
         VM->PostError(CString("Embedded image is empty!"));
         return;
@@ -108,7 +115,9 @@ void CMaterial::Bind(DWORD stage)
     /* Exit early if this is a NULL material. */
     /* Exit if we use shaders as well. Shaders use their own sampler properties. */
     if (this == nullptr || RENDERER->GetActiveEffect())
+    {
         return;
+    }
 
     for (unsigned int i = 0; i < MAX_SAMPLER_STATES; i++)
     {
@@ -121,7 +130,7 @@ void CMaterial::Unbind(DWORD stage)
     RENDERER->SetMaterial(stage, nullptr);
 }
 
-LPVOID CMaterial::Lock(unsigned int slot)
+auto CMaterial::Lock(unsigned int slot) -> LPVOID
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, nullptr, 0);

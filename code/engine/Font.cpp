@@ -16,7 +16,7 @@ CFont::CFont(LPCSTR name, int size, int boldness, bool isItalic)
         0,
         boldness,
         0,
-        isItalic,
+        static_cast<BOOL>(isItalic),
         DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS,
         ANTIALIASED_QUALITY,
@@ -34,17 +34,22 @@ void CFont::Release()
     }
 }
 
-void CFont::RenderText(DWORD color, LPCSTR text, unsigned int x, unsigned int y, unsigned int w, unsigned int h, DWORD flags)
+void CFont::RenderText(DWORD color, LPCSTR text, unsigned int x, unsigned int y, unsigned int w, unsigned int h,
+                       DWORD flags)
 {
-    if (!mFontHandle)
+    if (mFontHandle == nullptr)
+    {
         return;
+    }
 
     RECT rect;
     rect.left = x;
     rect.top = y;
 
-    if ((w == 0 || h == 0) && flags & ~FF_NOCLIP)
+    if ((w == 0 || h == 0) && ((flags & ~FF_NOCLIP) != 0u))
+    {
         CalculateRect(text, &rect);
+    }
     else
     {
         rect.right = x + w;
@@ -57,7 +62,7 @@ void CFont::RenderText(DWORD color, LPCSTR text, unsigned int x, unsigned int y,
     UI->GetTextSurface()->End();
 }
 
-bool CFont::AddFontToDatabase(LPCSTR path)
+auto CFont::AddFontToDatabase(LPCSTR path) -> bool
 {
     return AddFontResourceExA(FILESYSTEM->ResourcePath(path), FR_PRIVATE, nullptr) > 0;
 }

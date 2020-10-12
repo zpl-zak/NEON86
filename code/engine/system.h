@@ -264,3 +264,21 @@ private:
         strcat_s(mStr, mSize + 1, s2);
     }
 };
+
+class ENGINE_API NoCopy
+{
+public:
+    NoCopy(){}
+    NoCopy(const NoCopy&) = delete;
+};
+
+class ENGINE_API NoAssign
+{
+public:
+    NoAssign(){}
+    NoAssign& operator=(const NoAssign&) = delete;
+};
+
+class ENGINE_API NoCopyAssign: NoCopy, NoAssign {
+
+};

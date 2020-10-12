@@ -7,17 +7,17 @@
 
 class CFaceGroup;
 
-class ENGINE_API CMesh : public CReferenceCounter, public CNodeComponent, CAllocable<CMesh>
+class ENGINE_API CMesh : public CReferenceCounter, public CNodeComponent, CAllocable<CMesh>, NoCopyAssign
 {
 public:
     CMesh(void);
-    ~CMesh() override { Release(); }
+    ~CMesh() override;
 
     void Release(void);
     void AddFaceGroup(CFaceGroup*, const D3DXMATRIX&);
     auto Clone() -> CMesh*;
 
-    void Draw(const D3DXMATRIX& wmat);
+    void Draw(const D3DXMATRIX& wmat) const;
     void Clear(void);
 
     auto GetNumFGroups() const -> unsigned int { return mFaceGroups.GetCount(); }

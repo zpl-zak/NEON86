@@ -6,14 +6,14 @@
 #include "RenderData.h"
 #include "ReferenceManager.h"
 
-class ENGINE_API CMaterial : public CReferenceCounter, CAllocable<CMaterial>
+class ENGINE_API CMaterial : public CReferenceCounter, CAllocable<CMaterial>, NoCopyAssign
 {
 public:
     CMaterial(unsigned int slot, LPSTR texName);
     CMaterial(unsigned int slot, unsigned int w, unsigned int h);
     CMaterial(unsigned int slot, LPVOID data, unsigned int size = 1);
     CMaterial();
-    ~CMaterial() { Release(); }
+    ~CMaterial();
 
     void DefaultMaterial(void);
     void Release(void);
@@ -27,7 +27,7 @@ public:
 
     void SetUserTexture(unsigned int userSlot, LPDIRECT3DTEXTURE9 handle);
     void Bind(DWORD stage);
-    void Unbind(DWORD stage);
+    static void Unbind(DWORD stage);
     auto Lock(unsigned int slot = TEXTURESLOT_ALBEDO) -> LPVOID;
     void UploadARGB(unsigned int slot, void* data, unsigned int size);
     void Unlock(unsigned int slot = TEXTURESLOT_ALBEDO);

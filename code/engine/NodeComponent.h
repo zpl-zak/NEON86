@@ -13,8 +13,7 @@ public:
         mOwner = nullptr;
     }
 
-    virtual ~CNodeComponent()
-    = default;
+    virtual ~CNodeComponent() = default;
 
     virtual auto GetKind() -> LPCSTR { return "Unknown"; }
 

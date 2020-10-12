@@ -26,7 +26,7 @@ void CLight::Enable(bool state)
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 
     dev->SetLight(mSlot, &mLightData);
-    dev->LightEnable(mSlot, state);
+    dev->LightEnable(mSlot, static_cast<BOOL>(state));
 }
 
 void CLight::SetSlot(unsigned int slot)
@@ -34,9 +34,9 @@ void CLight::SetSlot(unsigned int slot)
     mSlot = slot;
 }
 
-CLight* CLight::Clone()
+auto CLight::Clone() -> CLight*
 {
-    CLight* lit = new CLight();
+    auto* lit = new CLight();
 
     lit->mSlot = mSlot;
     lit->mLightData = mLightData;
@@ -107,10 +107,10 @@ void CLight::SetDefaults()
 
     mLightData.Type = D3DLIGHT_DIRECTIONAL;
 
-    mLightData.Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-    mLightData.Ambient = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
-    mLightData.Direction = D3DXVECTOR3(-1.0f, -0.3f, -1.0f);
-    mLightData.Specular = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
+    mLightData.Diffuse = D3DXCOLOR(1.0F, 1.0F, 1.0F, 1.0F);
+    mLightData.Ambient = D3DXCOLOR(0.0F, 0.0F, 0.0F, 1.0F);
+    mLightData.Direction = D3DXVECTOR3(-1.0F, -0.3F, -1.0F);
+    mLightData.Specular = D3DXCOLOR(0.0F, 0.0F, 0.0F, 1.0F);
 
     mLightData.Range = 0;
     mLightData.Falloff = 0;

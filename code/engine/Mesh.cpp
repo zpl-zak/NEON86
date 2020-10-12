@@ -11,16 +11,21 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-CMesh::CMesh(void): CAllocable()
+CMesh::CMesh() = default;
+
+CMesh::~CMesh()
 {
+    Release();
 }
 
-void CMesh::Release(void)
+void CMesh::Release()
 {
     if (DelRef())
     {
         for (auto& a : mFaceGroups)
+        {
             a->Release();
+        }
 
         mFaceGroups.Release();
         mTransforms.Release();
@@ -31,8 +36,10 @@ void CMesh::Release(void)
 
 void CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
 {
-    if (!mesh)
+    if (mesh == nullptr)
+    {
         return;
+    }
 
     if (FAILED(mFaceGroups.Push(mesh)))
     {
@@ -48,27 +55,30 @@ void CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
     }
 }
 
-CMesh* CMesh::Clone()
+auto CMesh::Clone() -> CMesh*
 {
-    CMesh* clonedMesh = new CMesh();
+    auto* clonedMesh = new CMesh();
     unsigned int i = 0;
 
-    for (auto fg : mFaceGroups)
+    for (auto* fg : mFaceGroups)
+    {
         clonedMesh->AddFaceGroup(fg->Clone(), mTransforms[i++]);
+    }
 
     return clonedMesh;
 }
 
-void CMesh::Draw(const D3DXMATRIX& wmat)
+void CMesh::Draw(const D3DXMATRIX& wmat) const
 {
     for (unsigned int i = 0; i < mFaceGroups.GetCount(); i++)
     {
-        D3DXMATRIX mat = (GetOwner() ? mTransforms[i] * GetOwner()->GetFinalTransform() : mTransforms[i]) * wmat;
+        auto mat = (GetOwner() != nullptr ? mTransforms[i] * GetOwner()->GetFinalTransform() : mTransforms[i]) *
+                wmat;
         mFaceGroups[i]->Draw(&mat);
     }
 }
 
-void CMesh::Clear(void)
+void CMesh::Clear()
 {
     mFaceGroups.Clear();
     mTransforms.Clear();

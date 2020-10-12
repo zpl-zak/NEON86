@@ -7,7 +7,7 @@
 class ENGINE_API CScene : public CNode
 {
 public:
-    CScene(LPCSTR modelPath = nullptr);
+    explicit CScene(LPCSTR modelPath = nullptr);
     void Release();
 
     auto LoadScene(LPCSTR modelPath, bool loadMaterials = TRUE, bool optimizeMesh = FALSE) -> bool;

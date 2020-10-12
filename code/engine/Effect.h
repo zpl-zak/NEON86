@@ -14,26 +14,26 @@ public:
     void Release();
 
     auto Begin(LPCSTR technique) -> unsigned int;
-    auto End() -> HRESULT;
+    auto End() const -> HRESULT;
 
-    auto FindPass(LPCSTR passName) -> unsigned int;
+    auto FindPass(LPCSTR passName) const -> unsigned int;
     auto BeginPass(unsigned int passID) -> HRESULT;
-    auto EndPass() -> HRESULT;
-    auto CommitChanges() -> HRESULT;
+    auto EndPass() const -> HRESULT;
+    auto CommitChanges() const -> HRESULT;
 
     // Uniforms
-    void SetInteger(LPCSTR name, DWORD value);
-    void SetFloat(LPCSTR name, float value);
-    void SetMatrix(LPCSTR name, D3DXMATRIX value, bool transpose = FALSE);
-    void SetColor(LPCSTR name, D3DCOLORVALUE value);
-    void SetTexture(LPCSTR name, IDirect3DTexture9* value);
-    void SetLight(LPCSTR name, CLight* value);
-    void SetVector3(LPCSTR name, D3DXVECTOR3 value);
-    void SetVector4(LPCSTR name, D3DXVECTOR4 value);
-    void SetBool(LPCSTR name, bool value);
+    void SetInteger(LPCSTR name, DWORD value) const;
+    void SetFloat(LPCSTR name, float value) const;
+    void SetMatrix(LPCSTR name, const D3DXMATRIX& value, bool transpose = FALSE) const;
+    void SetColor(LPCSTR name, D3DCOLORVALUE value) const;
+    void SetTexture(LPCSTR name, IDirect3DTexture9* value) const;
+    void SetLight(LPCSTR name, CLight* value) const;
+    void SetVector3(LPCSTR name, D3DXVECTOR3 value) const;
+    void SetVector4(LPCSTR name, D3DXVECTOR4 value) const;
+    void SetBool(LPCSTR name, bool value) const;
 private:
     ID3DXEffect* mEffect;
 
-    void SetDefaults();
-    auto GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR;
+    void SetDefaults() const;
+    static auto GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR;
 };

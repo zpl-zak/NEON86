@@ -6,15 +6,17 @@
 #include "Engine.h"
 #include "Renderer.h"
 
-CMesh* CNode::FindMesh(LPCSTR name)
+auto CNode::FindMesh(LPCSTR name) -> CMesh*
 {
     return mMeshes.Find(name);
 }
 
 void CNode::AddMesh(CMesh* mg)
 {
-    if (!mg)
+    if (mg == nullptr)
+    {
         return;
+    }
 
     if (FAILED(mMeshes.Push(mg)))
     {
@@ -26,15 +28,17 @@ void CNode::AddMesh(CMesh* mg)
     mg->SetOwner(this);
 }
 
-CLight* CNode::FindLight(LPCSTR name)
+auto CNode::FindLight(LPCSTR name) -> CLight*
 {
     return mLights.Find(name);
 }
 
 void CNode::AddLight(CLight* lit)
 {
-    if (!lit)
+    if (lit == nullptr)
+    {
         return;
+    }
 
     if (FAILED(mLights.Push(lit)))
     {
@@ -46,10 +50,12 @@ void CNode::AddLight(CLight* lit)
     lit->SetOwner(this);
 }
 
-CNode* CNode::FindNode(LPCSTR name)
+auto CNode::FindNode(LPCSTR name) -> CNode*
 {
-    if (!name)
+    if (name == nullptr)
+    {
         return nullptr;
+    }
 
     return mNodes.Find(name);
 }
@@ -66,22 +72,26 @@ void CNode::AddNode(CNode* tgt)
     tgt->SetOwner(this);
 }
 
-CNode* CNode::Clone()
+auto CNode::Clone() -> CNode*
 {
-    CNode* clonedNode = new CNode();
+    auto* clonedNode = new CNode();
 
     *clonedNode->mMetadata = *mMetadata;
     clonedNode->SetName(GetName());
 
-    for (auto a : mMeshes)
-        clonedNode->AddMesh(a->Clone());
-
-    for (auto a : mLights)
-        clonedNode->AddLight(a->Clone());
-
-    for (auto a : mNodes)
+    for (auto* a : mMeshes)
     {
-        auto b = a->Clone();
+        clonedNode->AddMesh(a->Clone());
+    }
+
+    for (auto* a : mLights)
+    {
+        clonedNode->AddLight(a->Clone());
+    }
+
+    for (auto* a : mNodes)
+    {
+        auto* b = a->Clone();
         b->SetParent(clonedNode);
         clonedNode->AddNode(b);
     }
@@ -91,18 +101,23 @@ CNode* CNode::Clone()
     return clonedNode;
 }
 
-bool CNode::IsEmpty()
+auto CNode::IsEmpty() -> bool
 {
-    return (mMeshes.GetCount() == mLights.GetCount() == mNodes.GetCount() == 0);
+    return (static_cast<unsigned int>(static_cast<int>(mMeshes.GetCount() == mLights.GetCount()) == mNodes.GetCount())
+        == 0);
 }
 
-D3DXMATRIX CNode::GetFinalTransform()
+auto CNode::GetFinalTransform() -> D3DXMATRIX
 {
     if (!mIsTransformDirty)
+    {
         return *mCachedTransform;
+    }
 
     if (GetParent() == nullptr)
+    {
         return *mTransform;
+    }
 
     *mCachedTransform = *mTransform * GetParent()->GetFinalTransform();
     mIsTransformDirty = FALSE;
@@ -125,13 +140,19 @@ void CNode::Release()
     if (DelRef())
     {
         for (auto& a : mMeshes)
+        {
             a->Release();
+        }
 
         for (auto& a : mLights)
+        {
             a->Release();
+        }
 
         for (auto& a : mNodes)
+        {
             a->Release();
+        }
 
         mMeshes.Release();
         mLights.Release();
@@ -161,7 +182,9 @@ void CNode::Draw(const D3DXMATRIX& wmat)
 void CNode::DrawSubset(unsigned int subset, const D3DXMATRIX& wmat)
 {
     if (subset >= mMeshes.GetCount())
+    {
         return;
+    }
 
     mMeshes[subset]->Draw(wmat);
 }

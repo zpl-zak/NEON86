@@ -20,7 +20,7 @@ struct METADATA_RESULT
     std::string value;
 };
 
-class ENGINE_API CNode : public CNodeComponent, public CReferenceCounter, CAllocable<CNode>
+class ENGINE_API CNode : public CNodeComponent, public CReferenceCounter, CAllocable<CNode>, NoCopyAssign
 {
 public:
     CNode(): CAllocable()
@@ -47,6 +47,9 @@ public:
         mParent = nullptr;
         mIsTransformDirty = TRUE;
     }
+
+    CNode(const CNode&&) = delete;
+    CNode& operator=(const CNode&&) = delete;
 
     auto Release() -> void;
 

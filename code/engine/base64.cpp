@@ -63,6 +63,7 @@ auto b64_encode(const unsigned char* in, size_t len) -> char*
     return out;
 }
 
+
 auto b64_decoded_size(const char* in) -> size_t
 {
     if (in == nullptr)

@@ -1,9 +1,7 @@
-// Renderer.cpp: implementation of the CRenderer class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "Renderer.h"
+
+#include <cmath>
 #include "Material.h"
 #include "FaceGroup.h"
 #include "Effect.h"
@@ -43,7 +41,7 @@ CRenderer::CRenderer()
     ZeroMemory(&mParams, sizeof(mParams));
 }
 
-void CRenderer::BuildParams(void)
+void CRenderer::BuildParams()
 {
     ZeroMemory(&mParams, sizeof(mParams));
     mParams.Windowed = TRUE;
@@ -66,13 +64,14 @@ void CRenderer::BuildParams(void)
 
 void CRenderer::PrepareEffectDraw()
 {
-    if (GetActiveEffect())
+    if (GetActiveEffect() != nullptr)
     {
         CEffect* activeEffect = GetActiveEffect();
         D3DXMATRIX world = GetDeviceMatrix(MATRIXKIND_WORLD);
         D3DXMATRIX view = GetDeviceMatrix(MATRIXKIND_VIEW);
         D3DXMATRIX proj = GetDeviceMatrix(MATRIXKIND_PROJECTION);
-        D3DXMATRIX inverseWorld, inverseMV;
+        D3DXMATRIX inverseWorld;
+        D3DXMATRIX inverseMV;
         D3DXMatrixInverse(&inverseWorld, nullptr, &world);
 
         D3DXMATRIX mvp = world * view * proj;
@@ -94,13 +93,15 @@ void CRenderer::PrepareEffectDraw()
     }
 }
 
-LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
+auto CRenderer::CreateDevice(HWND window, RECT winres) -> LRESULT
 {
     mWindow = window;
     mDirect9 = Direct3DCreate9(D3D_SDK_VERSION);
 
     if (mDirect9 == nullptr)
+    {
         return ERROR_INVALID_HANDLE;
+    }
 
     BuildParams();
 
@@ -111,10 +112,12 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
                                             D3DDEVTYPE_HAL,
                                             mode.Format,
                                             D3DFMT_A8R8G8B8,
-                                            true);
+                                            1);
 
     if (FAILED(res))
+    {
         return res;
+    }
 
     D3DCAPS9 caps;
 
@@ -122,7 +125,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 
     int capflags = D3DCREATE_FPU_PRESERVE;
 
-    if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
+    if ((caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) != 0u)
     {
         capflags |= D3DCREATE_HARDWARE_VERTEXPROCESSING;
     }
@@ -131,7 +134,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
         capflags |= D3DCREATE_SOFTWARE_VERTEXPROCESSING;
     }
 
-    if (caps.DevCaps & D3DDEVCAPS_PUREDEVICE)
+    if ((caps.DevCaps & D3DDEVCAPS_PUREDEVICE) != 0u)
     {
         capflags |= D3DCREATE_PUREDEVICE;
     }
@@ -143,8 +146,10 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
                                  &mParams,
                                  &mDevice);
 
-    if (!mDevice)
+    if (mDevice == nullptr)
+    {
         return res;
+    }
 
     LPDIRECT3DSURFACE9 display;
     mDevice->GetRenderTarget(0, &display);
@@ -163,10 +168,12 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
     return res;
 }
 
-void CRenderer::ResetDevice(void)
+void CRenderer::ResetDevice()
 {
-    if (!mDevice)
+    if (mDevice == nullptr)
+    {
         return;
+    }
 
     BuildParams();
     mDevice->Reset(&mParams);
@@ -180,7 +187,7 @@ void CRenderer::SetVSYNC(bool state)
     ResetDevice();
 }
 
-void CRenderer::Blit(void)
+void CRenderer::Blit()
 {
     DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 255));
     IDirect3DSurface9* bbuf = nullptr;
@@ -194,10 +201,12 @@ void CRenderer::Blit(void)
     bbuf->Release();
 }
 
-void CRenderer::BeginRender(void)
+void CRenderer::BeginRender()
 {
     if (mDevice->TestCooperativeLevel() == D3DERR_DEVICELOST)
+    {
         return;
+    }
 
     if (mDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
     {
@@ -210,7 +219,7 @@ void CRenderer::BeginRender(void)
     GetDevice()->BeginScene();
 }
 
-void CRenderer::EndRender(void)
+void CRenderer::EndRender()
 {
     Blit();
     GetDevice()->EndScene();
@@ -218,11 +227,11 @@ void CRenderer::EndRender(void)
     ENGINE->DefaultProfiling.IncrementFrame();
 }
 
-void CRenderer::Clear(void)
+void CRenderer::Clear()
 {
 }
 
-bool CRenderer::Release(void)
+auto CRenderer::Release() -> bool
 {
     SAFE_RELEASE(mMainTarget);
     SAFE_RELEASE(mDevice);
@@ -234,16 +243,18 @@ bool CRenderer::Release(void)
 
 void CRenderer::Resize(RECT res)
 {
-    if (!mDevice)
+    if (mDevice == nullptr)
+    {
         return;
+    }
 
     D3DVIEWPORT9 vp;
     vp.X = 0;
     vp.Y = 0;
     vp.Width = res.right;
     vp.Height = res.bottom;
-    vp.MinZ = 0.0f;
-    vp.MaxZ = 1.0f;
+    vp.MinZ = 0.0F;
+    vp.MaxZ = 1.0F;
 
     mDevice->SetViewport(&vp);
 
@@ -268,8 +279,10 @@ void CRenderer::DrawMesh(const RENDERDATA& data)
 
     PrepareEffectDraw();
 
-    if (data.mesh)
+    if (data.mesh != nullptr)
+    {
         data.mesh->DrawSubset(0);
+    }
 
     if (data.usesMatrix)
     {
@@ -287,7 +300,7 @@ void CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
     D3DXVECTOR3 n;
     D3DXVec3Cross(&n, &e1, &e2);
 
-    mDevice->SetRenderState(D3DRS_LIGHTING, IsLightingEnabled());
+    mDevice->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(IsLightingEnabled()));
 
     ZeroMemory(&mImmediateBuffer, sizeof(mImmediateBuffer));
     mImmediateBuffer[0] = {a.x, a.y, a.z, n.x, n.y, n.z, 0, 0, 0, 0, 0, 0, a.color, a.su, a.tv};
@@ -296,8 +309,10 @@ void CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
 
     static IDirect3DVertexDeclaration9* vertsDecl = nullptr;
 
-    if (!vertsDecl)
+    if (vertsDecl == nullptr)
+    {
         mDevice->CreateVertexDeclaration(meshVertexFormat, &vertsDecl);
+    }
 
     mDevice->SetVertexDeclaration(vertsDecl);
     mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, static_cast<LPVOID>(mImmediateBuffer), sizeof(VERTEX));
@@ -307,21 +322,23 @@ void CRenderer::DrawQuad3D(float x1, float x2, float y1, float y2, float z1, flo
 {
     VERTEX verts[] =
     {
-        {x1, y2, z2, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 0.0f, 0.0f},
-        {x2, y1, z1, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 1.0f, 1.0f},
-        {x2, y2, z2, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 1.0f, 0.0f},
+        {x1, y2, z2, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 0.0F, 0.0F},
+        {x2, y1, z1, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 1.0F, 1.0F},
+        {x2, y2, z2, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 1.0F, 0.0F},
 
-        {x1, y2, z2, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 0.0f, 0.0f},
-        {x1, y1, z1, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 0.0f, 1.0f},
-        {x2, y1, z1, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 1.0f, 1.0f},
+        {x1, y2, z2, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 0.0F, 0.0F},
+        {x1, y1, z1, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 0.0F, 1.0F},
+        {x2, y1, z1, 0, 0, 0, 0, 0, 0, 0, 0, 0, color, 1.0F, 1.0F},
     };
 
-    mDevice->SetRenderState(D3DRS_LIGHTING, IsLightingEnabled());
+    mDevice->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(IsLightingEnabled()));
 
     static IDirect3DVertexDeclaration9* vertsDecl = nullptr;
 
-    if (!vertsDecl)
+    if (vertsDecl == nullptr)
+    {
         mDevice->CreateVertexDeclaration(meshVertexFormat, &vertsDecl);
+    }
 
     mDevice->SetVertexDeclaration(vertsDecl);
     mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, static_cast<LPVOID>(verts), sizeof(VERTEX));
@@ -331,21 +348,23 @@ void CRenderer::DrawQuad(float x1, float x2, float y1, float y2, DWORD color, bo
 {
     VERTEX_2D verts[] =
     {
-        {x1, y2, 0, 1, color, 0.0f, flipY - 0.0f},
-        {x2, y1, 0, 1, color, 1.0f, flipY - 1.0f},
-        {x2, y2, 0, 1, color, 1.0f, flipY - 0.0f},
+        {x1, y2, 0, 1, color, 0.0F, static_cast<float>(flipY) - 0.0F},
+        {x2, y1, 0, 1, color, 1.0F, static_cast<float>(flipY) - 1.0F},
+        {x2, y2, 0, 1, color, 1.0F, static_cast<float>(flipY) - 0.0F},
 
-        {x1, y2, 0, 1, color, 0.0f, flipY - 0.0f},
-        {x1, y1, 0, 1, color, 0.0f, flipY - 1.0f},
-        {x2, y1, 0, 1, color, 1.0f, flipY - 1.0f},
+        {x1, y2, 0, 1, color, 0.0F, static_cast<float>(flipY) - 0.0F},
+        {x1, y1, 0, 1, color, 0.0F, static_cast<float>(flipY) - 1.0F},
+        {x2, y1, 0, 1, color, 1.0F, static_cast<float>(flipY) - 1.0F},
     };
 
-    mDevice->SetRenderState(D3DRS_LIGHTING, IsLightingEnabled());
+    mDevice->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(IsLightingEnabled()));
 
     static IDirect3DVertexDeclaration9* vertsDecl = nullptr;
 
-    if (!vertsDecl)
+    if (vertsDecl == nullptr)
+    {
         mDevice->CreateVertexDeclaration(meshVertex2DFormat, &vertsDecl);
+    }
 
     mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
     mDevice->SetVertexDeclaration(vertsDecl);
@@ -357,23 +376,25 @@ void CRenderer::DrawQuadEx(float x, float y, float z, float w, float h, DWORD co
 {
     VERTEX_2D verts[] =
     {
-        {x, (y + h), z, 1, color, 0.0f, flipY - 0.0f},
-        {(x + w), y, z, 1, color, 1.0f, flipY - 1.0f},
-        {(x + w), (y + h), z, 1, color, 1.0f, flipY - 0.0f},
+        {x, (y + h), z, 1, color, 0.0F, static_cast<float>(flipY) - 0.0F},
+        {(x + w), y, z, 1, color, 1.0F, static_cast<float>(flipY) - 1.0F},
+        {(x + w), (y + h), z, 1, color, 1.0F, static_cast<float>(flipY) - 0.0F},
 
-        {x, (y + h), z, 1, color, 0.0f, flipY - 0.0f},
-        {x, y, z, 1, color, 0.0f, flipY - 1.0f},
-        {(x + w), y, z, 1, color, 1.0f, flipY - 1.0f},
+        {x, (y + h), z, 1, color, 0.0F, static_cast<float>(flipY) - 0.0F},
+        {x, y, z, 1, color, 0.0F, static_cast<float>(flipY) - 1.0F},
+        {(x + w), y, z, 1, color, 1.0F, static_cast<float>(flipY) - 1.0F},
     };
 
-    mDevice->SetRenderState(D3DRS_LIGHTING, IsLightingEnabled());
+    mDevice->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(IsLightingEnabled()));
 
     static IDirect3DVertexDeclaration9* vertsDecl = nullptr;
 
-    if (!vertsDecl)
+    if (vertsDecl == nullptr)
+    {
         mDevice->CreateVertexDeclaration(meshVertex2DFormat, &vertsDecl);
+    }
 
-    mDevice->SetRenderState(D3DRS_ZENABLE, usesDepth);
+    mDevice->SetRenderState(D3DRS_ZENABLE, static_cast<DWORD>(usesDepth));
     mDevice->SetVertexDeclaration(vertsDecl);
     mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, static_cast<void*>(verts), sizeof(VERTEX_2D));
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
@@ -385,14 +406,16 @@ void CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
 
     SetMatrix(MATRIXKIND_WORLD, mat);
 
-    D3DXCreateBox(mDevice, static_cast<float>(fabs(static_cast<float>(dims.x))),
-                  static_cast<float>(fabs(static_cast<float>(dims.y))),
-                  static_cast<float>(fabs(static_cast<float>(dims.z))), &mDefaultBox, nullptr);
+    D3DXCreateBox(mDevice, static_cast<float>(std::fabs(static_cast<float>(dims.x))),
+                  static_cast<float>(std::fabs(static_cast<float>(dims.y))),
+                  static_cast<float>(std::fabs(static_cast<float>(dims.z))), &mDefaultBox, nullptr);
 
-    if (!mDefaultBox)
+    if (mDefaultBox == nullptr)
+    {
         return;
+    }
 
-    mDevice->SetRenderState(D3DRS_LIGHTING, IsLightingEnabled());
+    mDevice->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(IsLightingEnabled()));
 
     mDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_CONSTANT);
     mDevice->SetTextureStageState(0, D3DTSS_CONSTANT, color);
@@ -410,12 +433,12 @@ void CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
 
 void CRenderer::ClearBuffer(D3DCOLOR color, unsigned int flags)
 {
-    mDevice->Clear(0, nullptr, flags, color, 1.0f, 0);
+    mDevice->Clear(0, nullptr, flags, color, 1.0F, 0);
 }
 
 void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 {
-    if (GetActiveEffect() && mat)
+    if ((GetActiveEffect() != nullptr) && (mat != nullptr))
     {
         CEffect* fx = GetActiveEffect();
         MATERIAL matData = mat->GetMaterialData();
@@ -442,45 +465,49 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
         fx->SetBool("hasDispTex", mat->GetTextureHandle(TEXTURESLOT_DISPLACE) != nullptr);
         fx->CommitChanges();
     }
-    else if (GetActiveEffect())
+    else if (GetActiveEffect() != nullptr)
     {
         CEffect* fx = GetActiveEffect();
 
         fx->SetTexture("diffuseTex", nullptr);
-        fx->SetBool("hasDiffuseTex", NULL);
+        fx->SetBool("hasDiffuseTex", false);
 
         fx->SetTexture("specularTex", nullptr);
-        fx->SetBool("hasSpecularTex", NULL);
+        fx->SetBool("hasSpecularTex", false);
 
         fx->SetTexture("normalTex", nullptr);
-        fx->SetBool("hasNormalTex", NULL);
+        fx->SetBool("hasNormalTex", false);
 
         fx->SetTexture("dispTex", nullptr);
-        fx->SetBool("hasDispTex", NULL);
+        fx->SetBool("hasDispTex", false);
     }
     else
     {
-        MATERIAL* matData = mat ? &mat->GetMaterialData() : nullptr;
-        SetTexture(stage, mat ? mat->GetTextureHandle() : nullptr);
-        if (mat) mDevice->SetMaterial(matData);
+        MATERIAL* matData = mat != nullptr ? &mat->GetMaterialData() : nullptr;
+        SetTexture(stage, mat != nullptr ? mat->GetTextureHandle() : nullptr);
+        if (mat != nullptr)
+        {
+            mDevice->SetMaterial(matData);
+        }
         else
         {
             mDevice->SetMaterial(&mDefaultMaterial->GetMaterialData());
         }
 
-        if (mat && mat->IsTransparent())
+        if ((mat != nullptr) && mat->IsTransparent())
         {
             mDevice->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
             mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
             mDevice->SetTextureStageState(stage, D3DTSS_ALPHAARG2, D3DTA_CONSTANT);
 
-            DWORD alphaColor = D3DCOLOR_ARGB(matData ? static_cast<DWORD>(matData->Opacity * 255.0f) : 255, 255, 255,
+            DWORD alphaColor = D3DCOLOR_ARGB(matData ? static_cast<DWORD>(matData->Opacity * 255.0F) : 255, 255, 255,
                                              255);
             mDevice->SetTextureStageState(stage, D3DTSS_CONSTANT, alphaColor);
 
             mDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-            if (matData && matData->AlphaIsTransparency == TRUE && matData->AlphaTestEnabled == TRUE)
+            if ((matData != nullptr) && static_cast<int>(matData->AlphaIsTransparency) == TRUE && static_cast<int>(
+                matData->AlphaTestEnabled) == TRUE)
             {
                 mDevice->SetRenderState(D3DRS_ALPHAREF, static_cast<DWORD>(matData->AlphaRef));
                 mDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
@@ -501,7 +528,7 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 
 void CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
 {
-    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
+    mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle != nullptr ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, handle);
 }
 
@@ -522,7 +549,7 @@ void CRenderer::ResetMatrices()
 
 void CRenderer::SetRenderTarget(CRenderTarget* target)
 {
-    if (target && target->GetSurfaceHandle())
+    if ((target != nullptr) && (target->GetSurfaceHandle() != nullptr))
     {
         mDevice->SetRenderTarget(0, target->GetSurfaceHandle());
         mDevice->SetDepthStencilSurface(target->GetKind() == RTKIND_DEPTH
@@ -571,7 +598,7 @@ void CRenderer::ClearFog()
     mDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
 }
 
-RECT CRenderer::GetSurfaceResolution()
+auto CRenderer::GetSurfaceResolution() -> RECT
 {
     D3DSURFACE_DESC desc;
     mActiveTarget->GetTextureHandle()->GetLevelDesc(0, &desc);
@@ -605,7 +632,7 @@ void CRenderer::SetDefaultRenderStates()
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
 }
 
-D3DMATRIX CRenderer::GetDeviceMatrix(unsigned int kind)
+auto CRenderer::GetDeviceMatrix(unsigned int kind) -> D3DMATRIX
 {
     D3DMATRIX mat;
 
@@ -613,7 +640,7 @@ D3DMATRIX CRenderer::GetDeviceMatrix(unsigned int kind)
     return mat;
 }
 
-RECT CRenderer::GetLocalCoordinates(void) const
+auto CRenderer::GetLocalCoordinates() const -> RECT
 {
     RECT Rect;
     GetWindowRect(mWindow, &Rect);

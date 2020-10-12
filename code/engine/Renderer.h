@@ -19,13 +19,13 @@ public:
     CRenderer();
 
     auto CreateDevice(HWND window, RECT winres) -> LRESULT;
-    void ResetDevice(void);
-    auto Release(void) -> bool;
+    void ResetDevice();
+    auto Release() -> bool;
     void Resize(RECT res);
     void SetVSYNC(bool state);
-    void Blit(void);
-    void BeginRender(void);
-    void EndRender(void);
+    void Blit();
+    void BeginRender();
+    void EndRender();
 
     /// Render commands
     void DrawMesh(const RENDERDATA& data);
@@ -42,7 +42,7 @@ public:
     void SetRenderTarget(CRenderTarget* target);
     void SetRenderState(DWORD kind, DWORD value);
     void SetSamplerState(DWORD stage, DWORD kind, DWORD value);
-    void SetFog(DWORD color, DWORD mode, float start, float end = 0.0f);
+    void SetFog(DWORD color, DWORD mode, float start, float end = 0.0F);
     void ClearFog();
     auto GetSurfaceResolution() -> RECT;
 
@@ -55,7 +55,7 @@ public:
     /// Accessors
     auto GetDevice() const -> LPDIRECT3DDEVICE9 { return mDevice; }
     auto GetResolution() const -> RECT { return mLastRes; }
-    auto GetLocalCoordinates(void) const -> RECT;
+    auto GetLocalCoordinates() const -> RECT;
     auto GetDeviceMatrix(unsigned int kind) -> D3DMATRIX;
     auto GetWindow() const -> HWND { return mWindow; }
     auto GetActiveEffect() const -> CEffect* { return mActiveEffect; }
@@ -85,7 +85,7 @@ protected:
     bool mEnableLighting;
     VERTEX mImmediateBuffer[3];
 
-    void Clear(void);
-    void BuildParams(void);
+    void Clear();
+    void BuildParams();
     void PrepareEffectDraw();
 };

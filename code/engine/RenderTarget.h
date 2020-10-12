@@ -11,7 +11,7 @@ class CRenderTarget : public CAllocable<CRenderTarget>, public CReferenceCounter
 public:
     CRenderTarget();
     CRenderTarget(unsigned int w, unsigned int h, UCHAR kind = RTKIND_COLOR);
-    ~CRenderTarget() { Release(); }
+    ~CRenderTarget();
 
     void Release(void);
 
@@ -24,9 +24,9 @@ public:
     void Bind(void);
 
 private:
-    UCHAR mKind;
-    LPDIRECT3DTEXTURE9 mTextureHandle;
-    LPDIRECT3DSURFACE9 mSurfaceHandle, mDepthStencilSurfaceHandle;
+    UCHAR mKind{};
+    LPDIRECT3DTEXTURE9 mTextureHandle{};
+    LPDIRECT3DSURFACE9 mSurfaceHandle{}, mDepthStencilSurfaceHandle{};
 
     void CreateRenderTarget(unsigned int w, unsigned int h, UCHAR kind = RTKIND_COLOR);
 };

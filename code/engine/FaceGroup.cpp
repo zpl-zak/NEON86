@@ -7,7 +7,7 @@
 
 #include "Material.h"
 
-CFaceGroup::CFaceGroup(void): CAllocable()
+CFaceGroup::CFaceGroup()
 {
     ZeroMemory(&mData, sizeof(RENDERDATA));
     mData.kind = PRIMITIVEKIND_TRIANGLELIST;
@@ -19,7 +19,7 @@ CFaceGroup::~CFaceGroup()
     Release();
 }
 
-void CFaceGroup::Release(void)
+void CFaceGroup::Release()
 {
     if (DelRef())
     {
@@ -50,37 +50,48 @@ void CFaceGroup::AddIndex(short index)
 
 void CFaceGroup::Draw(D3DXMATRIX* mat)
 {
-    if (!mData.mesh || mIsDirty)
+    if ((mData.mesh == nullptr) || mIsDirty)
+    {
         Build();
+    }
 
-    if (mat)
+    if (mat != nullptr)
     {
         mData.usesMatrix = TRUE;
         mData.matrix = *mat;
     }
-    else mData.usesMatrix = FALSE;
+    else
+    {
+        mData.usesMatrix = FALSE;
+    }
 
     bool isGlobalShadingEnabled = RENDERER->GetLightingState();
 
-    if (isGlobalShadingEnabled && mData.mat)
+    if (isGlobalShadingEnabled && (mData.mat != nullptr))
+    {
         RENDERER->EnableLighting(mData.mat->GetMaterialData().Shaded);
+    }
 
     RENDERER->SetDefaultRenderStates();
 
     if (!RENDERER->UsesMaterialOverride())
+    {
         mData.mat->Bind(0);
+    }
 
     RENDERER->DrawMesh(mData);
 
     RENDERER->EnableLighting(isGlobalShadingEnabled);
 
     if (!RENDERER->UsesMaterialOverride())
+    {
         mData.mat->Unbind(0);
+    }
 }
 
-void CFaceGroup::CalculateNormals()
+void CFaceGroup::CalculateNormals() const
 {
-    if (!mData.mesh)
+    if (mData.mesh == nullptr)
     {
         MessageBoxA(nullptr, "Mesh is not built yet, you can not calculate normals!", "Mesh error", MB_OK);
         ENGINE->Shutdown();
@@ -90,14 +101,16 @@ void CFaceGroup::CalculateNormals()
     D3DXComputeNormals(mData.mesh, nullptr);
 }
 
-void CFaceGroup::Build(void)
+void CFaceGroup::Build()
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
     void* vidMem = nullptr;
     SAFE_RELEASE(mData.mesh);
 
     if (mVerts.GetCount() == 0)
+    {
         return;
+    }
 
     if (mIndices.GetCount() == 0)
     {
@@ -117,7 +130,7 @@ void CFaceGroup::Build(void)
                    dev,
                    &mData.mesh);
 
-    if (!mData.mesh)
+    if (mData.mesh == nullptr)
     {
         MessageBoxA(nullptr, "Failed to allocate mesh!", "Renderer error", MB_OK);
         ENGINE->Shutdown();
@@ -149,7 +162,7 @@ void CFaceGroup::Build(void)
     mIsDirty = FALSE;
 }
 
-void CFaceGroup::Clear(void)
+void CFaceGroup::Clear()
 {
     ZeroMemory(&mData, sizeof(RENDERDATA));
     mData.kind = PRIMITIVEKIND_TRIANGLELIST;
@@ -160,17 +173,21 @@ void CFaceGroup::Clear(void)
     mIsDirty = FALSE;
 }
 
-CFaceGroup* CFaceGroup::Clone()
+auto CFaceGroup::Clone() -> CFaceGroup*
 {
-    CFaceGroup* clonedFG = new CFaceGroup();
+    auto* clonedFG = new CFaceGroup();
     clonedFG->SetMaterial(mData.mat);
     mData.mat->AddRef();
 
     for (auto v : mVerts)
+    {
         clonedFG->AddVertex(v);
+    }
 
     for (auto i : mIndices)
+    {
         clonedFG->AddIndex(i);
+    }
 
     return clonedFG;
 }

@@ -27,14 +27,14 @@ CD3DIncludeImpl::CD3DIncludeImpl()
     mIsSystemInclude = FALSE;
 }
 
-HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData,
-                              unsigned int* pBytes)
+auto CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData,
+                           unsigned int* pBytes) -> HRESULT
 {
     if (IncludeType == D3DXINC_SYSTEM)
     {
         mIsSystemInclude = TRUE;
 
-        if (!strcmp(pFileName, "neon") || !strcmp(pFileName, "common.fx"))
+        if ((strcmp(pFileName, "neon") == 0) || (strcmp(pFileName, "common.fx") == 0))
         {
             *ppData = _shader_common;
             *pBytes = static_cast<unsigned int>(strlen(_shader_common));
@@ -46,8 +46,10 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
 
     FDATA f = FILESYSTEM->GetResource(pFileName);
 
-    if (!f.data)
+    if (f.data == nullptr)
+    {
         return E_FAIL;
+    }
 
     *ppData = f.data;
     *pBytes = f.size;
@@ -55,16 +57,18 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
     return S_OK;
 }
 
-HRESULT CD3DIncludeImpl::Close(LPCVOID pData)
+auto CD3DIncludeImpl::Close(LPCVOID pData) -> HRESULT
 {
     if (mIsSystemInclude)
+    {
         return S_OK;
+    }
 
-    FILESYSTEM->FreeResource((LPVOID)pData);
+    FILESYSTEM->FreeResource(const_cast<LPVOID>(pData));
     return S_OK;
 }
 
-CEffect::CEffect(): CAllocable()
+CEffect::CEffect()
 {
     mEffect = nullptr;
 }
@@ -73,7 +77,7 @@ void CEffect::LoadEffect(LPCSTR effectPath)
 {
     FDATA f = FILESYSTEM->GetResource(effectPath);
 
-    if (!f.data)
+    if (f.data == nullptr)
     {
         VM->PostError(CString::Format("No effect found: %s", effectPath));
         return;
@@ -98,7 +102,7 @@ void CEffect::LoadEffect(LPCSTR effectPath)
 
     if (FAILED(hr))
     {
-        if (errors)
+        if (errors != nullptr)
         {
             VM->PostError(static_cast<LPCSTR>(errors->GetBufferPointer()));
             errors->Release();
@@ -107,8 +111,10 @@ void CEffect::LoadEffect(LPCSTR effectPath)
         return;
     }
 
-    if (errors)
+    if (errors != nullptr)
+    {
         errors->Release();
+    }
 }
 
 void CEffect::Release()
@@ -116,39 +122,49 @@ void CEffect::Release()
     SAFE_RELEASE(mEffect);
 }
 
-unsigned int CEffect::Begin(LPCSTR technique)
+auto CEffect::Begin(LPCSTR technique) -> unsigned int
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return 0;
+    }
 
     unsigned int numPasses = 0;
-    D3DXHANDLE techniqueID = mEffect->GetTechniqueByName(technique);
+    const D3DXHANDLE techniqueID = mEffect->GetTechniqueByName(technique);
 
     if (FAILED(mEffect->SetTechnique(techniqueID)))
+    {
         return 0;
+    }
 
     HRESULT ok = mEffect->Begin(&numPasses, 0);
 
     if (FAILED(ok))
+    {
         return 0;
+    }
 
     RENDERER->SetActiveEffect(this);
     return numPasses;
 }
 
-HRESULT CEffect::End()
+auto CEffect::End() const -> HRESULT
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return -1;
+    }
 
     RENDERER->SetActiveEffect(nullptr);
     return mEffect->End();
 }
 
-unsigned int CEffect::FindPass(LPCSTR passName)
+auto CEffect::FindPass(LPCSTR passName) const -> unsigned int
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return 0;
+    }
 
     D3DXHANDLE curTech = mEffect->GetCurrentTechnique();
     D3DXTECHNIQUE_DESC td;
@@ -160,17 +176,21 @@ unsigned int CEffect::FindPass(LPCSTR passName)
         D3DXPASS_DESC pd;
         mEffect->GetPassDesc(h, &pd);
 
-        if (!strcmp(passName, pd.Name))
+        if (strcmp(passName, pd.Name) == 0)
+        {
             return i;
+        }
     }
 
     return static_cast<unsigned int>(-1);
 }
 
-HRESULT CEffect::BeginPass(unsigned int passID)
+auto CEffect::BeginPass(unsigned int passID) -> HRESULT
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return -1;
+    }
 
     HRESULT ok = mEffect->BeginPass(passID);
     SetDefaults();
@@ -178,71 +198,91 @@ HRESULT CEffect::BeginPass(unsigned int passID)
     return ok;
 }
 
-HRESULT CEffect::EndPass()
+auto CEffect::EndPass() const -> HRESULT
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return -1;
+    }
 
     return mEffect->EndPass();
 }
 
-HRESULT CEffect::CommitChanges()
+auto CEffect::CommitChanges() const -> HRESULT
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return -1;
+    }
 
     return mEffect->CommitChanges();
 }
 
-void CEffect::SetInteger(LPCSTR name, DWORD value)
+void CEffect::SetInteger(LPCSTR name, DWORD value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
     mEffect->SetInt(name, value);
 }
 
-void CEffect::SetFloat(LPCSTR name, float value)
+void CEffect::SetFloat(LPCSTR name, float value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
     mEffect->SetFloat(name, value);
 }
 
-void CEffect::SetMatrix(LPCSTR name, D3DXMATRIX value, bool transpose)
+void CEffect::SetMatrix(LPCSTR name, const D3DXMATRIX& value, bool transpose) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
     if (transpose)
+    {
         mEffect->SetMatrixTranspose(name, &value);
+    }
     else
+    {
         mEffect->SetMatrix(name, &value);
+    }
 }
 
-void CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value)
+void CEffect::SetColor(LPCSTR name, D3DCOLORVALUE value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
     mEffect->SetValue(name, &value, sizeof(value));
 }
 
-void CEffect::SetTexture(LPCSTR name, IDirect3DTexture9* value)
+void CEffect::SetTexture(LPCSTR name, IDirect3DTexture9* value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
     mEffect->SetTexture(name, value);
 }
 
-void CEffect::SetLight(LPCSTR name, CLight* value)
+void CEffect::SetLight(LPCSTR name, CLight* value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
-    if (value)
+    if (value != nullptr)
     {
         SetBool(GetUniformName(name, "IsEnabled"), TRUE);
         SetInteger(GetUniformName(name, "Type"), value->GetLightData().Type);
@@ -263,42 +303,50 @@ void CEffect::SetLight(LPCSTR name, CLight* value)
     }
 }
 
-void CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value)
+void CEffect::SetVector3(LPCSTR name, D3DXVECTOR3 value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
-    D3DXVECTOR4 vec4 = D3DXVECTOR4(value, 1.0f);
+    D3DXVECTOR4 vec4 = D3DXVECTOR4(value, 1.0F);
     mEffect->SetVector(name, &vec4);
 }
 
-void CEffect::SetVector4(LPCSTR name, D3DXVECTOR4 value)
+void CEffect::SetVector4(LPCSTR name, D3DXVECTOR4 value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
     mEffect->SetVector(name, &value);
 }
 
-void CEffect::SetBool(LPCSTR name, bool value)
+void CEffect::SetBool(LPCSTR name, bool value) const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
-    mEffect->SetBool(name, value);
+    mEffect->SetBool(name, static_cast<BOOL>(value));
 }
 
-void CEffect::SetDefaults()
+void CEffect::SetDefaults() const
 {
-    if (!mEffect)
+    if (mEffect == nullptr)
+    {
         return;
+    }
 
-    D3DXMATRIX p = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);
-    D3DXMATRIX v = RENDERER->GetDeviceMatrix(MATRIXKIND_VIEW);
+    const D3DXMATRIX p = RENDERER->GetDeviceMatrix(MATRIXKIND_PROJECTION);
+    const D3DXMATRIX v = RENDERER->GetDeviceMatrix(MATRIXKIND_VIEW);
     D3DXMATRIX w;
     D3DXMatrixIdentity(&w);
 
-    D3DXMATRIX mvp = w * v * p;
+    const D3DXMATRIX mvp = w * v * p;
     SetMatrix("NEON.Proj", p);
     SetMatrix("NEON.View", v);
     SetMatrix("NEON.World", w);
@@ -307,7 +355,7 @@ void CEffect::SetDefaults()
     RENDERER->SetDefaultRenderStates();
 }
 
-LPCSTR CEffect::GetUniformName(LPCSTR base, LPCSTR field)
+auto CEffect::GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR
 {
     static char buffer[512] = {0};
 

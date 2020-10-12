@@ -10,6 +10,7 @@ class ENGINE_API CFaceGroup : public CReferenceCounter, CAllocable<CFaceGroup>
 {
 public:
     CFaceGroup(void);
+    CFaceGroup(const CFaceGroup&) = default;
     ~CFaceGroup();
 
     void Release(void);
@@ -17,7 +18,7 @@ public:
     void AddVertex(const VERTEX& vertex);
     void AddIndex(short index);
     void Draw(D3DXMATRIX*);
-    void CalculateNormals();
+    void CalculateNormals() const;
     void Build(void);
     void Clear(void);
 
