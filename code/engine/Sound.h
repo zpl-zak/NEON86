@@ -9,19 +9,19 @@ class CSound : public CReferenceCounter, CAllocable<CSound>, public CSoundBase
 {
 public:
     CSound(LPSTR wavPath);
-    VOID Release();
+    void Release();
 
-    VOID Play() override;
-    VOID Pause() override;
-    VOID Stop() override;
-    VOID SetFrequency(DWORD freq);
+    void Play() override;
+    void Pause() override;
+    void Stop() override;
+    void SetFrequency(DWORD freq);
     auto GetFrequency() -> DWORD;
-    VOID SetLoop(BOOL state);
-    auto IsLooping() -> BOOL;
+    void SetLoop(bool state);
+    auto IsLooping() -> bool;
 
     auto GetData(ULONG* sizeOut) -> UCHAR*;
 protected:
-    BOOL mIsLooping;
+    bool mIsLooping;
     UCHAR* mData;
     ULONG mDataSize;
 };

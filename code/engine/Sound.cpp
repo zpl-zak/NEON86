@@ -28,7 +28,7 @@ CSound::CSound(LPSTR wavPath): CAllocable()
     }
 }
 
-VOID CSound::Release()
+void CSound::Release()
 {
     if (DelRef())
     {
@@ -38,23 +38,23 @@ VOID CSound::Release()
     }
 }
 
-VOID CSound::Play()
+void CSound::Play()
 {
     mBuffer->Play(0, 0, mIsLooping ? DSBPLAY_LOOPING : 0);
 }
 
-VOID CSound::Pause()
+void CSound::Pause()
 {
     mBuffer->Stop();
 }
 
-VOID CSound::Stop()
+void CSound::Stop()
 {
     Pause();
     SetCurrentPosition(0);
 }
 
-VOID CSound::SetFrequency(DWORD freq)
+void CSound::SetFrequency(DWORD freq)
 {
     if (freq == 0)
     {
@@ -71,7 +71,7 @@ DWORD CSound::GetFrequency()
     return freq;
 }
 
-VOID CSound::SetLoop(BOOL state)
+void CSound::SetLoop(bool state)
 {
     mIsLooping = state;
 
@@ -82,7 +82,7 @@ VOID CSound::SetLoop(BOOL state)
     }
 }
 
-BOOL CSound::IsLooping()
+bool CSound::IsLooping()
 {
     return mIsLooping;
 }

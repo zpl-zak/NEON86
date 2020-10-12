@@ -5,19 +5,19 @@
 #include <cstdio>
 #include <cstdlib>
 
-CFileSystem::CFileSystem(VOID)
+CFileSystem::CFileSystem(void)
 {
     mGamePath = "";
     mLoadDone = FALSE;
 }
 
-auto CFileSystem::LoadGameInternal() const -> BOOL
+auto CFileSystem::LoadGameInternal() const -> bool
 {
     const auto ft = GetFileAttributesA(mGamePath);
     return ft & FILE_ATTRIBUTE_DIRECTORY;
 }
 
-auto CFileSystem::FixName(LPCSTR* resName) const -> VOID
+auto CFileSystem::FixName(LPCSTR* resName) const -> void
 {
     static CHAR fixedTmpName[MAX_PATH] = {0};
 
@@ -27,7 +27,7 @@ auto CFileSystem::FixName(LPCSTR* resName) const -> VOID
     ZeroMemory(fixedTmpName, MAX_PATH);
 
     auto p = *resName;
-    UINT i = 0;
+    unsigned int i = 0;
     while (*p != 0)
     {
         if (*p == '/')
@@ -41,13 +41,13 @@ auto CFileSystem::FixName(LPCSTR* resName) const -> VOID
     *resName = fixedTmpName;
 }
 
-auto CFileSystem::LoadGame(LPSTR gamePath) -> BOOL
+auto CFileSystem::LoadGame(LPSTR gamePath) -> bool
 {
     if (!gamePath)
         return FALSE;
 
     auto p = gamePath;
-    UINT validPathI = 0;
+    unsigned int validPathI = 0;
 
     while (*p != 0)
     {
@@ -93,7 +93,7 @@ auto CFileSystem::GetResource(LPCSTR resName/*=NULL*/) const -> FDATA
     const auto fp = OpenResource(resName);
 
     UCHAR* data = nullptr;
-    UINT size = 0L;
+    unsigned int size = 0L;
 
     if (!fp)
         return res;
@@ -115,7 +115,7 @@ auto CFileSystem::GetResource(LPCSTR resName/*=NULL*/) const -> FDATA
     return res;
 }
 
-VOID CFileSystem::SaveResource(LPCSTR data, UINT64 size) const
+void CFileSystem::SaveResource(LPCSTR data, UINT64 size) const
 {
     FILE* fp = nullptr;
     fopen_s(&fp, CString::Format("%s\\%s", mGamePath, RESOURCE_UDATA).Str(), "wb");
@@ -137,7 +137,7 @@ auto CFileSystem::OpenResource(LPCSTR resName /*= NULL*/) const -> FILE*
     return fp;
 }
 
-VOID CFileSystem::CloseResource(FILE* handle)
+void CFileSystem::CloseResource(FILE* handle)
 {
     if (handle)
         fclose(handle);
@@ -171,7 +171,7 @@ auto CFileSystem::GetCanonicalGamePath() const -> LPCSTR
     return path;
 }
 
-auto CFileSystem::Exists(LPCSTR resName) -> BOOL
+auto CFileSystem::Exists(LPCSTR resName) -> bool
 {
     const auto res = OpenResource(resName);
 
@@ -184,12 +184,12 @@ auto CFileSystem::Exists(LPCSTR resName) -> BOOL
     return FALSE;
 }
 
-VOID CFileSystem::FreeResource(LPVOID data)
+void CFileSystem::FreeResource(LPVOID data)
 {
     SAFE_FREE(data);
 }
 
-VOID CFileSystem::Release(VOID)
+void CFileSystem::Release(void)
 {
     if (mLoadDone)
         SAFE_DELETE(mGamePath);

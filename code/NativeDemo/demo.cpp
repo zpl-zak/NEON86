@@ -1,6 +1,3 @@
-// player.exe: A sample program showcasing native game support
-//
-
 #include <windowsx.h>
 #include <strsafe.h>
 #include <shobjidl.h>
@@ -15,8 +12,8 @@
 #pragma comment (lib, "d3dx9.lib")
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& rect);
-BOOL CenterWindow(HWND hwndWindow);
+auto BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& rect) -> HWND;
+auto CenterWindow(HWND hwndWindow) -> BOOL;
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -35,32 +32,32 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     if (!ENGINE->Init(hWnd, rect))
     {
-        MessageBox(NULL, "Failed to start engine!", "Engine load failure", MB_OK);
+        MessageBox(nullptr, "Failed to start engine!", "Engine load failure", MB_OK);
         ENGINE->Release();
         return 0;
     }
 
     if (!FILESYSTEM->LoadGame(lpCmdLine))
     {
-        MessageBox(NULL, "Failed to load game!", "Game load failure", MB_OK);
+        MessageBox(nullptr, "Failed to load game!", "Game load failure", MB_OK);
         ENGINE->Release();
         return 0;
     }
 
     // 1. Initialize sample data
-    CScene* demoModel = new CScene();
+    auto demoModel = new CScene();
     demoModel->LoadScene("sphere.fbx");
     D3DXMATRIX viewMat;
     D3DXMATRIX worldMat;
-    D3DXVECTOR3 eyePos = D3DXVECTOR3(0, 0, -5);
-    D3DXVECTOR3 lookPos = D3DXVECTOR3(0, 0, 0);
-    D3DXVECTOR3 up = D3DXVECTOR3(0, 1, 0);
+    auto eyePos = D3DXVECTOR3(0, 0, -5);
+    auto lookPos = D3DXVECTOR3(0, 0, 0);
+    auto up = D3DXVECTOR3(0, 1, 0);
     D3DXMatrixLookAtRH(&viewMat, &eyePos, &lookPos, &up);
 
-    CLight* demoLight = new CLight(0);
+    auto demoLight = new CLight(0);
 
     CFont::AddFontToDatabase("slkscr.ttf");
-    CFont* demoFont = new CFont("Silkscreen", 20, 16, FALSE);
+    auto demoFont = new CFont("Silkscreen", 20, 16, FALSE);
 
     D3DXMATRIX projMat;
     D3DXMatrixPerspectiveFovRH(&projMat, D3DXToRadian(62.0f), rect.right / static_cast<FLOAT>(rect.bottom), 0.01f,
@@ -72,7 +69,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     RENDERER->GetDevice()->SetRenderState(D3DRS_AMBIENT, 0x202069);
 
     MSG msg;
-    FLOAT lastTime = GetTime();
+    auto lastTime = GetTime();
 
     UI->SetDraw2DHook([&]()
     {
@@ -94,7 +91,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     while (ENGINE->IsRunning())
     {
         CProfileScope scope(&demoProfiler);
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -109,8 +106,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             break;
         }
 
-        FLOAT currTime = GetTime();
-        FLOAT dt = currTime - lastTime;
+        auto currTime = GetTime();
+        auto dt = currTime - lastTime;
 
         ENGINE->DefaultProfiling.UpdateProfilers(dt);
 
@@ -142,9 +139,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     return 0;
 }
 
-HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& rect)
+auto BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titleName, RECT& rect) -> HWND
 {
-    HWND hWnd;
     WNDCLASSEX wc;
 
     ZeroMemory(&wc, sizeof(WNDCLASSEX));
@@ -153,43 +149,43 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titl
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
     wc.lpszClassName = className;
 
     RegisterClassEx(&wc);
 
-    DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
+    const DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
 
     AdjustWindowRectEx(&rect, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
 
-    hWnd = CreateWindowEx(NULL,
-                          className,
-                          titleName,
-                          style,
-                          rect.left, rect.top,
-                          rect.right, rect.bottom,
-                          NULL,
-                          NULL,
-                          instance,
-                          NULL);
+    const auto hWnd = CreateWindowEx(NULL,
+                                     className,
+                                     titleName,
+                                     style,
+                                     rect.left, rect.top,
+                                     rect.right, rect.bottom,
+                                     nullptr,
+                                     nullptr,
+                                     instance,
+                                     nullptr);
 
     if (!hWnd)
     {
-        int errcode = GetLastError();
+        const int errcode = GetLastError();
         LPVOID msg;
 
         FormatMessageA(
             FORMAT_MESSAGE_ALLOCATE_BUFFER |
             FORMAT_MESSAGE_FROM_SYSTEM |
             FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,
+            nullptr,
             errcode,
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPSTR)&msg,
-            0, NULL);
+            0, nullptr);
 
-        MessageBoxA(NULL,
+        MessageBoxA(nullptr,
                     static_cast<LPCSTR>(msg),
                     "Window creation failed",
                     MB_ICONERROR);
@@ -211,19 +207,19 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-BOOL CenterWindow(HWND hwndWindow)
+auto CenterWindow(HWND hwndWindow) -> BOOL
 {
     RECT rectWindow;
 
     GetWindowRect(hwndWindow, &rectWindow);
 
-    int nWidth = rectWindow.right - rectWindow.left;
-    int nHeight = rectWindow.bottom - rectWindow.top;
+    const int nWidth = rectWindow.right - rectWindow.left;
+    const int nHeight = rectWindow.bottom - rectWindow.top;
 
-    int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+    const auto nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+    const auto nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    int nX = nScreenWidth / 2 - nWidth / 2;
+    auto nX = nScreenWidth / 2 - nWidth / 2;
     int nY = nScreenHeight / 2 - nHeight / 2;
 
     if (nX < 0) nX = 0;

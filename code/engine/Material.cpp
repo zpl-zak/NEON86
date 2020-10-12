@@ -6,12 +6,12 @@
 #include "Renderer.h"
 #include "FileSystem.h"
 
-CMaterial::CMaterial(UINT slot, LPSTR texName): CMaterial()
+CMaterial::CMaterial(unsigned int slot, LPSTR texName): CMaterial()
 {
     CreateTextureForSlot(slot, texName);
 }
 
-CMaterial::CMaterial(UINT slot, UINT w, UINT h): CMaterial()
+CMaterial::CMaterial(unsigned int slot, unsigned int w, unsigned int h): CMaterial()
 {
     CreateTextureForSlot(slot, nullptr, w, h);
 }
@@ -23,12 +23,12 @@ CMaterial::CMaterial(): CAllocable()
     DefaultMaterial();
 }
 
-CMaterial::CMaterial(UINT slot, LPVOID data, UINT size): CMaterial()
+CMaterial::CMaterial(unsigned int slot, LPVOID data, unsigned int size): CMaterial()
 {
     CreateEmbeddedTextureForSlot(slot, data, size);
 }
 
-VOID CMaterial::DefaultMaterial(VOID)
+void CMaterial::DefaultMaterial(void)
 {
     ZeroMemory(&mMaterialData, sizeof(mMaterialData));
 
@@ -46,11 +46,11 @@ VOID CMaterial::DefaultMaterial(VOID)
     SetSamplerState(D3DSAMP_MAXANISOTROPY, 16);
 }
 
-VOID CMaterial::Release(VOID)
+void CMaterial::Release(void)
 {
     if (DelRef())
     {
-        for (UINT i = 0; i < MAX_TEXTURE_SLOTS; i++)
+        for (unsigned int i = 0; i < MAX_TEXTURE_SLOTS; i++)
         {
             SAFE_RELEASE(mTextureHandle[i]);
         }
@@ -59,7 +59,7 @@ VOID CMaterial::Release(VOID)
     }
 }
 
-VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
+void CMaterial::CreateTextureForSlot(unsigned int slot, LPSTR texName, unsigned int w, unsigned int h)
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 
@@ -77,7 +77,7 @@ VOID CMaterial::CreateTextureForSlot(UINT slot, LPSTR texName, UINT w, UINT h)
     }
 }
 
-VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size)
+void CMaterial::CreateEmbeddedTextureForSlot(unsigned int slot, LPVOID data, unsigned int size)
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
 
@@ -90,7 +90,7 @@ VOID CMaterial::CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size)
     D3DXCreateTextureFromFileInMemory(dev, data, size, &mTextureHandle[slot]);
 }
 
-VOID CMaterial::SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle)
+void CMaterial::SetUserTexture(unsigned int userSlot, LPDIRECT3DTEXTURE9 handle)
 {
     if (userSlot >= (MAX_TEXTURE_SLOTS))
     {
@@ -101,7 +101,7 @@ VOID CMaterial::SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle)
     mTextureHandle[userSlot] = handle;
 }
 
-VOID CMaterial::Bind(DWORD stage)
+void CMaterial::Bind(DWORD stage)
 {
     RENDERER->SetMaterial(stage, this);
 
@@ -110,25 +110,25 @@ VOID CMaterial::Bind(DWORD stage)
     if (this == nullptr || RENDERER->GetActiveEffect())
         return;
 
-    for (UINT i = 0; i < MAX_SAMPLER_STATES; i++)
+    for (unsigned int i = 0; i < MAX_SAMPLER_STATES; i++)
     {
         RENDERER->SetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(i), mStats[i]);
     }
 }
 
-VOID CMaterial::Unbind(DWORD stage)
+void CMaterial::Unbind(DWORD stage)
 {
     RENDERER->SetMaterial(stage, nullptr);
 }
 
-LPVOID CMaterial::Lock(UINT slot)
+LPVOID CMaterial::Lock(unsigned int slot)
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, nullptr, 0);
     return r.pBits;
 }
 
-VOID CMaterial::UploadARGB(UINT slot, VOID* data, UINT size)
+void CMaterial::UploadARGB(unsigned int slot, void* data, unsigned int size)
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, nullptr, D3DLOCK_DISCARD);
@@ -136,57 +136,57 @@ VOID CMaterial::UploadARGB(UINT slot, VOID* data, UINT size)
     mTextureHandle[slot]->UnlockRect(0);
 }
 
-VOID CMaterial::Unlock(UINT slot)
+void CMaterial::Unlock(unsigned int slot)
 {
     mTextureHandle[slot]->UnlockRect(0);
 }
 
-VOID CMaterial::SetAmbient(D3DCOLORVALUE color)
+void CMaterial::SetAmbient(D3DCOLORVALUE color)
 {
     memcpy(&mMaterialData.Ambient, &color, sizeof(D3DCOLORVALUE));
 }
 
-VOID CMaterial::SetDiffuse(D3DCOLORVALUE color)
+void CMaterial::SetDiffuse(D3DCOLORVALUE color)
 {
     memcpy(&mMaterialData.Diffuse, &color, sizeof(D3DCOLORVALUE));
 }
 
-VOID CMaterial::SetSpecular(D3DCOLORVALUE color)
+void CMaterial::SetSpecular(D3DCOLORVALUE color)
 {
     memcpy(&mMaterialData.Specular, &color, sizeof(D3DCOLORVALUE));
 }
 
-VOID CMaterial::SetEmission(D3DCOLORVALUE color)
+void CMaterial::SetEmission(D3DCOLORVALUE color)
 {
     memcpy(&mMaterialData.Emissive, &color, sizeof(D3DCOLORVALUE));
 }
 
-VOID CMaterial::SetPower(FLOAT val)
+void CMaterial::SetPower(float val)
 {
     mMaterialData.Power = val;
 }
 
-VOID CMaterial::SetOpacity(FLOAT val)
+void CMaterial::SetOpacity(float val)
 {
     mMaterialData.Opacity = val;
 }
 
-VOID CMaterial::SetShaded(BOOL state)
+void CMaterial::SetShaded(bool state)
 {
     mMaterialData.Shaded = state;
 }
 
-VOID CMaterial::SetAlphaIsTransparency(BOOL state)
+void CMaterial::SetAlphaIsTransparency(bool state)
 {
     mMaterialData.AlphaIsTransparency = state;
 }
 
-VOID CMaterial::SetEnableAlphaTest(BOOL state)
+void CMaterial::SetEnableAlphaTest(bool state)
 {
     mMaterialData.AlphaTestEnabled = TRUE;
 }
 
-VOID CMaterial::SetAlphaRef(DWORD refval)
+void CMaterial::SetAlphaRef(DWORD refval)
 {
     mMaterialData.AlphaRef = refval;
 }

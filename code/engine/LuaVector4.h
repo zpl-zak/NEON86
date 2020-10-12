@@ -12,7 +12,7 @@ auto vector4_ctor(lua_State* L) -> D3DXVECTOR4*
     return vec;
 }
 
-auto vector4_new(lua_State* L) -> INT
+auto vector4_new(lua_State* L) -> int
 {
     auto x = 0.0f, y = 0.0f, z = 0.0f, w = 0.0f;
     D3DXVECTOR4* vecRHS = nullptr;
@@ -22,13 +22,13 @@ auto vector4_new(lua_State* L) -> INT
         vecRHS = static_cast<D3DXVECTOR4*>(luaL_testudata(L, 1, L_VECTOR));
 
         if (!vecRHS)
-            x = y = z = w = static_cast<FLOAT>(lua_tonumber(L, 1));
+            x = y = z = w = static_cast<float>(lua_tonumber(L, 1));
     }
 
-    x = static_cast<FLOAT>(lua_tonumber(L, 1));
-    y = static_cast<FLOAT>(lua_tonumber(L, 2));
-    z = static_cast<FLOAT>(lua_tonumber(L, 3));
-    w = static_cast<FLOAT>(lua_tonumber(L, 4));
+    x = static_cast<float>(lua_tonumber(L, 1));
+    y = static_cast<float>(lua_tonumber(L, 2));
+    z = static_cast<float>(lua_tonumber(L, 3));
+    w = static_cast<float>(lua_tonumber(L, 4));
 
     const auto vec = vector4_ctor(L);
 
@@ -41,15 +41,15 @@ auto vector4_new(lua_State* L) -> INT
 }
 
 
-static auto vector4_newrgba(lua_State* L) -> INT
+static auto vector4_newrgba(lua_State* L) -> int
 {
-    const auto r = static_cast<FLOAT>(luaL_checknumber(L, 1)) / static_cast<FLOAT>(0xFF);
-    const auto g = static_cast<FLOAT>(luaL_checknumber(L, 2)) / static_cast<FLOAT>(0xFF);
-    const auto b = static_cast<FLOAT>(luaL_checknumber(L, 3)) / static_cast<FLOAT>(0xFF);
+    const auto r = static_cast<float>(luaL_checknumber(L, 1)) / static_cast<float>(0xFF);
+    const auto g = static_cast<float>(luaL_checknumber(L, 2)) / static_cast<float>(0xFF);
+    const auto b = static_cast<float>(luaL_checknumber(L, 3)) / static_cast<float>(0xFF);
     auto a = 1.0f;
 
     if (lua_gettop(L) == 4)
-        a = static_cast<FLOAT>(luaL_checknumber(L, 4)) / static_cast<FLOAT>(0xFF);
+        a = static_cast<float>(luaL_checknumber(L, 4)) / static_cast<float>(0xFF);
 
     const auto vec = static_cast<D3DXVECTOR4*>(lua_newuserdata(L, sizeof(D3DXVECTOR4)));
     *vec = D3DXVECTOR4(r, g, b, a);
@@ -58,7 +58,7 @@ static auto vector4_newrgba(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_add(lua_State* L) -> INT
+static auto vector4_add(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     D3DXVECTOR4* vecRHS = nullptr;
@@ -66,7 +66,7 @@ static auto vector4_add(lua_State* L) -> INT
 
     if (lua_isnumber(L, 2))
     {
-        scalarRHS = static_cast<FLOAT>(luaL_checknumber(L, 2));
+        scalarRHS = static_cast<float>(luaL_checknumber(L, 2));
 
         vector4_new(L);
         const auto out = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 3, L_VECTOR));
@@ -86,7 +86,7 @@ static auto vector4_add(lua_State* L) -> INT
     return 0;
 }
 
-static auto vector4_sub(lua_State* L) -> INT
+static auto vector4_sub(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     D3DXVECTOR4* vecRHS = nullptr;
@@ -94,7 +94,7 @@ static auto vector4_sub(lua_State* L) -> INT
 
     if (lua_isnumber(L, 2))
     {
-        scalarRHS = static_cast<FLOAT>(luaL_checknumber(L, 2));
+        scalarRHS = static_cast<float>(luaL_checknumber(L, 2));
 
         vector4_new(L);
         const auto out = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 3, L_VECTOR));
@@ -114,7 +114,7 @@ static auto vector4_sub(lua_State* L) -> INT
     return 0;
 }
 
-static auto vector4_cross(lua_State* L) -> INT
+static auto vector4_cross(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     const auto vecRHS = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2, L_VECTOR));
@@ -129,10 +129,10 @@ static auto vector4_cross(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_div(lua_State* L) -> INT
+static auto vector4_div(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
-    const auto scalarRHS = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto scalarRHS = static_cast<float>(luaL_checknumber(L, 2));
 
     if (scalarRHS == 0.0f)
     {
@@ -147,7 +147,7 @@ static auto vector4_div(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_dot(lua_State* L) -> INT
+static auto vector4_dot(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     D3DXVECTOR4* vecRHS = nullptr;
@@ -156,7 +156,7 @@ static auto vector4_dot(lua_State* L) -> INT
 
     if (lua_isnumber(L, 2))
     {
-        scalarRHS = static_cast<FLOAT>(luaL_checknumber(L, 2));
+        scalarRHS = static_cast<float>(luaL_checknumber(L, 2));
 
         vector4_new(L);
         const auto out = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 3, L_VECTOR));
@@ -182,14 +182,14 @@ static auto vector4_dot(lua_State* L) -> INT
     return 0;
 }
 
-static auto vector4_get(lua_State* L) -> INT
+static auto vector4_get(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
-    const auto onlyThreeComponents = static_cast<UINT>(lua_tointeger(L, 2));
-    FLOAT arr[4] = {vec->x, vec->y, vec->z, vec->w};
+    const auto onlyThreeComponents = static_cast<unsigned int>(lua_tointeger(L, 2));
+    float arr[4] = {vec->x, vec->y, vec->z, vec->w};
 
     lua_newtable(L);
-    for (UINT i = 0; i < static_cast<UINT>(onlyThreeComponents ? 3 : 4); i++)
+    for (unsigned int i = 0; i < static_cast<unsigned int>(onlyThreeComponents ? 3 : 4); i++)
     {
         lua_pushinteger(L, i + 1ULL);
         lua_pushnumber(L, arr[i]);
@@ -199,11 +199,11 @@ static auto vector4_get(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_field(lua_State* L) -> INT
+static auto vector4_field(lua_State* L) -> int
 {
     const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
-    const auto idx = static_cast<INT>(luaL_checkinteger(L, 2));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 3));
+    const auto idx = static_cast<int>(luaL_checkinteger(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 3));
 
     auto out = vector4_ctor(L);
     *out = *vec;
@@ -221,7 +221,7 @@ static auto vector4_field(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_normalize(lua_State* L) -> INT
+static auto vector4_normalize(lua_State* L) -> int
 {
     auto* vec = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 1, L_VECTOR));
 
@@ -232,7 +232,7 @@ static auto vector4_normalize(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_color(lua_State* L) -> INT
+static auto vector4_color(lua_State* L) -> int
 {
     auto* vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     BYTE color[4] = {
@@ -243,25 +243,25 @@ static auto vector4_color(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_mag(lua_State* L) -> INT
+static auto vector4_mag(lua_State* L) -> int
 {
     auto* vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     lua_pushnumber(L, D3DXVec4Length(vec));
     return 1;
 }
 
-static auto vector4_magsq(lua_State* L) -> INT
+static auto vector4_magsq(lua_State* L) -> int
 {
     auto* vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     lua_pushnumber(L, D3DXVec4LengthSq(vec));
     return 1;
 }
 
-static auto vector4_lerp(lua_State* L) -> INT
+static auto vector4_lerp(lua_State* L) -> int
 {
     auto* vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
     auto* vecRHS = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2, L_VECTOR));
-    const auto t = static_cast<FLOAT>(luaL_checknumber(L, 3));
+    const auto t = static_cast<float>(luaL_checknumber(L, 3));
 
     vector4_new(L);
     auto* out = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 4, L_VECTOR));
@@ -269,7 +269,7 @@ static auto vector4_lerp(lua_State* L) -> INT
     return 1;
 }
 
-static auto vector4_neg(lua_State* L) -> INT
+static auto vector4_neg(lua_State* L) -> int
 {
     auto* vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
 
@@ -284,7 +284,7 @@ LUAS(D3DXVECTOR4, L_VECTOR, vector4_y, y);
 LUAS(D3DXVECTOR4, L_VECTOR, vector4_z, z);
 LUAS(D3DXVECTOR4, L_VECTOR, vector4_w, w);
 
-static VOID LuaVector_register(lua_State* L)
+static void LuaVector_register(lua_State* L)
 {
     // compat
     lua_register(L, "Vector3", vector4_new);

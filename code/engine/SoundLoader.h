@@ -8,16 +8,16 @@ struct stb_vorbis;
 class CSoundLoader
 {
 public:
-    static VOID LoadOGG(LPSTR path, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo);
-    static VOID LoadWAV(LPSTR path, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo);
-    static VOID LoadWAV3D(LPSTR path, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+    static void LoadOGG(LPSTR path, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo);
+    static void LoadWAV(LPSTR path, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo);
+    static void LoadWAV3D(LPSTR path, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
                           LPVOID waveInfo);
 
     // Music
-    static VOID OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events,
+    static void OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events,
                         LPVOID waveInfo, DWORD* dataSize);
-    static VOID ResetBuffer(stb_vorbis* decoder);
+    static void ResetBuffer(stb_vorbis* decoder);
     static auto DecodeOGG(stb_vorbis* decoder, ULONG reqBytes, short** data) -> ULONG;
     static auto TellOGG(stb_vorbis* decoder) -> DWORD;
-    static VOID CloseOGG(stb_vorbis* decoder);
+    static void CloseOGG(stb_vorbis* decoder);
 };

@@ -30,17 +30,17 @@ inline auto split(const std::string& str, const std::string& delim) -> std::vect
     return tokens;
 }
 
-auto luaH_getcomps(lua_State* L, UINT offset) -> D3DXVECTOR4
+auto luaH_getcomps(lua_State* L, unsigned int offset) -> D3DXVECTOR4
 {
     if (luaL_testudata(L, 2 + offset, L_VECTOR))
     {
         return *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2 + offset, L_VECTOR));
     }
 
-    const auto x = static_cast<FLOAT>(lua_tonumber(L, 2+offset));
-    auto y = static_cast<FLOAT>(lua_tonumber(L, 3+offset));
-    auto z = static_cast<FLOAT>(lua_tonumber(L, 4+offset));
-    auto w = static_cast<FLOAT>(lua_tonumber(L, 5+offset));
+    const auto x = static_cast<float>(lua_tonumber(L, 2+offset));
+    auto y = static_cast<float>(lua_tonumber(L, 3+offset));
+    auto z = static_cast<float>(lua_tonumber(L, 4+offset));
+    auto w = static_cast<float>(lua_tonumber(L, 5+offset));
 
     if (lua_gettop(L) == 2 + offset)
         w = y = z = x;
@@ -54,7 +54,7 @@ auto luaH_getcomps(lua_State* L, UINT offset) -> D3DXVECTOR4
     return {x, y, z, w};
 }
 
-auto luaH_getcolor(lua_State* L, UINT offset) -> DWORD
+auto luaH_getcolor(lua_State* L, unsigned int offset) -> DWORD
 {
     DWORD color = 0x0;
 
@@ -71,13 +71,13 @@ auto luaH_getcolor(lua_State* L, UINT offset) -> DWORD
     {
         color = static_cast<DWORD>(luaL_checkinteger(L, 1 + offset));
     }
-    else if (static_cast<UINT>(lua_gettop(L)) == 3 + offset)
+    else if (static_cast<unsigned int>(lua_gettop(L)) == 3 + offset)
     {
-        UINT r = 0, g = 0, b = 0;
+        unsigned int r = 0, g = 0, b = 0;
 
-        r = static_cast<UINT>(luaL_checknumber(L, 1 + offset));
-        g = static_cast<UINT>(luaL_checknumber(L, 2 + offset));
-        b = static_cast<UINT>(luaL_checknumber(L, 3 + offset));
+        r = static_cast<unsigned int>(luaL_checknumber(L, 1 + offset));
+        g = static_cast<unsigned int>(luaL_checknumber(L, 2 + offset));
+        b = static_cast<unsigned int>(luaL_checknumber(L, 3 + offset));
         color = D3DCOLOR_ARGB(255, r, g, b);
         lua_remove(L, 2 + offset);
         lua_remove(L, 2 + offset);
@@ -86,7 +86,7 @@ auto luaH_getcolor(lua_State* L, UINT offset) -> DWORD
     return color;
 }
 
-auto luaH_getcolorlinear(lua_State* L, UINT offset) -> D3DCOLORVALUE
+auto luaH_getcolorlinear(lua_State* L, unsigned int offset) -> D3DCOLORVALUE
 {
     D3DCOLORVALUE color = {0.0f, 0.0f, 0.0f, 1.0f};
 
@@ -94,7 +94,7 @@ auto luaH_getcolorlinear(lua_State* L, UINT offset) -> D3DCOLORVALUE
     {
         color = *static_cast<D3DCOLORVALUE*>(luaL_checkudata(L, 1 + offset, L_VECTOR));
     }
-    else if (static_cast<UINT>(lua_gettop(L)) == 1 + offset)
+    else if (static_cast<unsigned int>(lua_gettop(L)) == 1 + offset)
     {
         const auto encodedColor = static_cast<DWORD>(luaL_checkinteger(L, 1 + offset));
         BYTE r, g, b, a;
@@ -114,18 +114,18 @@ auto luaH_getcolorlinear(lua_State* L, UINT offset) -> D3DCOLORVALUE
         }
 
         color = {
-            static_cast<FLOAT>(r) / 0xFF, static_cast<FLOAT>(g) / 0xFF, static_cast<FLOAT>(b) / 0xFF,
-            static_cast<FLOAT>(a) / 0xFF
+            static_cast<float>(r) / 0xFF, static_cast<float>(g) / 0xFF, static_cast<float>(b) / 0xFF,
+            static_cast<float>(a) / 0xFF
         };
     }
-    else if (static_cast<UINT>(lua_gettop(L)) == 3 + offset)
+    else if (static_cast<unsigned int>(lua_gettop(L)) == 3 + offset)
     {
-        UINT r = 0, g = 0, b = 0;
+        unsigned int r = 0, g = 0, b = 0;
 
-        r = static_cast<UINT>(luaL_checknumber(L, 1 + offset));
-        g = static_cast<UINT>(luaL_checknumber(L, 2 + offset));
-        b = static_cast<UINT>(luaL_checknumber(L, 3 + offset));
-        color = {static_cast<FLOAT>(r) / 0xFF, static_cast<FLOAT>(g) / 0xFF, static_cast<FLOAT>(b) / 0xFF, 1.0f};
+        r = static_cast<unsigned int>(luaL_checknumber(L, 1 + offset));
+        g = static_cast<unsigned int>(luaL_checknumber(L, 2 + offset));
+        b = static_cast<unsigned int>(luaL_checknumber(L, 3 + offset));
+        color = {static_cast<float>(r) / 0xFF, static_cast<float>(g) / 0xFF, static_cast<float>(b) / 0xFF, 1.0f};
         lua_remove(L, 2 + offset);
         lua_remove(L, 2 + offset);
     }
@@ -188,7 +188,7 @@ LUAF(Base, IsDebugMode)
 
 LUAF(Base, SetFPS)
 {
-    const auto fps = static_cast<FLOAT>(luaL_checknumber(L, 1));
+    const auto fps = static_cast<float>(luaL_checknumber(L, 1));
 
     ENGINE->SetFPS(fps);
 
@@ -207,7 +207,7 @@ LUAF(Base, dofile)
         return 0;
     }
 
-    const INT res = luaL_dostring(L, static_cast<char*>(fd.data));
+    const int res = luaL_dostring(L, static_cast<char*>(fd.data));
     VM->CheckVMErrors(res);
     FILESYSTEM->FreeResource(fd.data);
 
@@ -278,7 +278,7 @@ LUAF(Base, getTime)
 
 ///<END
 
-VOID CLuaBindings::BindBase(lua_State* L)
+void CLuaBindings::BindBase(lua_State* L)
 {
     REGF(Base, ShowMessage);
     REGF(Base, LogString);
@@ -294,7 +294,7 @@ VOID CLuaBindings::BindBase(lua_State* L)
     REGFN(Base, "GetTime", getTime);
 }
 
-VOID CLuaBindings::BindAudio(lua_State* L)
+void CLuaBindings::BindAudio(lua_State* L)
 {
     LuaSound_register(L);
     LuaMusic_register(L);
@@ -303,13 +303,13 @@ VOID CLuaBindings::BindAudio(lua_State* L)
 /// MATH METHODS
 LUAF(Math, Color)
 {
-    const UINT r = static_cast<UINT>(luaL_checknumber(L, 1));
-    const UINT g = static_cast<UINT>(luaL_checknumber(L, 2));
-    const UINT b = static_cast<UINT>(luaL_checknumber(L, 3));
-    UINT a = 0xFF;
+    const unsigned int r = static_cast<unsigned int>(luaL_checknumber(L, 1));
+    const unsigned int g = static_cast<unsigned int>(luaL_checknumber(L, 2));
+    const unsigned int b = static_cast<unsigned int>(luaL_checknumber(L, 3));
+    unsigned int a = 0xFF;
 
     if (lua_gettop(L) == 4)
-        a = static_cast<UINT>(luaL_checknumber(L, 4));
+        a = static_cast<unsigned int>(luaL_checknumber(L, 4));
 
     lua_pushnumber(L, D3DCOLOR_ARGB(a, r, g, b));
     return 1;
@@ -317,13 +317,13 @@ LUAF(Math, Color)
 
 LUAF(Math, ColorLinear)
 {
-    const FLOAT r = static_cast<FLOAT>(luaL_checknumber(L, 1)) / static_cast<FLOAT>(0xFF);
-    const FLOAT g = static_cast<FLOAT>(luaL_checknumber(L, 2)) / static_cast<FLOAT>(0xFF);
-    const FLOAT b = static_cast<FLOAT>(luaL_checknumber(L, 3)) / static_cast<FLOAT>(0xFF);
-    FLOAT a = 0xFF;
+    const float r = static_cast<float>(luaL_checknumber(L, 1)) / static_cast<float>(0xFF);
+    const float g = static_cast<float>(luaL_checknumber(L, 2)) / static_cast<float>(0xFF);
+    const float b = static_cast<float>(luaL_checknumber(L, 3)) / static_cast<float>(0xFF);
+    float a = 0xFF;
 
     if (lua_gettop(L) == 4)
-        a = static_cast<FLOAT>(luaL_checknumber(L, 4)) / static_cast<FLOAT>(0xFF);
+        a = static_cast<float>(luaL_checknumber(L, 4)) / static_cast<float>(0xFF);
 
     lua_pushnumber(L, r);
     lua_pushnumber(L, g);
@@ -367,8 +367,8 @@ LUAF(Math, ScreenToWorld)
 LUAF(Math, str2vec)
 {
     std::string str = std::string(luaL_checkstring(L, 1));
-    FLOAT nums[4] = {0.0f};
-    UINT i = 0;
+    float nums[4] = {0.0f};
+    unsigned int i = 0;
 
     // HACK
     if (str.find("vec(") != std::string::npos)
@@ -383,7 +383,7 @@ LUAF(Math, str2vec)
         if (i >= comps.size())
             break;
 
-        nums[i] = static_cast<FLOAT>(atof(comps.at(i).c_str()));
+        nums[i] = static_cast<float>(atof(comps.at(i).c_str()));
         i++;
     }
 
@@ -405,7 +405,7 @@ LUAF(Math, vec2str)
 
 ///<END
 
-VOID CLuaBindings::BindMath(lua_State* L)
+void CLuaBindings::BindMath(lua_State* L)
 {
     LuaMatrix_register(L);
     LuaVector_register(L);
@@ -427,19 +427,19 @@ LUAF(Rend, ClearScene)
 
 LUAF(Rend, CameraPerspective)
 {
-    const auto fov = static_cast<FLOAT>(luaL_checknumber(L, 1));
-    FLOAT zNear = 0.1f, zFar = 1000.0f;
-    BOOL flipHandedness = FALSE;
+    const auto fov = static_cast<float>(luaL_checknumber(L, 1));
+    float zNear = 0.1f, zFar = 1000.0f;
+    bool flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 3)
     {
-        zNear = static_cast<FLOAT>(luaL_checknumber(L, 2));
-        zFar = static_cast<FLOAT>(luaL_checknumber(L, 3));
+        zNear = static_cast<float>(luaL_checknumber(L, 2));
+        zFar = static_cast<float>(luaL_checknumber(L, 3));
     }
 
     if (lua_gettop(L) >= 4)
     {
-        flipHandedness = static_cast<BOOL>(lua_toboolean(L, 4));
+        flipHandedness = static_cast<bool>(lua_toboolean(L, 4));
     }
 
     D3DXMATRIX matProjection;
@@ -449,7 +449,7 @@ LUAF(Rend, CameraPerspective)
     {
         D3DXMatrixPerspectiveFovRH(&matProjection,
                                    D3DXToRadian(fov),
-                                   static_cast<FLOAT>(res.right) / static_cast<FLOAT>(res.bottom),
+                                   static_cast<float>(res.right) / static_cast<float>(res.bottom),
                                    zNear,
                                    zFar);
     }
@@ -457,7 +457,7 @@ LUAF(Rend, CameraPerspective)
     {
         D3DXMatrixPerspectiveFovLH(&matProjection,
                                    D3DXToRadian(fov),
-                                   static_cast<FLOAT>(res.right) / static_cast<FLOAT>(res.bottom),
+                                   static_cast<float>(res.right) / static_cast<float>(res.bottom),
                                    zNear,
                                    zFar);
     }
@@ -470,27 +470,27 @@ LUAF(Rend, CameraPerspective)
 LUAF(Rend, CameraOrthographic)
 {
     const RECT res = RENDERER->GetSurfaceResolution();
-    auto w = static_cast<FLOAT>(res.right), h = static_cast<FLOAT>(res.bottom);
-    BOOL flipHandedness = FALSE;
+    auto w = static_cast<float>(res.right), h = static_cast<float>(res.bottom);
+    bool flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 2)
     {
-        w = static_cast<FLOAT>(luaL_checknumber(L, 1)) * (static_cast<FLOAT>(res.right) / static_cast<FLOAT>(res.bottom)
+        w = static_cast<float>(luaL_checknumber(L, 1)) * (static_cast<float>(res.right) / static_cast<float>(res.bottom)
         );
-        h = static_cast<FLOAT>(luaL_checknumber(L, 2));
+        h = static_cast<float>(luaL_checknumber(L, 2));
     }
 
-    FLOAT zNear = 0.01f, zFar = 100.0f;
+    float zNear = 0.01f, zFar = 100.0f;
 
     if (lua_gettop(L) >= 4)
     {
-        zNear = static_cast<FLOAT>(luaL_checknumber(L, 3));
-        zFar = static_cast<FLOAT>(luaL_checknumber(L, 4));
+        zNear = static_cast<float>(luaL_checknumber(L, 3));
+        zFar = static_cast<float>(luaL_checknumber(L, 4));
     }
 
     if (lua_gettop(L) >= 5)
     {
-        flipHandedness = static_cast<BOOL>(lua_toboolean(L, 5));
+        flipHandedness = static_cast<bool>(lua_toboolean(L, 5));
     }
 
     D3DXMATRIX matProjection;
@@ -520,29 +520,29 @@ LUAF(Rend, CameraOrthographic)
 LUAF(Rend, CameraOrthographicEx)
 {
     const RECT res = RENDERER->GetSurfaceResolution();
-    FLOAT l = 0.0f, t = 0.0f;
-    auto r = static_cast<FLOAT>(res.right), b = static_cast<FLOAT>(res.bottom);
-    BOOL flipHandedness = FALSE;
+    float l = 0.0f, t = 0.0f;
+    auto r = static_cast<float>(res.right), b = static_cast<float>(res.bottom);
+    bool flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 4)
     {
-        l = static_cast<FLOAT>(luaL_checknumber(L, 1));
-        r = static_cast<FLOAT>(luaL_checknumber(L, 2));
-        b = static_cast<FLOAT>(luaL_checknumber(L, 3));
-        t = static_cast<FLOAT>(luaL_checknumber(L, 4));
+        l = static_cast<float>(luaL_checknumber(L, 1));
+        r = static_cast<float>(luaL_checknumber(L, 2));
+        b = static_cast<float>(luaL_checknumber(L, 3));
+        t = static_cast<float>(luaL_checknumber(L, 4));
     }
 
-    FLOAT zNear = 0.01f, zFar = 100.0f;
+    float zNear = 0.01f, zFar = 100.0f;
 
     if (lua_gettop(L) >= 5)
     {
-        zNear = static_cast<FLOAT>(luaL_checknumber(L, 5));
-        zFar = static_cast<FLOAT>(luaL_checknumber(L, 6));
+        zNear = static_cast<float>(luaL_checknumber(L, 5));
+        zFar = static_cast<float>(luaL_checknumber(L, 6));
     }
 
     if (lua_gettop(L) >= 7)
     {
-        flipHandedness = static_cast<BOOL>(lua_toboolean(L, 7));
+        flipHandedness = static_cast<bool>(lua_toboolean(L, 7));
     }
 
     D3DXMATRIX matProjection;
@@ -635,7 +635,7 @@ LUAF(Rend, IsFocused)
 LUAF(Rend, RenderState)
 {
     const auto kind = static_cast<DWORD>(luaL_checkinteger(L, 1));
-    const BOOL state = static_cast<BOOL>(lua_toboolean(L, 2));
+    const bool state = static_cast<bool>(lua_toboolean(L, 2));
 
     RENDERER->SetRenderState(kind, state);
     return 0;
@@ -643,14 +643,14 @@ LUAF(Rend, RenderState)
 
 LUAF(Rend, ToggleDepthTest)
 {
-    const BOOL state = static_cast<BOOL>(lua_toboolean(L, 1));
+    const bool state = static_cast<bool>(lua_toboolean(L, 1));
     RENDERER->SetRenderState(D3DRS_ZENABLE, state);
     return 0;
 }
 
 LUAF(Rend, ToggleWireframe)
 {
-    const BOOL state = static_cast<BOOL>(lua_toboolean(L, 1));
+    const bool state = static_cast<bool>(lua_toboolean(L, 1));
 
     RENDERER->SetRenderState(D3DRS_FILLMODE, state ? D3DFILL_WIREFRAME : D3DFILL_SOLID);
     RENDERER->SetRenderState(D3DRS_CULLMODE, state ? D3DCULL_NONE : D3DCULL_CCW);
@@ -662,11 +662,11 @@ LUAF(Rend, SetFog)
 {
     const DWORD color = luaH_getcolor(L);
     const auto mode = static_cast<DWORD>(luaL_checkinteger(L, 2));
-    const auto start = static_cast<FLOAT>(luaL_checknumber(L, 3));
-    FLOAT end = 0.0f;
+    const auto start = static_cast<float>(luaL_checknumber(L, 3));
+    float end = 0.0f;
 
     if (mode == D3DFOG_LINEAR)
-        end = static_cast<FLOAT>(luaL_checknumber(L, 4));
+        end = static_cast<float>(luaL_checknumber(L, 4));
 
     RENDERER->SetFog(color, mode, start, end);
     return 0;
@@ -690,7 +690,7 @@ LUAF(Rend, SamplerState)
 
 LUAF(Rend, EnableLighting)
 {
-    const BOOL state = static_cast<BOOL>(lua_toboolean(L, 1));
+    const bool state = static_cast<bool>(lua_toboolean(L, 1));
 
     RENDERER->EnableLighting(state);
     return 0;
@@ -747,12 +747,12 @@ LUAF(Rend, ReadyAlphaBlend)
 
 LUAF(Rend, DrawQuad)
 {
-    const auto x1 = static_cast<FLOAT>(luaL_checknumber(L, 1));
-    const auto x2 = static_cast<FLOAT>(luaL_checknumber(L, 2));
-    const auto y1 = static_cast<FLOAT>(luaL_checknumber(L, 3));
-    const auto y2 = static_cast<FLOAT>(luaL_checknumber(L, 4));
+    const auto x1 = static_cast<float>(luaL_checknumber(L, 1));
+    const auto x2 = static_cast<float>(luaL_checknumber(L, 2));
+    const auto y1 = static_cast<float>(luaL_checknumber(L, 3));
+    const auto y2 = static_cast<float>(luaL_checknumber(L, 4));
     const auto color = static_cast<DWORD>(luaL_checkinteger(L, 5));
-    const BOOL flipY = static_cast<BOOL>(lua_toboolean(L, 6));
+    const bool flipY = static_cast<bool>(lua_toboolean(L, 6));
 
     RENDERER->DrawQuad(x1, x2, y1, y2, color, flipY);
     return 0;
@@ -761,11 +761,11 @@ LUAF(Rend, DrawQuad)
 LUAF(Rend, DrawQuadEx)
 {
     const D3DXVECTOR3 pos = *static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 1, L_VECTOR));
-    const auto w = static_cast<FLOAT>(luaL_checknumber(L, 2));
-    const auto h = static_cast<FLOAT>(luaL_checknumber(L, 3));
+    const auto w = static_cast<float>(luaL_checknumber(L, 2));
+    const auto h = static_cast<float>(luaL_checknumber(L, 3));
     const auto color = static_cast<DWORD>(luaL_checkinteger(L, 4));
-    const BOOL usesDepth = static_cast<BOOL>(lua_toboolean(L, 5));
-    const BOOL flipY = static_cast<BOOL>(lua_toboolean(L, 6));
+    const bool usesDepth = static_cast<bool>(lua_toboolean(L, 5));
+    const bool flipY = static_cast<bool>(lua_toboolean(L, 6));
 
     RENDERER->DrawQuadEx(pos.x, pos.y, pos.z, w, h, color, usesDepth, flipY);
     return 0;
@@ -773,12 +773,12 @@ LUAF(Rend, DrawQuadEx)
 
 LUAF(Rend, DrawQuad3D)
 {
-    const auto x1 = static_cast<FLOAT>(luaL_checknumber(L, 1));
-    const auto x2 = static_cast<FLOAT>(luaL_checknumber(L, 2));
-    const auto y1 = static_cast<FLOAT>(luaL_checknumber(L, 3));
-    const auto y2 = static_cast<FLOAT>(luaL_checknumber(L, 4));
-    const auto z1 = static_cast<FLOAT>(luaL_checknumber(L, 5));
-    const auto z2 = static_cast<FLOAT>(luaL_checknumber(L, 6));
+    const auto x1 = static_cast<float>(luaL_checknumber(L, 1));
+    const auto x2 = static_cast<float>(luaL_checknumber(L, 2));
+    const auto y1 = static_cast<float>(luaL_checknumber(L, 3));
+    const auto y2 = static_cast<float>(luaL_checknumber(L, 4));
+    const auto z1 = static_cast<float>(luaL_checknumber(L, 5));
+    const auto z2 = static_cast<float>(luaL_checknumber(L, 6));
     const auto color = static_cast<DWORD>(luaL_checkinteger(L, 7));
 
     RENDERER->DrawQuad3D(x1, x2, y1, y2, z1, z2, color);
@@ -797,7 +797,7 @@ LUAF(Rend, DrawPolygon)
 
 LUAF(Rend, CullMode)
 {
-    const UINT mode = static_cast<UINT>(luaL_checkinteger(L, 1));
+    const unsigned int mode = static_cast<unsigned int>(luaL_checkinteger(L, 1));
     RENDERER->SetRenderState(D3DRS_CULLMODE, mode);
     return 0;
 }
@@ -805,16 +805,16 @@ LUAF(Rend, CullMode)
 LUAF(Rend, FillScreen)
 {
     DWORD color = 0x00FFFFFF;
-    BOOL flipY = FALSE;
+    bool flipY = FALSE;
 
     if (lua_gettop(L) >= 1)
         color = static_cast<DWORD>(lua_tointeger(L, 1));
 
     if (lua_gettop(L) >= 2)
-        flipY = static_cast<BOOL>(lua_toboolean(L, 2));
+        flipY = static_cast<bool>(lua_toboolean(L, 2));
 
     const RECT res = RENDERER->GetResolution();
-    RENDERER->DrawQuad(0, static_cast<FLOAT>(res.right), 0, static_cast<FLOAT>(res.bottom), color, flipY);
+    RENDERER->DrawQuad(0, static_cast<float>(res.right), 0, static_cast<float>(res.bottom), color, flipY);
     return 0;
 }
 
@@ -827,7 +827,7 @@ LUAF(Rend, RegisterFontFile)
 
 ///<END
 
-VOID CLuaBindings::BindRenderer(lua_State* L)
+void CLuaBindings::BindRenderer(lua_State* L)
 {
     REGF(Rend, ClearScene);
     REGF(Rend, CameraPerspective);
@@ -966,7 +966,7 @@ LUAF(Input, IsCursorVisible)
 
 LUAF(Input, ShowCursor)
 {
-    const BOOL state = static_cast<BOOL>(lua_toboolean(L, 1));
+    const bool state = static_cast<bool>(lua_toboolean(L, 1));
     INPUT->SetCursor(state);
     return 0;
 }
@@ -1051,8 +1051,8 @@ LUAF(Input, GetMouseDelta)
 
 LUAF(Input, SetMouseXY)
 {
-    const auto x = static_cast<SHORT>(luaL_checkinteger(L, 1));
-    const auto y = static_cast<SHORT>(luaL_checkinteger(L, 2));
+    const auto x = static_cast<short>(luaL_checkinteger(L, 1));
+    const auto y = static_cast<short>(luaL_checkinteger(L, 2));
     INPUT->SetMouseXY(x, y);
 
     return 0;
@@ -1073,7 +1073,7 @@ LUAF(Input, SetCursorMode)
 
 ///<END
 
-VOID CLuaBindings::BindInput(lua_State* L)
+void CLuaBindings::BindInput(lua_State* L)
 {
     REGF(Input, GetKey);
     REGF(Input, GetKeyDown);

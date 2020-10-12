@@ -19,52 +19,52 @@ public:
     CRenderer();
 
     auto CreateDevice(HWND window, RECT winres) -> LRESULT;
-    VOID ResetDevice(VOID);
-    auto Release(VOID) -> BOOL;
-    VOID Resize(RECT res);
-    VOID SetVSYNC(BOOL state);
-    VOID Blit(VOID);
-    VOID BeginRender(VOID);
-    VOID EndRender(VOID);
+    void ResetDevice(void);
+    auto Release(void) -> bool;
+    void Resize(RECT res);
+    void SetVSYNC(bool state);
+    void Blit(void);
+    void BeginRender(void);
+    void EndRender(void);
 
     /// Render commands
-    VOID DrawMesh(const RENDERDATA& data);
-    VOID DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY = FALSE);
-    VOID DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD color, BOOL usesDepth, BOOL flipY = FALSE);
-    VOID DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLOAT z2, DWORD color);
-    VOID DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c);
-    VOID DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color);
-    VOID ClearBuffer(D3DCOLOR color, UINT flags = CLEARFLAG_STANDARD);
-    VOID SetMaterial(DWORD stage, CMaterial* mat);
-    VOID SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
-    VOID SetMatrix(UINT matrixKind, const D3DXMATRIX& mat);
-    VOID ResetMatrices();
-    VOID SetRenderTarget(CRenderTarget* target);
-    VOID SetRenderState(DWORD kind, DWORD value);
-    VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
-    VOID SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end = 0.0f);
-    VOID ClearFog();
+    void DrawMesh(const RENDERDATA& data);
+    void DrawQuad(float x1, float x2, float y1, float y2, DWORD color, bool flipY = FALSE);
+    void DrawQuadEx(float x, float y, float z, float w, float h, DWORD color, bool usesDepth, bool flipY = FALSE);
+    void DrawQuad3D(float x1, float x2, float y1, float y2, float z1, float z2, DWORD color);
+    void DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c);
+    void DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color);
+    void ClearBuffer(D3DCOLOR color, unsigned int flags = CLEARFLAG_STANDARD);
+    void SetMaterial(DWORD stage, CMaterial* mat);
+    void SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle);
+    void SetMatrix(unsigned int matrixKind, const D3DXMATRIX& mat);
+    void ResetMatrices();
+    void SetRenderTarget(CRenderTarget* target);
+    void SetRenderState(DWORD kind, DWORD value);
+    void SetSamplerState(DWORD stage, DWORD kind, DWORD value);
+    void SetFog(DWORD color, DWORD mode, float start, float end = 0.0f);
+    void ClearFog();
     auto GetSurfaceResolution() -> RECT;
 
-    VOID EnableLighting(BOOL state) { mEnableLighting = state; }
-    auto GetLightingState() const -> BOOL { return mEnableLighting; }
-    VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
+    void EnableLighting(bool state) { mEnableLighting = state; }
+    auto GetLightingState() const -> bool { return mEnableLighting; }
+    void SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
-    VOID SetDefaultRenderStates();
+    void SetDefaultRenderStates();
 
     /// Accessors
     auto GetDevice() const -> LPDIRECT3DDEVICE9 { return mDevice; }
     auto GetResolution() const -> RECT { return mLastRes; }
-    auto GetLocalCoordinates(VOID) const -> RECT;
-    auto GetDeviceMatrix(UINT kind) -> D3DMATRIX;
+    auto GetLocalCoordinates(void) const -> RECT;
+    auto GetDeviceMatrix(unsigned int kind) -> D3DMATRIX;
     auto GetWindow() const -> HWND { return mWindow; }
     auto GetActiveEffect() const -> CEffect* { return mActiveEffect; }
     auto GetDisplayDesc() const -> D3DSURFACE_DESC { return mDisplayDesc; }
-    auto IsLightingEnabled() const -> BOOL { return mEnableLighting; }
-    auto IsFocused() const -> BOOL { return GetActiveWindow() == mWindow; }
+    auto IsLightingEnabled() const -> bool { return mEnableLighting; }
+    auto IsFocused() const -> bool { return GetActiveWindow() == mWindow; }
     auto GetDefaultMaterial() const -> CMaterial* { return mDefaultMaterial; }
-    auto UsesMaterialOverride() const -> BOOL { return mUsesMaterialOverride; }
-    VOID MarkMaterialOverride(BOOL state) { mUsesMaterialOverride = state; }
+    auto UsesMaterialOverride() const -> bool { return mUsesMaterialOverride; }
+    void MarkMaterialOverride(bool state) { mUsesMaterialOverride = state; }
 
 protected:
     LPDIRECT3D9 mDirect9;
@@ -77,15 +77,15 @@ protected:
     CRenderTarget* mActiveTarget;
     CMaterial* mDefaultMaterial;
     LPD3DXMESH mDefaultBox;
-    BOOL mUsesMaterialOverride;
+    bool mUsesMaterialOverride;
 
     D3DSURFACE_DESC mDisplayDesc;
-    BOOL mVsync;
-    BOOL mFullscreen;
-    BOOL mEnableLighting;
+    bool mVsync;
+    bool mFullscreen;
+    bool mEnableLighting;
     VERTEX mImmediateBuffer[3];
 
-    VOID Clear(VOID);
-    VOID BuildParams(VOID);
-    VOID PrepareEffectDraw();
+    void Clear(void);
+    void BuildParams(void);
+    void PrepareEffectDraw();
 };

@@ -31,8 +31,8 @@
 
 extern aiMatrix4x4 ComputeFinalTransformation(const aiNode* node);
 
-VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node,
-                                        BOOL loadMaterials)
+void CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node,
+                                        bool loadMaterials)
 {
     aiMatrix4x4 mat = impNode->mTransformation;
     mat = mat.Transpose();
@@ -47,7 +47,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
 
     if (impNode->mMetaData)
     {
-        for (UINT i = 0; i < impNode->mMetaData->mNumProperties; ++i)
+        for (unsigned int i = 0; i < impNode->mMetaData->mNumProperties; ++i)
         {
             aiString k = impNode->mMetaData->mKeys[i];
             const aiMetadataEntry* e = &impNode->mMetaData->mValues[i];
@@ -84,7 +84,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     aiString lastMeshName = aiString("(unknown)");
     CMesh* lastMesh = nullptr;
 
-    for (UINT i = 0; i < impNode->mNumMeshes; ++i)
+    for (unsigned int i = 0; i < impNode->mNumMeshes; ++i)
     {
         const aiMesh* impMesh = impScene->mMeshes[impNode->mMeshes[i]];
 
@@ -115,7 +115,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     }
 
     // Load light
-    for (UINT i = 0; i < impScene->mNumLights; i++)
+    for (unsigned int i = 0; i < impScene->mNumLights; i++)
     {
         const aiLight* impLight = impScene->mLights[i];
         if (!strcmp(impNode->mName.C_Str(), impLight->mName.C_Str()))
@@ -127,13 +127,13 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
     }
 
     // Iterate over children
-    for (UINT i = 0; i < impNode->mNumChildren; i++)
+    for (unsigned int i = 0; i < impNode->mNumChildren; i++)
     {
         LoadNodesRecursively(impScene, impNode->mChildren[i], scene, newNode, loadMaterials);
     }
 }
 
-BOOL CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials, BOOL optimizeMeshes)
+bool CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, bool loadMaterials, bool optimizeMeshes)
 {
     Assimp::Importer imp;
     imp.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, 32762);
@@ -155,11 +155,11 @@ BOOL CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials
     return TRUE;
 }
 
-CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, BOOL loadMaterials)
+CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh, bool loadMaterials)
 {
     CFaceGroup* newFGroup = new CFaceGroup();
 
-    for (UINT i = 0; i < mesh->mNumVertices; i++)
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         VERTEX vert = {0};
 
@@ -223,7 +223,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         newFGroup->AddVertex(vert);
     }
 
-    for (UINT i = 0; i < mesh->mNumFaces; i++)
+    for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         const aiFace face = mesh->mFaces[i];
 
@@ -262,7 +262,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
         mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
         newMaterial->SetEmission(D3DCOLORVALUE{emissive.r, emissive.g, emissive.b});
 
-        FLOAT opacity = 1.0f;
+        float opacity = 1.0f;
         mat->Get(AI_MATKEY_OPACITY, opacity);
         newMaterial->SetOpacity(opacity);
 
@@ -314,8 +314,8 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
     return lit;
 }
 
-VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot,
-                                  UINT texType)
+void CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, unsigned int slot,
+                                  unsigned int texType)
 {
     aiString path;
     mat->GetTexture(static_cast<aiTextureType>(texType), 0, &path);
@@ -344,9 +344,9 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
     D3DSURFACE_DESC a;
     newMaterial->GetTextureHandle(slot)->GetLevelDesc(0, &a);
 
-    UINT* buf = static_cast<UINT*>(newMaterial->Lock(slot));
+    unsigned int* buf = static_cast<unsigned int*>(newMaterial->Lock(slot));
 
-    for (UINT i = 0; i < (a.Width * a.Height); i++)
+    for (unsigned int i = 0; i < (a.Width * a.Height); i++)
     {
         if (((buf[i] << 24) & 0xFF) < 1.0f)
         {

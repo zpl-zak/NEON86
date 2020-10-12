@@ -3,15 +3,15 @@
 #include "engine.h"
 #include "Renderer.h"
 
-CInput::CInput(VOID)
+CInput::CInput(void)
 {
-    ZeroMemory(mKeys, NUM_KEYS * sizeof(BOOL));
-    ZeroMemory(mKeysDown, NUM_KEYS * sizeof(BOOL));
-    ZeroMemory(mKeysUp, NUM_KEYS * sizeof(BOOL));
+    ZeroMemory(mKeys, NUM_KEYS * sizeof(bool));
+    ZeroMemory(mKeysDown, NUM_KEYS * sizeof(bool));
+    ZeroMemory(mKeysUp, NUM_KEYS * sizeof(bool));
 
-    ZeroMemory(mMouseInputs, NUM_MOUSEBUTTONS * sizeof(BOOL));
-    ZeroMemory(mMouseDown, NUM_MOUSEBUTTONS * sizeof(BOOL));
-    ZeroMemory(mMouseUp, NUM_MOUSEBUTTONS * sizeof(BOOL));
+    ZeroMemory(mMouseInputs, NUM_MOUSEBUTTONS * sizeof(bool));
+    ZeroMemory(mMouseDown, NUM_MOUSEBUTTONS * sizeof(bool));
+    ZeroMemory(mMouseUp, NUM_MOUSEBUTTONS * sizeof(bool));
 
     mLastKey = -1;
     mCursorMode = CURSORMODE_DEFAULT;
@@ -23,11 +23,11 @@ CInput::CInput(VOID)
     #endif
 }
 
-VOID CInput::Release(VOID)
+void CInput::Release(void)
 {
 }
 
-auto CInput::GetMouseXY(VOID) -> POINT
+auto CInput::GetMouseXY(void) -> POINT
 {
     POINT newPos = {0};
     GetCursorPos(&newPos);
@@ -36,7 +36,7 @@ auto CInput::GetMouseXY(VOID) -> POINT
     return newPos;
 }
 
-VOID CInput::SetCursor(BOOL state) const
+void CInput::SetCursor(bool state) const
 {
     if (GetCursor() == state)
         return;
@@ -49,7 +49,7 @@ VOID CInput::SetCursor(BOOL state) const
     ShowCursor(state);
 }
 
-auto CInput::GetCursor(VOID) -> BOOL
+auto CInput::GetCursor(void) -> bool
 {
     CURSORINFO pci = {0};
     pci.cbSize = sizeof(CURSORINFO);
@@ -58,7 +58,7 @@ auto CInput::GetCursor(VOID) -> BOOL
     return pci.flags == CURSOR_SHOWING;
 }
 
-VOID CInput::SetCursorMode(UCHAR mode)
+void CInput::SetCursorMode(UCHAR mode)
 {
     if (mCursorMode == mode)
         return;
@@ -73,19 +73,19 @@ VOID CInput::SetCursorMode(UCHAR mode)
     if (mCursorMode == CURSORMODE_CENTERED || mCursorMode == CURSORMODE_WRAPPED)
     {
         const auto res = RENDERER->GetResolution();
-        SetMouseXY(static_cast<SHORT>(res.right / 2.0f), static_cast<SHORT>(res.bottom / 2.0f));
+        SetMouseXY(static_cast<short>(res.right / 2.0f), static_cast<short>(res.bottom / 2.0f));
         mLastMousePos = GetMouseXY();
     }
 }
 
-VOID CInput::SetMouseXY(SHORT x, SHORT y)
+void CInput::SetMouseXY(short x, short y)
 {
     POINT pos = {x, y};
     ClientToScreen(RENDERER->GetWindow(), &pos);
     SetCursorPos(pos.x, pos.y);
 }
 
-VOID CInput::Update(VOID)
+void CInput::Update(void)
 {
     #ifdef _DEBUG
     if (this->GetKeyDown(VK_F1))
@@ -100,13 +100,13 @@ VOID CInput::Update(VOID)
     }
     #endif
 
-    for (UINT i = 0; i < NUM_MOUSEBUTTONS; i++)
+    for (unsigned int i = 0; i < NUM_MOUSEBUTTONS; i++)
     {
         SetMouseDown(i, FALSE);
         SetMouseUp(i, FALSE);
     }
 
-    for (UINT i = 0; i < NUM_KEYS; i++)
+    for (unsigned int i = 0; i < NUM_KEYS; i++)
     {
         SetKeyDown(i, FALSE);
         SetKeyUp(i, FALSE);
@@ -127,7 +127,7 @@ VOID CInput::Update(VOID)
                 static_cast<LONG>(res.right / 2.0f),
                 static_cast<LONG>(res.bottom / 2.0f)
             };
-            SetMouseXY(static_cast<SHORT>(pos.x), static_cast<SHORT>(pos.y));
+            SetMouseXY(static_cast<short>(pos.x), static_cast<short>(pos.y));
             mousePos = pos;
         }
         break;
@@ -151,7 +151,7 @@ VOID CInput::Update(VOID)
 
             ScreenToClient(RENDERER->GetWindow(), &pos);
 
-            SetMouseXY(static_cast<SHORT>(pos.x), static_cast<SHORT>(pos.y));
+            SetMouseXY(static_cast<short>(pos.x), static_cast<short>(pos.y));
             mousePos = pos;
         }
         break;

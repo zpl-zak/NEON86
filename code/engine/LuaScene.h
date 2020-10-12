@@ -8,7 +8,7 @@
 #include "Light.h"
 #include "Node.h"
 
-auto scene_new(lua_State* L) -> INT
+auto scene_new(lua_State* L) -> int
 {
     LPCSTR modelPath = nullptr;
     auto loadMaterials = TRUE;
@@ -18,10 +18,10 @@ auto scene_new(lua_State* L) -> INT
         modelPath = lua_tostring(L, 1);
 
     if (lua_gettop(L) >= 2)
-        loadMaterials = static_cast<UINT>(lua_toboolean(L, 2));
+        loadMaterials = static_cast<unsigned int>(lua_toboolean(L, 2));
 
     if (lua_gettop(L) >= 3)
-        optimizeMesh = static_cast<UINT>(lua_toboolean(L, 3));
+        optimizeMesh = static_cast<unsigned int>(lua_toboolean(L, 3));
 
     const auto scene = static_cast<CScene**>(lua_newuserdata(L, sizeof(CScene*)));
     *scene = new CScene();
@@ -34,13 +34,13 @@ auto scene_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_getmeshes(lua_State* L) -> INT
+static auto scene_getmeshes(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < scene->GetNumMeshes(); i++)
+    for (unsigned int i = 0; i < scene->GetNumMeshes(); i++)
     {
         const auto mesh = scene->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -51,13 +51,13 @@ static auto scene_getmeshes(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_getlights(lua_State* L) -> INT
+static auto scene_getlights(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < scene->GetNumLights(); i++)
+    for (unsigned int i = 0; i < scene->GetNumLights(); i++)
     {
         const auto lit = scene->GetLightData()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -68,13 +68,13 @@ static auto scene_getlights(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_gettargets(lua_State* L) -> INT
+static auto scene_gettargets(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < scene->GetNumNodes(); i++)
+    for (unsigned int i = 0; i < scene->GetNumNodes(); i++)
     {
         auto tgt = scene->GetNodeData()[i];
 
@@ -90,13 +90,13 @@ static auto scene_gettargets(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_getflattennodes(lua_State* L) -> INT
+static auto scene_getflattennodes(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < scene->GetNumNodes(); i++)
+    for (unsigned int i = 0; i < scene->GetNumNodes(); i++)
     {
         const auto tgt = scene->GetNodeData()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -107,7 +107,7 @@ static auto scene_getflattennodes(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_draw(lua_State* L) -> INT
+static auto scene_draw(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
     auto mat = &D3DXMATRIX();
@@ -124,10 +124,10 @@ static auto scene_draw(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_drawsubset(lua_State* L) -> INT
+static auto scene_drawsubset(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
-    const auto subset = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    const auto subset = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
     auto mat = &D3DXMATRIX();
     D3DXMatrixIdentity(mat);
 
@@ -142,7 +142,7 @@ static auto scene_drawsubset(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_loadmodel(lua_State* L) -> INT
+static auto scene_loadmodel(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
     const auto meshName = (LPSTR)luaL_checkstring(L, 2);
@@ -150,10 +150,10 @@ static auto scene_loadmodel(lua_State* L) -> INT
     auto optimizeMesh = FALSE;
 
     if (lua_gettop(L) >= 3)
-        loadMaterials = static_cast<UINT>(luaL_checkinteger(L, 3));
+        loadMaterials = static_cast<unsigned int>(luaL_checkinteger(L, 3));
 
     if (lua_gettop(L) >= 4)
-        optimizeMesh = static_cast<UINT>(lua_toboolean(L, 4));
+        optimizeMesh = static_cast<unsigned int>(lua_toboolean(L, 4));
 
     scene->LoadScene(meshName, loadMaterials, optimizeMesh);
 
@@ -161,7 +161,7 @@ static auto scene_loadmodel(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_findmesh(lua_State* L) -> INT
+static auto scene_findmesh(lua_State* L) -> int
 {
     auto scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
     const auto meshName = (LPSTR)luaL_checkstring(L, 2);
@@ -177,7 +177,7 @@ static auto scene_findmesh(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_findlight(lua_State* L) -> INT
+static auto scene_findlight(lua_State* L) -> int
 {
     CScene* scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
     const auto lightName = (LPSTR)luaL_checkstring(L, 2);
@@ -193,7 +193,7 @@ static auto scene_findlight(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_findtarget(lua_State* L) -> INT
+static auto scene_findtarget(lua_State* L) -> int
 {
     CScene* scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
     const auto targetName = (LPSTR)luaL_checkstring(L, 2);
@@ -210,7 +210,7 @@ static auto scene_findtarget(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_getrootnode(lua_State* L) -> INT
+static auto scene_getrootnode(lua_State* L) -> int
 {
     CScene* scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
 
@@ -225,7 +225,7 @@ static auto scene_getrootnode(lua_State* L) -> INT
     return 1;
 }
 
-static auto scene_delete(lua_State* L) -> INT
+static auto scene_delete(lua_State* L) -> int
 {
     CScene* scene = *static_cast<CScene**>(luaL_checkudata(L, 1, L_SCENE));
 
@@ -235,7 +235,7 @@ static auto scene_delete(lua_State* L) -> INT
 }
 
 
-static VOID LuaScene_register(lua_State* L)
+static void LuaScene_register(lua_State* L)
 {
     lua_register(L, L_SCENE, scene_new);
     lua_register(L, "Model", scene_new);

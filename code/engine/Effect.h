@@ -10,30 +10,30 @@ class ENGINE_API CEffect : public CAllocable<CEffect>
 {
 public:
     CEffect();
-    VOID LoadEffect(LPCSTR effectPath);
-    VOID Release();
+    void LoadEffect(LPCSTR effectPath);
+    void Release();
 
-    auto Begin(LPCSTR technique) -> UINT;
+    auto Begin(LPCSTR technique) -> unsigned int;
     auto End() -> HRESULT;
 
-    auto FindPass(LPCSTR passName) -> UINT;
-    auto BeginPass(UINT passID) -> HRESULT;
+    auto FindPass(LPCSTR passName) -> unsigned int;
+    auto BeginPass(unsigned int passID) -> HRESULT;
     auto EndPass() -> HRESULT;
     auto CommitChanges() -> HRESULT;
 
     // Uniforms
-    VOID SetInteger(LPCSTR name, DWORD value);
-    VOID SetFloat(LPCSTR name, FLOAT value);
-    VOID SetMatrix(LPCSTR name, D3DXMATRIX value, BOOL transpose = FALSE);
-    VOID SetColor(LPCSTR name, D3DCOLORVALUE value);
-    VOID SetTexture(LPCSTR name, IDirect3DTexture9* value);
-    VOID SetLight(LPCSTR name, CLight* value);
-    VOID SetVector3(LPCSTR name, D3DXVECTOR3 value);
-    VOID SetVector4(LPCSTR name, D3DXVECTOR4 value);
-    VOID SetBool(LPCSTR name, BOOL value);
+    void SetInteger(LPCSTR name, DWORD value);
+    void SetFloat(LPCSTR name, float value);
+    void SetMatrix(LPCSTR name, D3DXMATRIX value, bool transpose = FALSE);
+    void SetColor(LPCSTR name, D3DCOLORVALUE value);
+    void SetTexture(LPCSTR name, IDirect3DTexture9* value);
+    void SetLight(LPCSTR name, CLight* value);
+    void SetVector3(LPCSTR name, D3DXVECTOR3 value);
+    void SetVector4(LPCSTR name, D3DXVECTOR4 value);
+    void SetBool(LPCSTR name, bool value);
 private:
     ID3DXEffect* mEffect;
 
-    VOID SetDefaults();
+    void SetDefaults();
     auto GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR;
 };

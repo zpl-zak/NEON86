@@ -28,7 +28,7 @@ public:
         mPaused = FALSE;
     }
 
-    VOID Push(FLOAT ms)
+    void Push(float ms)
     {
         if (VM->GetStatus() != PLAYKIND_PLAYING)
             return;
@@ -49,7 +49,7 @@ public:
         }
     }
 
-    auto GetMaxMS() -> FLOAT
+    auto GetMaxMS() -> float
     {
         for (auto m : mData)
         {
@@ -62,7 +62,7 @@ public:
         return mMaxima;
     }
 
-    auto GetMinMS() -> FLOAT
+    auto GetMinMS() -> float
     {
         for (auto m : mData)
         {
@@ -75,14 +75,14 @@ public:
         return mMinima;
     }
 
-    auto GetData() const -> FLOAT* { return mData.GetData(); }
-    auto GetCount() const -> UINT { return mData.GetCount(); }
+    auto GetData() const -> float* { return mData.GetData(); }
+    auto GetCount() const -> unsigned int { return mData.GetCount(); }
 
-    VOID Render()
+    void Render()
     {
         const auto res = RENDERER->GetResolution();
         ImGui::SetNextWindowSize({316, 440}, ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowPos(ImVec2(0, static_cast<FLOAT>(res.bottom) - 440), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(0, static_cast<float>(res.bottom) - 440), ImGuiCond_FirstUseEver);
         ImGui::Begin("Profiler", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         {
             ImGui::Columns(2, "profiler");
@@ -98,7 +98,7 @@ public:
             {
                 ImGui::Separator();
 
-                for (UINT i = 0; i < ENGINE->DefaultProfiling.GetProfilers().GetCount(); i++)
+                for (unsigned int i = 0; i < ENGINE->DefaultProfiling.GetProfilers().GetCount(); i++)
                 {
                     const auto profiler = ENGINE->DefaultProfiling.GetProfilers()[i];
                     ImGui::Text("%s Time", profiler->GetName().Str());
@@ -170,7 +170,7 @@ public:
             {
                 auto avgMs = 0.0f;
 
-                for (UINT i = 0; i < mData.GetCount(); i++)
+                for (unsigned int i = 0; i < mData.GetCount(); i++)
                     avgMs += mData[i];
 
                 avgMs /= mData.GetCount();
@@ -185,8 +185,8 @@ public:
     }
 
 private:
-    CArray<FLOAT> mData;
-    FLOAT mMaxima, mMinima;
+    CArray<float> mData;
+    float mMaxima, mMinima;
     UINT32 mSelectionStart;
     UINT32 mSelectionLength;
     bool mPaused;
@@ -202,14 +202,14 @@ public:
         mPaused = FALSE;
     }
 
-    VOID Clear()
+    void Clear()
     {
         mBuffer.clear();
         mLineOffsets.clear();
         mLineOffsets.push_back(0);
     }
 
-    VOID Push(LPCSTR msg)
+    void Push(LPCSTR msg)
     {
         if (mPaused)
             return;
@@ -223,20 +223,20 @@ public:
         }
     }
 
-    VOID Pause()
+    void Pause()
     {
         mPaused = !mPaused;
     }
 
-    VOID Render()
+    void Render()
     {
         const auto res = RENDERER->GetResolution();
 
         ImGui::SetNextWindowSizeConstraints({220, 300}, {
-                                                static_cast<FLOAT>(res.right), static_cast<FLOAT>(res.bottom)
+                                                static_cast<float>(res.right), static_cast<float>(res.bottom)
                                             });
         ImGui::SetNextWindowSize({576, 408}, ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowPos(ImVec2(static_cast<FLOAT>(res.right) - 576, static_cast<FLOAT>(res.bottom) - 408),
+        ImGui::SetNextWindowPos(ImVec2(static_cast<float>(res.right) - 576, static_cast<float>(res.bottom) - 408),
                                 ImGuiCond_FirstUseEver);
         ImGui::Begin("Output", nullptr);
         {
@@ -300,7 +300,7 @@ public:
 
 private:
     ImGuiTextBuffer mBuffer;
-    ImVector<INT> mLineOffsets;
+    ImVector<int> mLineOffsets;
     bool mAutoScroll;
     bool mPaused;
 } sLogWindow;
@@ -331,7 +331,7 @@ CUserInterface::CUserInterface()
     D3DXCreateSprite(RENDERER->GetDevice(), &mTextSurface);
 }
 
-auto CUserInterface::Release(VOID) -> BOOL
+auto CUserInterface::Release(void) -> bool
 {
     #ifdef _DEBUG
     ImGui::SaveIniSettingsToDisk("imgui.ini");
@@ -344,11 +344,11 @@ auto CUserInterface::Release(VOID) -> BOOL
     return TRUE;
 }
 
-VOID CUserInterface::Update(FLOAT dt)
+void CUserInterface::Update(float dt)
 {
 }
 
-VOID CUserInterface::Render(VOID)
+void CUserInterface::Render(void)
 {
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -367,18 +367,18 @@ VOID CUserInterface::Render(VOID)
     ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
 
-VOID CUserInterface::RenderHook(VOID) const
+void CUserInterface::RenderHook(void) const
 {
     if (*mDraw2DHook)
         (*mDraw2DHook)();
 }
 
-VOID CUserInterface::PushMS(FLOAT ms)
+void CUserInterface::PushMS(float ms)
 {
     sFramerateStats.Push(ms);
 }
 
-VOID CUserInterface::PushLog(LPCSTR msg, BOOL noHist)
+void CUserInterface::PushLog(LPCSTR msg, bool noHist)
 {
     OutputDebugStringA(msg);
 
@@ -388,14 +388,14 @@ VOID CUserInterface::PushLog(LPCSTR msg, BOOL noHist)
     #endif
 }
 
-extern IMGUI_IMPL_API auto ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+extern IMGUI_IMPL_API auto ImGui_ImplWin32_WndProcHandler(HWND hWnd, unsigned int msg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
-auto CUserInterface::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto CUserInterface::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 }
 
-VOID CUserInterface::ClearErrorWindow()
+void CUserInterface::ClearErrorWindow()
 {
     #ifdef _DEBUG
     mShowError = FALSE;
@@ -403,7 +403,7 @@ VOID CUserInterface::ClearErrorWindow()
     #endif
 }
 
-VOID CUserInterface::PushErrorMessage(LPCSTR err)
+void CUserInterface::PushErrorMessage(LPCSTR err)
 {
     #ifdef _DEBUG
     mShowError = TRUE;
@@ -413,7 +413,7 @@ VOID CUserInterface::PushErrorMessage(LPCSTR err)
     #endif
 }
 
-VOID CUserInterface::DebugPanel(VOID) const
+void CUserInterface::DebugPanel(void) const
 {
     #ifdef _DEBUG
     ImGui::BeginMainMenuBar();
@@ -487,7 +487,7 @@ auto CUserInterface::FormatBytes(UINT64 bytes) -> CString
     return ss.str().c_str();
 }
 
-VOID CUserInterface::SetupRender2D()
+void CUserInterface::SetupRender2D()
 {
     auto dev = RENDERER->GetDevice();
     dev->SetPixelShader(nullptr);

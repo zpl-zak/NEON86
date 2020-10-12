@@ -7,7 +7,7 @@
 
 #include "Material.h"
 
-CFaceGroup::CFaceGroup(VOID): CAllocable()
+CFaceGroup::CFaceGroup(void): CAllocable()
 {
     ZeroMemory(&mData, sizeof(RENDERDATA));
     mData.kind = PRIMITIVEKIND_TRIANGLELIST;
@@ -19,7 +19,7 @@ CFaceGroup::~CFaceGroup()
     Release();
 }
 
-VOID CFaceGroup::Release(VOID)
+void CFaceGroup::Release(void)
 {
     if (DelRef())
     {
@@ -31,24 +31,24 @@ VOID CFaceGroup::Release(VOID)
     }
 }
 
-VOID CFaceGroup::SetMaterial(CMaterial* tex)
+void CFaceGroup::SetMaterial(CMaterial* tex)
 {
     mData.mat = tex;
 }
 
-VOID CFaceGroup::AddVertex(const VERTEX& vertex)
+void CFaceGroup::AddVertex(const VERTEX& vertex)
 {
     mIsDirty = TRUE;
     mVerts.Push(vertex);
 }
 
-VOID CFaceGroup::AddIndex(SHORT index)
+void CFaceGroup::AddIndex(short index)
 {
     mIsDirty = TRUE;
     mIndices.Push(index);
 }
 
-VOID CFaceGroup::Draw(D3DXMATRIX* mat)
+void CFaceGroup::Draw(D3DXMATRIX* mat)
 {
     if (!mData.mesh || mIsDirty)
         Build();
@@ -60,7 +60,7 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
     }
     else mData.usesMatrix = FALSE;
 
-    BOOL isGlobalShadingEnabled = RENDERER->GetLightingState();
+    bool isGlobalShadingEnabled = RENDERER->GetLightingState();
 
     if (isGlobalShadingEnabled && mData.mat)
         RENDERER->EnableLighting(mData.mat->GetMaterialData().Shaded);
@@ -78,7 +78,7 @@ VOID CFaceGroup::Draw(D3DXMATRIX* mat)
         mData.mat->Unbind(0);
 }
 
-VOID CFaceGroup::CalculateNormals()
+void CFaceGroup::CalculateNormals()
 {
     if (!mData.mesh)
     {
@@ -90,10 +90,10 @@ VOID CFaceGroup::CalculateNormals()
     D3DXComputeNormals(mData.mesh, nullptr);
 }
 
-VOID CFaceGroup::Build(VOID)
+void CFaceGroup::Build(void)
 {
     LPDIRECT3DDEVICE9 dev = RENDERER->GetDevice();
-    VOID* vidMem = nullptr;
+    void* vidMem = nullptr;
     SAFE_RELEASE(mData.mesh);
 
     if (mVerts.GetCount() == 0)
@@ -102,7 +102,7 @@ VOID CFaceGroup::Build(VOID)
     if (mIndices.GetCount() == 0)
     {
         // Small hack, populate indices from verts
-        for (UINT i = 0; i < mVerts.GetCount(); i++)
+        for (unsigned int i = 0; i < mVerts.GetCount(); i++)
         {
             AddIndex(i);
         }
@@ -143,13 +143,13 @@ VOID CFaceGroup::Build(VOID)
     mData.mesh->UnlockVertexBuffer();
 
     mData.mesh->LockIndexBuffer(0, static_cast<void**>(&vidMem));
-    memcpy(vidMem, mIndices.GetData(), mIndices.GetCount() * sizeof(SHORT));
+    memcpy(vidMem, mIndices.GetData(), mIndices.GetCount() * sizeof(short));
     mData.mesh->UnlockIndexBuffer();
 
     mIsDirty = FALSE;
 }
 
-VOID CFaceGroup::Clear(VOID)
+void CFaceGroup::Clear(void)
 {
     ZeroMemory(&mData, sizeof(RENDERDATA));
     mData.kind = PRIMITIVEKIND_TRIANGLELIST;

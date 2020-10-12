@@ -43,7 +43,7 @@ CRenderer::CRenderer()
     ZeroMemory(&mParams, sizeof(mParams));
 }
 
-VOID CRenderer::BuildParams(VOID)
+void CRenderer::BuildParams(void)
 {
     ZeroMemory(&mParams, sizeof(mParams));
     mParams.Windowed = TRUE;
@@ -64,7 +64,7 @@ VOID CRenderer::BuildParams(VOID)
     }
 }
 
-VOID CRenderer::PrepareEffectDraw()
+void CRenderer::PrepareEffectDraw()
 {
     if (GetActiveEffect())
     {
@@ -120,7 +120,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
 
     res = mDirect9->GetDeviceCaps(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps);
 
-    INT capflags = D3DCREATE_FPU_PRESERVE;
+    int capflags = D3DCREATE_FPU_PRESERVE;
 
     if (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT)
     {
@@ -163,7 +163,7 @@ LRESULT CRenderer::CreateDevice(HWND window, RECT winres)
     return res;
 }
 
-VOID CRenderer::ResetDevice(VOID)
+void CRenderer::ResetDevice(void)
 {
     if (!mDevice)
         return;
@@ -174,13 +174,13 @@ VOID CRenderer::ResetDevice(VOID)
     SetDefaultRenderStates();
 }
 
-VOID CRenderer::SetVSYNC(BOOL state)
+void CRenderer::SetVSYNC(bool state)
 {
     mVsync = state;
     ResetDevice();
 }
 
-VOID CRenderer::Blit(VOID)
+void CRenderer::Blit(void)
 {
     DrawQuad(0, 0, 0, 0, D3DCOLOR_XRGB(255, 255, 255));
     IDirect3DSurface9* bbuf = nullptr;
@@ -194,7 +194,7 @@ VOID CRenderer::Blit(VOID)
     bbuf->Release();
 }
 
-VOID CRenderer::BeginRender(VOID)
+void CRenderer::BeginRender(void)
 {
     if (mDevice->TestCooperativeLevel() == D3DERR_DEVICELOST)
         return;
@@ -210,7 +210,7 @@ VOID CRenderer::BeginRender(VOID)
     GetDevice()->BeginScene();
 }
 
-VOID CRenderer::EndRender(VOID)
+void CRenderer::EndRender(void)
 {
     Blit();
     GetDevice()->EndScene();
@@ -218,11 +218,11 @@ VOID CRenderer::EndRender(VOID)
     ENGINE->DefaultProfiling.IncrementFrame();
 }
 
-VOID CRenderer::Clear(VOID)
+void CRenderer::Clear(void)
 {
 }
 
-BOOL CRenderer::Release(VOID)
+bool CRenderer::Release(void)
 {
     SAFE_RELEASE(mMainTarget);
     SAFE_RELEASE(mDevice);
@@ -232,7 +232,7 @@ BOOL CRenderer::Release(VOID)
     return TRUE;
 }
 
-VOID CRenderer::Resize(RECT res)
+void CRenderer::Resize(RECT res)
 {
     if (!mDevice)
         return;
@@ -257,7 +257,7 @@ VOID CRenderer::Resize(RECT res)
 }
 
 /// Render commands
-VOID CRenderer::DrawMesh(const RENDERDATA& data)
+void CRenderer::DrawMesh(const RENDERDATA& data)
 {
     D3DMATRIX oldMatrix;
     if (data.usesMatrix)
@@ -277,7 +277,7 @@ VOID CRenderer::DrawMesh(const RENDERDATA& data)
     }
 }
 
-VOID CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
+void CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
 {
     D3DXVECTOR3 v1 = D3DXVECTOR3(a.x, a.y, a.z);
     D3DXVECTOR3 v2 = D3DXVECTOR3(b.x, b.y, b.z);
@@ -303,7 +303,7 @@ VOID CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
     mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 1, static_cast<LPVOID>(mImmediateBuffer), sizeof(VERTEX));
 }
 
-VOID CRenderer::DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLOAT z2, DWORD color)
+void CRenderer::DrawQuad3D(float x1, float x2, float y1, float y2, float z1, float z2, DWORD color)
 {
     VERTEX verts[] =
     {
@@ -327,7 +327,7 @@ VOID CRenderer::DrawQuad3D(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, FLOAT z1, FLO
     mDevice->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, static_cast<LPVOID>(verts), sizeof(VERTEX));
 }
 
-VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BOOL flipY)
+void CRenderer::DrawQuad(float x1, float x2, float y1, float y2, DWORD color, bool flipY)
 {
     VERTEX_2D verts[] =
     {
@@ -353,7 +353,7 @@ VOID CRenderer::DrawQuad(FLOAT x1, FLOAT x2, FLOAT y1, FLOAT y2, DWORD color, BO
     mDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 }
 
-VOID CRenderer::DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD color, BOOL usesDepth, BOOL flipY)
+void CRenderer::DrawQuadEx(float x, float y, float z, float w, float h, DWORD color, bool usesDepth, bool flipY)
 {
     VERTEX_2D verts[] =
     {
@@ -379,15 +379,15 @@ VOID CRenderer::DrawQuadEx(FLOAT x, FLOAT y, FLOAT z, FLOAT w, FLOAT h, DWORD co
     mDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
 }
 
-VOID CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
+void CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
 {
     SAFE_RELEASE(mDefaultBox);
 
     SetMatrix(MATRIXKIND_WORLD, mat);
 
-    D3DXCreateBox(mDevice, static_cast<FLOAT>(fabs(static_cast<FLOAT>(dims.x))),
-                  static_cast<FLOAT>(fabs(static_cast<FLOAT>(dims.y))),
-                  static_cast<FLOAT>(fabs(static_cast<FLOAT>(dims.z))), &mDefaultBox, nullptr);
+    D3DXCreateBox(mDevice, static_cast<float>(fabs(static_cast<float>(dims.x))),
+                  static_cast<float>(fabs(static_cast<float>(dims.y))),
+                  static_cast<float>(fabs(static_cast<float>(dims.z))), &mDefaultBox, nullptr);
 
     if (!mDefaultBox)
         return;
@@ -408,12 +408,12 @@ VOID CRenderer::DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color)
     mDefaultBox->DrawSubset(0);
 }
 
-VOID CRenderer::ClearBuffer(D3DCOLOR color, UINT flags)
+void CRenderer::ClearBuffer(D3DCOLOR color, unsigned int flags)
 {
     mDevice->Clear(0, nullptr, flags, color, 1.0f, 0);
 }
 
-VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
+void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 {
     if (GetActiveEffect() && mat)
     {
@@ -499,18 +499,18 @@ VOID CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
     }
 }
 
-VOID CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
+void CRenderer::SetTexture(DWORD stage, LPDIRECT3DTEXTURE9 handle)
 {
     mDevice->SetTextureStageState(stage, D3DTSS_COLOROP, handle ? D3DTOP_MODULATE : D3DTOP_SELECTARG2);
     mDevice->SetTexture(stage, handle);
 }
 
-VOID CRenderer::SetMatrix(UINT kind, const D3DXMATRIX& mat)
+void CRenderer::SetMatrix(unsigned int kind, const D3DXMATRIX& mat)
 {
     mDevice->SetTransform(static_cast<D3DTRANSFORMSTATETYPE>(kind), &mat);
 }
 
-VOID CRenderer::ResetMatrices()
+void CRenderer::ResetMatrices()
 {
     D3DXMATRIX mat;
     D3DXMatrixIdentity(&mat);
@@ -520,7 +520,7 @@ VOID CRenderer::ResetMatrices()
     mDevice->SetTransform(D3DTS_PROJECTION, &mat);
 }
 
-VOID CRenderer::SetRenderTarget(CRenderTarget* target)
+void CRenderer::SetRenderTarget(CRenderTarget* target)
 {
     if (target && target->GetSurfaceHandle())
     {
@@ -538,17 +538,17 @@ VOID CRenderer::SetRenderTarget(CRenderTarget* target)
     }
 }
 
-VOID CRenderer::SetRenderState(DWORD kind, DWORD value)
+void CRenderer::SetRenderState(DWORD kind, DWORD value)
 {
     mDevice->SetRenderState(static_cast<D3DRENDERSTATETYPE>(kind), static_cast<DWORD>(value));
 }
 
-VOID CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
+void CRenderer::SetSamplerState(DWORD stage, DWORD kind, DWORD value)
 {
     mDevice->SetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(kind), value);
 }
 
-VOID CRenderer::SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end)
+void CRenderer::SetFog(DWORD color, DWORD mode, float start, float end)
 {
     mDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
     mDevice->SetRenderState(D3DRS_FOGTABLEMODE, mode);
@@ -566,7 +566,7 @@ VOID CRenderer::SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end)
     mDevice->SetRenderState(D3DRS_FOGCOLOR, color);
 }
 
-VOID CRenderer::ClearFog()
+void CRenderer::ClearFog()
 {
     mDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
 }
@@ -583,7 +583,7 @@ RECT CRenderer::GetSurfaceResolution()
     return r;
 }
 
-VOID CRenderer::SetDefaultRenderStates()
+void CRenderer::SetDefaultRenderStates()
 {
     mDevice->SetRenderState(D3DRS_SPECULARMATERIALSOURCE, D3DMCS_MATERIAL);
     mDevice->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, D3DMCS_MATERIAL);
@@ -605,7 +605,7 @@ VOID CRenderer::SetDefaultRenderStates()
     mDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
 }
 
-D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
+D3DMATRIX CRenderer::GetDeviceMatrix(unsigned int kind)
 {
     D3DMATRIX mat;
 
@@ -613,7 +613,7 @@ D3DMATRIX CRenderer::GetDeviceMatrix(UINT kind)
     return mat;
 }
 
-RECT CRenderer::GetLocalCoordinates(VOID) const
+RECT CRenderer::GetLocalCoordinates(void) const
 {
     RECT Rect;
     GetWindowRect(mWindow, &Rect);

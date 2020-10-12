@@ -16,7 +16,7 @@ using METADATA = std::unordered_map<std::string, std::string>;
 
 struct METADATA_RESULT
 {
-    BOOL found;
+    bool found;
     std::string value;
 };
 
@@ -48,14 +48,14 @@ public:
         mIsTransformDirty = TRUE;
     }
 
-    auto Release() -> VOID;
+    auto Release() -> void;
 
     ~CNode() override { Release(); }
 
-    VOID Draw(const D3DXMATRIX& wmat);
-    VOID DrawSubset(UINT subset, const D3DXMATRIX& wmat);
+    void Draw(const D3DXMATRIX& wmat);
+    void DrawSubset(unsigned int subset, const D3DXMATRIX& wmat);
 
-    VOID SetMetadata(LPCSTR name, LPCSTR value) const { (*mMetadata)[name] = value; }
+    void SetMetadata(LPCSTR name, LPCSTR value) const { (*mMetadata)[name] = value; }
 
     auto GetMetadata(LPCSTR name) const -> METADATA_RESULT
     {
@@ -76,29 +76,29 @@ public:
         return res;
     }
 
-    auto GetNumMeshes() const -> UINT { return mMeshes.GetCount(); }
+    auto GetNumMeshes() const -> unsigned int { return mMeshes.GetCount(); }
     auto GetMeshes() const -> CArray<CMesh*> { return mMeshes; }
     auto GetMeshData() const -> CMesh** { return mMeshes.GetData(); }
     auto FindMesh(LPCSTR name) -> CMesh*;
-    VOID AddMesh(CMesh* mg);
+    void AddMesh(CMesh* mg);
 
-    auto GetNumLights() const -> UINT { return mLights.GetCount(); }
+    auto GetNumLights() const -> unsigned int { return mLights.GetCount(); }
     auto GetLightData() const -> CLight** { return mLights.GetData(); }
     auto FindLight(LPCSTR name) -> CLight*;
-    VOID AddLight(CLight* lit);
+    void AddLight(CLight* lit);
 
-    auto GetNumNodes() const -> UINT { return mNodes.GetCount(); }
+    auto GetNumNodes() const -> unsigned int { return mNodes.GetCount(); }
     auto GetNodeData() const -> CNode** { return mNodes.GetData(); }
 
     auto FindNode(LPCSTR name) -> CNode*;
 
-    VOID AddNode(CNode* tgt);
+    void AddNode(CNode* tgt);
 
     auto Clone() -> CNode*;
 
-    auto IsEmpty() -> BOOL;
+    auto IsEmpty() -> bool;
 
-    VOID SetTransform(D3DXMATRIX transform)
+    void SetTransform(D3DXMATRIX transform)
     {
         *mTransform = transform;
         InvalidateTransformRecursively();
@@ -106,12 +106,12 @@ public:
 
     auto GetTransform() const -> D3DXMATRIX { return *mTransform; }
 
-    VOID SetParent(CNode* node) { if (node != this) mParent = node; }
+    void SetParent(CNode* node) { if (node != this) mParent = node; }
     auto GetParent() const -> CNode* { return mParent; }
 
     auto GetFinalTransform() -> D3DXMATRIX;
-    VOID InvalidateTransform() { mIsTransformDirty = TRUE; }
-    VOID InvalidateTransformRecursively();
+    void InvalidateTransform() { mIsTransformDirty = TRUE; }
+    void InvalidateTransformRecursively();
 
 protected:
     CArray<CMesh*> mMeshes;
@@ -120,7 +120,7 @@ protected:
     CNode* mParent;
 
 private:
-    BOOL mIsTransformDirty;
+    bool mIsTransformDirty;
     D3DXMATRIX *mTransform, *mCachedTransform;
     METADATA* mMetadata;
 };

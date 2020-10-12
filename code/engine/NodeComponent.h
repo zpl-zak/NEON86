@@ -18,10 +18,10 @@ public:
 
     virtual auto GetKind() -> LPCSTR { return "Unknown"; }
 
-    VOID SetName(CString name) { mName = name; }
+    void SetName(CString name) { mName = name; }
     auto GetName() const -> CString { return mName; }
 
-    VOID SetOwner(CNode* node) { mOwner = node; }
+    void SetOwner(CNode* node) { mOwner = node; }
     auto GetOwner() const -> CNode* { return mOwner; }
 
 private:

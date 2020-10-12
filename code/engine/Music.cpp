@@ -23,7 +23,7 @@ CMusic::CMusic(LPSTR path) : CAllocable()
     mId = AUDIO->RegisterTrack(this);
 }
 
-VOID CMusic::Release()
+void CMusic::Release()
 {
     if (DelRef())
     {
@@ -36,7 +36,7 @@ VOID CMusic::Release()
     }
 }
 
-VOID CMusic::Update()
+void CMusic::Update()
 {
     HRESULT hr = WaitForMultipleObjects(2, mEvents, FALSE, 0);
 
@@ -50,7 +50,7 @@ VOID CMusic::Update()
     }
 }
 
-VOID CMusic::Stop()
+void CMusic::Stop()
 {
     Pause();
     ResetPosition();
@@ -61,7 +61,7 @@ DWORD CMusic::GetCurrentPosition()
     return CSoundLoader::TellOGG(mDecoder);
 }
 
-VOID CMusic::SetCurrentPosition(DWORD cursor)
+void CMusic::SetCurrentPosition(DWORD cursor)
 {
     PushLog("Can't seek in OGG yet!");
 }
@@ -71,7 +71,7 @@ DWORD CMusic::GetTotalSize()
     return mDataSize;
 }
 
-VOID CMusic::ResetPosition()
+void CMusic::ResetPosition()
 {
     mBuffer->SetCurrentPosition(0);
     CSoundLoader::ResetBuffer(mDecoder);
@@ -90,14 +90,14 @@ VOID CMusic::ResetPosition()
     mBuffer->Unlock(audio1, audioLen1, nullptr, NULL);
 }
 
-VOID CMusic::PullSamples(ULONG offset, ULONG reqBytes, BOOL initCursors)
+void CMusic::PullSamples(ULONG offset, ULONG reqBytes, bool initCursors)
 {
     LPVOID audio1 = nullptr, audio2 = nullptr;
     DWORD audioLen1 = 0, audioLen2 = 0;
     HRESULT result;
 
     UCHAR* data;
-    UINT n = static_cast<UINT>(CSoundLoader::DecodeOGG(mDecoder, reqBytes, (short**)&data));
+    unsigned int n = static_cast<unsigned int>(CSoundLoader::DecodeOGG(mDecoder, reqBytes, (short**)&data));
 
     if (n == 0)
     {

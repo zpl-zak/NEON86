@@ -11,7 +11,7 @@
 
 #include <ctime>
 
-CEngine::CEngine(VOID)
+CEngine::CEngine(void)
     : mIsRunning(FALSE)
 {
     sInstance = this;
@@ -28,7 +28,7 @@ CEngine::CEngine(VOID)
     mLastTime = 0.0f;
 }
 
-auto CEngine::Release() -> BOOL
+auto CEngine::Release() -> bool
 {
     SAFE_RELEASE(mVirtualMachine);
     SAFE_RELEASE(mFileSystem);
@@ -40,7 +40,7 @@ auto CEngine::Release() -> BOOL
     return TRUE;
 }
 
-VOID CEngine::Run()
+void CEngine::Run()
 {
     while (IsRunning())
         Think();
@@ -49,7 +49,7 @@ VOID CEngine::Run()
     Release();
 }
 
-VOID CEngine::Shutdown()
+void CEngine::Shutdown()
 {
     mIsRunning = FALSE;
 }
@@ -62,7 +62,7 @@ auto CEngine::the() -> CEngine*
     return sInstance;
 }
 
-auto CEngine::Init(HWND window, RECT resolution) -> BOOL
+auto CEngine::Init(HWND window, RECT resolution) -> bool
 {
     if (mIsInitialised)
         return TRUE;
@@ -93,7 +93,7 @@ auto CEngine::Init(HWND window, RECT resolution) -> BOOL
     return TRUE;
 }
 
-VOID CEngine::Think()
+void CEngine::Think()
 {
     auto render = FALSE;
     const auto startTime = GetTime();
@@ -134,7 +134,7 @@ VOID CEngine::Think()
     }
 }
 
-VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
+void CEngine::CDefaultProfiling::UpdateProfilers(float dt)
 {
     static constexpr auto sFrameWindow = 0.5f;
 
@@ -142,16 +142,16 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
 
     if (mFrameCounter >= sFrameWindow)
     {
-        mTotalTime = 1000.0f * mFrameCounter / static_cast<FLOAT>(mFrames);
+        mTotalTime = 1000.0f * mFrameCounter / static_cast<float>(mFrames);
         mTotalMeasuredTime = 0.0f;
 
-        const auto logStats = mVerboseLogging ? mRunCycle % static_cast<INT>(sFrameWindow * 120.0f) == 0 : FALSE;
+        const auto logStats = mVerboseLogging ? mRunCycle % static_cast<int>(sFrameWindow * 120.0f) == 0 : FALSE;
 
         if (logStats) PushLog("==================\n", TRUE);
 
-        for (UINT i = 0; i < mProfilers.GetCount(); i++)
+        for (unsigned int i = 0; i < mProfilers.GetCount(); i++)
         {
-            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(static_cast<FLOAT>(mFrames), logStats);
+            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(static_cast<float>(mFrames), logStats);
         }
 
         if (logStats)
@@ -171,12 +171,12 @@ VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
     }
 }
 
-VOID CEngine::CDefaultProfiling::IncrementFrame()
+void CEngine::CDefaultProfiling::IncrementFrame()
 {
     mFrames++;
 }
 
-VOID CEngine::CDefaultProfiling::SetupDefaultProfilers()
+void CEngine::CDefaultProfiling::SetupDefaultProfilers()
 {
     mUpdateProfiler = new CProfiler("Update");
     mRenderProfiler = new CProfiler("Render");
@@ -189,12 +189,12 @@ VOID CEngine::CDefaultProfiling::SetupDefaultProfilers()
     mProfilers.Push(mWindowProfiler);
 }
 
-VOID CEngine::CDefaultProfiling::PushProfiler(CProfiler* profile)
+void CEngine::CDefaultProfiling::PushProfiler(CProfiler* profile)
 {
     mProfilers.Push(profile);
 }
 
-auto CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) const -> LRESULT
+auto CEngine::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) const -> LRESULT
 {
     if (mDebugUI->ProcessEvents(hWnd, message, wParam, lParam))
         return FALSE;
@@ -299,7 +299,7 @@ auto CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     return TRUE;
 }
 
-VOID CEngine::Update(FLOAT deltaTime) const
+void CEngine::Update(float deltaTime) const
 {
     {
         CProfileScope scope(DefaultProfiling.mUpdateProfiler);
@@ -311,7 +311,7 @@ VOID CEngine::Update(FLOAT deltaTime) const
     mInput->Update();
 }
 
-VOID CEngine::Render() const
+void CEngine::Render() const
 {
     mRenderer->BeginRender();
 
@@ -328,7 +328,7 @@ VOID CEngine::Render() const
     }
 }
 
-VOID CEngine::Resize(RECT resolution) const
+void CEngine::Resize(RECT resolution) const
 {
     if (!mIsInitialised)
         return;

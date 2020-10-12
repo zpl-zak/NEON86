@@ -5,17 +5,17 @@
 
 #include <lua/lua.hpp>
 
-auto material_new(lua_State* L) -> INT
+auto material_new(lua_State* L) -> int
 {
     char* matName = nullptr;
-    UINT w = 1, h = 1;
+    unsigned int w = 1, h = 1;
 
     if (lua_gettop(L) == 1)
         matName = (char*)luaL_checkstring(L, 1);
     else if (lua_gettop(L) == 2)
     {
-        w = static_cast<UINT>(luaL_checkinteger(L, 1));
-        h = static_cast<UINT>(luaL_checkinteger(L, 2));
+        w = static_cast<unsigned int>(luaL_checkinteger(L, 1));
+        h = static_cast<unsigned int>(luaL_checkinteger(L, 2));
     }
 
     const auto mat = static_cast<CMaterial**>(lua_newuserdata(L, sizeof(CMaterial*)));
@@ -31,21 +31,21 @@ auto material_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto material_loadfile(lua_State* L) -> INT
+static auto material_loadfile(lua_State* L) -> int
 {
     auto mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
     const auto texName = static_cast<LPCSTR>(luaL_checkstring(L, 2));
-    const auto userSlot = static_cast<UINT>(luaL_checkinteger(L, 3)) - 1;
+    const auto userSlot = static_cast<unsigned int>(luaL_checkinteger(L, 3)) - 1;
 
     mat->CreateTextureForSlot(userSlot, (LPSTR)texName);
 
     return 0;
 }
 
-static auto material_getres(lua_State* L) -> INT
+static auto material_getres(lua_State* L) -> int
 {
     auto mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT userSlot = static_cast<UINT>(luaL_checkinteger(L, 3)) - 1;
+    const unsigned int userSlot = static_cast<unsigned int>(luaL_checkinteger(L, 3)) - 1;
     LPDIRECT3DTEXTURE9 h = mat->GetTextureHandle(userSlot);
     D3DSURFACE_DESC a;
 
@@ -66,12 +66,12 @@ static auto material_getres(lua_State* L) -> INT
     return 1;
 }
 
-static auto material_loaddata(lua_State* L) -> INT
+static auto material_loaddata(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT userSlot = static_cast<UINT>(luaL_checkinteger(L, 3)) - 1;
-    const UINT width = static_cast<UINT>(luaL_checkinteger(L, 4));
-    const UINT height = static_cast<UINT>(luaL_checkinteger(L, 5));
+    const unsigned int userSlot = static_cast<unsigned int>(luaL_checkinteger(L, 3)) - 1;
+    const unsigned int width = static_cast<unsigned int>(luaL_checkinteger(L, 4));
+    const unsigned int height = static_cast<unsigned int>(luaL_checkinteger(L, 5));
 
     mat->CreateTextureForSlot(userSlot, nullptr, width, height);
     //mat->UploadARGB(userSlot, 2, 2);
@@ -79,18 +79,18 @@ static auto material_loaddata(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_getdata(lua_State* L) -> INT
+static auto material_getdata(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT userSlot = static_cast<UINT>(luaL_checkinteger(L, 3)) - 1;
+    const unsigned int userSlot = static_cast<unsigned int>(luaL_checkinteger(L, 3)) - 1;
     D3DSURFACE_DESC a;
     mat->GetTextureHandle(userSlot)->GetLevelDesc(0, &a);
 
-    UINT* buf = static_cast<UINT*>(mat->Lock(userSlot));
+    unsigned int* buf = static_cast<unsigned int*>(mat->Lock(userSlot));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < a.Width * a.Height; i++)
+    for (unsigned int i = 0; i < a.Width * a.Height; i++)
     {
         lua_pushinteger(L, i + 1ULL);
         lua_pushinteger(L, buf[i]);
@@ -104,46 +104,46 @@ static auto material_getdata(lua_State* L) -> INT
     return 1;
 }
 
-static auto material_setsampler(lua_State* L) -> INT
+static auto material_setsampler(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT sampler = static_cast<UINT>(luaL_checkinteger(L, 2));
-    const UINT val = static_cast<UINT>(luaL_checkinteger(L, 3));
+    const unsigned int sampler = static_cast<unsigned int>(luaL_checkinteger(L, 2));
+    const unsigned int val = static_cast<unsigned int>(luaL_checkinteger(L, 3));
 
     mat->SetSamplerState(sampler, val);
 
     return 0;
 }
 
-static auto material_getsampler(lua_State* L) -> INT
+static auto material_getsampler(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT sampler = static_cast<UINT>(luaL_checkinteger(L, 2));
+    const unsigned int sampler = static_cast<unsigned int>(luaL_checkinteger(L, 2));
 
     lua_pushinteger(L, mat->GetSamplerState(sampler));
     return 1;
 }
 
-static auto material_gethandle(lua_State* L) -> INT
+static auto material_gethandle(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT slot = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    const unsigned int slot = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
 
     lua_pushlightuserdata(L, static_cast<void*>(mat->GetTextureHandle(slot)));
     return 1;
 }
 
-static auto material_sethandle(lua_State* L) -> INT
+static auto material_sethandle(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const UINT slot = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    const unsigned int slot = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
     const auto handle = static_cast<LPDIRECT3DTEXTURE9>(lua_touserdata(L, 3));
 
     mat->SetUserTexture(slot, handle);
     return 1;
 }
 
-static auto material_delete(lua_State* L) -> INT
+static auto material_delete(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
 
@@ -152,7 +152,7 @@ static auto material_delete(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_setdiffuse(lua_State* L) -> INT
+static auto material_setdiffuse(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
     mat->SetDiffuse(luaH_getcolorlinear(L, 1));
@@ -160,7 +160,7 @@ static auto material_setdiffuse(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_setambient(lua_State* L) -> INT
+static auto material_setambient(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
     mat->SetAmbient(luaH_getcolorlinear(L, 1));
@@ -168,7 +168,7 @@ static auto material_setambient(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_setemission(lua_State* L) -> INT
+static auto material_setemission(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
     mat->SetEmission(luaH_getcolorlinear(L, 1));
@@ -176,7 +176,7 @@ static auto material_setemission(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_setspecular(lua_State* L) -> INT
+static auto material_setspecular(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
     mat->SetSpecular(luaH_getcolorlinear(L, 1));
@@ -184,43 +184,43 @@ static auto material_setspecular(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_setpower(lua_State* L) -> INT
+static auto material_setpower(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 2));
     mat->SetPower(val);
 
     return 0;
 }
 
-static auto material_setopacity(lua_State* L) -> INT
+static auto material_setopacity(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 2));
     mat->SetOpacity(val);
 
     return 0;
 }
 
-static auto material_setalphaistransparency(lua_State* L) -> INT
+static auto material_setalphaistransparency(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const BOOL val = static_cast<BOOL>(lua_toboolean(L, 2));
+    const bool val = static_cast<bool>(lua_toboolean(L, 2));
     mat->SetAlphaIsTransparency(val);
 
     return 0;
 }
 
-static auto material_setalphatest(lua_State* L) -> INT
+static auto material_setalphatest(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const BOOL val = static_cast<BOOL>(lua_toboolean(L, 2));
+    const bool val = static_cast<bool>(lua_toboolean(L, 2));
     mat->SetEnableAlphaTest(val);
 
     return 0;
 }
 
-static auto material_setalpharef(lua_State* L) -> INT
+static auto material_setalpharef(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
     const auto val = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -229,16 +229,16 @@ static auto material_setalpharef(lua_State* L) -> INT
     return 0;
 }
 
-static auto material_setshaded(lua_State* L) -> INT
+static auto material_setshaded(lua_State* L) -> int
 {
     CMaterial* mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const BOOL val = static_cast<BOOL>(lua_toboolean(L, 2));
+    const bool val = static_cast<bool>(lua_toboolean(L, 2));
     mat->SetShaded(val);
 
     return 0;
 }
 
-static VOID LuaMaterial_register(lua_State* L)
+static void LuaMaterial_register(lua_State* L)
 {
     lua_register(L, L_MATERIAL, material_new);
     luaL_newmetatable(L, L_MATERIAL);

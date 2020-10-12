@@ -27,7 +27,7 @@ struct WAVEHEADER
     ULONG dataSize;
 };
 
-VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+void CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
                            LPVOID waveInfo)
 {
     FILE* fp;
@@ -193,7 +193,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     }
 }
 
-VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+void CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
                            LPVOID waveInfo)
 {
     size_t count;
@@ -283,7 +283,7 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     }
 }
 
-VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+void CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
                              LPVOID waveInfo)
 {
     FILE* fp;
@@ -449,7 +449,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     }
 }
 
-VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events,
+void CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events,
                            LPVOID waveInfo, DWORD* dataSize)
 {
     WAVEFORMATEX waveFormat;
@@ -544,7 +544,7 @@ VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
     *outDecoder = decoder;
 }
 
-VOID CSoundLoader::ResetBuffer(stb_vorbis* decoder)
+void CSoundLoader::ResetBuffer(stb_vorbis* decoder)
 {
     stb_vorbis_seek_start(decoder);
 }
@@ -570,7 +570,7 @@ DWORD CSoundLoader::TellOGG(stb_vorbis* decoder)
     return static_cast<DWORD>(stb_vorbis_get_file_offset(decoder));
 }
 
-VOID CSoundLoader::CloseOGG(stb_vorbis* decoder)
+void CSoundLoader::CloseOGG(stb_vorbis* decoder)
 {
     stb_vorbis_close(decoder);
 }

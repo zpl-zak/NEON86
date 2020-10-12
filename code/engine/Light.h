@@ -7,31 +7,31 @@
 class ENGINE_API CLight : public CReferenceCounter, public CNodeComponent
 {
 public:
-    CLight(UINT slot = 0);
-    VOID Release();
+    CLight(unsigned int slot = 0);
+    void Release();
 
-    VOID Enable(BOOL state);
-    VOID SetSlot(UINT slot);
+    void Enable(bool state);
+    void SetSlot(unsigned int slot);
     auto Clone() -> CLight*;
 
-    VOID SetType(UINT type);
-    VOID SetAmbient(D3DCOLORVALUE color);
-    VOID SetDiffuse(D3DCOLORVALUE color);
-    VOID SetSpecular(D3DCOLORVALUE color);
-    VOID SetDirection(D3DXVECTOR3 dir);
-    VOID SetPosition(D3DXVECTOR3 pos);
-    VOID SetAttenuation(FLOAT constant, FLOAT linear, FLOAT quadratic);
-    VOID SetFalloff(FLOAT falloff);
-    VOID SetRange(FLOAT range);
-    VOID SetInnerAngle(FLOAT theta);
-    VOID SetOuterAngle(FLOAT phi);
+    void SetType(unsigned int type);
+    void SetAmbient(D3DCOLORVALUE color);
+    void SetDiffuse(D3DCOLORVALUE color);
+    void SetSpecular(D3DCOLORVALUE color);
+    void SetDirection(D3DXVECTOR3 dir);
+    void SetPosition(D3DXVECTOR3 pos);
+    void SetAttenuation(float constant, float linear, float quadratic);
+    void SetFalloff(float falloff);
+    void SetRange(float range);
+    void SetInnerAngle(float theta);
+    void SetOuterAngle(float phi);
 
     auto GetLightData() const -> D3DLIGHT9 { return mLightData; }
-    auto GetSlot() const -> UINT { return mSlot; }
+    auto GetSlot() const -> unsigned int { return mSlot; }
 
 private:
-    UINT mSlot;
+    unsigned int mSlot;
     D3DLIGHT9 mLightData;
 
-    VOID SetDefaults();
+    void SetDefaults();
 };

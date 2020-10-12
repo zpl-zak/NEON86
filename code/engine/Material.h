@@ -9,46 +9,46 @@
 class ENGINE_API CMaterial : public CReferenceCounter, CAllocable<CMaterial>
 {
 public:
-    CMaterial(UINT slot, LPSTR texName);
-    CMaterial(UINT slot, UINT w, UINT h);
-    CMaterial(UINT slot, LPVOID data, UINT size = 1);
+    CMaterial(unsigned int slot, LPSTR texName);
+    CMaterial(unsigned int slot, unsigned int w, unsigned int h);
+    CMaterial(unsigned int slot, LPVOID data, unsigned int size = 1);
     CMaterial();
     ~CMaterial() { Release(); }
 
-    VOID DefaultMaterial(VOID);
-    VOID Release(VOID);
+    void DefaultMaterial(void);
+    void Release(void);
 
-    VOID CreateTextureForSlot(UINT slot, LPSTR texName = nullptr, UINT w = 1, UINT h = 1);
-    VOID CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size);
+    void CreateTextureForSlot(unsigned int slot, LPSTR texName = nullptr, unsigned int w = 1, unsigned int h = 1);
+    void CreateEmbeddedTextureForSlot(unsigned int slot, LPVOID data, unsigned int size);
 
-    VOID SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
-    auto GetSamplerState(UINT state) const -> UINT { return mStats[state]; }
-    auto GetTextureHandle(UINT slot = TEXTURESLOT_ALBEDO) -> LPDIRECT3DTEXTURE9 { return mTextureHandle[slot]; }
+    void SetSamplerState(unsigned int state, unsigned int value) { mStats[state] = value; }
+    auto GetSamplerState(unsigned int state) const -> unsigned int { return mStats[state]; }
+    auto GetTextureHandle(unsigned int slot = TEXTURESLOT_ALBEDO) -> LPDIRECT3DTEXTURE9 { return mTextureHandle[slot]; }
 
-    VOID SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
-    VOID Bind(DWORD stage);
-    VOID Unbind(DWORD stage);
-    auto Lock(UINT slot = TEXTURESLOT_ALBEDO) -> LPVOID;
-    VOID UploadARGB(UINT slot, VOID* data, UINT size);
-    VOID Unlock(UINT slot = TEXTURESLOT_ALBEDO);
+    void SetUserTexture(unsigned int userSlot, LPDIRECT3DTEXTURE9 handle);
+    void Bind(DWORD stage);
+    void Unbind(DWORD stage);
+    auto Lock(unsigned int slot = TEXTURESLOT_ALBEDO) -> LPVOID;
+    void UploadARGB(unsigned int slot, void* data, unsigned int size);
+    void Unlock(unsigned int slot = TEXTURESLOT_ALBEDO);
 
-    VOID SetAmbient(D3DCOLORVALUE color);
-    VOID SetDiffuse(D3DCOLORVALUE color);
-    VOID SetSpecular(D3DCOLORVALUE color);
-    VOID SetEmission(D3DCOLORVALUE color);
-    VOID SetPower(FLOAT val);
-    VOID SetOpacity(FLOAT val);
-    VOID SetShaded(BOOL state);
-    VOID SetAlphaIsTransparency(BOOL state);
-    VOID SetEnableAlphaTest(BOOL state);
-    VOID SetAlphaRef(DWORD refval);
+    void SetAmbient(D3DCOLORVALUE color);
+    void SetDiffuse(D3DCOLORVALUE color);
+    void SetSpecular(D3DCOLORVALUE color);
+    void SetEmission(D3DCOLORVALUE color);
+    void SetPower(float val);
+    void SetOpacity(float val);
+    void SetShaded(bool state);
+    void SetAlphaIsTransparency(bool state);
+    void SetEnableAlphaTest(bool state);
+    void SetAlphaRef(DWORD refval);
 
     auto GetMaterialData() const -> MATERIAL { return mMaterialData; }
-    auto IsTransparent() const -> BOOL { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }
+    auto IsTransparent() const -> bool { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }
 
 private:
     LPDIRECT3DTEXTURE9 mTextureHandle[MAX_TEXTURE_SLOTS];
     MATERIAL mMaterialData;
 
-    UINT mStats[MAX_SAMPLER_STATES];
+    unsigned int mStats[MAX_SAMPLER_STATES];
 };

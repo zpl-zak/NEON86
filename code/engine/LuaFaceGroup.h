@@ -6,7 +6,7 @@
 
 #include "FaceGroup.h"
 
-auto facegroup_new(lua_State* L) -> INT
+auto facegroup_new(lua_State* L) -> int
 {
     *static_cast<CFaceGroup**>(lua_newuserdata(L, sizeof(CFaceGroup*))) = new CFaceGroup();
 
@@ -14,7 +14,7 @@ auto facegroup_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_clone(lua_State* L) -> INT
+static auto facegroup_clone(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
     *static_cast<CFaceGroup**>(lua_newuserdata(L, sizeof(CFaceGroup*))) = mesh->Clone();
@@ -23,7 +23,7 @@ static auto facegroup_clone(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_addvertex(lua_State* L) -> INT
+static auto facegroup_addvertex(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
     const auto vert = static_cast<VERTEX*>(luaL_checkudata(L, 2, L_VERTEX));
@@ -33,22 +33,22 @@ static auto facegroup_addvertex(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_addindex(lua_State* L) -> INT
+static auto facegroup_addindex(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
-    const auto index = static_cast<SHORT>(luaL_checkinteger(L, 2));
+    const auto index = static_cast<short>(luaL_checkinteger(L, 2));
     mesh->AddIndex(index);
 
     lua_pushvalue(L, 1);
     return 1;
 }
 
-static auto facegroup_addtriangle(lua_State* L) -> INT
+static auto facegroup_addtriangle(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
-    const auto i1 = static_cast<SHORT>(luaL_checkinteger(L, 2));
-    const auto i2 = static_cast<SHORT>(luaL_checkinteger(L, 3));
-    const auto i3 = static_cast<SHORT>(luaL_checkinteger(L, 4));
+    const auto i1 = static_cast<short>(luaL_checkinteger(L, 2));
+    const auto i2 = static_cast<short>(luaL_checkinteger(L, 3));
+    const auto i3 = static_cast<short>(luaL_checkinteger(L, 4));
 
     mesh->AddIndex(i1);
     mesh->AddIndex(i2);
@@ -58,7 +58,7 @@ static auto facegroup_addtriangle(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_setmaterial(lua_State* L) -> INT
+static auto facegroup_setmaterial(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
     CMaterial* mat = nullptr;
@@ -75,7 +75,7 @@ static auto facegroup_setmaterial(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_getmaterial(lua_State* L) -> INT
+static auto facegroup_getmaterial(lua_State* L) -> int
 {
     const auto fgroup = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
     const auto mat = fgroup->GetMaterial();
@@ -86,7 +86,7 @@ static auto facegroup_getmaterial(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_draw(lua_State* L) -> INT
+static auto facegroup_draw(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
     auto mat = &D3DXMATRIX();
@@ -103,7 +103,7 @@ static auto facegroup_draw(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_build(lua_State* L) -> INT
+static auto facegroup_build(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
 
@@ -113,7 +113,7 @@ static auto facegroup_build(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_clear(lua_State* L) -> INT
+static auto facegroup_clear(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
 
@@ -122,7 +122,7 @@ static auto facegroup_clear(lua_State* L) -> INT
     return 0;
 }
 
-static auto facegroup_calcnormals(lua_State* L) -> INT
+static auto facegroup_calcnormals(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
 
@@ -131,7 +131,7 @@ static auto facegroup_calcnormals(lua_State* L) -> INT
     return 0;
 }
 
-static auto facegroup_delete(lua_State* L) -> INT
+static auto facegroup_delete(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
 
@@ -140,13 +140,13 @@ static auto facegroup_delete(lua_State* L) -> INT
     return 0;
 }
 
-static auto facegroup_getvertices(lua_State* L) -> INT
+static auto facegroup_getvertices(lua_State* L) -> int
 {
     const auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < mesh->GetNumVertices(); i++)
+    for (unsigned int i = 0; i < mesh->GetNumVertices(); i++)
     {
         const auto vert = mesh->GetVertices() + i;
         lua_pushinteger(L, i + 1ULL);
@@ -157,7 +157,7 @@ static auto facegroup_getvertices(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_getbounds(lua_State* L) -> INT
+static auto facegroup_getbounds(lua_State* L) -> int
 {
     auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
     const auto b = mesh->GetBounds();
@@ -177,13 +177,13 @@ static auto facegroup_getbounds(lua_State* L) -> INT
     return 1;
 }
 
-static auto facegroup_getindices(lua_State* L) -> INT
+static auto facegroup_getindices(lua_State* L) -> int
 {
     const auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < mesh->GetNumIndices(); i++)
+    for (unsigned int i = 0; i < mesh->GetNumIndices(); i++)
     {
         const auto index = *(mesh->GetIndices() + i);
         lua_pushinteger(L, i + 1ULL);
@@ -194,7 +194,7 @@ static auto facegroup_getindices(lua_State* L) -> INT
     return 1;
 }
 
-static VOID LuaFaceGroup_register(lua_State* L)
+static void LuaFaceGroup_register(lua_State* L)
 {
     lua_register(L, L_FACEGROUP, facegroup_new);
     luaL_newmetatable(L, L_FACEGROUP);

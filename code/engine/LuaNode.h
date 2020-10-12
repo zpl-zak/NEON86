@@ -8,14 +8,14 @@
 #include "Node.h"
 #include "Scene.h"
 
-auto node_new(lua_State* L) -> INT
+auto node_new(lua_State* L) -> int
 {
     *static_cast<CNode**>(lua_newuserdata(L, sizeof(CNode*))) = new CNode();
     luaL_setmetatable(L, L_NODE);
     return 1;
 }
 
-static auto node_clone(lua_State* L) -> INT
+static auto node_clone(lua_State* L) -> int
 {
     auto node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     *static_cast<CNode**>(lua_newuserdata(L, sizeof(CNode*))) = node->Clone();
@@ -23,7 +23,7 @@ static auto node_clone(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_getname(lua_State* L) -> INT
+static auto node_getname(lua_State* L) -> int
 {
     auto node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     lua_pushstring(L, node->GetName().Str());
@@ -31,7 +31,7 @@ static auto node_getname(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_setname(lua_State* L) -> INT
+static auto node_setname(lua_State* L) -> int
 {
     auto node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const auto name = (LPSTR)luaL_checkstring(L, 2);
@@ -40,13 +40,13 @@ static auto node_setname(lua_State* L) -> INT
     return 0;
 }
 
-static auto node_getmeshes(lua_State* L) -> INT
+static auto node_getmeshes(lua_State* L) -> int
 {
     auto node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < node->GetNumMeshes(); i++)
+    for (unsigned int i = 0; i < node->GetNumMeshes(); i++)
     {
         const auto mesh = node->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -57,19 +57,19 @@ static auto node_getmeshes(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_getmeshparts(lua_State* L) -> INT
+static auto node_getmeshparts(lua_State* L) -> int
 {
     auto node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < node->GetNumMeshes(); i++)
+    for (unsigned int i = 0; i < node->GetNumMeshes(); i++)
     {
         CMesh* mesh = node->GetMeshes()[i];
         lua_pushinteger(L, i + 1ULL);
         {
             lua_newtable(L);
-            for (UINT i = 0; i < mesh->GetNumFGroups(); i++)
+            for (unsigned int i = 0; i < mesh->GetNumFGroups(); i++)
             {
                 CFaceGroup* fg = mesh->GetFGroupData()[i];
                 lua_pushinteger(L, i + 1ULL);
@@ -83,13 +83,13 @@ static auto node_getmeshparts(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_getlights(lua_State* L) -> INT
+static auto node_getlights(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < node->GetNumLights(); i++)
+    for (unsigned int i = 0; i < node->GetNumLights(); i++)
     {
         CLight* lit = node->GetLightData()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -100,13 +100,13 @@ static auto node_getlights(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_getnodes(lua_State* L) -> INT
+static auto node_getnodes(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < node->GetNumNodes(); i++)
+    for (unsigned int i = 0; i < node->GetNumNodes(); i++)
     {
         CNode* mg = node->GetNodeData()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -117,13 +117,13 @@ static auto node_getnodes(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_gettargets(lua_State* L) -> INT
+static auto node_gettargets(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < node->GetNumNodes(); i++)
+    for (unsigned int i = 0; i < node->GetNumNodes(); i++)
     {
         CNode* tgt = node->GetNodeData()[i];
 
@@ -139,7 +139,7 @@ static auto node_gettargets(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_findmesh(lua_State* L) -> INT
+static auto node_findmesh(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const auto meshName = (LPSTR)luaL_checkstring(L, 2);
@@ -155,7 +155,7 @@ static auto node_findmesh(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_findlight(lua_State* L) -> INT
+static auto node_findlight(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const auto lightName = (LPSTR)luaL_checkstring(L, 2);
@@ -171,7 +171,7 @@ static auto node_findlight(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_findnode(lua_State* L) -> INT
+static auto node_findnode(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const auto childName = (LPSTR)luaL_checkstring(L, 2);
@@ -187,7 +187,7 @@ static auto node_findnode(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_findtarget(lua_State* L) -> INT
+static auto node_findtarget(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const auto targetName = (LPSTR)luaL_checkstring(L, 2);
@@ -204,7 +204,7 @@ static auto node_findtarget(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_gettransform(lua_State* L) -> INT
+static auto node_gettransform(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
@@ -214,7 +214,7 @@ static auto node_gettransform(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_settransform(lua_State* L) -> INT
+static auto node_settransform(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const D3DXMATRIX mat = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
@@ -223,7 +223,7 @@ static auto node_settransform(lua_State* L) -> INT
     return 0;
 }
 
-static auto node_getfinaltransform(lua_State* L) -> INT
+static auto node_getfinaltransform(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
@@ -233,7 +233,7 @@ static auto node_getfinaltransform(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_draw(lua_State* L) -> INT
+static auto node_draw(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     D3DXMATRIX* mat = &D3DXMATRIX();
@@ -250,7 +250,7 @@ static auto node_draw(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_addnode(lua_State* L) -> INT
+static auto node_addnode(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     CNode* child = *static_cast<CNode**>(luaL_checkudata(L, 2, L_NODE));
@@ -263,7 +263,7 @@ static auto node_addnode(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_addmesh(lua_State* L) -> INT
+static auto node_addmesh(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
@@ -304,10 +304,10 @@ static auto node_addmesh(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_drawsubset(lua_State* L) -> INT
+static auto node_drawsubset(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
-    const UINT subset = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    const unsigned int subset = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
     D3DXMATRIX* mat = &D3DXMATRIX();
     D3DXMatrixIdentity(mat);
 
@@ -322,7 +322,7 @@ static auto node_drawsubset(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_getmeta(lua_State* L) -> INT
+static auto node_getmeta(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
     const auto meta = static_cast<LPCSTR>(luaL_checkstring(L, 2));
@@ -336,7 +336,7 @@ static auto node_getmeta(lua_State* L) -> INT
     return 1;
 }
 
-static auto node_delete(lua_State* L) -> INT
+static auto node_delete(lua_State* L) -> int
 {
     CNode* node = *static_cast<CNode**>(luaL_checkudata(L, 1, L_NODE));
 
@@ -346,7 +346,7 @@ static auto node_delete(lua_State* L) -> INT
 }
 
 
-static VOID LuaNode_register(lua_State* L)
+static void LuaNode_register(lua_State* L)
 {
     lua_register(L, L_NODE, node_new);
     luaL_newmetatable(L, L_NODE);

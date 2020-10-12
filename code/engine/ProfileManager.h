@@ -7,19 +7,19 @@ class ENGINE_API CProfiler
 public:
     CProfiler(CString name);
 
-    VOID Reset();
-    VOID StartInvocation();
-    VOID StopInvocation();
-    auto DisplayAndReset(FLOAT divisor = 0, BOOL logStats = FALSE) -> FLOAT;
+    void Reset();
+    void StartInvocation();
+    void StopInvocation();
+    auto DisplayAndReset(float divisor = 0, bool logStats = FALSE) -> float;
 
-    auto GetDelta() const -> FLOAT { return mDeltaTime; }
+    auto GetDelta() const -> float { return mDeltaTime; }
     auto GetName() const -> CString { return mName; }
 private:
     CString mName;
-    INT mNumInvocations;
-    FLOAT mStartTime;
-    FLOAT mDeltaTime;
-    FLOAT mTotalTime;
+    int mNumInvocations;
+    float mStartTime;
+    float mDeltaTime;
+    float mTotalTime;
 };
 
 class ENGINE_API CProfileScope

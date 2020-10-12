@@ -19,7 +19,7 @@ CAudioSystem::~CAudioSystem()
     mIsInitialized = FALSE;
 }
 
-VOID CAudioSystem::Update()
+void CAudioSystem::Update()
 {
     for (auto track : mTracks)
         track->Update();
@@ -85,21 +85,21 @@ HRESULT CAudioSystem::CreateDevice(HWND window)
     return ERROR_SUCCESS;
 }
 
-VOID CAudioSystem::Release()
+void CAudioSystem::Release()
 {
     SAFE_RELEASE(mPrimaryBuffer);
     SAFE_RELEASE(mDirectSound);
     mIsInitialized = FALSE;
 }
 
-UINT CAudioSystem::RegisterTrack(CMusic* track)
+unsigned int CAudioSystem::RegisterTrack(CMusic* track)
 {
     if (!mIsInitialized) return INT_MAX;
     mTracks.Push(track);
     return mTrackId++;
 }
 
-VOID CAudioSystem::UnregisterTrack(UINT idx)
+void CAudioSystem::UnregisterTrack(unsigned int idx)
 {
     if (!mIsInitialized) return;
     mTracks.RemoveByIndex(idx);

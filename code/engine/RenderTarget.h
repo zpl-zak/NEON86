@@ -10,10 +10,10 @@ class CRenderTarget : public CAllocable<CRenderTarget>, public CReferenceCounter
 {
 public:
     CRenderTarget();
-    CRenderTarget(UINT w, UINT h, UCHAR kind = RTKIND_COLOR);
+    CRenderTarget(unsigned int w, unsigned int h, UCHAR kind = RTKIND_COLOR);
     ~CRenderTarget() { Release(); }
 
-    VOID Release(VOID);
+    void Release(void);
 
     auto GetTextureHandle() const -> LPDIRECT3DTEXTURE9 { return mTextureHandle; }
     auto GetSurfaceHandle() const -> LPDIRECT3DSURFACE9 { return mSurfaceHandle; }
@@ -21,12 +21,12 @@ public:
     auto GetDepthStencilSurfaceHandle() const -> LPDIRECT3DSURFACE9 { return mDepthStencilSurfaceHandle; }
     auto GetKind() const -> UCHAR { return mKind; }
 
-    VOID Bind(VOID);
+    void Bind(void);
 
 private:
     UCHAR mKind;
     LPDIRECT3DTEXTURE9 mTextureHandle;
     LPDIRECT3DSURFACE9 mSurfaceHandle, mDepthStencilSurfaceHandle;
 
-    VOID CreateRenderTarget(UINT w, UINT h, UCHAR kind = RTKIND_COLOR);
+    void CreateRenderTarget(unsigned int w, unsigned int h, UCHAR kind = RTKIND_COLOR);
 };

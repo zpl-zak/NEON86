@@ -6,7 +6,7 @@
 
 #include "Mesh.h"
 
-auto mesh_new(lua_State* L) -> INT
+auto mesh_new(lua_State* L) -> int
 {
     *static_cast<CMesh**>(lua_newuserdata(L, sizeof(CMesh*))) = new CMesh();
 
@@ -14,7 +14,7 @@ auto mesh_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_clone(lua_State* L) -> INT
+static auto mesh_clone(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     *static_cast<CMesh**>(lua_newuserdata(L, sizeof(CMesh*))) = mesh->Clone();
@@ -23,7 +23,7 @@ static auto mesh_clone(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_addfgroup(lua_State* L) -> INT
+static auto mesh_addfgroup(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     auto fg = *static_cast<CFaceGroup**>(luaL_checkudata(L, 2, L_FACEGROUP));
@@ -35,13 +35,13 @@ static auto mesh_addfgroup(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_getfgroups(lua_State* L) -> INT
+static auto mesh_getfgroups(lua_State* L) -> int
 {
     const auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
     lua_newtable(L);
 
-    for (UINT i = 0; i < mesh->GetNumFGroups(); i++)
+    for (unsigned int i = 0; i < mesh->GetNumFGroups(); i++)
     {
         const auto fg = mesh->GetFGroupData()[i];
         lua_pushinteger(L, i + 1ULL);
@@ -52,7 +52,7 @@ static auto mesh_getfgroups(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_draw(lua_State* L) -> INT
+static auto mesh_draw(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     auto mat = &D3DXMATRIX();
@@ -68,7 +68,7 @@ static auto mesh_draw(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_delete(lua_State* L) -> INT
+static auto mesh_delete(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
@@ -77,7 +77,7 @@ static auto mesh_delete(lua_State* L) -> INT
     return 0;
 }
 
-static auto mesh_clear(lua_State* L) -> INT
+static auto mesh_clear(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
@@ -86,7 +86,7 @@ static auto mesh_clear(lua_State* L) -> INT
     return 0;
 }
 
-static auto mesh_setname(lua_State* L) -> INT
+static auto mesh_setname(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     const auto meshName = luaL_checkstring(L, 2);
@@ -96,7 +96,7 @@ static auto mesh_setname(lua_State* L) -> INT
     return 0;
 }
 
-static auto mesh_getname(lua_State* L) -> INT
+static auto mesh_getname(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
@@ -104,7 +104,7 @@ static auto mesh_getname(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_setmaterial(lua_State* L) -> INT
+static auto mesh_setmaterial(lua_State* L) -> int
 {
     const auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     CMaterial* mat = nullptr;
@@ -114,7 +114,7 @@ static auto mesh_setmaterial(lua_State* L) -> INT
         mat = *static_cast<CMaterial**>(luaL_checkudata(L, 2, L_MATERIAL));
     }
 
-    for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
+    for (unsigned int i = 0; i < mesh->GetNumFGroups(); ++i)
     {
         mesh->GetFGroupData()[i]->SetMaterial(mat ? mat : nullptr);
         if (mat) mat->AddRef();
@@ -124,7 +124,7 @@ static auto mesh_setmaterial(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_getmaterial(lua_State* L) -> INT
+static auto mesh_getmaterial(lua_State* L) -> int
 {
     const auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     const auto matid = static_cast<DWORD>(luaL_checkinteger(L, 2)) - 1;
@@ -144,7 +144,7 @@ static auto mesh_getmaterial(lua_State* L) -> INT
     return 1;
 }
 
-static auto mesh_getowner(lua_State* L) -> INT
+static auto mesh_getowner(lua_State* L) -> int
 {
     auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     if (!mesh->GetOwner())
@@ -154,7 +154,7 @@ static auto mesh_getowner(lua_State* L) -> INT
     return 1;
 }
 
-static VOID LuaMesh_register(lua_State* L)
+static void LuaMesh_register(lua_State* L)
 {
     lua_register(L, L_MESH, mesh_new);
     luaL_newmetatable(L, L_MESH);

@@ -22,22 +22,22 @@
 #define EXPAND_COL4(q) { q.r, q.g, q.b, q.a }
 #define EXPAND_COLX(q) { q.r, q.g, q.b, 1.0f }
 
-ENGINE_API extern auto GetTime() -> FLOAT;
-ENGINE_API extern auto ScaleBetween(FLOAT x, FLOAT a, FLOAT b, FLOAT na, FLOAT nb) -> FLOAT;
+ENGINE_API extern auto GetTime() -> float;
+ENGINE_API extern auto ScaleBetween(float x, float a, float b, float na, float nb) -> float;
 
 extern UINT64 gMemUsed, gMemUsedLua, gMemPeak, gResourceCount;
-extern VOID neon_mempeak_update();
+extern void neon_mempeak_update();
 extern ENGINE_API auto neon_malloc(size_t size) -> LPVOID;
 extern ENGINE_API auto neon_realloc(LPVOID mem, size_t newSize) -> LPVOID;
-extern ENGINE_API VOID neon_free(LPVOID mem);
+extern ENGINE_API void neon_free(LPVOID mem);
 
 /// panic handling
-#define NEON_PANIC_FN(name) VOID name(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
+#define NEON_PANIC_FN(name) void name(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 typedef NEON_PANIC_FN(neon_panic_ptr);
 extern neon_panic_ptr* gPanicHandler;
 extern void HandlePanic(HWND window, LPCSTR text, LPCSTR caption, DWORD style);
 
-extern VOID PushLog(LPCSTR msg, BOOL noHist = FALSE);
+extern void PushLog(LPCSTR msg, bool noHist = FALSE);
 
 extern auto b64_decode(const char* in, unsigned char* out, size_t outlen) -> int;
 extern auto b64_encode(const unsigned char* in, size_t len) -> char*;
@@ -82,7 +82,7 @@ public:
     auto begin() const -> iterator { return &mData[0]; }
     auto end() const -> iterator { return &mData[mCount]; }
 
-    VOID Release()
+    void Release()
     {
         if (mIsOwned)
         {
@@ -114,7 +114,7 @@ public:
 
     auto Find(LPCSTR name) const -> T
     {
-        for (UINT i = 0; i < mCount; i++)
+        for (unsigned int i = 0; i < mCount; i++)
         {
             if (!strcmp(name, mData[i]->GetName().Str()))
                 return mData[i];
@@ -123,11 +123,11 @@ public:
         return NULL;
     }
 
-    VOID RemoveByValue(T val)
+    void RemoveByValue(T val)
     {
-        UINT idx = -1;
+        unsigned int idx = -1;
 
-        for (UINT i = 0; i < mCount; i++)
+        for (unsigned int i = 0; i < mCount; i++)
         {
             if (mData[idx] == val)
             {
@@ -140,7 +140,7 @@ public:
             RemoveByIndex(idx);
     }
 
-    auto RemoveByIndex(UINT idx) -> T
+    auto RemoveByIndex(unsigned int idx) -> T
     {
         T* ptr = mData + idx;
         ::memmove(mData + idx, mData + idx + 1, (mCount - idx - 1) * sizeof(T));
@@ -149,19 +149,19 @@ public:
         return *ptr;
     }
 
-    VOID Clear() { mCount = 0; }
+    void Clear() { mCount = 0; }
 
-    auto GetCount() const -> UINT { return mCount; }
-    auto GetCapacity() const -> UINT { return mCapacity; }
+    auto GetCount() const -> unsigned int { return mCount; }
+    auto GetCapacity() const -> unsigned int { return mCapacity; }
 
-    auto operator[](UINT index) const -> T { return mData[index]; }
+    auto operator[](unsigned int index) const -> T { return mData[index]; }
     auto GetData() const -> T* { return mData; }
 
 private:
     T* mData;
-    UINT mCapacity;
-    UINT mCount;
-    BOOL mIsOwned;
+    unsigned int mCapacity;
+    unsigned int mCount;
+    bool mIsOwned;
 };
 
 class ENGINE_API CString
@@ -209,22 +209,22 @@ public:
         return out ? out : nullptr;
     }
 
-    auto operator==(LPCSTR str) const -> BOOL
+    auto operator==(LPCSTR str) const -> bool
     {
         return strcmp(mStr, str) == 0;
     }
 
-    auto operator!=(LPCSTR str) const -> BOOL
+    auto operator!=(LPCSTR str) const -> bool
     {
         return !(mStr == str);
     }
 
-    VOID operator=(LPCSTR str)
+    void operator=(LPCSTR str)
     {
         Assign(str);
     }
 
-    VOID operator=(CString str)
+    void operator=(CString str)
     {
         Assign(str.Str());
     }
@@ -249,14 +249,14 @@ private:
     LPSTR mStr;
     SSIZE_T mSize;
 
-    VOID Assign(LPCSTR str)
+    void Assign(LPCSTR str)
     {
         mSize = strlen(str);
         mStr = new CHAR[mSize + 1];
         strcpy_s(mStr, mSize + 1, str);
     }
 
-    VOID Concatenate(LPCSTR s1, LPCSTR s2)
+    void Concatenate(LPCSTR s1, LPCSTR s2)
     {
         mSize = strlen(s1) + strlen(s2);
         mStr = new CHAR[mSize + 1];

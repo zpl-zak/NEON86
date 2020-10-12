@@ -20,11 +20,11 @@ public:
     CAudioSystem();
     ~CAudioSystem();
     auto CreateDevice(HWND) -> HRESULT;
-    auto Release() -> VOID;
-    auto Update() -> VOID;
+    auto Release() -> void;
+    auto Update() -> void;
 
-    auto RegisterTrack(CMusic* track) -> UINT;
-    auto UnregisterTrack(UINT idx) -> VOID;
+    auto RegisterTrack(CMusic* track) -> unsigned int;
+    auto UnregisterTrack(unsigned int idx) -> void;
 
     auto GetDevice() const -> IDirectSound8* { return mDirectSound; }
     auto GetListener() const -> IDirectSound3DListener8* { return mListener; }
@@ -32,10 +32,10 @@ public:
     // TODO: Expose audio listener for 3D audio support
 
 private:
-    BOOL mIsInitialized;
+    bool mIsInitialized;
     IDirectSound8* mDirectSound;
     IDirectSoundBuffer* mPrimaryBuffer;
     IDirectSound3DListener8* mListener;
     CArray<CMusic*> mTracks;
-    UINT mTrackId;
+    unsigned int mTrackId;
 };

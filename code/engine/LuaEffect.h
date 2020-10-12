@@ -5,7 +5,7 @@
 
 #include <lua/lua.hpp>
 
-auto effect_new(lua_State* L) -> INT
+auto effect_new(lua_State* L) -> int
 {
     const auto effectPath = luaL_checkstring(L, 1);
 
@@ -17,7 +17,7 @@ auto effect_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto effect_begin(lua_State* L) -> INT
+static auto effect_begin(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto technique = luaL_checkstring(L, 2);
@@ -26,7 +26,7 @@ static auto effect_begin(lua_State* L) -> INT
     return 1;
 }
 
-static auto effect_end(lua_State* L) -> INT
+static auto effect_end(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
 
@@ -34,23 +34,23 @@ static auto effect_end(lua_State* L) -> INT
     return 1;
 }
 
-static auto effect_beginpass(lua_State* L) -> INT
+static auto effect_beginpass(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
-    UINT pass = -1;
+    unsigned int pass = -1;
 
     if (!lua_isinteger(L, 2))
     {
         const auto passName = luaL_checkstring(L, 2);
         pass = fx->FindPass(passName);
     }
-    else pass = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    else pass = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
 
     lua_pushinteger(L, fx->BeginPass(pass));
     return 1;
 }
 
-static auto effect_endpass(lua_State* L) -> INT
+static auto effect_endpass(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
 
@@ -58,7 +58,7 @@ static auto effect_endpass(lua_State* L) -> INT
     return 1;
 }
 
-static auto effect_commit(lua_State* L) -> INT
+static auto effect_commit(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
 
@@ -66,27 +66,27 @@ static auto effect_commit(lua_State* L) -> INT
     return 1;
 }
 
-static auto effect_setbool(lua_State* L) -> INT
+static auto effect_setbool(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
-    const auto value = static_cast<FLOAT>(lua_toboolean(L, 3));
+    const auto value = static_cast<float>(lua_toboolean(L, 3));
 
     fx->SetBool(name, value == 1.0f);
     return 0;
 }
 
-static auto effect_setfloat(lua_State* L) -> INT
+static auto effect_setfloat(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
-    const auto value = static_cast<FLOAT>(luaL_checknumber(L, 3));
+    const auto value = static_cast<float>(luaL_checknumber(L, 3));
 
     fx->SetFloat(name, value);
     return 0;
 }
 
-static auto effect_setmatrix(lua_State* L) -> INT
+static auto effect_setmatrix(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
@@ -96,7 +96,7 @@ static auto effect_setmatrix(lua_State* L) -> INT
     return 0;
 }
 
-static auto effect_setvector3(lua_State* L) -> INT
+static auto effect_setvector3(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
@@ -106,7 +106,7 @@ static auto effect_setvector3(lua_State* L) -> INT
     return 0;
 }
 
-static auto effect_setinteger(lua_State* L) -> INT
+static auto effect_setinteger(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
@@ -116,7 +116,7 @@ static auto effect_setinteger(lua_State* L) -> INT
     return 0;
 }
 
-static auto effect_setlight(lua_State* L) -> INT
+static auto effect_setlight(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
@@ -131,7 +131,7 @@ static auto effect_setlight(lua_State* L) -> INT
     return 0;
 }
 
-static auto effect_setvector4(lua_State* L) -> INT
+static auto effect_setvector4(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
@@ -139,7 +139,7 @@ static auto effect_setvector4(lua_State* L) -> INT
     if (lua_gettop(L) == 4)
     {
         const auto value = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 3, L_VECTOR));
-        const auto value2 = static_cast<FLOAT>(lua_tonumber(L, 4));
+        const auto value2 = static_cast<float>(lua_tonumber(L, 4));
         fx->SetVector4(name, D3DXVECTOR4(*value, value2));
     }
     else
@@ -151,7 +151,7 @@ static auto effect_setvector4(lua_State* L) -> INT
     return 0;
 }
 
-static auto effect_settexture(lua_State* L) -> INT
+static auto effect_settexture(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
     const auto name = luaL_checkstring(L, 2);
@@ -164,11 +164,11 @@ static auto effect_settexture(lua_State* L) -> INT
     }
     else if (luaL_testudata(L, 3, L_MATERIAL))
     {
-        UINT slot = TEXTURESLOT_ALBEDO;
+        unsigned int slot = TEXTURESLOT_ALBEDO;
         auto mat = *static_cast<CMaterial**>(lua_touserdata(L, 3));
 
         if (lua_gettop(L) == 4)
-            slot = static_cast<UINT>(luaL_checkinteger(L, 4)) - 1;
+            slot = static_cast<unsigned int>(luaL_checkinteger(L, 4)) - 1;
 
         fx->SetTexture(name, mat->GetTextureHandle(slot));
     }
@@ -181,7 +181,7 @@ static auto effect_settexture(lua_State* L) -> INT
     return 0;
 }
 
-static auto effect_delete(lua_State* L) -> INT
+static auto effect_delete(lua_State* L) -> int
 {
     auto fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
 
@@ -189,7 +189,7 @@ static auto effect_delete(lua_State* L) -> INT
     return 0;
 }
 
-static VOID LuaEffect_register(lua_State* L)
+static void LuaEffect_register(lua_State* L)
 {
     lua_register(L, L_EFFECT, effect_new);
     luaL_newmetatable(L, L_EFFECT);

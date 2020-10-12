@@ -1,6 +1,3 @@
-// player.exe: A sample program loading the game data using Neon86 game engine
-//
-
 #include "stdafx.h"
 
 #include <windowsx.h>
@@ -15,8 +12,8 @@
 #endif
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR titleName, RECT& resolution);
-BOOL CenterWindow(HWND hwndWindow);
+auto BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR titleName, RECT& resolution) -> HWND;
+auto CenterWindow(HWND hwndWindow) -> BOOL;
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
@@ -41,7 +38,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     if (!ENGINE->Init(hWnd, rect))
     {
-        MessageBox(NULL, "Failed to start engine!", "Engine load failure", MB_OK);
+        MessageBox(nullptr, "Failed to start engine!", "Engine load failure", MB_OK);
         ENGINE->Release();
         return 0;
     }
@@ -50,7 +47,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
     if (!FILESYSTEM->LoadGame(lpCmdLine))
     {
-        MessageBox(NULL, "Failed to load game!", "Game load failure", MB_OK);
+        MessageBox(nullptr, "Failed to load game!", "Game load failure", MB_OK);
         ENGINE->Release();
         return 0;
     }
@@ -61,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     return 0;
 }
 
-HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR titleName, RECT& resolution)
+auto BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR titleName, RECT& resolution) -> HWND
 {
     HWND hWnd;
     WNDCLASSEX wc;
@@ -72,7 +69,7 @@ HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR t
     wc.style = CS_HREDRAW | CS_VREDRAW;
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
-    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
     wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
     wc.lpszClassName = className;
 
@@ -82,7 +79,7 @@ HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR t
     DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
     AdjustWindowRectEx(&resolution, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
     #else
-    DWORD style = WS_VISIBLE | WS_POPUP;
+    const auto style = WS_VISIBLE | WS_POPUP;
     #endif
 
     hWnd = CreateWindowEx(NULL,
@@ -91,27 +88,27 @@ HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR t
                           style,
                           resolution.left, resolution.top,
                           resolution.right, resolution.bottom,
-                          NULL,
-                          NULL,
+                          nullptr,
+                          nullptr,
                           instance,
-                          NULL);
+                          nullptr);
 
     if (!hWnd)
     {
-        int errcode = GetLastError();
+        const int errcode = GetLastError();
         LPVOID msg;
 
         FormatMessageA(
             FORMAT_MESSAGE_ALLOCATE_BUFFER |
             FORMAT_MESSAGE_FROM_SYSTEM |
             FORMAT_MESSAGE_IGNORE_INSERTS,
-            NULL,
+            nullptr,
             errcode,
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPSTR)&msg,
-            0, NULL);
+            0, nullptr);
 
-        MessageBoxA(NULL,
+        MessageBoxA(nullptr,
                     static_cast<LPCSTR>(msg),
                     "Window creation failed",
                     MB_ICONERROR);
@@ -133,20 +130,20 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-BOOL CenterWindow(HWND hwndWindow)
+auto CenterWindow(HWND hwndWindow) -> BOOL
 {
     RECT rectWindow;
 
     GetWindowRect(hwndWindow, &rectWindow);
 
-    int nWidth = rectWindow.right - rectWindow.left;
-    int nHeight = rectWindow.bottom - rectWindow.top;
+    const int nWidth = rectWindow.right - rectWindow.left;
+    const int nHeight = rectWindow.bottom - rectWindow.top;
 
-    int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
-    int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+    const auto nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+    const auto nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    int nX = nScreenWidth / 2 - nWidth / 2;
-    int nY = nScreenHeight / 2 - nHeight / 2;
+    auto nX = nScreenWidth / 2 - nWidth / 2;
+    auto nY = nScreenHeight / 2 - nHeight / 2;
 
     if (nX < 0) nX = 0;
     if (nY < 0) nY = 0;

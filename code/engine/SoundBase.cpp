@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "SoundBase.h"
 
-VOID CSoundBase::SetVolume(LONG vol)
+void CSoundBase::SetVolume(LONG vol)
 {
     double attenuation = 1.0 / 1024.0 + vol / 100.0 * 1023.0 / 1024.0;
     double db = 10 * log10(attenuation) / log10(2);
@@ -17,25 +17,25 @@ LONG CSoundBase::GetVolume()
     return static_cast<LONG>(floor(actVol));
 }
 
-VOID CSoundBase::Play()
+void CSoundBase::Play()
 {
     mBuffer->Play(0, 0, DSBPLAY_LOOPING);
 }
 
-VOID CSoundBase::Pause()
+void CSoundBase::Pause()
 {
     mBuffer->Stop();
 }
 
-VOID CSoundBase::Stop()
+void CSoundBase::Stop()
 {
     Pause();
     mBuffer->SetCurrentPosition(0);
 }
 
-VOID CSoundBase::SetPan(LONG pan)
+void CSoundBase::SetPan(LONG pan)
 {
-    LONG realPan = static_cast<LONG>(ScaleBetween(static_cast<FLOAT>(pan), DSBPAN_LEFT, DSBPAN_RIGHT, -100, 100));
+    LONG realPan = static_cast<LONG>(ScaleBetween(static_cast<float>(pan), DSBPAN_LEFT, DSBPAN_RIGHT, -100, 100));
     mBuffer->SetPan(realPan);
 }
 
@@ -43,7 +43,7 @@ LONG CSoundBase::GetPan()
 {
     LONG pan;
     mBuffer->GetPan(&pan);
-    return static_cast<LONG>(ScaleBetween(static_cast<FLOAT>(pan), -100, 100, DSBPAN_LEFT, DSBPAN_RIGHT));
+    return static_cast<LONG>(ScaleBetween(static_cast<float>(pan), -100, 100, DSBPAN_LEFT, DSBPAN_RIGHT));
 }
 
 DWORD CSoundBase::GetCurrentPosition()
@@ -53,12 +53,12 @@ DWORD CSoundBase::GetCurrentPosition()
     return playPos;
 }
 
-VOID CSoundBase::SetCurrentPosition(DWORD cursor)
+void CSoundBase::SetCurrentPosition(DWORD cursor)
 {
     mBuffer->SetCurrentPosition(cursor);
 }
 
-BOOL CSoundBase::IsPlaying()
+bool CSoundBase::IsPlaying()
 {
     DWORD playStatus = 0x000000;
     mBuffer->GetStatus(&playStatus);

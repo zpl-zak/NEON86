@@ -1,6 +1,6 @@
 #include <lua/lua.hpp>
 
-auto sound_new(lua_State* L) -> INT
+auto sound_new(lua_State* L) -> int
 {
     const auto wavPath = (LPSTR)luaL_checkstring(L, 1);
     *static_cast<CSound**>(lua_newuserdata(L, sizeof(CSound*))) = new CSound(wavPath);
@@ -8,28 +8,28 @@ auto sound_new(lua_State* L) -> INT
     return 1;
 }
 
-auto sound_play(lua_State* L) -> INT
+auto sound_play(lua_State* L) -> int
 {
     auto snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     snd->Play();
     return 0;
 }
 
-auto sound_pause(lua_State* L) -> INT
+auto sound_pause(lua_State* L) -> int
 {
     auto snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     snd->Pause();
     return 0;
 }
 
-auto sound_stop(lua_State* L) -> INT
+auto sound_stop(lua_State* L) -> int
 {
     auto snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     snd->Stop();
     return 0;
 }
 
-auto sound_getdata(lua_State* L) -> INT
+auto sound_getdata(lua_State* L) -> int
 {
     auto snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     ULONG dataLen = 0;
@@ -46,7 +46,7 @@ auto sound_getdata(lua_State* L) -> INT
     return 1;
 }
 
-auto sound_setvolume(lua_State* L) -> INT
+auto sound_setvolume(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     const LONG vol = static_cast<LONG>(luaL_checkinteger(L, 2));
@@ -54,7 +54,7 @@ auto sound_setvolume(lua_State* L) -> INT
     return 0;
 }
 
-auto sound_setpan(lua_State* L) -> INT
+auto sound_setpan(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     const LONG pan = static_cast<LONG>(luaL_checkinteger(L, 2));
@@ -62,7 +62,7 @@ auto sound_setpan(lua_State* L) -> INT
     return 0;
 }
 
-auto sound_setfrequency(lua_State* L) -> INT
+auto sound_setfrequency(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     const auto val = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -70,7 +70,7 @@ auto sound_setfrequency(lua_State* L) -> INT
     return 0;
 }
 
-auto sound_setcursor(lua_State* L) -> INT
+auto sound_setcursor(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     const auto pos = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -78,57 +78,57 @@ auto sound_setcursor(lua_State* L) -> INT
     return 0;
 }
 
-auto sound_getvolume(lua_State* L) -> INT
+auto sound_getvolume(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushinteger(L, snd->GetVolume());
     return 1;
 }
 
-auto sound_getpan(lua_State* L) -> INT
+auto sound_getpan(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushinteger(L, snd->GetPan());
     return 1;
 }
 
-auto sound_getfrequency(lua_State* L) -> INT
+auto sound_getfrequency(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushinteger(L, snd->GetFrequency());
     return 1;
 }
 
-auto sound_getcursor(lua_State* L) -> INT
+auto sound_getcursor(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushinteger(L, snd->GetCurrentPosition());
     return 1;
 }
 
-auto sound_playing(lua_State* L) -> INT
+auto sound_playing(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushboolean(L, snd->IsPlaying());
     return 1;
 }
 
-auto sound_setloop(lua_State* L) -> INT
+auto sound_setloop(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
-    const BOOL loop = static_cast<BOOL>(lua_toboolean(L, 2));
+    const bool loop = static_cast<bool>(lua_toboolean(L, 2));
     snd->SetLoop(loop);
     return 0;
 }
 
-auto sound_looping(lua_State* L) -> INT
+auto sound_looping(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushboolean(L, snd->IsLooping());
     return 1;
 }
 
-auto sound_setpos(lua_State* L) -> INT
+auto sound_setpos(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     const auto pos = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -136,21 +136,21 @@ auto sound_setpos(lua_State* L) -> INT
     return 0;
 }
 
-auto sound_getpos(lua_State* L) -> INT
+auto sound_getpos(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushinteger(L, snd->GetCurrentPosition());
     return 1;
 }
 
-auto sound_getsize(lua_State* L) -> INT
+auto sound_getsize(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     lua_pushinteger(L, snd->GetTotalSize());
     return 1;
 }
 
-static auto sound_delete(lua_State* L) -> INT
+static auto sound_delete(lua_State* L) -> int
 {
     CSound* snd = *static_cast<CSound**>(luaL_checkudata(L, 1, L_SOUND));
     snd->Release();
@@ -158,7 +158,7 @@ static auto sound_delete(lua_State* L) -> INT
     return 0;
 }
 
-static VOID LuaSound_register(lua_State* L)
+static void LuaSound_register(lua_State* L)
 {
     lua_register(L, L_SOUND, sound_new);
     luaL_newmetatable(L, L_SOUND);

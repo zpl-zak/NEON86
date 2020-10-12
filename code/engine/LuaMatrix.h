@@ -4,7 +4,7 @@
 
 #include <lua/lua.hpp>
 
-auto matrix_new(lua_State* L) -> INT
+auto matrix_new(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(lua_newuserdata(L, sizeof(D3DXMATRIX)));
     D3DXMatrixIdentity(mat);
@@ -13,7 +13,7 @@ auto matrix_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_translate(lua_State* L) -> INT
+static auto matrix_translate(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const D3DXVECTOR3 vec = luaH_getcomps(L);
@@ -27,7 +27,7 @@ static auto matrix_translate(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_rotate(lua_State* L) -> INT
+static auto matrix_rotate(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const D3DXVECTOR3 vec = luaH_getcomps(L);
@@ -41,7 +41,7 @@ static auto matrix_rotate(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_scale(lua_State* L) -> INT
+static auto matrix_scale(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const D3DXVECTOR3 vec = luaH_getcomps(L);
@@ -53,7 +53,7 @@ static auto matrix_scale(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_reflect(lua_State* L) -> INT
+static auto matrix_reflect(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto vec = luaH_getcomps(L);
@@ -66,7 +66,7 @@ static auto matrix_reflect(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_shadow(lua_State* L) -> INT
+static auto matrix_shadow(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto vec = luaH_getcomps(L);
@@ -80,7 +80,7 @@ static auto matrix_shadow(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_mul(lua_State* L) -> INT
+static auto matrix_mul(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto matRHS = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
@@ -92,17 +92,17 @@ static auto matrix_mul(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_bind(lua_State* L) -> INT
+static auto matrix_bind(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
-    const auto kind = static_cast<FLOAT>(luaL_checknumber(L, 2));
-    RENDERER->SetMatrix(static_cast<UINT>(kind), *mat);
+    const auto kind = static_cast<float>(luaL_checknumber(L, 2));
+    RENDERER->SetMatrix(static_cast<unsigned int>(kind), *mat);
 
     lua_pushvalue(L, 1);
     return 1;
 }
 
-static auto matrix_lookat(lua_State* L) -> INT
+static auto matrix_lookat(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto eye = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 2, L_VECTOR));
@@ -117,22 +117,22 @@ static auto matrix_lookat(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_persp(lua_State* L) -> INT
+static auto matrix_persp(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
-    const auto fov = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto fov = static_cast<float>(luaL_checknumber(L, 2));
     auto zNear = 0.1f, zFar = 1000.0f;
     auto flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 4)
     {
-        zNear = static_cast<FLOAT>(luaL_checknumber(L, 3));
-        zFar = static_cast<FLOAT>(luaL_checknumber(L, 4));
+        zNear = static_cast<float>(luaL_checknumber(L, 3));
+        zFar = static_cast<float>(luaL_checknumber(L, 4));
     }
 
     if (lua_gettop(L) >= 5)
     {
-        flipHandedness = static_cast<BOOL>(lua_toboolean(L, 5));
+        flipHandedness = static_cast<bool>(lua_toboolean(L, 5));
     }
 
     const auto res = RENDERER->GetSurfaceResolution();
@@ -141,7 +141,7 @@ static auto matrix_persp(lua_State* L) -> INT
     {
         D3DXMatrixPerspectiveFovRH(mat,
                                    D3DXToRadian(fov),
-                                   static_cast<FLOAT>(res.right) / static_cast<FLOAT>(res.bottom),
+                                   static_cast<float>(res.right) / static_cast<float>(res.bottom),
                                    zNear,
                                    zFar);
     }
@@ -149,7 +149,7 @@ static auto matrix_persp(lua_State* L) -> INT
     {
         D3DXMatrixPerspectiveFovLH(mat,
                                    D3DXToRadian(fov),
-                                   static_cast<FLOAT>(res.right) / static_cast<FLOAT>(res.bottom),
+                                   static_cast<float>(res.right) / static_cast<float>(res.bottom),
                                    zNear,
                                    zFar);
     }
@@ -158,31 +158,31 @@ static auto matrix_persp(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_ortho(lua_State* L) -> INT
+static auto matrix_ortho(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto res = RENDERER->GetSurfaceResolution();
-    auto w = static_cast<FLOAT>(res.right), h = static_cast<FLOAT>(res.bottom);
+    auto w = static_cast<float>(res.right), h = static_cast<float>(res.bottom);
     auto flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 3)
     {
-        w = static_cast<FLOAT>(luaL_checknumber(L, 2)) * (static_cast<FLOAT>(res.right) / static_cast<FLOAT>(res.bottom)
+        w = static_cast<float>(luaL_checknumber(L, 2)) * (static_cast<float>(res.right) / static_cast<float>(res.bottom)
         );
-        h = static_cast<FLOAT>(luaL_checknumber(L, 3));
+        h = static_cast<float>(luaL_checknumber(L, 3));
     }
 
     auto zNear = 0.01f, zFar = 100.0f;
 
     if (lua_gettop(L) >= 5)
     {
-        zNear = static_cast<FLOAT>(luaL_checknumber(L, 4));
-        zFar = static_cast<FLOAT>(luaL_checknumber(L, 5));
+        zNear = static_cast<float>(luaL_checknumber(L, 4));
+        zFar = static_cast<float>(luaL_checknumber(L, 5));
     }
 
     if (lua_gettop(L) >= 6)
     {
-        flipHandedness = static_cast<BOOL>(lua_toboolean(L, 6));
+        flipHandedness = static_cast<bool>(lua_toboolean(L, 6));
     }
 
     if (flipHandedness)
@@ -207,33 +207,33 @@ static auto matrix_ortho(lua_State* L) -> INT
 }
 
 
-static auto matrix_orthoex(lua_State* L) -> INT
+static auto matrix_orthoex(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto res = RENDERER->GetSurfaceResolution();
     auto l = 0.0f, t = 0.0f;
-    auto r = static_cast<FLOAT>(res.right), b = static_cast<FLOAT>(res.bottom);
+    auto r = static_cast<float>(res.right), b = static_cast<float>(res.bottom);
     auto flipHandedness = FALSE;
 
     if (lua_gettop(L) >= 5)
     {
-        l = static_cast<FLOAT>(luaL_checknumber(L, 2));
-        r = static_cast<FLOAT>(luaL_checknumber(L, 3));
-        b = static_cast<FLOAT>(luaL_checknumber(L, 4));
-        t = static_cast<FLOAT>(luaL_checknumber(L, 5));
+        l = static_cast<float>(luaL_checknumber(L, 2));
+        r = static_cast<float>(luaL_checknumber(L, 3));
+        b = static_cast<float>(luaL_checknumber(L, 4));
+        t = static_cast<float>(luaL_checknumber(L, 5));
     }
 
     auto zNear = 0.01f, zFar = 100.0f;
 
     if (lua_gettop(L) >= 6)
     {
-        zNear = static_cast<FLOAT>(luaL_checknumber(L, 6));
-        zFar = static_cast<FLOAT>(luaL_checknumber(L, 7));
+        zNear = static_cast<float>(luaL_checknumber(L, 6));
+        zFar = static_cast<float>(luaL_checknumber(L, 7));
     }
 
     if (lua_gettop(L) >= 8)
     {
-        flipHandedness = static_cast<BOOL>(lua_toboolean(L, 8));
+        flipHandedness = static_cast<bool>(lua_toboolean(L, 8));
     }
 
     if (flipHandedness)
@@ -255,16 +255,16 @@ static auto matrix_orthoex(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_getfield(lua_State* L) -> INT
+static auto matrix_getfield(lua_State* L) -> int
 {
     auto matPtr = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
-    const auto row = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
-    const auto col = static_cast<UINT>(luaL_checkinteger(L, 3)) - 1;
+    const auto row = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
+    const auto col = static_cast<unsigned int>(luaL_checkinteger(L, 3)) - 1;
     auto val = 0.0f;
 
     if (lua_gettop(L) >= 4)
     {
-        val = static_cast<FLOAT>(luaL_checknumber(L, 4));
+        val = static_cast<float>(luaL_checknumber(L, 4));
         matPtr->m[row][col] = val;
         matrix_new(L);
         const auto newMat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 5, L_MATRIX));
@@ -277,10 +277,10 @@ static auto matrix_getfield(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_getrow(lua_State* L) -> INT
+static auto matrix_getrow(lua_State* L) -> int
 {
     const auto matPtr = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
-    const auto row = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    const auto row = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
 
     if (lua_gettop(L) >= 3)
     {
@@ -303,10 +303,10 @@ static auto matrix_getrow(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_getcol(lua_State* L) -> INT
+static auto matrix_getcol(lua_State* L) -> int
 {
     const auto matPtr = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
-    const auto col = static_cast<UINT>(luaL_checkinteger(L, 2)) - 1;
+    const auto col = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
 
     if (lua_gettop(L) >= 3)
     {
@@ -329,11 +329,11 @@ static auto matrix_getcol(lua_State* L) -> INT
     return 1;
 }
 
-static auto matrix_inverse(lua_State* L) -> INT
+static auto matrix_inverse(lua_State* L) -> int
 {
     const auto mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     D3DXMATRIX t;
-    FLOAT d;
+    float d;
 
     auto ok = D3DXMatrixInverse(&t, &d, mat);
 
@@ -357,7 +357,7 @@ static auto matrix_inverse(lua_State* L) -> INT
     return 1;
 }
 
-static VOID LuaMatrix_register(lua_State* L)
+static void LuaMatrix_register(lua_State* L)
 {
     lua_register(L, L_MATRIX, matrix_new);
     luaL_newmetatable(L, L_MATRIX);

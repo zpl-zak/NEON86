@@ -4,7 +4,7 @@
 
 #include <lua/lua.hpp>
 
-auto vertex_new(lua_State* L) -> INT
+auto vertex_new(lua_State* L) -> int
 {
     auto x = 0.0F, y = 0.0F, z = 0.0F;
     auto nx = 0.0F, ny = 0.0F, nz = 0.0F;
@@ -16,15 +16,15 @@ auto vertex_new(lua_State* L) -> INT
 
     if (lua_gettop(L) >= 3)
     {
-        x = static_cast<FLOAT>(luaL_checknumber(L, 1));
-        y = static_cast<FLOAT>(luaL_checknumber(L, 2));
-        z = static_cast<FLOAT>(luaL_checknumber(L, 3));
+        x = static_cast<float>(luaL_checknumber(L, 1));
+        y = static_cast<float>(luaL_checknumber(L, 2));
+        z = static_cast<float>(luaL_checknumber(L, 3));
     }
 
     if (lua_gettop(L) >= 5)
     {
-        su = static_cast<FLOAT>(luaL_checknumber(L, 4));
-        tv = static_cast<FLOAT>(luaL_checknumber(L, 5));
+        su = static_cast<float>(luaL_checknumber(L, 4));
+        tv = static_cast<float>(luaL_checknumber(L, 5));
     }
 
     if (lua_gettop(L) >= 6)
@@ -34,29 +34,29 @@ auto vertex_new(lua_State* L) -> INT
 
     if (lua_gettop(L) >= 9)
     {
-        nx = static_cast<FLOAT>(luaL_checknumber(L, 7));
-        ny = static_cast<FLOAT>(luaL_checknumber(L, 8));
-        nz = static_cast<FLOAT>(luaL_checknumber(L, 9));
+        nx = static_cast<float>(luaL_checknumber(L, 7));
+        ny = static_cast<float>(luaL_checknumber(L, 8));
+        nz = static_cast<float>(luaL_checknumber(L, 9));
     }
 
     if (lua_gettop(L) >= 12)
     {
-        tx = static_cast<FLOAT>(luaL_checknumber(L, 10));
-        ty = static_cast<FLOAT>(luaL_checknumber(L, 11));
-        tz = static_cast<FLOAT>(luaL_checknumber(L, 12));
+        tx = static_cast<float>(luaL_checknumber(L, 10));
+        ty = static_cast<float>(luaL_checknumber(L, 11));
+        tz = static_cast<float>(luaL_checknumber(L, 12));
     }
 
     if (lua_gettop(L) >= 15)
     {
-        bx = static_cast<FLOAT>(luaL_checknumber(L, 13));
-        by = static_cast<FLOAT>(luaL_checknumber(L, 14));
-        bz = static_cast<FLOAT>(luaL_checknumber(L, 15));
+        bx = static_cast<float>(luaL_checknumber(L, 13));
+        by = static_cast<float>(luaL_checknumber(L, 14));
+        bz = static_cast<float>(luaL_checknumber(L, 15));
     }
 
     if (lua_gettop(L) >= 17)
     {
-        su2 = static_cast<FLOAT>(luaL_checknumber(L, 16));
-        tv2 = static_cast<FLOAT>(luaL_checknumber(L, 17));
+        su2 = static_cast<float>(luaL_checknumber(L, 16));
+        tv2 = static_cast<float>(luaL_checknumber(L, 17));
     }
 
     const auto vert = static_cast<VERTEX*>(lua_newuserdata(L, sizeof(VERTEX)));
@@ -88,21 +88,21 @@ auto vertex_new(lua_State* L) -> INT
     return 1;
 }
 
-static auto vertex_get(lua_State* L) -> INT
+static auto vertex_get(lua_State* L) -> int
 {
     auto vert = static_cast<VERTEX*>(luaL_checkudata(L, 1, L_VERTEX));
-    FLOAT arr[] = {
+    float arr[] = {
         vert->x, vert->y, vert->z, vert->su, vert->tv, vert->nx, vert->ny, vert->nz, vert->tx, vert->ty, vert->tz,
         vert->bx, vert->by, vert->bz, vert->su2, vert->tv2
     };
-    FLOAT col[4] = {
-        static_cast<FLOAT>(vert->r), static_cast<FLOAT>(vert->g), static_cast<FLOAT>(vert->b),
-        static_cast<FLOAT>(vert->a)
+    float col[4] = {
+        static_cast<float>(vert->r), static_cast<float>(vert->g), static_cast<float>(vert->b),
+        static_cast<float>(vert->a)
     };
-    const UINT arrLen = sizeof arr / sizeof arr[0];
+    const unsigned int arrLen = sizeof arr / sizeof arr[0];
 
     lua_newtable(L);
-    for (UINT i = 0; i < arrLen; i++)
+    for (unsigned int i = 0; i < arrLen; i++)
     {
         lua_pushinteger(L, i + 1ULL);
         lua_pushnumber(L, arr[i]);
@@ -112,7 +112,7 @@ static auto vertex_get(lua_State* L) -> INT
     lua_pushinteger(L, arrLen + 1);
     lua_newtable(L);
 
-    for (UINT i = 0; i < 4; i++)
+    for (unsigned int i = 0; i < 4; i++)
     {
         lua_pushinteger(L, i + 1ULL);
         lua_pushnumber(L, col[i]);
@@ -123,7 +123,7 @@ static auto vertex_get(lua_State* L) -> INT
     return 1;
 }
 
-static VOID LuaVertex_register(lua_State* L)
+static void LuaVertex_register(lua_State* L)
 {
     lua_register(L, L_VERTEX, vertex_new);
     luaL_newmetatable(L, L_VERTEX);

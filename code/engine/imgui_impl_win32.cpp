@@ -260,9 +260,9 @@ void    ImGui_ImplWin32_NewFrame()
 // PS: We treat DBLCLK messages as regular mouse down messages, so this code will work on windows classes that have the CS_DBLCLKS flag set. Our own example app code doesn't set this flag.
 #if 0
 // Copy this line into your .cpp file to forward declare the function.
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, unsigned int msg, WPARAM wParam, LPARAM lParam);
 #endif
-IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lParam)
 {
     if (ImGui::GetCurrentContext() == NULL)
         return 0;
@@ -326,7 +326,7 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARA
             return 1;
         return 0;
     case WM_DEVICECHANGE:
-        if ((UINT)wParam == DBT_DEVNODES_CHANGED)
+        if ((unsigned int)wParam == DBT_DEVNODES_CHANGED)
             g_WantUpdateHasGamepad = true;
         return 0;
     }
@@ -350,7 +350,7 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARA
 
 // Implement some of the functions and types normally declared in recent Windows SDK.
 #if !defined(_versionhelpers_H_INCLUDED_) && !defined(_INC_VERSIONHELPERS)
-static BOOL IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)
+static bool IsWindowsVersionOrGreater(WORD major, WORD minor, WORD sp)
 {
     OSVERSIONINFOEXW osvi = { sizeof(osvi), major, minor, 0, 0, { 0 }, sp };
     DWORD mask = VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR;
@@ -374,7 +374,7 @@ DECLARE_HANDLE(DPI_AWARENESS_CONTEXT);
 #define DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 (DPI_AWARENESS_CONTEXT)-4
 #endif
 typedef HRESULT(WINAPI* PFN_SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS);                     // Shcore.lib + dll, Windows 8.1+
-typedef HRESULT(WINAPI* PFN_GetDpiForMonitor)(HMONITOR, MONITOR_DPI_TYPE, UINT*, UINT*);        // Shcore.lib + dll, Windows 8.1+
+typedef HRESULT(WINAPI* PFN_GetDpiForMonitor)(HMONITOR, MONITOR_DPI_TYPE, unsigned int*, unsigned int*);        // Shcore.lib + dll, Windows 8.1+
 typedef DPI_AWARENESS_CONTEXT(WINAPI* PFN_SetThreadDpiAwarenessContext)(DPI_AWARENESS_CONTEXT); // User32.lib + dll, Windows 10 v1607+ (Creators Update)
 
 // Helper function to enable DPI awareness without setting up a manifest
@@ -407,7 +407,7 @@ void ImGui_ImplWin32_EnableDpiAwareness()
 
 float ImGui_ImplWin32_GetDpiScaleForMonitor(void* monitor)
 {
-    UINT xdpi = 96, ydpi = 96;
+    unsigned int xdpi = 96, ydpi = 96;
     if (IsWindows8Point1OrGreater())
     {
         static HINSTANCE shcore_dll = ::LoadLibraryA("shcore.dll"); // Reference counted per-process

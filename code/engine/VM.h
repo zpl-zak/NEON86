@@ -16,38 +16,38 @@ struct lua_State;
 class ENGINE_API CVirtualMachine
 {
 public:
-    CVirtualMachine(VOID);
-    VOID Release(VOID);
+    CVirtualMachine(void);
+    void Release(void);
 
     /// States
-    VOID Play(VOID);
-    VOID Pause(VOID);
-    VOID Stop(VOID);
-    VOID Restart(VOID);
+    void Play(void);
+    void Pause(void);
+    void Stop(void);
+    void Restart(void);
 
     /// Events
-    VOID Init(VOID);
-    VOID Destroy(VOID);
-    VOID Update(FLOAT dt);
-    VOID Render(VOID);
-    VOID Render2D(VOID);
-    VOID CharInput(DWORD key);
-    VOID Resize(RECT res);
+    void Init(void);
+    void Destroy(void);
+    void Update(float dt);
+    void Render(void);
+    void Render2D(void);
+    void CharInput(DWORD key);
+    void Resize(RECT res);
 
-    inline auto CheckVMErrors(INT, BOOL canFail = FALSE) -> BOOL;
-    inline VOID PostError(LPCSTR err);
-    inline VOID PostError(CString err);
-    auto GetRunTime() const -> FLOAT { return mRunTime; }
-    VOID PassTime(FLOAT dt) { mRunTime += dt; }
+    inline auto CheckVMErrors(int, bool canFail = FALSE) -> bool;
+    inline void PostError(LPCSTR err);
+    inline void PostError(CString err);
+    auto GetRunTime() const -> float { return mRunTime; }
+    void PassTime(float dt) { mRunTime += dt; }
     auto GetStatus() const -> UCHAR { return mPlayKind; }
 private:
     UCHAR mPlayKind;
     UCHAR mScheduledTermination;
     UCHAR* mMainScript;
     lua_State* mLuaVM;
-    FLOAT mRunTime;
+    float mRunTime;
 
-    VOID InitVM(VOID);
-    VOID DestroyVM(VOID);
-    inline VOID PrintVMError() const;
+    void InitVM(void);
+    void DestroyVM(void);
+    inline void PrintVMError() const;
 };

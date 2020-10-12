@@ -11,7 +11,7 @@ CMesh* CNode::FindMesh(LPCSTR name)
     return mMeshes.Find(name);
 }
 
-VOID CNode::AddMesh(CMesh* mg)
+void CNode::AddMesh(CMesh* mg)
 {
     if (!mg)
         return;
@@ -31,7 +31,7 @@ CLight* CNode::FindLight(LPCSTR name)
     return mLights.Find(name);
 }
 
-VOID CNode::AddLight(CLight* lit)
+void CNode::AddLight(CLight* lit)
 {
     if (!lit)
         return;
@@ -54,7 +54,7 @@ CNode* CNode::FindNode(LPCSTR name)
     return mNodes.Find(name);
 }
 
-VOID CNode::AddNode(CNode* tgt)
+void CNode::AddNode(CNode* tgt)
 {
     if (FAILED(mNodes.Push(tgt)))
     {
@@ -91,7 +91,7 @@ CNode* CNode::Clone()
     return clonedNode;
 }
 
-BOOL CNode::IsEmpty()
+bool CNode::IsEmpty()
 {
     return (mMeshes.GetCount() == mLights.GetCount() == mNodes.GetCount() == 0);
 }
@@ -110,17 +110,17 @@ D3DXMATRIX CNode::GetFinalTransform()
     return *mCachedTransform;
 }
 
-VOID CNode::InvalidateTransformRecursively()
+void CNode::InvalidateTransformRecursively()
 {
     InvalidateTransform();
 
-    for (UINT i = 0; i < mNodes.GetCount(); ++i)
+    for (unsigned int i = 0; i < mNodes.GetCount(); ++i)
     {
         mNodes[i]->InvalidateTransformRecursively();
     }
 }
 
-VOID CNode::Release()
+void CNode::Release()
 {
     if (DelRef())
     {
@@ -145,20 +145,20 @@ VOID CNode::Release()
     }
 }
 
-VOID CNode::Draw(const D3DXMATRIX& wmat)
+void CNode::Draw(const D3DXMATRIX& wmat)
 {
-    for (UINT i = 0; i < mMeshes.GetCount(); i++)
+    for (unsigned int i = 0; i < mMeshes.GetCount(); i++)
     {
         mMeshes[i]->Draw(wmat);
     }
 
-    for (UINT i = 0; i < mNodes.GetCount(); i++)
+    for (unsigned int i = 0; i < mNodes.GetCount(); i++)
     {
         mNodes[i]->Draw(wmat);
     }
 }
 
-VOID CNode::DrawSubset(UINT subset, const D3DXMATRIX& wmat)
+void CNode::DrawSubset(unsigned int subset, const D3DXMATRIX& wmat)
 {
     if (subset >= mMeshes.GetCount())
         return;

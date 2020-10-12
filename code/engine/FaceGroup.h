@@ -9,25 +9,25 @@ class CMaterial;
 class ENGINE_API CFaceGroup : public CReferenceCounter, CAllocable<CFaceGroup>
 {
 public:
-    CFaceGroup(VOID);
+    CFaceGroup(void);
     ~CFaceGroup();
 
-    VOID Release(VOID);
-    VOID SetMaterial(CMaterial* tex);
-    VOID AddVertex(const VERTEX& vertex);
-    VOID AddIndex(SHORT index);
-    VOID Draw(D3DXMATRIX*);
-    VOID CalculateNormals();
-    VOID Build(VOID);
-    VOID Clear(VOID);
+    void Release(void);
+    void SetMaterial(CMaterial* tex);
+    void AddVertex(const VERTEX& vertex);
+    void AddIndex(short index);
+    void Draw(D3DXMATRIX*);
+    void CalculateNormals();
+    void Build(void);
+    void Clear(void);
 
     auto Clone() -> CFaceGroup*;
 
-    auto GetNumVertices() const -> UINT { return mVerts.GetCount(); }
+    auto GetNumVertices() const -> unsigned int { return mVerts.GetCount(); }
     auto GetVertices() const -> VERTEX* { return mVerts.GetData(); }
 
-    auto GetNumIndices() const -> UINT { return mIndices.GetCount(); }
-    auto GetIndices() const -> SHORT* { return mIndices.GetData(); }
+    auto GetNumIndices() const -> unsigned int { return mIndices.GetCount(); }
+    auto GetIndices() const -> short* { return mIndices.GetData(); }
 
     auto GetMaterial() const -> CMaterial* { return mData.mat; }
 
@@ -41,6 +41,6 @@ private:
     RENDERDATA mData;
 
     CArray<VERTEX> mVerts;
-    CArray<SHORT> mIndices;
-    BOOL mIsDirty;
+    CArray<short> mIndices;
+    bool mIsDirty;
 };

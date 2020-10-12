@@ -16,7 +16,7 @@
 #include <lua/lstate.h>
 #include <cstdio>
 
-CVirtualMachine::CVirtualMachine(VOID)
+CVirtualMachine::CVirtualMachine(void)
 {
     mPlayKind = PLAYKIND_STOPPED;
     mMainScript = nullptr;
@@ -25,7 +25,7 @@ CVirtualMachine::CVirtualMachine(VOID)
     mRunTime = 0.0f;
 }
 
-VOID CVirtualMachine::Release(VOID)
+void CVirtualMachine::Release(void)
 {
     FILESYSTEM->FreeResource(mMainScript);
     mMainScript = nullptr;
@@ -33,7 +33,7 @@ VOID CVirtualMachine::Release(VOID)
 }
 
 /// States
-VOID CVirtualMachine::Play(VOID)
+void CVirtualMachine::Play(void)
 {
     if (mScheduledTermination)
     {
@@ -73,7 +73,7 @@ VOID CVirtualMachine::Play(VOID)
     Init();
 }
 
-VOID CVirtualMachine::Pause(VOID)
+void CVirtualMachine::Pause(void)
 {
     if (mPlayKind == PLAYKIND_PLAYING)
     {
@@ -85,7 +85,7 @@ VOID CVirtualMachine::Pause(VOID)
     }
 }
 
-VOID CVirtualMachine::Stop(VOID)
+void CVirtualMachine::Stop(void)
 {
     if (mPlayKind == PLAYKIND_STOPPED)
         return;
@@ -94,7 +94,7 @@ VOID CVirtualMachine::Stop(VOID)
     mPlayKind = PLAYKIND_STOPPED;
 }
 
-VOID CVirtualMachine::Restart(VOID)
+void CVirtualMachine::Restart(void)
 {
     if (mPlayKind != PLAYKIND_STOPPED)
         Stop();
@@ -104,7 +104,7 @@ VOID CVirtualMachine::Restart(VOID)
 }
 
 /// Events
-VOID CVirtualMachine::Init(VOID)
+void CVirtualMachine::Init(void)
 {
     if (!mLuaVM)
         return;
@@ -123,7 +123,7 @@ VOID CVirtualMachine::Init(VOID)
     CheckVMErrors(r);
 }
 
-VOID CVirtualMachine::Destroy(VOID)
+void CVirtualMachine::Destroy(void)
 {
     if (!mLuaVM)
         return;
@@ -137,7 +137,7 @@ VOID CVirtualMachine::Destroy(VOID)
     CheckVMErrors(r);
 }
 
-VOID CVirtualMachine::Update(FLOAT dt)
+void CVirtualMachine::Update(float dt)
 {
     if (mScheduledTermination)
     {
@@ -169,7 +169,7 @@ VOID CVirtualMachine::Update(FLOAT dt)
     PassTime(dt);
 }
 
-VOID CVirtualMachine::Render(VOID)
+void CVirtualMachine::Render(void)
 {
     if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
@@ -183,7 +183,7 @@ VOID CVirtualMachine::Render(VOID)
     CheckVMErrors(r);
 }
 
-VOID CVirtualMachine::Render2D(VOID)
+void CVirtualMachine::Render2D(void)
 {
     if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
@@ -197,7 +197,7 @@ VOID CVirtualMachine::Render2D(VOID)
     CheckVMErrors(r);
 }
 
-VOID CVirtualMachine::Resize(RECT res)
+void CVirtualMachine::Resize(RECT res)
 {
     if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
@@ -214,7 +214,7 @@ VOID CVirtualMachine::Resize(RECT res)
     CheckVMErrors(r);
 }
 
-VOID CVirtualMachine::CharInput(DWORD key)
+void CVirtualMachine::CharInput(DWORD key)
 {
     if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
@@ -248,7 +248,7 @@ static const luaL_Reg loadedlibs[] = {
     {nullptr, nullptr}
 };
 
-static VOID _lua_openlibs(lua_State* L)
+static void _lua_openlibs(lua_State* L)
 {
     for (auto lib = loadedlibs; lib->func; lib++)
     {
@@ -265,14 +265,14 @@ static VOID _lua_openlibs(lua_State* L)
     luaL_dostring(L, path);
 }
 
-static auto neon_luapanic(lua_State* L) -> INT
+static auto neon_luapanic(lua_State* L) -> int
 {
     lua_writestringerror("PANIC: unprotected error in call to Lua API (%s)\n",
                          lua_tostring(L, -1));
     return 0; /* return to Lua to abort */
 }
 
-VOID CVirtualMachine::InitVM(VOID)
+void CVirtualMachine::InitVM(void)
 {
     mLuaVM = luaL_newstate();
     if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);
@@ -294,7 +294,7 @@ VOID CVirtualMachine::InitVM(VOID)
     if (CheckVMErrors(result)) return;
 }
 
-VOID CVirtualMachine::DestroyVM(VOID)
+void CVirtualMachine::DestroyVM(void)
 {
     if (!mLuaVM)
         return;
@@ -303,7 +303,7 @@ VOID CVirtualMachine::DestroyVM(VOID)
     mLuaVM = nullptr;
 }
 
-VOID CVirtualMachine::PrintVMError() const
+void CVirtualMachine::PrintVMError() const
 {
     const auto msg = lua_tostring(mLuaVM, -1);
     #ifdef _DEBUG
@@ -315,7 +315,7 @@ VOID CVirtualMachine::PrintVMError() const
     #endif
 }
 
-auto CVirtualMachine::CheckVMErrors(INT result, BOOL canFail) -> BOOL
+auto CVirtualMachine::CheckVMErrors(int result, bool canFail) -> bool
 {
     gMemUsedLua = mLuaVM->l_G->totalbytes;
 
@@ -333,7 +333,7 @@ auto CVirtualMachine::CheckVMErrors(INT result, BOOL canFail) -> BOOL
     return FALSE;
 }
 
-inline VOID CVirtualMachine::PostError(LPCSTR err)
+inline void CVirtualMachine::PostError(LPCSTR err)
 {
     #ifdef _DEBUG
     UI->PushErrorMessage(err);
@@ -344,7 +344,7 @@ inline VOID CVirtualMachine::PostError(LPCSTR err)
     #endif
 }
 
-inline VOID CVirtualMachine::PostError(CString err)
+inline void CVirtualMachine::PostError(CString err)
 {
     PostError(err.Str());
 }

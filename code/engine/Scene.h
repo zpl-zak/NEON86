@@ -8,9 +8,9 @@ class ENGINE_API CScene : public CNode
 {
 public:
     CScene(LPCSTR modelPath = nullptr);
-    VOID Release();
+    void Release();
 
-    auto LoadScene(LPCSTR modelPath, BOOL loadMaterials = TRUE, BOOL optimizeMesh = FALSE) -> BOOL;
+    auto LoadScene(LPCSTR modelPath, bool loadMaterials = TRUE, bool optimizeMesh = FALSE) -> bool;
 
     auto GetRootNode() const -> CNode* { return mRootNode; }
 private:

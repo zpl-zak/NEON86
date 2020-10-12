@@ -18,7 +18,7 @@ CScene::CScene(LPCSTR modelPath)
         LoadScene(modelPath);
 }
 
-VOID CScene::Release()
+void CScene::Release()
 {
     if (DelRef())
     {
@@ -32,9 +32,9 @@ VOID CScene::Release()
     }
 }
 
-BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
+bool CScene::LoadScene(LPCSTR modelPath, bool loadMaterials, bool optimizeMesh)
 {
-    BOOL ok = CSceneLoader::LoadScene(modelPath, this, loadMaterials, optimizeMesh);
+    bool ok = CSceneLoader::LoadScene(modelPath, this, loadMaterials, optimizeMesh);
 
     if (!ok)
     {

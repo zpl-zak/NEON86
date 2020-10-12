@@ -5,15 +5,15 @@
 
 #include <lua/lua.hpp>
 
-auto rtt_new(lua_State* L) -> INT
+auto rtt_new(lua_State* L) -> int
 {
-    UINT w = 0, h = 0;
+    unsigned int w = 0, h = 0;
     UCHAR kind = RTKIND_COLOR;
 
     if (lua_gettop(L) >= 2)
     {
-        w = static_cast<UINT>(luaL_checkinteger(L, 1));
-        h = static_cast<UINT>(luaL_checkinteger(L, 2));
+        w = static_cast<unsigned int>(luaL_checkinteger(L, 1));
+        h = static_cast<unsigned int>(luaL_checkinteger(L, 2));
 
         if (lua_gettop(L) >= 3)
             kind = static_cast<UCHAR>(luaL_checkinteger(L, 3));
@@ -25,7 +25,7 @@ auto rtt_new(lua_State* L) -> INT
     return (*rtt)->GetSurfaceHandle() != nullptr;
 }
 
-static auto rtt_gethandle(lua_State* L) -> INT
+static auto rtt_gethandle(lua_State* L) -> int
 {
     auto rtt = *static_cast<CRenderTarget**>(luaL_checkudata(L, 1, L_RENDERTARGET));
 
@@ -33,7 +33,7 @@ static auto rtt_gethandle(lua_State* L) -> INT
     return 1;
 }
 
-static auto rtt_delete(lua_State* L) -> INT
+static auto rtt_delete(lua_State* L) -> int
 {
     auto rtt = *static_cast<CRenderTarget**>(luaL_checkudata(L, 1, L_RENDERTARGET));
 
@@ -41,7 +41,7 @@ static auto rtt_delete(lua_State* L) -> INT
     return 0;
 }
 
-static auto rtt_bind(lua_State* L) -> INT
+static auto rtt_bind(lua_State* L) -> int
 {
     auto rtt = *static_cast<CRenderTarget**>(luaL_checkudata(L, 1, L_RENDERTARGET));
 
@@ -49,7 +49,7 @@ static auto rtt_bind(lua_State* L) -> INT
     return 0;
 }
 
-static VOID LuaRenderTarget_register(lua_State* L)
+static void LuaRenderTarget_register(lua_State* L)
 {
     lua_register(L, L_RENDERTARGET, rtt_new);
     luaL_newmetatable(L, L_RENDERTARGET);

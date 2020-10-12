@@ -9,27 +9,27 @@ CProfiler::CProfiler(CString name)
     Reset();
 }
 
-VOID CProfiler::Reset()
+void CProfiler::Reset()
 {
     mNumInvocations = 0;
     mTotalTime = 0.0f;
 }
 
-VOID CProfiler::StartInvocation()
+void CProfiler::StartInvocation()
 {
     mStartTime = GetTime();
 }
 
-VOID CProfiler::StopInvocation()
+void CProfiler::StopInvocation()
 {
     mNumInvocations++;
     mTotalTime += GetTime() - mStartTime;
     mStartTime = 0.0f;
 }
 
-auto CProfiler::DisplayAndReset(FLOAT divisor, BOOL logStats) -> FLOAT
+auto CProfiler::DisplayAndReset(float divisor, bool logStats) -> float
 {
-    divisor = divisor == 0.0f ? static_cast<FLOAT>(mNumInvocations) : divisor;
+    divisor = divisor == 0.0f ? static_cast<float>(mNumInvocations) : divisor;
     mDeltaTime = mTotalTime == 0.0f && divisor == 0.0f ? 0.0f : 1000.0f * mTotalTime / divisor;
     Reset();
 

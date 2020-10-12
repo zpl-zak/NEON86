@@ -1,6 +1,6 @@
 #include <lua/lua.hpp>
 
-auto music_new(lua_State* L) -> INT
+auto music_new(lua_State* L) -> int
 {
     const auto path = (LPSTR)luaL_checkstring(L, 1);
     *static_cast<CMusic**>(lua_newuserdata(L, sizeof(CMusic*))) = new CMusic(path);
@@ -8,28 +8,28 @@ auto music_new(lua_State* L) -> INT
     return 1;
 }
 
-auto music_play(lua_State* L) -> INT
+auto music_play(lua_State* L) -> int
 {
     auto snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     snd->Play();
     return 0;
 }
 
-auto music_pause(lua_State* L) -> INT
+auto music_pause(lua_State* L) -> int
 {
     auto snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     snd->Pause();
     return 0;
 }
 
-auto music_stop(lua_State* L) -> INT
+auto music_stop(lua_State* L) -> int
 {
     auto snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     snd->Stop();
     return 0;
 }
 
-auto music_setvolume(lua_State* L) -> INT
+auto music_setvolume(lua_State* L) -> int
 {
     auto snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     const auto vol = static_cast<LONG>(luaL_checkinteger(L, 2));
@@ -37,7 +37,7 @@ auto music_setvolume(lua_State* L) -> INT
     return 0;
 }
 
-auto music_setpan(lua_State* L) -> INT
+auto music_setpan(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     const LONG pan = static_cast<LONG>(luaL_checkinteger(L, 2));
@@ -45,28 +45,28 @@ auto music_setpan(lua_State* L) -> INT
     return 0;
 }
 
-auto music_getvolume(lua_State* L) -> INT
+auto music_getvolume(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     lua_pushinteger(L, snd->GetVolume());
     return 1;
 }
 
-auto music_getpan(lua_State* L) -> INT
+auto music_getpan(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     lua_pushinteger(L, snd->GetPan());
     return 1;
 }
 
-auto music_playing(lua_State* L) -> INT
+auto music_playing(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     lua_pushboolean(L, snd->IsPlaying());
     return 1;
 }
 
-auto music_setpos(lua_State* L) -> INT
+auto music_setpos(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     const auto pos = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -74,21 +74,21 @@ auto music_setpos(lua_State* L) -> INT
     return 0;
 }
 
-auto music_getpos(lua_State* L) -> INT
+auto music_getpos(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     lua_pushinteger(L, snd->GetCurrentPosition());
     return 1;
 }
 
-auto music_getsize(lua_State* L) -> INT
+auto music_getsize(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     lua_pushinteger(L, snd->GetTotalSize());
     return 1;
 }
 
-static auto music_delete(lua_State* L) -> INT
+static auto music_delete(lua_State* L) -> int
 {
     CMusic* snd = *static_cast<CMusic**>(luaL_checkudata(L, 1, L_MUSIC));
     snd->Release();
@@ -96,7 +96,7 @@ static auto music_delete(lua_State* L) -> INT
     return 0;
 }
 
-static VOID LuaMusic_register(lua_State* L)
+static void LuaMusic_register(lua_State* L)
 {
     lua_register(L, L_MUSIC, music_new);
     luaL_newmetatable(L, L_MUSIC);

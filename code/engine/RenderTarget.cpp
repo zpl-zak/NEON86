@@ -10,12 +10,12 @@ CRenderTarget::CRenderTarget(): CAllocable()
     CreateRenderTarget(0, 0, RTKIND_COLOR);
 }
 
-CRenderTarget::CRenderTarget(UINT w, UINT h, UCHAR kind): CAllocable()
+CRenderTarget::CRenderTarget(unsigned int w, unsigned int h, UCHAR kind): CAllocable()
 {
     CreateRenderTarget(w, h, kind);
 }
 
-VOID CRenderTarget::Release(VOID)
+void CRenderTarget::Release(void)
 {
     if (DelRef())
     {
@@ -33,12 +33,12 @@ VOID CRenderTarget::Release(VOID)
     }
 }
 
-VOID CRenderTarget::Bind(VOID)
+void CRenderTarget::Bind(void)
 {
     RENDERER->SetRenderTarget(this);
 }
 
-VOID CRenderTarget::CreateRenderTarget(UINT w, UINT h, UCHAR kind)
+void CRenderTarget::CreateRenderTarget(unsigned int w, unsigned int h, UCHAR kind)
 {
     mKind = kind;
     mTextureHandle = nullptr;

@@ -68,10 +68,10 @@ enum TEXTURESLOT
 
 struct VERTEX
 {
-    FLOAT x, y, z;
-    FLOAT nx, ny, nz;
-    FLOAT tx, ty, tz;
-    FLOAT bx, by, bz;
+    float x, y, z;
+    float nx, ny, nz;
+    float tx, ty, tz;
+    float bx, by, bz;
 
     union
     {
@@ -83,13 +83,13 @@ struct VERTEX
         };
     };
 
-    FLOAT su, tv;
-    FLOAT su2, tv2;
+    float su, tv;
+    float su2, tv2;
 };
 
 struct VERTEX_2D
 {
-    FLOAT x, y, z, rhw;
+    float x, y, z, rhw;
 
     union
     {
@@ -101,7 +101,7 @@ struct VERTEX_2D
         };
     };
 
-    FLOAT su, tv;
+    float su, tv;
 };
 
 extern D3DVERTEXELEMENT9 meshVertexFormat[];
@@ -109,10 +109,10 @@ extern D3DVERTEXELEMENT9 meshVertex2DFormat[];
 
 struct ENGINE_API MATERIAL : D3DMATERIAL9
 {
-    FLOAT Opacity;
-    BOOL Shaded;
-    BOOL AlphaIsTransparency;
-    BOOL AlphaTestEnabled;
+    float Opacity;
+    bool Shaded;
+    bool AlphaIsTransparency;
+    bool AlphaTestEnabled;
     DWORD AlphaRef;
 };
 
@@ -122,19 +122,19 @@ struct RENDERDATA
 
     union
     {
-        UINT flags;
+        unsigned int flags;
         DWORD state;
     };
 
-    UINT kind;
+    unsigned int kind;
 
-    BOOL usesMatrix;
+    bool usesMatrix;
     D3DXMATRIX matrix;
 
     CMaterial* mat;
 
     LPD3DXMESH mesh;
     D3DXVECTOR3 meshOrigin;
-    FLOAT meshRadius;
+    float meshRadius;
     D3DXVECTOR4 meshBounds[2];
 };

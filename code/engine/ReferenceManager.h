@@ -7,18 +7,18 @@ class ENGINE_API CReferenceCounter
 public:
     CReferenceCounter() = default;
 
-    auto GetRefCount() const -> INT { return mRefCount; }
+    auto GetRefCount() const -> int { return mRefCount; }
 
-    VOID AddRef() { mRefCount++; }
+    void AddRef() { mRefCount++; }
 
-    auto DelRef() -> BOOL
+    auto DelRef() -> bool
     {
         mRefCount--;
         return mRefCount == 0;
     }
 
 private:
-    INT mRefCount{1};
+    int mRefCount{1};
 };
 
 template <typename T>

@@ -6,7 +6,7 @@
 #include "FileSystem.h"
 #include "engine.h"
 
-CFont::CFont(LPCSTR name, INT size, INT boldness, BOOL isItalic)
+CFont::CFont(LPCSTR name, int size, int boldness, bool isItalic)
 {
     mFontHandle = nullptr;
 
@@ -26,7 +26,7 @@ CFont::CFont(LPCSTR name, INT size, INT boldness, BOOL isItalic)
     );
 }
 
-VOID CFont::Release()
+void CFont::Release()
 {
     if (DelRef())
     {
@@ -34,7 +34,7 @@ VOID CFont::Release()
     }
 }
 
-VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h, DWORD flags)
+void CFont::RenderText(DWORD color, LPCSTR text, unsigned int x, unsigned int y, unsigned int w, unsigned int h, DWORD flags)
 {
     if (!mFontHandle)
         return;
@@ -57,12 +57,12 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h,
     UI->GetTextSurface()->End();
 }
 
-BOOL CFont::AddFontToDatabase(LPCSTR path)
+bool CFont::AddFontToDatabase(LPCSTR path)
 {
     return AddFontResourceExA(FILESYSTEM->ResourcePath(path), FR_PRIVATE, nullptr) > 0;
 }
 
-VOID CFont::CalculateRect(LPCSTR text, LPRECT rect, DWORD flags)
+void CFont::CalculateRect(LPCSTR text, LPRECT rect, DWORD flags)
 {
     mFontHandle->DrawTextA(nullptr, text, -1, rect, flags | DT_CALCRECT, 0);
 }

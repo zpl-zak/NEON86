@@ -1,6 +1,6 @@
 #pragma once
 
-#define LUAF(MODULE, NAME) static INT ZPL_JOIN4(l_,MODULE,_,NAME)(lua_State* L)
+#define LUAF(MODULE, NAME) static int ZPL_JOIN4(l_,MODULE,_,NAME)(lua_State* L)
 #define LFN(MODULE, NAME) ZPL_JOIN4(l_,MODULE,_,NAME)
 #define REGF(MODULE, NAME) \
 	lua_pushcfunction(L, ZPL_JOIN4(l_,MODULE,_,NAME)); \
@@ -27,9 +27,9 @@
 	lua_setfield(L, -2, NAME);
 
 #define LUAS(CLASS, L_CLASS, NAME, FIELD) \
-static INT NAME(lua_State* L) {\
+static int NAME(lua_State* L) {\
 	CLASS* x = (CLASS*)luaL_checkudata(L, 1, L_CLASS); \
-	if (lua_gettop(L) == 2) x->FIELD = (FLOAT)luaL_checknumber(L, 2); \
+	if (lua_gettop(L) == 2) x->FIELD = (float)luaL_checknumber(L, 2); \
 	lua_pushnumber(L, x->FIELD); \
 	return 1; }
 
@@ -69,20 +69,20 @@ struct lua_State;
 struct D3DXVECTOR4;
 
 ENGINE_API extern auto vector4_ctor(lua_State* L) -> D3DXVECTOR4*;
-ENGINE_API extern auto luaH_getcomps(lua_State* L, UINT offset = 0) -> D3DXVECTOR4;
-ENGINE_API extern auto luaH_getcolor(lua_State* L, UINT offset = 0) -> DWORD;
-ENGINE_API extern auto luaH_getcolorlinear(lua_State* L, UINT offset = 0) -> struct _D3DCOLORVALUE;
+ENGINE_API extern auto luaH_getcomps(lua_State* L, unsigned int offset = 0) -> D3DXVECTOR4;
+ENGINE_API extern auto luaH_getcolor(lua_State* L, unsigned int offset = 0) -> DWORD;
+ENGINE_API extern auto luaH_getcolorlinear(lua_State* L, unsigned int offset = 0) -> struct _D3DCOLORVALUE;
 
-ENGINE_API extern auto matrix_new(lua_State* L) -> INT;
-ENGINE_API extern auto effect_new(lua_State* L) -> INT;
-ENGINE_API extern auto facegroup_new(lua_State* L) -> INT;
-ENGINE_API extern auto font_new(lua_State* L) -> INT;
-ENGINE_API extern auto sound_new(lua_State* L) -> INT;
-ENGINE_API extern auto light_new(lua_State* L) -> INT;
-ENGINE_API extern auto material_new(lua_State* L) -> INT;
-ENGINE_API extern auto mesh_new(lua_State* L) -> INT;
-ENGINE_API extern auto node_new(lua_State* L) -> INT;
-ENGINE_API extern auto rtt_new(lua_State* L) -> INT;
-ENGINE_API extern auto scene_new(lua_State* L) -> INT;
-ENGINE_API extern auto vector4_new(lua_State* L) -> INT;
-ENGINE_API extern auto vertex_new(lua_State* L) -> INT;
+ENGINE_API extern auto matrix_new(lua_State* L) -> int;
+ENGINE_API extern auto effect_new(lua_State* L) -> int;
+ENGINE_API extern auto facegroup_new(lua_State* L) -> int;
+ENGINE_API extern auto font_new(lua_State* L) -> int;
+ENGINE_API extern auto sound_new(lua_State* L) -> int;
+ENGINE_API extern auto light_new(lua_State* L) -> int;
+ENGINE_API extern auto material_new(lua_State* L) -> int;
+ENGINE_API extern auto mesh_new(lua_State* L) -> int;
+ENGINE_API extern auto node_new(lua_State* L) -> int;
+ENGINE_API extern auto rtt_new(lua_State* L) -> int;
+ENGINE_API extern auto scene_new(lua_State* L) -> int;
+ENGINE_API extern auto vector4_new(lua_State* L) -> int;
+ENGINE_API extern auto vertex_new(lua_State* L) -> int;

@@ -4,13 +4,13 @@
 #include "Light.h"
 #include <lua/lua.hpp>
 
-auto light_new(lua_State* L) -> INT
+auto light_new(lua_State* L) -> int
 {
-    UINT slot = 0;
+    unsigned int slot = 0;
 
     if (lua_gettop(L) == 1)
     {
-        slot = static_cast<UINT>(luaL_checkinteger(L, 1));
+        slot = static_cast<unsigned int>(luaL_checkinteger(L, 1));
     }
 
     const auto lit = static_cast<CLight**>(lua_newuserdata(L, sizeof(CLight*)));
@@ -22,7 +22,7 @@ auto light_new(lua_State* L) -> INT
 }
 
 
-static auto light_delete(lua_State* L) -> INT
+static auto light_delete(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
 
@@ -30,7 +30,7 @@ static auto light_delete(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setdiffuse(lua_State* L) -> INT
+static auto light_setdiffuse(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     lit->SetDiffuse(luaH_getcolorlinear(L, 1));
@@ -38,7 +38,7 @@ static auto light_setdiffuse(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setambient(lua_State* L) -> INT
+static auto light_setambient(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     lit->SetAmbient(luaH_getcolorlinear(L, 1));
@@ -46,7 +46,7 @@ static auto light_setambient(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setspecular(lua_State* L) -> INT
+static auto light_setspecular(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     lit->SetSpecular(luaH_getcolorlinear(L, 1));
@@ -54,7 +54,7 @@ static auto light_setspecular(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setposition(lua_State* L) -> INT
+static auto light_setposition(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     const D3DXVECTOR3 pos = luaH_getcomps(L);
@@ -63,7 +63,7 @@ static auto light_setposition(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setdirection(lua_State* L) -> INT
+static auto light_setdirection(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     const D3DXVECTOR3 dir = luaH_getcomps(L);
@@ -72,12 +72,12 @@ static auto light_setdirection(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setatten(lua_State* L) -> INT
+static auto light_setatten(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     const D3DCOLORVALUE atten = {
-        static_cast<FLOAT>(luaL_checknumber(L, 2)), static_cast<FLOAT>(luaL_checknumber(L, 3)),
-        static_cast<FLOAT>(luaL_checknumber(L, 4))
+        static_cast<float>(luaL_checknumber(L, 2)), static_cast<float>(luaL_checknumber(L, 3)),
+        static_cast<float>(luaL_checknumber(L, 4))
     };
     lit->SetAttenuation(atten.r, atten.g, atten.b);
 
@@ -85,43 +85,43 @@ static auto light_setatten(lua_State* L) -> INT
 }
 
 
-static auto light_setrange(lua_State* L) -> INT
+static auto light_setrange(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 2));
     lit->SetRange(val);
 
     return 0;
 }
 
-static auto light_setfalloff(lua_State* L) -> INT
+static auto light_setfalloff(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 2));
     lit->SetFalloff(val);
 
     return 0;
 }
 
-static auto light_setinnerangle(lua_State* L) -> INT
+static auto light_setinnerangle(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 2));
     lit->SetInnerAngle(val);
 
     return 0;
 }
 
-static auto light_setouterangle(lua_State* L) -> INT
+static auto light_setouterangle(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
-    const auto val = static_cast<FLOAT>(luaL_checknumber(L, 2));
+    const auto val = static_cast<float>(luaL_checknumber(L, 2));
     lit->SetOuterAngle(val);
 
     return 0;
 }
 
-static auto light_settype(lua_State* L) -> INT
+static auto light_settype(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     const auto val = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -130,7 +130,7 @@ static auto light_settype(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_setslot(lua_State* L) -> INT
+static auto light_setslot(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     const auto val = static_cast<DWORD>(luaL_checkinteger(L, 2));
@@ -139,13 +139,13 @@ static auto light_setslot(lua_State* L) -> INT
     return 0;
 }
 
-static auto light_enable(lua_State* L) -> INT
+static auto light_enable(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
-    const auto val = static_cast<BOOL>(lua_toboolean(L, 2));
+    const auto val = static_cast<bool>(lua_toboolean(L, 2));
 
     if (lua_gettop(L) == 3)
-        lit->SetSlot(static_cast<UINT>(luaL_checkinteger(L, 3)));
+        lit->SetSlot(static_cast<unsigned int>(luaL_checkinteger(L, 3)));
 
     lit->Enable(val);
 
@@ -153,7 +153,7 @@ static auto light_enable(lua_State* L) -> INT
 }
 
 
-static auto light_getslot(lua_State* L) -> INT
+static auto light_getslot(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     lua_pushinteger(L, lit->GetSlot());
@@ -161,7 +161,7 @@ static auto light_getslot(lua_State* L) -> INT
     return 1;
 }
 
-static auto light_gettype(lua_State* L) -> INT
+static auto light_gettype(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     lua_pushinteger(L, lit->GetLightData().Type);
@@ -169,7 +169,7 @@ static auto light_gettype(lua_State* L) -> INT
     return 1;
 }
 
-static auto light_getowner(lua_State* L) -> INT
+static auto light_getowner(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
     if (!lit->GetOwner())
@@ -179,7 +179,7 @@ static auto light_getowner(lua_State* L) -> INT
     return 1;
 }
 
-static VOID LuaLight_register(lua_State* L)
+static void LuaLight_register(lua_State* L)
 {
     lua_register(L, L_LIGHT, light_new);
     luaL_newmetatable(L, L_LIGHT);

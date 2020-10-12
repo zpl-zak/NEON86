@@ -6,16 +6,16 @@
 class CSoundBase
 {
 public:
-    VOID SetVolume(LONG vol);
+    void SetVolume(LONG vol);
     auto GetVolume() -> LONG;
-    virtual VOID Play();
-    virtual VOID Pause();
-    virtual VOID Stop();
-    VOID SetPan(LONG pan);
+    virtual void Play();
+    virtual void Pause();
+    virtual void Stop();
+    void SetPan(LONG pan);
     auto GetPan() -> LONG;
     virtual auto GetCurrentPosition() -> DWORD;
-    virtual VOID SetCurrentPosition(DWORD cursor);
-    virtual auto IsPlaying() -> BOOL;
+    virtual void SetCurrentPosition(DWORD cursor);
+    virtual auto IsPlaying() -> bool;
     virtual auto GetTotalSize() -> DWORD;
 
 protected:
