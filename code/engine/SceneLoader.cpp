@@ -31,7 +31,8 @@
 
 extern aiMatrix4x4 ComputeFinalTransformation(const aiNode* node);
 
-VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node, BOOL loadMaterials)
+VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* impNode, CScene* scene, CNode* node,
+                                        BOOL loadMaterials)
 {
     aiMatrix4x4 mat = impNode->mTransformation;
     mat = mat.Transpose();
@@ -54,33 +55,34 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
 
             switch (e->mType)
             {
-            case aiMetadataType::AI_AISTRING:
-                data = (*(aiString*)e->mData).C_Str();
+            case AI_AISTRING:
+                data = (*static_cast<aiString*>(e->mData)).C_Str();
                 break;
 
-            case aiMetadataType::AI_BOOL:
-            case aiMetadataType::AI_DOUBLE:
-            case aiMetadataType::AI_FLOAT:
-            case aiMetadataType::AI_INT32:
-            case aiMetadataType::AI_UINT64:
-                data = std::to_string(*(DOUBLE*)e->mData);
+            case AI_BOOL:
+            case AI_DOUBLE:
+            case AI_FLOAT:
+            case AI_INT32:
+            case AI_UINT64:
+                data = std::to_string(*static_cast<DOUBLE*>(e->mData));
                 break;
 
-            case aiMetadataType::AI_AIVECTOR3D:
-            {
-                aiVector3D a = *(aiVector3D*)e->mData;
-                std::stringstream ss;
-                ss << a.x << "," << a.y << "," << a.z;
-                data = ss.str();
-            } break;
+            case AI_AIVECTOR3D:
+                {
+                    aiVector3D a = *static_cast<aiVector3D*>(e->mData);
+                    std::stringstream ss;
+                    ss << a.x << "," << a.y << "," << a.z;
+                    data = ss.str();
+                }
+                break;
             }
 
-            newNode->SetMetadata((LPCSTR)k.C_Str(), data.c_str());
+            newNode->SetMetadata(static_cast<LPCSTR>(k.C_Str()), data.c_str());
         }
     }
 
     aiString lastMeshName = aiString("(unknown)");
-    CMesh* lastMesh = NULL;
+    CMesh* lastMesh = nullptr;
 
     for (UINT i = 0; i < impNode->mNumMeshes; ++i)
     {
@@ -102,7 +104,7 @@ VOID CSceneLoader::LoadNodesRecursively(const aiScene* impScene, const aiNode* i
         static D3DXMATRIX identityMat;
         D3DXMatrixIdentity(&identityMat);
 
-        lastMesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *(D3DMATRIX*)&identityMat);
+        lastMesh->AddFaceGroup(LoadFaceGroup(impScene, impMesh, loadMaterials), *static_cast<D3DMATRIX*>(&identityMat));
     }
 
     if (lastMesh)
@@ -141,7 +143,7 @@ BOOL CSceneLoader::LoadScene(LPCSTR modelPath, CScene* scene, BOOL loadMaterials
     if (optimizeMeshes)
     {
         meshFlags |= aiProcess_PreTransformVertices
-            | aiProcess_RemoveRedundantMaterials;
+                | aiProcess_RemoveRedundantMaterials;
     }
 
     const aiScene* model = imp.ReadFile(FILESYSTEM->ResourcePath(modelPath), meshFlags);
@@ -159,7 +161,7 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
 
     for (UINT i = 0; i < mesh->mNumVertices; i++)
     {
-        VERTEX vert = { 0 };
+        VERTEX vert = {0};
 
         const aiVector3D pos = mesh->mVertices[i];
         aiVector3D nm, ta, tb;
@@ -210,10 +212,10 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
             const aiColor4D tc = mesh->mColors[0][i];
 
             vert.color = D3DCOLOR_ARGB(
-                (BYTE)(tc.a * 255.0f),
-                (BYTE)(tc.r * 255.0f),
-                (BYTE)(tc.g * 255.0f),
-                (BYTE)(tc.b * 255.0f)
+                static_cast<BYTE>(tc.a * 255.0f),
+                static_cast<BYTE>(tc.r * 255.0f),
+                static_cast<BYTE>(tc.g * 255.0f),
+                static_cast<BYTE>(tc.b * 255.0f)
             );
         }
         else vert.color = D3DCOLOR_XRGB(255, 255, 255);
@@ -242,23 +244,23 @@ CFaceGroup* CSceneLoader::LoadFaceGroup(const aiScene* scene, const aiMesh* mesh
 
         aiColor4D diffuse;
         mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-        newMaterial->SetDiffuse(D3DCOLORVALUE{ diffuse.r, diffuse.g, diffuse.b });
+        newMaterial->SetDiffuse(D3DCOLORVALUE{diffuse.r, diffuse.g, diffuse.b});
 
         aiColor4D specular;
         float power;
         mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
         mat->Get(AI_MATKEY_SHININESS, power);
 
-        newMaterial->SetSpecular(D3DCOLORVALUE{ specular.r, specular.g, specular.b });
+        newMaterial->SetSpecular(D3DCOLORVALUE{specular.r, specular.g, specular.b});
         newMaterial->SetPower(power * 5.0f);
 
-       /* aiColor4D ambient;
-        mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
-        newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });*/
+        /* aiColor4D ambient;
+         mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+         newMaterial->SetAmbient(D3DCOLORVALUE{ ambient.r, ambient.g, ambient.b });*/
 
         aiColor4D emissive;
         mat->Get(AI_MATKEY_COLOR_EMISSIVE, emissive);
-        newMaterial->SetEmission(D3DCOLORVALUE{ emissive.r, emissive.g, emissive.b });
+        newMaterial->SetEmission(D3DCOLORVALUE{emissive.r, emissive.g, emissive.b});
 
         FLOAT opacity = 1.0f;
         mat->Get(AI_MATKEY_OPACITY, opacity);
@@ -290,8 +292,8 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
     lit->SetDiffuse(EXPAND_COLX(impLight->mColorDiffuse));
     lit->SetSpecular(EXPAND_COLX(impLight->mColorSpecular));
     lit->SetAttenuation(impLight->mAttenuationConstant,
-        impLight->mAttenuationLinear,
-        impLight->mAttenuationQuadratic);
+                        impLight->mAttenuationLinear,
+                        impLight->mAttenuationQuadratic);
     lit->SetInnerAngle(impLight->mAngleInnerCone);
     lit->SetOuterAngle(impLight->mAngleOuterCone);
 
@@ -299,10 +301,10 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
     {
     case aiLightSource_POINT:
         lit->SetType(D3DLIGHT_POINT);
-    break;
+        break;
     case aiLightSource_DIRECTIONAL:
         lit->SetType(D3DLIGHT_DIRECTIONAL);
-    break;
+        break;
     case aiLightSource_SPOT:
         lit->SetType(D3DLIGHT_SPOT);
         break;
@@ -312,17 +314,18 @@ CLight* CSceneLoader::LoadLight(const aiNode* impNode, const aiLight* impLight)
     return lit;
 }
 
-VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot, UINT texType)
+VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, CMaterial* newMaterial, UINT slot,
+                                  UINT texType)
 {
     aiString path;
-    mat->GetTexture((aiTextureType)texType, 0, &path);
+    mat->GetTexture(static_cast<aiTextureType>(texType), 0, &path);
     const aiTexture* tex = scene->GetEmbeddedTexture(path.C_Str());
 
     if (tex)
     {
         if (tex->mHeight != 0)
         {
-            newMaterial->CreateTextureForSlot(slot, NULL, tex->mWidth, tex->mHeight);
+            newMaterial->CreateTextureForSlot(slot, nullptr, tex->mWidth, tex->mHeight);
             newMaterial->UploadARGB(slot, tex->pcData, sizeof(aiTexel) * tex->mWidth * tex->mHeight);
         }
         else
@@ -341,7 +344,7 @@ VOID CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
     D3DSURFACE_DESC a;
     newMaterial->GetTextureHandle(slot)->GetLevelDesc(0, &a);
 
-    UINT* buf = (UINT*)newMaterial->Lock(slot);
+    UINT* buf = static_cast<UINT*>(newMaterial->Lock(slot));
 
     for (UINT i = 0; i < (a.Width * a.Height); i++)
     {

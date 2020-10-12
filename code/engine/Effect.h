@@ -6,20 +6,20 @@
 
 class CLight;
 
-class ENGINE_API CEffect: public CAllocable<CEffect>
+class ENGINE_API CEffect : public CAllocable<CEffect>
 {
 public:
     CEffect();
     VOID LoadEffect(LPCSTR effectPath);
     VOID Release();
 
-    UINT Begin(LPCSTR technique);
-    HRESULT End();
+    auto Begin(LPCSTR technique) -> UINT;
+    auto End() -> HRESULT;
 
-    UINT FindPass(LPCSTR passName);
-    HRESULT BeginPass(UINT passID);
-    HRESULT EndPass();
-    HRESULT CommitChanges();
+    auto FindPass(LPCSTR passName) -> UINT;
+    auto BeginPass(UINT passID) -> HRESULT;
+    auto EndPass() -> HRESULT;
+    auto CommitChanges() -> HRESULT;
 
     // Uniforms
     VOID SetInteger(LPCSTR name, DWORD value);
@@ -35,5 +35,5 @@ private:
     ID3DXEffect* mEffect;
 
     VOID SetDefaults();
-    LPCSTR GetUniformName(LPCSTR base, LPCSTR field);
+    auto GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR;
 };

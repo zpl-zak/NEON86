@@ -10,11 +10,12 @@
 #include "BuiltinShaders.h"
 #include <cstdio>
 
-class CD3DIncludeImpl: ID3DXInclude
+class CD3DIncludeImpl : ID3DXInclude
 {
 public:
     CD3DIncludeImpl();
-    HRESULT _stdcall Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes) override;
+    HRESULT _stdcall Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData,
+                          UINT* pBytes) override;
     HRESULT _stdcall Close(LPCVOID pData) override;
 
 private:
@@ -26,7 +27,8 @@ CD3DIncludeImpl::CD3DIncludeImpl()
     mIsSystemInclude = FALSE;
 }
 
-HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
+HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData,
+                              UINT* pBytes)
 {
     if (IncludeType == D3DXINC_SYSTEM)
     {
@@ -35,7 +37,7 @@ HRESULT CD3DIncludeImpl::Open(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LP
         if (!strcmp(pFileName, "neon") || !strcmp(pFileName, "common.fx"))
         {
             *ppData = _shader_common;
-            *pBytes = (UINT)strlen(_shader_common);
+            *pBytes = static_cast<UINT>(strlen(_shader_common));
             return S_OK;
         }
 
@@ -64,7 +66,7 @@ HRESULT CD3DIncludeImpl::Close(LPCVOID pData)
 
 CEffect::CEffect(): CAllocable()
 {
-    mEffect = NULL;
+    mEffect = nullptr;
 }
 
 VOID CEffect::LoadEffect(LPCSTR effectPath)
@@ -82,15 +84,15 @@ VOID CEffect::LoadEffect(LPCSTR effectPath)
 
     CD3DIncludeImpl inclHandler;
 
-    LPD3DXBUFFER errors = NULL;
+    LPD3DXBUFFER errors = nullptr;
     HRESULT hr = D3DXCreateEffect(
         RENDERER->GetDevice(),
-        (LPCSTR)f.data,
-        (UINT)f.size,
-        NULL,
-        (LPD3DXINCLUDE)&inclHandler,
+        static_cast<LPCSTR>(f.data),
+        static_cast<UINT>(f.size),
+        nullptr,
+        reinterpret_cast<LPD3DXINCLUDE>(&inclHandler),
         shaderFlags,
-        NULL,
+        nullptr,
         &mEffect,
         &errors);
 
@@ -98,7 +100,7 @@ VOID CEffect::LoadEffect(LPCSTR effectPath)
     {
         if (errors)
         {
-            VM->PostError((LPCSTR)errors->GetBufferPointer());
+            VM->PostError(static_cast<LPCSTR>(errors->GetBufferPointer()));
             errors->Release();
         }
 
@@ -119,7 +121,7 @@ UINT CEffect::Begin(LPCSTR technique)
     if (!mEffect)
         return 0;
 
-    UINT numPasses=0;
+    UINT numPasses = 0;
     D3DXHANDLE techniqueID = mEffect->GetTechniqueByName(technique);
 
     if (FAILED(mEffect->SetTechnique(techniqueID)))
@@ -139,7 +141,7 @@ HRESULT CEffect::End()
     if (!mEffect)
         return -1;
 
-    RENDERER->SetActiveEffect(NULL);
+    RENDERER->SetActiveEffect(nullptr);
     return mEffect->End();
 }
 
@@ -152,7 +154,7 @@ UINT CEffect::FindPass(LPCSTR passName)
     D3DXTECHNIQUE_DESC td;
     mEffect->GetTechniqueDesc(curTech, &td);
 
-    for (UINT i=0; i<td.Passes;i++)
+    for (UINT i = 0; i < td.Passes; i++)
     {
         D3DXHANDLE h = mEffect->GetPass(curTech, i);
         D3DXPASS_DESC pd;
@@ -162,7 +164,7 @@ UINT CEffect::FindPass(LPCSTR passName)
             return i;
     }
 
-    return (UINT)-1;
+    return static_cast<UINT>(-1);
 }
 
 HRESULT CEffect::BeginPass(UINT passID)
@@ -240,7 +242,8 @@ VOID CEffect::SetLight(LPCSTR name, CLight* value)
     if (!mEffect)
         return;
 
-    if (value) {
+    if (value)
+    {
         SetBool(GetUniformName(name, "IsEnabled"), TRUE);
         SetInteger(GetUniformName(name, "Type"), value->GetLightData().Type);
         SetVector3(GetUniformName(name, "Position"), value->GetLightData().Position);
@@ -254,7 +257,8 @@ VOID CEffect::SetLight(LPCSTR name, CLight* value)
         SetFloat(GetUniformName(name, "LinearAtten"), value->GetLightData().Attenuation1);
         SetFloat(GetUniformName(name, "QuadraticAtten"), value->GetLightData().Attenuation2);
     }
-    else {
+    else
+    {
         SetBool(GetUniformName(name, "IsEnabled"), FALSE);
     }
 }
@@ -305,8 +309,8 @@ VOID CEffect::SetDefaults()
 
 LPCSTR CEffect::GetUniformName(LPCSTR base, LPCSTR field)
 {
-    static char buffer[512] = { 0 };
+    static char buffer[512] = {0};
 
     sprintf_s(buffer, 512, "%s.%s", base, field);
-    return (LPCSTR)buffer;
+    return static_cast<LPCSTR>(buffer);
 }

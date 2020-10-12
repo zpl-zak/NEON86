@@ -18,9 +18,9 @@ class ENGINE_API CRenderer
 public:
     CRenderer();
 
-    LRESULT CreateDevice(HWND window, RECT winres);
+    auto CreateDevice(HWND window, RECT winres) -> LRESULT;
     VOID ResetDevice(VOID);
-    BOOL Release(VOID);
+    auto Release(VOID) -> BOOL;
     VOID Resize(RECT res);
     VOID SetVSYNC(BOOL state);
     VOID Blit(VOID);
@@ -42,29 +42,29 @@ public:
     VOID SetRenderTarget(CRenderTarget* target);
     VOID SetRenderState(DWORD kind, DWORD value);
     VOID SetSamplerState(DWORD stage, DWORD kind, DWORD value);
-    VOID SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end=0.0f);
+    VOID SetFog(DWORD color, DWORD mode, FLOAT start, FLOAT end = 0.0f);
     VOID ClearFog();
-    RECT GetSurfaceResolution();
+    auto GetSurfaceResolution() -> RECT;
 
-    inline VOID EnableLighting(BOOL state) { mEnableLighting = state; }
-    inline BOOL GetLightingState() { return mEnableLighting; }
-    inline VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
+    VOID EnableLighting(BOOL state) { mEnableLighting = state; }
+    auto GetLightingState() const -> BOOL { return mEnableLighting; }
+    VOID SetActiveEffect(CEffect* fx) { mActiveEffect = fx; }
 
     VOID SetDefaultRenderStates();
 
     /// Accessors
-    inline LPDIRECT3DDEVICE9 GetDevice() { return mDevice; }
-    inline RECT GetResolution() { return mLastRes; }
-    RECT GetLocalCoordinates(VOID) const;
-    D3DMATRIX GetDeviceMatrix(UINT kind);
-    inline HWND GetWindow() const { return mWindow; }
-    inline CEffect* GetActiveEffect() { return mActiveEffect; }
-    inline D3DSURFACE_DESC GetDisplayDesc() { return mDisplayDesc; }
-    inline BOOL IsLightingEnabled() { return mEnableLighting; }
-    inline BOOL IsFocused() { return GetActiveWindow() == mWindow; }
-    inline CMaterial* GetDefaultMaterial() { return mDefaultMaterial;  }
-    inline BOOL UsesMaterialOverride() { return mUsesMaterialOverride; }
-    inline VOID MarkMaterialOverride(BOOL state) { mUsesMaterialOverride = state; }
+    auto GetDevice() const -> LPDIRECT3DDEVICE9 { return mDevice; }
+    auto GetResolution() const -> RECT { return mLastRes; }
+    auto GetLocalCoordinates(VOID) const -> RECT;
+    auto GetDeviceMatrix(UINT kind) -> D3DMATRIX;
+    auto GetWindow() const -> HWND { return mWindow; }
+    auto GetActiveEffect() const -> CEffect* { return mActiveEffect; }
+    auto GetDisplayDesc() const -> D3DSURFACE_DESC { return mDisplayDesc; }
+    auto IsLightingEnabled() const -> BOOL { return mEnableLighting; }
+    auto IsFocused() const -> BOOL { return GetActiveWindow() == mWindow; }
+    auto GetDefaultMaterial() const -> CMaterial* { return mDefaultMaterial; }
+    auto UsesMaterialOverride() const -> BOOL { return mUsesMaterialOverride; }
+    VOID MarkMaterialOverride(BOOL state) { mUsesMaterialOverride = state; }
 
 protected:
     LPDIRECT3D9 mDirect9;
@@ -75,7 +75,7 @@ protected:
     CEffect* mActiveEffect;
     CRenderTarget* mMainTarget;
     CRenderTarget* mActiveTarget;
-    CMaterial *mDefaultMaterial;
+    CMaterial* mDefaultMaterial;
     LPD3DXMESH mDefaultBox;
     BOOL mUsesMaterialOverride;
 

@@ -19,9 +19,9 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titl
 BOOL CenterWindow(HWND hwndWindow);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
-    HINSTANCE hPrevInstance,
-    LPSTR     lpCmdLine,
-    int       nCmdShow)
+                     HINSTANCE hPrevInstance,
+                     LPSTR lpCmdLine,
+                     int nCmdShow)
 {
     HWND hWnd;
     RECT rect;
@@ -52,9 +52,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     demoModel->LoadScene("sphere.fbx");
     D3DXMATRIX viewMat;
     D3DXMATRIX worldMat;
-    D3DXVECTOR3 eyePos = D3DXVECTOR3(0,0,-5);
-    D3DXVECTOR3 lookPos = D3DXVECTOR3(0,0,0);
-    D3DXVECTOR3 up = D3DXVECTOR3(0,1,0);
+    D3DXVECTOR3 eyePos = D3DXVECTOR3(0, 0, -5);
+    D3DXVECTOR3 lookPos = D3DXVECTOR3(0, 0, 0);
+    D3DXVECTOR3 up = D3DXVECTOR3(0, 1, 0);
     D3DXMatrixLookAtRH(&viewMat, &eyePos, &lookPos, &up);
 
     CLight* demoLight = new CLight(0);
@@ -63,7 +63,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     CFont* demoFont = new CFont("Silkscreen", 20, 16, FALSE);
 
     D3DXMATRIX projMat;
-    D3DXMatrixPerspectiveFovRH(&projMat, D3DXToRadian(62.0f), rect.right / (FLOAT)rect.bottom, 0.01f, 1000.0f);
+    D3DXMatrixPerspectiveFovRH(&projMat, D3DXToRadian(62.0f), rect.right / static_cast<FLOAT>(rect.bottom), 0.01f,
+                               1000.0f);
 
     RENDERER->SetMatrix(MATRIXKIND_PROJECTION, projMat);
     RENDERER->SetMatrix(MATRIXKIND_VIEW, viewMat);
@@ -73,11 +74,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     MSG msg;
     FLOAT lastTime = GetTime();
 
-    UI->SetDraw2DHook([&]() {
+    UI->SetDraw2DHook([&]()
+    {
         demoFont->RenderText(0xFFFFFFFF, "This demo is running from the native C++ side", 15, 30);
     });
 
-    UI->SetDrawUIHook([&]() {
+    UI->SetDrawUIHook([&]()
+    {
         ImGui::Begin("Hello world");
         {
             ImGui::Text("It works!");
@@ -100,7 +103,8 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         if (!ENGINE->IsRunning())
             break;
 
-        if (INPUT->GetKeyDown(VK_ESCAPE)) {
+        if (INPUT->GetKeyDown(VK_ESCAPE))
+        {
             ENGINE->Shutdown();
             break;
         }
@@ -160,15 +164,15 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titl
     AdjustWindowRectEx(&rect, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
 
     hWnd = CreateWindowEx(NULL,
-        className,
-        titleName,
-        style,
-        rect.left, rect.top,
-        rect.right, rect.bottom,
-        NULL,
-        NULL,
-        instance,
-        NULL);
+                          className,
+                          titleName,
+                          style,
+                          rect.left, rect.top,
+                          rect.right, rect.bottom,
+                          NULL,
+                          NULL,
+                          instance,
+                          NULL);
 
     if (!hWnd)
     {
@@ -186,9 +190,9 @@ HWND BuildWindow(HINSTANCE instance, BOOL cmdShow, LPCSTR className, LPCSTR titl
             0, NULL);
 
         MessageBoxA(NULL,
-            (LPCSTR)msg,
-            "Window creation failed",
-            MB_ICONERROR);
+                    static_cast<LPCSTR>(msg),
+                    "Window creation failed",
+                    MB_ICONERROR);
 
         LocalFree(msg);
         ExitProcess(1);

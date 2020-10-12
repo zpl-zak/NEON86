@@ -27,7 +27,8 @@ struct WAVEHEADER
     ULONG dataSize;
 };
 
-VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo)
+VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+                           LPVOID waveInfo)
 {
     FILE* fp;
     size_t count;
@@ -121,7 +122,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
-    *(WAVEFORMATEX*)waveInfo = waveFormat;
+    *static_cast<WAVEFORMATEX*>(waveInfo) = waveFormat;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY;
@@ -130,7 +131,7 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     bufferDesc.lpwfxFormat = &waveFormat;
     bufferDesc.guid3DAlgorithm = GUID_NULL;
 
-    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
+    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, nullptr);
     if (FAILED(result))
     {
         fs->CloseResource(fp);
@@ -173,7 +174,8 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
 
     fs->CloseResource(fp);
 
-    result = snd->Lock(0, waveFileHeader.dataSize, (LPVOID*)&bufferPtr, (LPDWORD)&bufferSize, NULL, 0, 0);
+    result = snd->Lock(0, waveFileHeader.dataSize, (LPVOID*)&bufferPtr, static_cast<LPDWORD>(&bufferSize), nullptr,
+                       nullptr, 0);
     if (FAILED(result))
     {
         fs->CloseResource(fp);
@@ -183,16 +185,16 @@ VOID CSoundLoader::LoadWAV(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR
 
     memcpy(bufferPtr, waveData, waveFileHeader.dataSize);
 
-    result = snd->Unlock((LPVOID)bufferPtr, bufferSize, NULL, 0);
+    result = snd->Unlock(static_cast<LPVOID>(bufferPtr), bufferSize, nullptr, 0);
     if (FAILED(result))
     {
         fs->CloseResource(fp);
         vm->PostError(CString::Format("Failed to unlock sound buffer for file: %s!", wavPath).Str());
-        return;
     }
 }
 
-VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo)
+VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+                           LPVOID waveInfo)
 {
     size_t count;
     WAVEFORMATEX waveFormat;
@@ -206,7 +208,7 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
 
     int channels;
     int sample_rate;
-    short * output;
+    short* output;
     count = stb_vorbis_decode_filename(fs->ResourcePath(oggPath), &channels, &sample_rate, &output);
 
     if (count == -1)
@@ -234,16 +236,16 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
-    *(WAVEFORMATEX*)waveInfo = waveFormat;
+    *static_cast<WAVEFORMATEX*>(waveInfo) = waveFormat;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLFREQUENCY;
-    bufferDesc.dwBufferBytes = (DWORD)(count * channels * (waveFormat.wBitsPerSample / 8));
+    bufferDesc.dwBufferBytes = static_cast<DWORD>(count * channels * (waveFormat.wBitsPerSample / 8));
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = &waveFormat;
     bufferDesc.guid3DAlgorithm = GUID_NULL;
 
-    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
+    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, nullptr);
     if (FAILED(result))
     {
         vm->PostError(CString::Format("Failed to create temporary sound buffer for file: %s!", oggPath).Str());
@@ -262,26 +264,27 @@ VOID CSoundLoader::LoadOGG(LPSTR oggPath, IDirectSoundBuffer8** sndBuffer, UCHAR
 
     IDirectSoundBuffer8* snd = *sndBuffer;
 
-    result = snd->Lock(0, bufferDesc.dwBufferBytes, (LPVOID*)&bufferPtr, (LPDWORD)&bufferSize, NULL, 0, 0);
+    result = snd->Lock(0, bufferDesc.dwBufferBytes, (LPVOID*)&bufferPtr, static_cast<LPDWORD>(&bufferSize), nullptr,
+                       nullptr, 0);
     if (FAILED(result))
     {
         vm->PostError(CString::Format("Failed to lock sound buffer for file: %s!", oggPath).Str());
         return;
     }
 
-    *dataPtr = (UCHAR *)output;
-    *dataSize = (ULONG)count;
-    memcpy(bufferPtr, (UCHAR *)output, bufferDesc.dwBufferBytes);
+    *dataPtr = (UCHAR*)output;
+    *dataSize = static_cast<ULONG>(count);
+    memcpy(bufferPtr, (UCHAR*)output, bufferDesc.dwBufferBytes);
 
-    result = snd->Unlock((LPVOID)bufferPtr, bufferSize, NULL, 0);
+    result = snd->Unlock(static_cast<LPVOID>(bufferPtr), bufferSize, nullptr, 0);
     if (FAILED(result))
     {
         vm->PostError(CString::Format("Failed to unlock sound buffer for file: %s!", oggPath).Str());
-        return;
     }
 }
 
-VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize, LPVOID waveInfo)
+VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCHAR** dataPtr, ULONG* dataSize,
+                             LPVOID waveInfo)
 {
     FILE* fp;
     size_t count;
@@ -375,7 +378,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
-    *(WAVEFORMATEX*)waveInfo = waveFormat;
+    *static_cast<WAVEFORMATEX*>(waveInfo) = waveFormat;
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRL3D;
@@ -384,7 +387,7 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
     bufferDesc.lpwfxFormat = &waveFormat;
     bufferDesc.guid3DAlgorithm = GUID_NULL;
 
-    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
+    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, nullptr);
     if (FAILED(result))
     {
         fs->CloseResource(fp);
@@ -427,7 +430,8 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
 
     fs->CloseResource(fp);
 
-    result = snd->Lock(0, waveFileHeader.dataSize, (LPVOID*)&bufferPtr, (LPDWORD)&bufferSize, NULL, 0, 0);
+    result = snd->Lock(0, waveFileHeader.dataSize, (LPVOID*)&bufferPtr, static_cast<LPDWORD>(&bufferSize), nullptr,
+                       nullptr, 0);
     if (FAILED(result))
     {
         fs->CloseResource(fp);
@@ -437,16 +441,16 @@ VOID CSoundLoader::LoadWAV3D(LPSTR wavPath, IDirectSoundBuffer8** sndBuffer, UCH
 
     memcpy(bufferPtr, waveData, waveFileHeader.dataSize);
 
-    result = snd->Unlock((LPVOID)bufferPtr, bufferSize, NULL, 0);
+    result = snd->Unlock(static_cast<LPVOID>(bufferPtr), bufferSize, nullptr, 0);
     if (FAILED(result))
     {
         fs->CloseResource(fp);
         vm->PostError(CString::Format("Failed to unlock sound buffer for file: %s!", wavPath).Str());
-        return;
     }
 }
 
-VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events, LPVOID waveInfo, DWORD* dataSize)
+VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuffer8** sndBuffer, HANDLE* events,
+                           LPVOID waveInfo, DWORD* dataSize)
 {
     WAVEFORMATEX waveFormat;
     DSBUFFERDESC bufferDesc;
@@ -456,9 +460,9 @@ VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
     CVirtualMachine* vm = ENGINE->GetVM();
 
     int error;
-    stb_vorbis* decoder = stb_vorbis_open_filename(fs->ResourcePath(path), &error, NULL);
+    stb_vorbis* decoder = stb_vorbis_open_filename(fs->ResourcePath(path), &error, nullptr);
 
-    if (!decoder) 
+    if (!decoder)
     {
         vm->PostError(CString::Format("Sound file: %s is invalid!", path).Str());
         return;
@@ -483,17 +487,17 @@ VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
     waveFormat.nBlockAlign = (waveFormat.wBitsPerSample / 8) * waveFormat.nChannels;
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
-    *(WAVEFORMATEX*)waveInfo = waveFormat;
-    *dataSize = (DWORD)decoder->stream_len;
+    *static_cast<WAVEFORMATEX*>(waveInfo) = waveFormat;
+    *dataSize = static_cast<DWORD>(decoder->stream_len);
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLPOSITIONNOTIFY;
-    bufferDesc.dwBufferBytes = 2*waveFormat.nAvgBytesPerSec;
+    bufferDesc.dwBufferBytes = 2 * waveFormat.nAvgBytesPerSec;
     bufferDesc.dwReserved = 0;
     bufferDesc.lpwfxFormat = &waveFormat;
     bufferDesc.guid3DAlgorithm = GUID_NULL;
 
-    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, NULL);
+    result = AUDIO->GetDevice()->CreateSoundBuffer(&bufferDesc, &tempBuffer, nullptr);
     if (FAILED(result))
     {
         vm->PostError(CString::Format("Failed to create temporary sound buffer for file: %s!", path).Str());
@@ -523,7 +527,7 @@ VOID CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
 
     DSBPOSITIONNOTIFY notifyDesc[2];
     notifyDesc[0].dwOffset = waveFormat.nAvgBytesPerSec / 2 - 1;
-    notifyDesc[1].dwOffset = 3*waveFormat.nAvgBytesPerSec / 2 - 1;
+    notifyDesc[1].dwOffset = 3 * waveFormat.nAvgBytesPerSec / 2 - 1;
     notifyDesc[0].hEventNotify = events[0];
     notifyDesc[1].hEventNotify = events[1];
 
@@ -547,8 +551,8 @@ VOID CSoundLoader::ResetBuffer(stb_vorbis* decoder)
 
 ULONG CSoundLoader::DecodeOGG(stb_vorbis* decoder, ULONG reqBytes, short** outData)
 {
-    short* data = new short[reqBytes/2];
-    int n = stb_vorbis_get_samples_short_interleaved(decoder, 2, data, reqBytes/2);
+    short* data = new short[reqBytes / 2];
+    int n = stb_vorbis_get_samples_short_interleaved(decoder, 2, data, reqBytes / 2);
 
     if (n == 0)
     {
@@ -558,12 +562,12 @@ ULONG CSoundLoader::DecodeOGG(stb_vorbis* decoder, ULONG reqBytes, short** outDa
 
     *outData = data;
 
-    return n*2;
+    return n * 2;
 }
 
 DWORD CSoundLoader::TellOGG(stb_vorbis* decoder)
 {
-    return (DWORD)stb_vorbis_get_file_offset(decoder);
+    return static_cast<DWORD>(stb_vorbis_get_file_offset(decoder));
 }
 
 VOID CSoundLoader::CloseOGG(stb_vorbis* decoder)

@@ -7,12 +7,12 @@
 class ENGINE_API CLight : public CReferenceCounter, public CNodeComponent
 {
 public:
-    CLight(UINT slot=0);
+    CLight(UINT slot = 0);
     VOID Release();
 
     VOID Enable(BOOL state);
     VOID SetSlot(UINT slot);
-    CLight* Clone();
+    auto Clone() -> CLight*;
 
     VOID SetType(UINT type);
     VOID SetAmbient(D3DCOLORVALUE color);
@@ -26,8 +26,8 @@ public:
     VOID SetInnerAngle(FLOAT theta);
     VOID SetOuterAngle(FLOAT phi);
 
-    inline D3DLIGHT9 GetLightData() { return mLightData; }
-    inline UINT GetSlot() { return mSlot; }
+    auto GetLightData() const -> D3DLIGHT9 { return mLightData; }
+    auto GetSlot() const -> UINT { return mSlot; }
 
 private:
     UINT mSlot;

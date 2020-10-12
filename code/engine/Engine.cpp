@@ -1,6 +1,3 @@
-// engine.cpp : Defines the entry point for the DLL application.
-//
-
 #include "stdafx.h"
 #include "engine.h"
 
@@ -15,24 +12,23 @@
 #include <ctime>
 
 CEngine::CEngine(VOID)
-: mIsRunning(FALSE)
+    : mIsRunning(FALSE)
 {
-    srand((UINT)time(0));
     sInstance = this;
     mIsInitialised = FALSE;
-    mRenderer = NULL;
-    mInput = NULL;
-    mFileSystem = NULL;
-    mVirtualMachine = NULL;
-    mDebugUI = NULL;
-    mAudioSystem = NULL;
+    mRenderer = nullptr;
+    mInput = nullptr;
+    mFileSystem = nullptr;
+    mVirtualMachine = nullptr;
+    mDebugUI = nullptr;
+    mAudioSystem = nullptr;
 
     SetFPS(60.0f);
     mUnprocessedTime = 0.0f;
     mLastTime = 0.0f;
 }
 
-BOOL CEngine::Release()
+auto CEngine::Release() -> BOOL
 {
     SAFE_RELEASE(mVirtualMachine);
     SAFE_RELEASE(mFileSystem);
@@ -58,7 +54,7 @@ VOID CEngine::Shutdown()
     mIsRunning = FALSE;
 }
 
-CEngine* CEngine::the()
+auto CEngine::the() -> CEngine*
 {
     if (!sInstance)
         sInstance = new CEngine();
@@ -66,7 +62,7 @@ CEngine* CEngine::the()
     return sInstance;
 }
 
-BOOL CEngine::Init(HWND window, RECT resolution)
+auto CEngine::Init(HWND window, RECT resolution) -> BOOL
 {
     if (mIsInitialised)
         return TRUE;
@@ -99,9 +95,9 @@ BOOL CEngine::Init(HWND window, RECT resolution)
 
 VOID CEngine::Think()
 {
-    BOOL render = FALSE;
-    FLOAT startTime = GetTime();
-    FLOAT deltaTime = startTime - mLastTime;
+    auto render = FALSE;
+    const auto startTime = GetTime();
+    const auto deltaTime = startTime - mLastTime;
     mLastTime = startTime;
 
     mUnprocessedTime += deltaTime;
@@ -112,7 +108,7 @@ VOID CEngine::Think()
 
     if (mUnprocessedTime > mUpdateDuration)
     {
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
             CProfileScope scope(DefaultProfiling.mWindowProfiler);
             TranslateMessage(&msg);
@@ -140,29 +136,31 @@ VOID CEngine::Think()
 
 VOID CEngine::CDefaultProfiling::UpdateProfilers(FLOAT dt)
 {
-    static constexpr FLOAT sFrameWindow = 0.5f;
+    static constexpr auto sFrameWindow = 0.5f;
 
     mFrameCounter += dt;
 
     if (mFrameCounter >= sFrameWindow)
     {
-        mTotalTime = ((1000.0f * mFrameCounter) / ((FLOAT)mFrames));
+        mTotalTime = 1000.0f * mFrameCounter / static_cast<FLOAT>(mFrames);
         mTotalMeasuredTime = 0.0f;
 
-        BOOL logStats = mVerboseLogging ? mRunCycle % (INT(sFrameWindow * 120.0f)) == 0 : FALSE;
+        const auto logStats = mVerboseLogging ? mRunCycle % static_cast<INT>(sFrameWindow * 120.0f) == 0 : FALSE;
 
         if (logStats) PushLog("==================\n", TRUE);
 
         for (UINT i = 0; i < mProfilers.GetCount(); i++)
         {
-            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(FLOAT(mFrames), logStats);
+            mTotalMeasuredTime += mProfilers[i]->DisplayAndReset(static_cast<FLOAT>(mFrames), logStats);
         }
 
         if (logStats)
         {
             PushLog("\n", TRUE);
-            PushLog(CString::Format("Other Time: %f ms\n", ((DOUBLE)mTotalTime - mTotalMeasuredTime)).Str(), TRUE);
-            PushLog(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, (1000.0f / mTotalTime)).Str(), TRUE);
+            PushLog(
+                CString::Format("Other Time: %f ms\n", static_cast<DOUBLE>(mTotalTime) - mTotalMeasuredTime).Str(),
+                TRUE);
+            PushLog(CString::Format("Total Time: %f ms (%f fps)\n", mTotalTime, 1000.0f / mTotalTime).Str(), TRUE);
         }
 
         UI->PushMS(mTotalTime);
@@ -196,16 +194,16 @@ VOID CEngine::CDefaultProfiling::PushProfiler(CProfiler* profile)
     mProfilers.Push(profile);
 }
 
-LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+auto CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) const -> LRESULT
 {
     if (mDebugUI->ProcessEvents(hWnd, message, wParam, lParam))
         return FALSE;
 
-    CInput* input = INPUT;
+    auto input = INPUT;
 
     switch (message)
     {
-#if 0
+        #if 0
         case WM_SIZE:
         {
             RECT rect;
@@ -215,83 +213,93 @@ LRESULT CEngine::ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
             ENGINE->Resize(rect);
         } break;
-#endif
+        #endif
 
-        case WM_DESTROY:
+    case WM_DESTROY:
         {
             ENGINE->Shutdown();
             return FALSE;
-        } break;
+        }
+        break;
 
-        case WM_LBUTTONDOWN:
+    case WM_LBUTTONDOWN:
         {
             input->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, TRUE);
             input->SetMouseDown(CInput::MOUSE_LEFT_BUTTON, TRUE);
-        } break;
+        }
+        break;
 
-        case WM_MBUTTONDOWN:
+    case WM_MBUTTONDOWN:
         {
             input->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
             input->SetMouseDown(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
-        } break;
+        }
+        break;
 
-        case WM_RBUTTONDOWN:
+    case WM_RBUTTONDOWN:
         {
             input->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, TRUE);
             input->SetMouseDown(CInput::MOUSE_RIGHT_BUTTON, TRUE);
-        } break;
+        }
+        break;
 
-        case WM_LBUTTONUP:
+    case WM_LBUTTONUP:
         {
             input->SetMouseButton(CInput::MOUSE_LEFT_BUTTON, FALSE);
             input->SetMouseUp(CInput::MOUSE_LEFT_BUTTON, TRUE);
-        } break;
+        }
+        break;
 
-        case WM_MBUTTONUP:
+    case WM_MBUTTONUP:
         {
             input->SetMouseButton(CInput::MOUSE_MIDDLE_BUTTON, FALSE);
             input->SetMouseUp(CInput::MOUSE_MIDDLE_BUTTON, TRUE);
-        } break;
+        }
+        break;
 
-        case WM_RBUTTONUP:
+    case WM_RBUTTONUP:
         {
             input->SetMouseButton(CInput::MOUSE_RIGHT_BUTTON, FALSE);
             input->SetMouseUp(CInput::MOUSE_RIGHT_BUTTON, TRUE);
-        } break;
+        }
+        break;
 
-        case WM_SYSCOMMAND:
+    case WM_SYSCOMMAND:
         if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu
             return 0;
         break;
 
-        case WM_CHAR:
+    case WM_CHAR:
         {
             if (wParam >= 0x20)
             {
-                VM->CharInput((DWORD)wParam);
+                VM->CharInput(static_cast<DWORD>(wParam));
             }
-        } break;
+        }
+        break;
 
-        case WM_KEYDOWN:
+    case WM_KEYDOWN:
         {
-            if (INPUT->GetKey((DWORD)wParam))
+            if (INPUT->GetKey(static_cast<DWORD>(wParam)))
                 break;
 
-            INPUT->SetKey((DWORD)wParam, TRUE);
-            INPUT->SetKeyDown((DWORD)wParam, TRUE);
-        } break;
+            INPUT->SetKey(static_cast<DWORD>(wParam), TRUE);
+            INPUT->SetKeyDown(static_cast<DWORD>(wParam), TRUE);
+        }
+        break;
 
-        case WM_KEYUP:
+    case WM_KEYUP:
         {
-            INPUT->SetKey((DWORD)wParam, FALSE);
-            INPUT->SetKeyUp((DWORD)wParam, TRUE);
-        } break;
+            INPUT->SetKey(static_cast<DWORD>(wParam), FALSE);
+            INPUT->SetKeyUp(static_cast<DWORD>(wParam), TRUE);
+        }
+        break;
     }
 
     return TRUE;
 }
 
-VOID CEngine::Update(FLOAT deltaTime)
+VOID CEngine::Update(FLOAT deltaTime) const
 {
     {
         CProfileScope scope(DefaultProfiling.mUpdateProfiler);
@@ -303,7 +311,7 @@ VOID CEngine::Update(FLOAT deltaTime)
     mInput->Update();
 }
 
-VOID CEngine::Render()
+VOID CEngine::Render() const
 {
     mRenderer->BeginRender();
 
@@ -320,7 +328,7 @@ VOID CEngine::Render()
     }
 }
 
-VOID CEngine::Resize(RECT resolution)
+VOID CEngine::Resize(RECT resolution) const
 {
     if (!mIsInitialised)
         return;
@@ -328,4 +336,4 @@ VOID CEngine::Resize(RECT resolution)
     mRenderer->Resize(resolution);
 }
 
-CEngine *CEngine::sInstance = NULL;
+CEngine* CEngine::sInstance = nullptr;

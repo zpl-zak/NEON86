@@ -18,88 +18,88 @@
 
 CVirtualMachine::CVirtualMachine(VOID)
 {
-	mPlayKind = PLAYKIND_STOPPED;
-	mMainScript = NULL;
-	mLuaVM = NULL;
-	mScheduledTermination = FALSE;
-	mRunTime = 0.0f;
+    mPlayKind = PLAYKIND_STOPPED;
+    mMainScript = nullptr;
+    mLuaVM = nullptr;
+    mScheduledTermination = FALSE;
+    mRunTime = 0.0f;
 }
 
 VOID CVirtualMachine::Release(VOID)
 {
-	FILESYSTEM->FreeResource(mMainScript);
-	mMainScript = NULL;
-	DestroyVM();
+    FILESYSTEM->FreeResource(mMainScript);
+    mMainScript = nullptr;
+    DestroyVM();
 }
 
 /// States
 VOID CVirtualMachine::Play(VOID)
 {
-	if (mScheduledTermination)
-	{
-		return;
-	}
-
-	if (mPlayKind == PLAYKIND_PLAYING)
-	{
-		mPlayKind = PLAYKIND_PAUSED;
-		return;
-	}
-	else if (mPlayKind == PLAYKIND_PAUSED)
+    if (mScheduledTermination)
     {
-		mPlayKind = PLAYKIND_PLAYING;
-		return;
+        return;
     }
 
-	if (mPlayKind != PLAYKIND_STOPPED)
-		return;
+    if (mPlayKind == PLAYKIND_PLAYING)
+    {
+        mPlayKind = PLAYKIND_PAUSED;
+        return;
+    }
+    if (mPlayKind == PLAYKIND_PAUSED)
+    {
+        mPlayKind = PLAYKIND_PLAYING;
+        return;
+    }
 
-	UI->ClearErrorWindow();
+    if (mPlayKind != PLAYKIND_STOPPED)
+        return;
 
-	FDATA f = FILESYSTEM->GetResource(RESOURCE_SCRIPT);
+    UI->ClearErrorWindow();
 
-	if (!f.data)
-	{
-		MessageBoxA(NULL, "No game script found!", "Resource error", MB_OK);
-		ENGINE->Shutdown();
-		return;
-	}
+    const auto f = FILESYSTEM->GetResource(RESOURCE_SCRIPT);
 
-	mMainScript = (UCHAR*)f.data;
+    if (!f.data)
+    {
+        MessageBoxA(nullptr, "No game script found!", "Resource error", MB_OK);
+        ENGINE->Shutdown();
+        return;
+    }
 
-	mPlayKind = PLAYKIND_PLAYING;
-	InitVM();
+    mMainScript = static_cast<UCHAR*>(f.data);
 
-	Init();
+    mPlayKind = PLAYKIND_PLAYING;
+    InitVM();
+
+    Init();
 }
 
 VOID CVirtualMachine::Pause(VOID)
 {
-	if (mPlayKind == PLAYKIND_PLAYING)
-	{
-		mPlayKind = PLAYKIND_PAUSED;
-	}
-	else if (mPlayKind == PLAYKIND_PAUSED)
-	{
-		mPlayKind = PLAYKIND_PLAYING;
-	}
+    if (mPlayKind == PLAYKIND_PLAYING)
+    {
+        mPlayKind = PLAYKIND_PAUSED;
+    }
+    else if (mPlayKind == PLAYKIND_PAUSED)
+    {
+        mPlayKind = PLAYKIND_PLAYING;
+    }
 }
 
 VOID CVirtualMachine::Stop(VOID)
 {
-	if (mPlayKind == PLAYKIND_STOPPED)
-		return;
+    if (mPlayKind == PLAYKIND_STOPPED)
+        return;
 
-	mScheduledTermination = TRUE;
-	mPlayKind = PLAYKIND_STOPPED;
+    mScheduledTermination = TRUE;
+    mPlayKind = PLAYKIND_STOPPED;
 }
 
 VOID CVirtualMachine::Restart(VOID)
 {
-	if (mPlayKind != PLAYKIND_STOPPED)
+    if (mPlayKind != PLAYKIND_STOPPED)
         Stop();
 
-	// Request immediate restart upon termination.
+    // Request immediate restart upon termination.
     mScheduledTermination = 2;
 }
 
@@ -109,18 +109,18 @@ VOID CVirtualMachine::Init(VOID)
     if (!mLuaVM)
         return;
 
-	if (mPlayKind == PLAYKIND_STOPPED)
-		return;
+    if (mPlayKind == PLAYKIND_STOPPED)
+        return;
 
-	mRunTime = 0.0f;
+    mRunTime = 0.0f;
 
-	lua_getglobal(mLuaVM, "_init");
+    lua_getglobal(mLuaVM, "_init");
 
-	if (!lua_isfunction(mLuaVM, -1))
-		return;
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
 
-	int r = lua_pcall(mLuaVM, 0, 0, 0);
-	CheckVMErrors(r);
+    const auto r = lua_pcall(mLuaVM, 0, 0, 0);
+    CheckVMErrors(r);
 }
 
 VOID CVirtualMachine::Destroy(VOID)
@@ -128,45 +128,45 @@ VOID CVirtualMachine::Destroy(VOID)
     if (!mLuaVM)
         return;
 
-	lua_getglobal(mLuaVM, "_destroy");
+    lua_getglobal(mLuaVM, "_destroy");
 
-	if (!lua_isfunction(mLuaVM, -1))
-		return;
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
 
-	int r = lua_pcall(mLuaVM, 0, 0, 0);
-	CheckVMErrors(r);
+    const auto r = lua_pcall(mLuaVM, 0, 0, 0);
+    CheckVMErrors(r);
 }
 
 VOID CVirtualMachine::Update(FLOAT dt)
 {
-	if (mScheduledTermination)
-	{
-		UCHAR term = mScheduledTermination;
+    if (mScheduledTermination)
+    {
+        const auto term = mScheduledTermination;
         Destroy();
         Release();
 
         mScheduledTermination = FALSE;
 
-		if (term == 2) /* Restart was requested */
-			Play();
+        if (term == 2) /* Restart was requested */
+            Play();
 
-		return;
-	}
+        return;
+    }
 
-	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
-		return;
+    if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
+        return;
 
-	lua_getglobal(mLuaVM, "_update");
+    lua_getglobal(mLuaVM, "_update");
 
-	if (!lua_isfunction(mLuaVM, -1))
-		return;
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
 
-	lua_pushnumber(mLuaVM, dt);
+    lua_pushnumber(mLuaVM, dt);
 
-	int r = lua_pcall(mLuaVM, 1, 0, 0);
-	CheckVMErrors(r);
+    const auto r = lua_pcall(mLuaVM, 1, 0, 0);
+    CheckVMErrors(r);
 
-	PassTime(dt);
+    PassTime(dt);
 }
 
 VOID CVirtualMachine::Render(VOID)
@@ -174,13 +174,13 @@ VOID CVirtualMachine::Render(VOID)
     if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
 
-	lua_getglobal(mLuaVM, "_render");
+    lua_getglobal(mLuaVM, "_render");
 
-	if (!lua_isfunction(mLuaVM, -1))
-		return;
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
 
-	int r = lua_pcall(mLuaVM, 0, 0, 0);
-	CheckVMErrors(r);
+    const auto r = lua_pcall(mLuaVM, 0, 0, 0);
+    CheckVMErrors(r);
 }
 
 VOID CVirtualMachine::Render2D(VOID)
@@ -193,7 +193,7 @@ VOID CVirtualMachine::Render2D(VOID)
     if (!lua_isfunction(mLuaVM, -1))
         return;
 
-    INT r = lua_pcall(mLuaVM, 0, 0, 0);
+    const auto r = lua_pcall(mLuaVM, 0, 0, 0);
     CheckVMErrors(r);
 }
 
@@ -202,147 +202,149 @@ VOID CVirtualMachine::Resize(RECT res)
     if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
         return;
 
-	lua_getglobal(mLuaVM, "_resizeScreen");
+    lua_getglobal(mLuaVM, "_resizeScreen");
 
-	if (!lua_isfunction(mLuaVM, -1))
-		return;
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
 
-	lua_pushnumber(mLuaVM, res.right);
-	lua_pushnumber(mLuaVM, res.bottom);
+    lua_pushnumber(mLuaVM, res.right);
+    lua_pushnumber(mLuaVM, res.bottom);
 
-	int r = lua_pcall(mLuaVM, 2, 0, 0);
-	CheckVMErrors(r);
+    const auto r = lua_pcall(mLuaVM, 2, 0, 0);
+    CheckVMErrors(r);
 }
 
 VOID CVirtualMachine::CharInput(DWORD key)
 {
-	if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
-		return;
+    if (!mLuaVM || mPlayKind != PLAYKIND_PLAYING)
+        return;
 
-	lua_getglobal(mLuaVM, "_charInput");
+    lua_getglobal(mLuaVM, "_charInput");
 
-	if (!lua_isfunction(mLuaVM, -1))
-		return;
+    if (!lua_isfunction(mLuaVM, -1))
+        return;
 
-	CHAR buf[2] = { (CHAR)key, 0 };
-	lua_pushstring(mLuaVM, buf);
+    CHAR buf[2] = {static_cast<CHAR>(key), 0};
+    lua_pushstring(mLuaVM, buf);
 
-	int r = lua_pcall(mLuaVM, 1, 0, 0);
-	CheckVMErrors(r);
+    const auto r = lua_pcall(mLuaVM, 1, 0, 0);
+    CheckVMErrors(r);
 }
 
 static const luaL_Reg loadedlibs[] = {
-	{"_G", luaopen_base},
-	{LUA_LOADLIBNAME, luaopen_package},
-	{LUA_COLIBNAME, luaopen_coroutine},
-	{LUA_TABLIBNAME, luaopen_table},
-	//{LUA_IOLIBNAME, luaopen_io},
-	//{LUA_OSLIBNAME, luaopen_os},
-	{LUA_STRLIBNAME, luaopen_string},
-	{LUA_MATHLIBNAME, luaopen_math},
-	//{LUA_UTF8LIBNAME, luaopen_utf8},
-	{LUA_DBLIBNAME, luaopen_debug},
-#if defined(LUA_COMPAT_BITLIB)
+    {"_G", luaopen_base},
+    {LUA_LOADLIBNAME, luaopen_package},
+    {LUA_COLIBNAME, luaopen_coroutine},
+    {LUA_TABLIBNAME, luaopen_table},
+    //{LUA_IOLIBNAME, luaopen_io},
+    //{LUA_OSLIBNAME, luaopen_os},
+    {LUA_STRLIBNAME, luaopen_string},
+    {LUA_MATHLIBNAME, luaopen_math},
+    //{LUA_UTF8LIBNAME, luaopen_utf8},
+    {LUA_DBLIBNAME, luaopen_debug},
+    #if defined(LUA_COMPAT_BITLIB)
 	{LUA_BITLIBNAME, luaopen_bit32},
-#endif
-	{NULL, NULL}
+    #endif
+    {nullptr, nullptr}
 };
 
-static VOID _lua_openlibs(lua_State *L) {
-	const luaL_Reg *lib;
+static VOID _lua_openlibs(lua_State* L)
+{
+    for (auto lib = loadedlibs; lib->func; lib++)
+    {
+        luaL_requiref(L, lib->name, lib->func, 1);
+        lua_pop(L, 1);
+    }
 
-	for (lib = loadedlibs; lib->func; lib++) {
-		luaL_requiref(L, lib->name, lib->func, 1);
-		lua_pop(L, 1);
-	}
-
-	static char path[MAX_PATH] = { 0 };
-	sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua;libs/?/init.lua;%s/?.lua'", FILESYSTEM->GetCanonicalGamePath(), FILESYSTEM->GetCanonicalGamePath());
-	luaL_dostring(L, path);
-    sprintf_s(path, MAX_PATH, "package.cpath = '%s/?.dll;libs/?.dll;libs/?/init.dll;libs/?/?.dll'", FILESYSTEM->GetCanonicalGamePath());
+    static char path[MAX_PATH] = {0};
+    sprintf_s(path, MAX_PATH, "package.path = '%s/?/init.lua;libs/?/init.lua;%s/?.lua'",
+              FILESYSTEM->GetCanonicalGamePath(), FILESYSTEM->GetCanonicalGamePath());
+    luaL_dostring(L, path);
+    sprintf_s(path, MAX_PATH, "package.cpath = '%s/?.dll;libs/?.dll;libs/?/init.dll;libs/?/?.dll'",
+              FILESYSTEM->GetCanonicalGamePath());
     luaL_dostring(L, path);
 }
 
-static INT neon_luapanic(lua_State* L) {
+static auto neon_luapanic(lua_State* L) -> INT
+{
     lua_writestringerror("PANIC: unprotected error in call to Lua API (%s)\n",
-        lua_tostring(L, -1));
-    return 0;  /* return to Lua to abort */
+                         lua_tostring(L, -1));
+    return 0; /* return to Lua to abort */
 }
 
 VOID CVirtualMachine::InitVM(VOID)
 {
-	INT result;
-	mLuaVM = luaL_newstate();
+    mLuaVM = luaL_newstate();
     if (!mLuaVM) lua_atpanic(mLuaVM, &neon_luapanic);
 
-	_lua_openlibs(mLuaVM);
+    _lua_openlibs(mLuaVM);
 
-	/// Bindings
-	CLuaBindings::BindBase(mLuaVM);
-	CLuaBindings::BindMath(mLuaVM);
-	CLuaBindings::BindRenderer(mLuaVM);
-	CLuaBindings::BindInput(mLuaVM);
-	CLuaBindings::BindAudio(mLuaVM);
+    /// Bindings
+    CLuaBindings::BindBase(mLuaVM);
+    CLuaBindings::BindMath(mLuaVM);
+    CLuaBindings::BindRenderer(mLuaVM);
+    CLuaBindings::BindInput(mLuaVM);
+    CLuaBindings::BindAudio(mLuaVM);
 
-	// Load script
-	result = luaL_loadstring(mLuaVM, (const char*)mMainScript);
-	CheckVMErrors(result, TRUE);
+    // Load script
+    auto result = luaL_loadstring(mLuaVM, (const char*)mMainScript);
+    CheckVMErrors(result, TRUE);
 
-	result = lua_pcall(mLuaVM, 0, 0, 0);
-	if (CheckVMErrors(result)) return;
+    result = lua_pcall(mLuaVM, 0, 0, 0);
+    if (CheckVMErrors(result)) return;
 }
 
 VOID CVirtualMachine::DestroyVM(VOID)
 {
-	if (!mLuaVM)
-		return;
+    if (!mLuaVM)
+        return;
 
-	lua_close(mLuaVM);
-	mLuaVM = NULL;
+    lua_close(mLuaVM);
+    mLuaVM = nullptr;
 }
 
-VOID CVirtualMachine::PrintVMError()
+VOID CVirtualMachine::PrintVMError() const
 {
-	const char* msg = lua_tostring(mLuaVM, -1);
-#ifdef _DEBUG
-	RENDERER->SetRenderTarget(NULL);
-	UI->PushErrorMessage(msg);
-#else
+    const auto msg = lua_tostring(mLuaVM, -1);
+    #ifdef _DEBUG
+    RENDERER->SetRenderTarget(nullptr);
+    UI->PushErrorMessage(msg);
+    #else
     MessageBoxA(NULL, msg, "Lua error", MB_OK);
     ENGINE->Shutdown();
-#endif
+    #endif
 }
 
-BOOL CVirtualMachine::CheckVMErrors(INT result, BOOL canFail)
+auto CVirtualMachine::CheckVMErrors(INT result, BOOL canFail) -> BOOL
 {
-	gMemUsedLua = mLuaVM->l_G->totalbytes;
+    gMemUsedLua = mLuaVM->l_G->totalbytes;
 
-	if (result != LUA_OK)
-	{
-		PrintVMError();
+    if (result != LUA_OK)
+    {
+        PrintVMError();
 
-#ifdef _DEBUG
-		if (!canFail)
-			Pause();
-#endif
-		return TRUE;
-	}
+        #ifdef _DEBUG
+        if (!canFail)
+            Pause();
+        #endif
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 inline VOID CVirtualMachine::PostError(LPCSTR err)
 {
-#ifdef _DEBUG
-	UI->PushErrorMessage(err);
-	Pause();
-#else
+    #ifdef _DEBUG
+    UI->PushErrorMessage(err);
+    Pause();
+    #else
     MessageBoxA(NULL, err, "Engine error", MB_OK);
     ENGINE->Shutdown();
-#endif
+    #endif
 }
 
 inline VOID CVirtualMachine::PostError(CString err)
 {
-	PostError(err.Str());
+    PostError(err.Str());
 }

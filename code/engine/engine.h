@@ -10,37 +10,41 @@ class CProfiler;
 
 #define ENGINE CEngine::the()
 
-class ENGINE_API CEngine {
+class ENGINE_API CEngine
+{
 public:
-	CEngine(VOID);
+    CEngine(VOID);
 
-	static CEngine* the();
+    // ReSharper disable once CppInconsistentNaming
+    static CEngine* the();
 
-	BOOL Init(HWND window, RECT resolution);
-	BOOL Release();
-	VOID Run();
-	VOID Shutdown();
-	VOID Resize(RECT resolution);
-	VOID Think();
-	LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+    BOOL Init(HWND window, RECT resolution);
+    BOOL Release();
+    VOID Run();
+    VOID Shutdown();
+    VOID Resize(RECT resolution) const;
+    VOID Think();
+    LRESULT ProcessEvents(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) const;
 
-	CRenderer* GetRenderer() { return mRenderer; }
-	CInput* GetInput() { return mInput; }
-	CFileSystem* GetFileSystem() { return mFileSystem; }
-	CVirtualMachine* GetVM() { return mVirtualMachine; }
-	CUserInterface* GetUI() { return mDebugUI; }
-	CAudioSystem* GetAudioSystem() { return mAudioSystem; }
+    CRenderer* GetRenderer() const { return mRenderer; }
+    CInput* GetInput() const { return mInput; }
+    CFileSystem* GetFileSystem() const { return mFileSystem; }
+    CVirtualMachine* GetVM() const { return mVirtualMachine; }
+    CUserInterface* GetUI() const { return mDebugUI; }
+    CAudioSystem* GetAudioSystem() const { return mAudioSystem; }
 
-	BOOL IsRunning() const { return mIsRunning; }
+    BOOL IsRunning() const { return mIsRunning; }
 
-	inline VOID SetFPS(FLOAT fps) { if (fps) mUpdateDuration = 1.0f / fps; }
-	inline FLOAT GetFPS() const { return 1.0f / mUpdateDuration; }
+    VOID SetFPS(FLOAT fps) { if (fps) mUpdateDuration = 1.0f / fps; }
+    FLOAT GetFPS() const { return 1.0f / mUpdateDuration; }
 
-	class ENGINE_API CDefaultProfiling {
-	public:
-		friend class CEngine;
+    class ENGINE_API CDefaultProfiling
+    {
+    public:
+        friend class CEngine;
 
-		CDefaultProfiling() {
+        CDefaultProfiling()
+        {
             mTotalTime = 0.0f;
             mTotalMeasuredTime = 0.0f;
             mFrames = 0;
@@ -48,25 +52,26 @@ public:
             mRunCycle = 0;
             mVerboseLogging = FALSE;
 
-			mProfilers.Release();
-            mUpdateProfiler = NULL;
-            mRenderProfiler = NULL;
-            mRender2DProfiler = NULL;
-            mWindowProfiler = NULL;
-		}
+            mProfilers.Release();
+            mUpdateProfiler = nullptr;
+            mRenderProfiler = nullptr;
+            mRender2DProfiler = nullptr;
+            mWindowProfiler = nullptr;
+        }
+
         VOID UpdateProfilers(FLOAT dt);
         VOID IncrementFrame();
         VOID SetupDefaultProfilers();
-		VOID PushProfiler(CProfiler* profile);
+        VOID PushProfiler(CProfiler* profile);
         VOID SetVerboseLogging(BOOL state) { mVerboseLogging = state; }
 
-		inline const CArray<CProfiler*> GetProfilers() const { return mProfilers; }
-        inline FLOAT GetTotalRunTime() { return mTotalTime; };
-        inline FLOAT GetTotalMeasuredRunTime() { return mTotalMeasuredTime; };
-        inline INT GetRunCycleCount() { return mRunCycle; }
-		inline CProfiler* INTERNAL_GetRender2DProfiler() { return mRender2DProfiler; }
-	protected:
-		INT mFrames;
+        const CArray<CProfiler*> GetProfilers() const { return mProfilers; }
+        FLOAT GetTotalRunTime() const { return mTotalTime; };
+        FLOAT GetTotalMeasuredRunTime() const { return mTotalMeasuredTime; };
+        INT GetRunCycleCount() const { return mRunCycle; }
+        CProfiler* INTERNAL_GetRender2DProfiler() const { return mRender2DProfiler; }
+    protected:
+        INT mFrames;
         FLOAT mFrameCounter;
         FLOAT mTotalTime;
         FLOAT mTotalMeasuredTime;
@@ -79,23 +84,24 @@ public:
         CProfiler* mRenderProfiler;
         CProfiler* mRender2DProfiler;
         CProfiler* mWindowProfiler;
-	} DefaultProfiling;
+    } DefaultProfiling;
+
 protected:
-	CRenderer* mRenderer;
-	CInput* mInput;
-	CFileSystem* mFileSystem;
-	CVirtualMachine* mVirtualMachine;
-	CUserInterface* mDebugUI;
-	CAudioSystem* mAudioSystem;
+    CRenderer* mRenderer;
+    CInput* mInput;
+    CFileSystem* mFileSystem;
+    CVirtualMachine* mVirtualMachine;
+    CUserInterface* mDebugUI;
+    CAudioSystem* mAudioSystem;
 
-	VOID Update(FLOAT deltaTime);
-	VOID Render();
+    VOID Update(FLOAT deltaTime) const;
+    VOID Render() const;
 
-	static CEngine *sInstance;
-	BOOL mIsInitialised;
-	BOOL mIsRunning;
-	FLOAT mUnprocessedTime;
-	FLOAT mLastTime;
-	FLOAT mFrameCounter;
-	FLOAT mUpdateDuration;
+    static CEngine* sInstance;
+    BOOL mIsInitialised;
+    BOOL mIsRunning;
+    FLOAT mUnprocessedTime;
+    FLOAT mLastTime;
+    FLOAT mFrameCounter;
+    FLOAT mUpdateDuration;
 };

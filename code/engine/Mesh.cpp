@@ -13,7 +13,6 @@
 
 CMesh::CMesh(VOID): CAllocable()
 {
-
 }
 
 VOID CMesh::Release(VOID)
@@ -37,16 +36,15 @@ VOID CMesh::AddFaceGroup(CFaceGroup* mesh, const D3DXMATRIX& mat)
 
     if (FAILED(mFaceGroups.Push(mesh)))
     {
-        MessageBoxA(NULL, "Can't add face group to mesh!", "Out of memory error", MB_OK);
+        MessageBoxA(nullptr, "Can't add face group to mesh!", "Out of memory error", MB_OK);
         ENGINE->Shutdown();
         return;
     }
 
     if (FAILED(mTransforms.Push(mat)))
     {
-        MessageBoxA(NULL, "Can't add transform to mesh!", "Out of memory error", MB_OK);
+        MessageBoxA(nullptr, "Can't add transform to mesh!", "Out of memory error", MB_OK);
         ENGINE->Shutdown();
-        return;
     }
 }
 

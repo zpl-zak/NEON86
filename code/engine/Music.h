@@ -1,9 +1,9 @@
 #pragma once
 
-#include "system.h"
 #include "AudioSystem.h"
 #include "ReferenceManager.h"
 #include "SoundBase.h"
+#include "system.h"
 
 struct stb_vorbis;
 
@@ -14,9 +14,9 @@ public:
     VOID Release();
     VOID Update();
     VOID Stop() override;
-    virtual DWORD GetCurrentPosition() override;
-    virtual VOID SetCurrentPosition(DWORD cursor) override;
-    virtual DWORD GetTotalSize() override;
+    auto GetCurrentPosition() -> DWORD override;
+    VOID SetCurrentPosition(DWORD cursor) override;
+    auto GetTotalSize() -> DWORD override;
 protected:
     VOID ResetPosition();
     VOID PullSamples(ULONG offset, ULONG reqBytes, BOOL initCursors = FALSE);

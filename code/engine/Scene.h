@@ -4,15 +4,15 @@
 #include "RenderData.h"
 #include "Node.h"
 
-class ENGINE_API CScene: public CNode
+class ENGINE_API CScene : public CNode
 {
 public:
-    CScene(LPCSTR modelPath=NULL);
+    CScene(LPCSTR modelPath = nullptr);
     VOID Release();
 
-    BOOL LoadScene(LPCSTR modelPath, BOOL loadMaterials = TRUE, BOOL optimizeMesh = FALSE);
+    auto LoadScene(LPCSTR modelPath, BOOL loadMaterials = TRUE, BOOL optimizeMesh = FALSE) -> BOOL;
 
-    inline CNode* GetRootNode() { return mRootNode; }
+    auto GetRootNode() const -> CNode* { return mRootNode; }
 private:
     CNode* mRootNode;
 };

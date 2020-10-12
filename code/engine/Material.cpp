@@ -13,7 +13,7 @@ CMaterial::CMaterial(UINT slot, LPSTR texName): CMaterial()
 
 CMaterial::CMaterial(UINT slot, UINT w, UINT h): CMaterial()
 {
-    CreateTextureForSlot(slot, NULL, w, h);
+    CreateTextureForSlot(slot, nullptr, w, h);
 }
 
 CMaterial::CMaterial(): CAllocable()
@@ -112,27 +112,27 @@ VOID CMaterial::Bind(DWORD stage)
 
     for (UINT i = 0; i < MAX_SAMPLER_STATES; i++)
     {
-        RENDERER->SetSamplerState(stage, (D3DSAMPLERSTATETYPE)i, mStats[i]);
+        RENDERER->SetSamplerState(stage, static_cast<D3DSAMPLERSTATETYPE>(i), mStats[i]);
     }
 }
 
 VOID CMaterial::Unbind(DWORD stage)
 {
-    RENDERER->SetMaterial(stage, NULL);
+    RENDERER->SetMaterial(stage, nullptr);
 }
 
 LPVOID CMaterial::Lock(UINT slot)
 {
     D3DLOCKED_RECT r;
-    mTextureHandle[slot]->LockRect(0, &r, NULL, 0);
+    mTextureHandle[slot]->LockRect(0, &r, nullptr, 0);
     return r.pBits;
 }
 
 VOID CMaterial::UploadARGB(UINT slot, VOID* data, UINT size)
 {
     D3DLOCKED_RECT r;
-    mTextureHandle[slot]->LockRect(0, &r, NULL, D3DLOCK_DISCARD);
-    ::memcpy(r.pBits, data, size);
+    mTextureHandle[slot]->LockRect(0, &r, nullptr, D3DLOCK_DISCARD);
+    memcpy(r.pBits, data, size);
     mTextureHandle[slot]->UnlockRect(0);
 }
 
@@ -143,22 +143,22 @@ VOID CMaterial::Unlock(UINT slot)
 
 VOID CMaterial::SetAmbient(D3DCOLORVALUE color)
 {
-    ::memcpy(&mMaterialData.Ambient, &color, sizeof(D3DCOLORVALUE));
+    memcpy(&mMaterialData.Ambient, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetDiffuse(D3DCOLORVALUE color)
 {
-    ::memcpy(&mMaterialData.Diffuse, &color, sizeof(D3DCOLORVALUE));
+    memcpy(&mMaterialData.Diffuse, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetSpecular(D3DCOLORVALUE color)
 {
-    ::memcpy(&mMaterialData.Specular, &color, sizeof(D3DCOLORVALUE));
+    memcpy(&mMaterialData.Specular, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetEmission(D3DCOLORVALUE color)
 {
-    ::memcpy(&mMaterialData.Emissive, &color, sizeof(D3DCOLORVALUE));
+    memcpy(&mMaterialData.Emissive, &color, sizeof(D3DCOLORVALUE));
 }
 
 VOID CMaterial::SetPower(FLOAT val)

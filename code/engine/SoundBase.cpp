@@ -5,7 +5,7 @@ VOID CSoundBase::SetVolume(LONG vol)
 {
     double attenuation = 1.0 / 1024.0 + vol / 100.0 * 1023.0 / 1024.0;
     double db = 10 * log10(attenuation) / log10(2);
-    LONG realVol = (LONG)(db * 100);
+    LONG realVol = static_cast<LONG>(db * 100);
     mBuffer->SetVolume(realVol);
 }
 
@@ -13,8 +13,8 @@ LONG CSoundBase::GetVolume()
 {
     LONG vol;
     mBuffer->GetVolume(&vol);
-    float actVol = powf(10, (((float)vol) / 100.0f) * log10f(2) / 10.0f) * 100.0f;
-    return (LONG)floor(actVol);
+    float actVol = powf(10, (static_cast<float>(vol) / 100.0f) * log10f(2) / 10.0f) * 100.0f;
+    return static_cast<LONG>(floor(actVol));
 }
 
 VOID CSoundBase::Play()
@@ -35,7 +35,7 @@ VOID CSoundBase::Stop()
 
 VOID CSoundBase::SetPan(LONG pan)
 {
-    LONG realPan = (LONG)ScaleBetween((FLOAT)pan, DSBPAN_LEFT, DSBPAN_RIGHT, -100, 100);
+    LONG realPan = static_cast<LONG>(ScaleBetween(static_cast<FLOAT>(pan), DSBPAN_LEFT, DSBPAN_RIGHT, -100, 100));
     mBuffer->SetPan(realPan);
 }
 
@@ -43,13 +43,13 @@ LONG CSoundBase::GetPan()
 {
     LONG pan;
     mBuffer->GetPan(&pan);
-    return (LONG)ScaleBetween((FLOAT)pan, -100, 100, DSBPAN_LEFT, DSBPAN_RIGHT);
+    return static_cast<LONG>(ScaleBetween(static_cast<FLOAT>(pan), -100, 100, DSBPAN_LEFT, DSBPAN_RIGHT));
 }
 
 DWORD CSoundBase::GetCurrentPosition()
 {
     DWORD playPos = 0x000000;
-    mBuffer->GetCurrentPosition(&playPos, NULL);
+    mBuffer->GetCurrentPosition(&playPos, nullptr);
     return playPos;
 }
 

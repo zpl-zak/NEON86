@@ -6,28 +6,28 @@
 
 #include "Mesh.h"
 
-INT mesh_new(lua_State* L)
+auto mesh_new(lua_State* L) -> INT
 {
-    *(CMesh**)lua_newuserdata(L, sizeof(CMesh*)) = new CMesh();
+    *static_cast<CMesh**>(lua_newuserdata(L, sizeof(CMesh*))) = new CMesh();
 
     luaL_setmetatable(L, L_MESH);
     return 1;
 }
 
-static INT mesh_clone(lua_State* L)
+static auto mesh_clone(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    *(CMesh**)lua_newuserdata(L, sizeof(CMesh*)) = mesh->Clone();
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
+    *static_cast<CMesh**>(lua_newuserdata(L, sizeof(CMesh*))) = mesh->Clone();
 
     luaL_setmetatable(L, L_MESH);
     return 1;
 }
 
-static INT mesh_addfgroup(lua_State* L)
+static auto mesh_addfgroup(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
-    D3DMATRIX* mat = (D3DMATRIX*)luaL_checkudata(L, 3, L_MATRIX);
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
+    auto fg = *static_cast<CFaceGroup**>(luaL_checkudata(L, 2, L_FACEGROUP));
+    const auto mat = static_cast<D3DMATRIX*>(luaL_checkudata(L, 3, L_MATRIX));
 
     mesh->AddFaceGroup(fg->Clone(), *mat);
 
@@ -35,16 +35,16 @@ static INT mesh_addfgroup(lua_State* L)
     return 1;
 }
 
-static INT mesh_getfgroups(lua_State* L)
+static auto mesh_getfgroups(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    const auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
     lua_newtable(L);
 
-    for (UINT i=0; i<mesh->GetNumFGroups(); i++)
+    for (UINT i = 0; i < mesh->GetNumFGroups(); i++)
     {
-        CFaceGroup* fg = mesh->GetFGroupData()[i];
-        lua_pushinteger(L, i+1ULL);
+        const auto fg = mesh->GetFGroupData()[i];
+        lua_pushinteger(L, i + 1ULL);
         LUAP(L, L_FACEGROUP, CFaceGroup, fg);
         lua_settable(L, -3);
     }
@@ -52,14 +52,14 @@ static INT mesh_getfgroups(lua_State* L)
     return 1;
 }
 
-static INT mesh_draw(lua_State* L)
+static auto mesh_draw(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    D3DXMATRIX* mat = &D3DXMATRIX();
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
+    auto mat = &D3DXMATRIX();
 
     if (lua_gettop(L) >= 2)
     {
-        mat = (D3DXMATRIX*)luaL_checkudata(L, 2, L_MATRIX);
+        mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
     }
 
     mesh->Draw(*mat);
@@ -68,55 +68,55 @@ static INT mesh_draw(lua_State* L)
     return 1;
 }
 
-static INT mesh_delete(lua_State* L)
+static auto mesh_delete(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
     mesh->Release();
 
     return 0;
 }
 
-static INT mesh_clear(lua_State* L)
+static auto mesh_clear(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
     mesh->Clear();
 
     return 0;
 }
 
-static INT mesh_setname(lua_State* L)
+static auto mesh_setname(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    LPCSTR meshName = luaL_checkstring(L, 2);
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
+    const auto meshName = luaL_checkstring(L, 2);
 
     mesh->SetName(meshName);
 
     return 0;
 }
 
-static INT mesh_getname(lua_State* L)
+static auto mesh_getname(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
 
     lua_pushstring(L, mesh->GetName().Str());
     return 1;
 }
 
-static INT mesh_setmaterial(lua_State* L)
+static auto mesh_setmaterial(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    CMaterial* mat = NULL;
+    const auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
+    CMaterial* mat = nullptr;
 
     if (lua_gettop(L) == 2)
     {
-        mat = *(CMaterial**)luaL_checkudata(L, 2, L_MATERIAL);
+        mat = *static_cast<CMaterial**>(luaL_checkudata(L, 2, L_MATERIAL));
     }
 
     for (UINT i = 0; i < mesh->GetNumFGroups(); ++i)
     {
-        mesh->GetFGroupData()[i]->SetMaterial(mat ? mat : NULL);
+        mesh->GetFGroupData()[i]->SetMaterial(mat ? mat : nullptr);
         if (mat) mat->AddRef();
     }
 
@@ -124,31 +124,33 @@ static INT mesh_setmaterial(lua_State* L)
     return 1;
 }
 
-static INT mesh_getmaterial(lua_State* L)
+static auto mesh_getmaterial(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
-    DWORD matid = (DWORD)luaL_checkinteger(L, 2) - 1;
+    const auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
+    const auto matid = static_cast<DWORD>(luaL_checkinteger(L, 2)) - 1;
 
     if (matid < 0 || matid >= mesh->GetNumFGroups())
         lua_pushnil(L);
     else
     {
-        CFaceGroup* fg = mesh->GetFGroupData()[matid];
+        const auto fg = mesh->GetFGroupData()[matid];
 
         if (!fg->GetMaterial())
             lua_pushnil(L);
-        else LUAP(L, L_MATERIAL, CMaterial, fg->GetMaterial());
+        else
+            LUAP(L, L_MATERIAL, CMaterial, fg->GetMaterial());
     }
 
     return 1;
 }
 
-static INT mesh_getowner(lua_State* L)
+static auto mesh_getowner(lua_State* L) -> INT
 {
-    CMesh* mesh = *(CMesh**)luaL_checkudata(L, 1, L_MESH);
+    auto mesh = *static_cast<CMesh**>(luaL_checkudata(L, 1, L_MESH));
     if (!mesh->GetOwner())
         lua_pushnil(L);
-    else LUAP(L, L_NODE, CNode, mesh->GetOwner());
+    else
+        LUAP(L, L_NODE, CNode, mesh->GetOwner());
     return 1;
 }
 
@@ -156,7 +158,8 @@ static VOID LuaMesh_register(lua_State* L)
 {
     lua_register(L, L_MESH, mesh_new);
     luaL_newmetatable(L, L_MESH);
-    lua_pushvalue(L, -1); lua_setfield(L, -2, "__index");
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
 
     REGC("addFGroup", mesh_addfgroup);
     REGC("addPart", mesh_addfgroup);

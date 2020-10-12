@@ -46,7 +46,7 @@ CLight* CLight::Clone()
 
 VOID CLight::SetType(UINT type)
 {
-    mLightData.Type = (D3DLIGHTTYPE)type;
+    mLightData.Type = static_cast<D3DLIGHTTYPE>(type);
 }
 
 VOID CLight::SetAmbient(D3DCOLORVALUE color)

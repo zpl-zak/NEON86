@@ -12,7 +12,7 @@
 
 CScene::CScene(LPCSTR modelPath)
 {
-    mRootNode = NULL;
+    mRootNode = nullptr;
 
     if (modelPath)
         LoadScene(modelPath);
@@ -45,4 +45,3 @@ BOOL CScene::LoadScene(LPCSTR modelPath, BOOL loadMaterials, BOOL optimizeMesh)
     mRootNode = mNodes[0];
     return TRUE;
 }
-

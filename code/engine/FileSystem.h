@@ -4,8 +4,8 @@
 
 struct FDATA
 {
-	LPVOID data;
-	UINT size;
+    LPVOID data;
+    UINT size;
 };
 
 #define RESOURCE_UDATA "save.neon"
@@ -24,23 +24,23 @@ typedef struct _iobuf
 class ENGINE_API CFileSystem
 {
 public:
-	CFileSystem(VOID);
-	BOOL LoadGame(LPSTR gamePath);
-	FDATA GetResource(LPCSTR resName=NULL);
-	VOID SaveResource(LPCSTR data, UINT64 size);
-	FILE* OpenResource(LPCSTR resName = NULL);
-	VOID CloseResource(FILE* handle);
-	LPCSTR ResourcePath(LPCSTR resName = NULL);
-	LPCSTR GetGamePath() { return mGamePath; }
-	LPCSTR GetCanonicalGamePath();
-	BOOL Exists(LPCSTR resName);
-	VOID FreeResource(LPVOID data);
-	VOID Release(VOID);
+    CFileSystem(VOID);
+    auto LoadGame(LPSTR gamePath) -> BOOL;
+    auto GetResource(LPCSTR resName = nullptr) const -> FDATA;
+    VOID SaveResource(LPCSTR data, UINT64 size) const;
+    auto OpenResource(LPCSTR resName = nullptr) const -> FILE*;
+    VOID CloseResource(FILE* handle);
+    auto ResourcePath(LPCSTR resName = nullptr) const -> LPCSTR;
+    auto GetGamePath() const -> LPCSTR { return mGamePath; }
+    auto GetCanonicalGamePath() const -> LPCSTR;
+    auto Exists(LPCSTR resName) -> BOOL;
+    VOID FreeResource(LPVOID data);
+    VOID Release(VOID);
 
 private:
-	LPSTR mGamePath;
-	BOOL mLoadDone;
+    LPSTR mGamePath;
+    BOOL mLoadDone;
 
-	BOOL LoadGameInternal();
-	VOID FixName(LPCSTR* resName);
+    auto LoadGameInternal() const -> BOOL;
+    VOID FixName(LPCSTR* resName) const;
 };

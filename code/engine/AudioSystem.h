@@ -19,15 +19,15 @@ class ENGINE_API CAudioSystem
 public:
     CAudioSystem();
     ~CAudioSystem();
-    HRESULT CreateDevice(HWND);
-    VOID Release();
-    VOID Update();
+    auto CreateDevice(HWND) -> HRESULT;
+    auto Release() -> VOID;
+    auto Update() -> VOID;
 
-    UINT RegisterTrack(CMusic* track);
-    VOID UnregisterTrack(UINT idx);
+    auto RegisterTrack(CMusic* track) -> UINT;
+    auto UnregisterTrack(UINT idx) -> VOID;
 
-    inline IDirectSound8* GetDevice() { return mDirectSound; }
-    inline IDirectSound3DListener8* GetListener() { return mListener; }
+    auto GetDevice() const -> IDirectSound8* { return mDirectSound; }
+    auto GetListener() const -> IDirectSound3DListener8* { return mListener; }
 
     // TODO: Expose audio listener for 3D audio support
 

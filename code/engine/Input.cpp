@@ -15,44 +15,43 @@ CInput::CInput(VOID)
 
     mLastKey = -1;
     mCursorMode = CURSORMODE_DEFAULT;
-    mMouseDelta = { 0,0 };
+    mMouseDelta = {0, 0};
     mLastMousePos = GetMouseXY();
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
     mForceMouseCursor = FALSE;
-#endif
+    #endif
 }
 
 VOID CInput::Release(VOID)
 {
-
 }
 
-POINT CInput::GetMouseXY(VOID) const
+auto CInput::GetMouseXY(VOID) -> POINT
 {
-    POINT newPos = { 0 };
+    POINT newPos = {0};
     GetCursorPos(&newPos);
     ScreenToClient(RENDERER->GetWindow(), &newPos);
 
     return newPos;
 }
 
-VOID CInput::SetCursor(BOOL state)
+VOID CInput::SetCursor(BOOL state) const
 {
     if (GetCursor() == state)
         return;
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
     if (mForceMouseCursor)
         return;
-#endif
+    #endif
 
     ShowCursor(state);
 }
 
-BOOL CInput::GetCursor(VOID)
+auto CInput::GetCursor(VOID) -> BOOL
 {
-    CURSORINFO pci = { 0 };
+    CURSORINFO pci = {0};
     pci.cbSize = sizeof(CURSORINFO);
     GetCursorInfo(&pci);
 
@@ -64,42 +63,42 @@ VOID CInput::SetCursorMode(UCHAR mode)
     if (mCursorMode == mode)
         return;
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
     if (mForceMouseCursor)
         return;
-#endif
+    #endif
 
     mCursorMode = mode;
 
     if (mCursorMode == CURSORMODE_CENTERED || mCursorMode == CURSORMODE_WRAPPED)
     {
-        RECT res = RENDERER->GetResolution();
-        SetMouseXY((SHORT)(res.right / 2.0f), (SHORT)(res.bottom / 2.0f));
+        const auto res = RENDERER->GetResolution();
+        SetMouseXY(static_cast<SHORT>(res.right / 2.0f), static_cast<SHORT>(res.bottom / 2.0f));
         mLastMousePos = GetMouseXY();
     }
 }
 
 VOID CInput::SetMouseXY(SHORT x, SHORT y)
 {
-    POINT pos = { x,y };
+    POINT pos = {x, y};
     ClientToScreen(RENDERER->GetWindow(), &pos);
     SetCursorPos(pos.x, pos.y);
 }
 
 VOID CInput::Update(VOID)
 {
-#ifdef _DEBUG
+    #ifdef _DEBUG
     if (this->GetKeyDown(VK_F1))
     {
-        BOOL lastState = mForceMouseCursor;
+        const auto lastState = mForceMouseCursor;
         if (lastState)
             mForceMouseCursor = FALSE;
         this->SetCursor(!this->GetCursor());
-        this->SetCursorMode(1-this->GetCursorMode());
+        this->SetCursorMode(1 - this->GetCursorMode());
         if (lastState == FALSE)
             mForceMouseCursor = TRUE;
     }
-#endif
+    #endif
 
     for (UINT i = 0; i < NUM_MOUSEBUTTONS; i++)
     {
@@ -115,26 +114,27 @@ VOID CInput::Update(VOID)
 
     ClearKey();
 
-    POINT mousePos = GetMouseXY();
+    auto mousePos = GetMouseXY();
     mMouseDelta.x = -(mLastMousePos.x - mousePos.x);
     mMouseDelta.y = -(mLastMousePos.y - mousePos.y);
 
     switch (mCursorMode)
     {
-        case CURSORMODE_CENTERED:
+    case CURSORMODE_CENTERED:
         {
-            RECT res = RENDERER->GetResolution();
-            POINT pos = {
-                (LONG)(res.right/2.0f),
-                (LONG)(res.bottom/2.0f)
+            const auto res = RENDERER->GetResolution();
+            const POINT pos = {
+                static_cast<LONG>(res.right / 2.0f),
+                static_cast<LONG>(res.bottom / 2.0f)
             };
-            SetMouseXY((SHORT)pos.x, (SHORT)pos.y);
+            SetMouseXY(static_cast<SHORT>(pos.x), static_cast<SHORT>(pos.y));
             mousePos = pos;
-        } break;
-        case CURSORMODE_WRAPPED:
+        }
+        break;
+    case CURSORMODE_WRAPPED:
         {
-            RECT res = RENDERER->GetLocalCoordinates();
-            POINT pos = mousePos;
+            const auto res = RENDERER->GetLocalCoordinates();
+            auto pos = mousePos;
             ClientToScreen(RENDERER->GetWindow(), &pos);
 
             while (pos.x > res.right)
@@ -151,12 +151,12 @@ VOID CInput::Update(VOID)
 
             ScreenToClient(RENDERER->GetWindow(), &pos);
 
-            SetMouseXY((SHORT)pos.x, (SHORT)pos.y);
+            SetMouseXY(static_cast<SHORT>(pos.x), static_cast<SHORT>(pos.y));
             mousePos = pos;
         }
-            break;
-        default:
-            break;
+        break;
+    default:
+        break;
     }
 
     mLastMousePos = mousePos;

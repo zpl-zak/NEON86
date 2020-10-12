@@ -7,190 +7,190 @@
 
 CFileSystem::CFileSystem(VOID)
 {
-	mGamePath = "";
-	mLoadDone = FALSE;
+    mGamePath = "";
+    mLoadDone = FALSE;
 }
 
-BOOL CFileSystem::LoadGameInternal()
+auto CFileSystem::LoadGameInternal() const -> BOOL
 {
-	DWORD ft = GetFileAttributesA(mGamePath);
-	return (ft & FILE_ATTRIBUTE_DIRECTORY);
+    const auto ft = GetFileAttributesA(mGamePath);
+    return ft & FILE_ATTRIBUTE_DIRECTORY;
 }
 
-VOID CFileSystem::FixName(LPCSTR* resName)
+auto CFileSystem::FixName(LPCSTR* resName) const -> VOID
 {
-	static CHAR fixedTmpName[MAX_PATH] = { 0 };
+    static CHAR fixedTmpName[MAX_PATH] = {0};
 
-	if (!resName)
-		return;
+    if (!resName)
+        return;
 
-	ZeroMemory(fixedTmpName, MAX_PATH);
+    ZeroMemory(fixedTmpName, MAX_PATH);
 
-	LPCSTR p = *resName;
-	UINT i = 0;
-	while (*p != 0)
-	{
-		if (*p == '/')
-			fixedTmpName[i] = '\\';
-		else fixedTmpName[i] = *p;
+    auto p = *resName;
+    UINT i = 0;
+    while (*p != 0)
+    {
+        if (*p == '/')
+            fixedTmpName[i] = '\\';
+        else fixedTmpName[i] = *p;
 
-		p++;
-		i++;
-	}
+        p++;
+        i++;
+    }
 
-	*resName = fixedTmpName;
+    *resName = fixedTmpName;
 }
 
-BOOL CFileSystem::LoadGame(LPSTR gamePath)
+auto CFileSystem::LoadGame(LPSTR gamePath) -> BOOL
 {
-	if (!gamePath)
-		return FALSE;
+    if (!gamePath)
+        return FALSE;
 
-	LPSTR p = gamePath;
-	UINT validPathI = 0;
+    auto p = gamePath;
+    UINT validPathI = 0;
 
-	while (*p != 0)
-	{
-		if (!isspace(*p))
-			validPathI++;
+    while (*p != 0)
+    {
+        if (!isspace(*p))
+            validPathI++;
 
-		++p;
-	}
+        ++p;
+    }
 
-	if (!validPathI)
-	{
-		// path is empty, default to data
-		gamePath = "data";
-	}
+    if (!validPathI)
+    {
+        // path is empty, default to data
+        gamePath = "data";
+    }
 
-	if (gamePath == mGamePath && mLoadDone)
-		return TRUE;
+    if (gamePath == mGamePath && mLoadDone)
+        return TRUE;
 
-	p = gamePath;
-	while (!isspace(*p) && *p != 0)
-		p++;
+    p = gamePath;
+    while (!isspace(*p) && *p != 0)
+        p++;
 
-	if (*p!=0)
-		*p=0;
+    if (*p != 0)
+        *p = 0;
 
-	if (mLoadDone)
-		SAFE_DELETE(mGamePath);
+    if (mLoadDone)
+        SAFE_DELETE(mGamePath);
 
-	ULONG strSize = (ULONG)strlen(gamePath)+1;
-	mGamePath = new CHAR[strSize];
-	strcpy_s(mGamePath, strSize, gamePath);
+    const auto strSize = static_cast<ULONG>(strlen(gamePath)) + 1;
+    mGamePath = new CHAR[strSize];
+    strcpy_s(mGamePath, strSize, gamePath);
 
-	BOOL ok = LoadGameInternal();
-	mLoadDone = ok;
+    const auto ok = LoadGameInternal();
+    mLoadDone = ok;
 
-	return ok;
+    return ok;
 }
 
-FDATA CFileSystem::GetResource(LPCSTR resName/*=NULL*/)
+auto CFileSystem::GetResource(LPCSTR resName/*=NULL*/) const -> FDATA
 {
-	FDATA res={NULL, 0L};
+    FDATA res = {nullptr, 0L};
 
-	FILE* fp = OpenResource(resName);
+    const auto fp = OpenResource(resName);
 
-	UCHAR* data = NULL;
-	UINT size = 0L;
+    UCHAR* data = nullptr;
+    UINT size = 0L;
 
-	if (!fp)
-		return res;
+    if (!fp)
+        return res;
 
-	fseek(fp, 0, SEEK_END);
-	DWORD fileSize = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
+    fseek(fp, 0, SEEK_END);
+    const DWORD fileSize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
 
-	data = (UCHAR*)neon_malloc(fileSize+1);
-	fread((UCHAR*)data, 1, fileSize, fp);
-	data[fileSize] = NULL;
-	fclose(fp);
+    data = static_cast<UCHAR*>(neon_malloc(fileSize + 1));
+    fread(static_cast<UCHAR*>(data), 1, fileSize, fp);
+    data[fileSize] = NULL;
+    fclose(fp);
 
-	size = fileSize;
+    size = fileSize;
 
-	res.data = data;
-	res.size = size;
+    res.data = data;
+    res.size = size;
 
-	return res;
+    return res;
 }
 
-VOID CFileSystem::SaveResource(LPCSTR data, UINT64 size)
+VOID CFileSystem::SaveResource(LPCSTR data, UINT64 size) const
 {
-	FILE* fp = NULL;
-	fopen_s(&fp, CString::Format("%s\\%s", mGamePath, RESOURCE_UDATA).Str(), "wb");
+    FILE* fp = nullptr;
+    fopen_s(&fp, CString::Format("%s\\%s", mGamePath, RESOURCE_UDATA).Str(), "wb");
 
-	fwrite(data, size, 1, fp);
-	fclose(fp);
+    fwrite(data, size, 1, fp);
+    fclose(fp);
 }
 
-FILE* CFileSystem::OpenResource(LPCSTR resName /*= NULL*/)
+auto CFileSystem::OpenResource(LPCSTR resName /*= NULL*/) const -> FILE*
 {
     if (!mLoadDone)
-        return NULL;
+        return nullptr;
 
     FixName(&resName);
 
-	FILE* fp = NULL;
-	fopen_s(&fp, CString::Format("%s\\%s", mGamePath, resName).Str(), "rb");
+    FILE* fp = nullptr;
+    fopen_s(&fp, CString::Format("%s\\%s", mGamePath, resName).Str(), "rb");
 
-	return fp;
+    return fp;
 }
 
 VOID CFileSystem::CloseResource(FILE* handle)
 {
-	if (handle)
-		fclose(handle);
+    if (handle)
+        fclose(handle);
 }
 
-LPCSTR CFileSystem::ResourcePath(LPCSTR resName /*= NULL*/)
+auto CFileSystem::ResourcePath(LPCSTR resName /*= NULL*/) const -> LPCSTR
 {
     if (!mLoadDone)
-        return NULL;
+        return nullptr;
 
     FixName(&resName);
 
-	static CHAR path[MAX_PATH] = { 0 };
-	sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
-	return path;
+    static CHAR path[MAX_PATH] = {0};
+    sprintf_s(path, MAX_PATH, "%s\\%s", mGamePath, resName);
+    return path;
 }
 
-LPCSTR CFileSystem::GetCanonicalGamePath()
+auto CFileSystem::GetCanonicalGamePath() const -> LPCSTR
 {
-	static char path[MAX_PATH] = { 0 };
-	LPCSTR p = mGamePath;
-	LPSTR s = path;
+    static char path[MAX_PATH] = {0};
+    LPCSTR p = mGamePath;
+    auto s = path;
 
-	while (*p != NULL)
-	{
-		if (*p == '\\') *s++ = '/';
-		else			*s++ = *p;
-		++p;
-	}
+    while (*p != NULL)
+    {
+        if (*p == '\\') *s++ = '/';
+        else *s++ = *p;
+        ++p;
+    }
 
-	return path;
+    return path;
 }
 
-BOOL CFileSystem::Exists(LPCSTR resName)
+auto CFileSystem::Exists(LPCSTR resName) -> BOOL
 {
-	FILE* res = OpenResource(resName);
+    const auto res = OpenResource(resName);
 
-	if (res)
-	{
-		CloseResource(res);
-		return TRUE;
-	}
+    if (res)
+    {
+        CloseResource(res);
+        return TRUE;
+    }
 
     return FALSE;
 }
 
 VOID CFileSystem::FreeResource(LPVOID data)
 {
-	SAFE_FREE(data);
+    SAFE_FREE(data);
 }
 
 VOID CFileSystem::Release(VOID)
 {
-	if (mLoadDone)
-		SAFE_DELETE(mGamePath);
+    if (mLoadDone)
+        SAFE_DELETE(mGamePath);
 }

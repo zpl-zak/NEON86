@@ -11,12 +11,12 @@
 
 CMusic::CMusic(LPSTR path) : CAllocable()
 {
-    mBuffer = NULL;
-    mDecoder = NULL;
+    mBuffer = nullptr;
+    mDecoder = nullptr;
     mOffset = 0;
 
-    mEvents[0] = CreateEventA(NULL, FALSE, FALSE, NULL);
-    mEvents[1] = CreateEventA(NULL, FALSE, FALSE, NULL);
+    mEvents[0] = CreateEventA(nullptr, FALSE, FALSE, nullptr);
+    mEvents[1] = CreateEventA(nullptr, FALSE, FALSE, nullptr);
 
     CSoundLoader::OpenOGG(&mDecoder, path, &mBuffer, mEvents, &mWaveInfo, &mDataSize);
     PullSamples(0, mWaveInfo.nAvgBytesPerSec, true);
@@ -77,33 +77,34 @@ VOID CMusic::ResetPosition()
     CSoundLoader::ResetBuffer(mDecoder);
     ResetEvent(mEvents[0]);
     ResetEvent(mEvents[1]);
-    LPVOID audio1 = NULL;
+    LPVOID audio1 = nullptr;
     DWORD audioLen1 = 0;
 
-    HRESULT hr = mBuffer->Lock(0, 0, &audio1, &audioLen1, NULL, NULL, DSBLOCK_ENTIREBUFFER);
-    if (FAILED(hr)) {
+    HRESULT hr = mBuffer->Lock(0, 0, &audio1, &audioLen1, nullptr, nullptr, DSBLOCK_ENTIREBUFFER);
+    if (FAILED(hr))
+    {
         VM->PostError("Failed to lock music buffer!");
         return;
     }
     memset(audio1, 0, audioLen1);
-    mBuffer->Unlock(audio1, audioLen1, NULL, NULL);
+    mBuffer->Unlock(audio1, audioLen1, nullptr, NULL);
 }
 
 VOID CMusic::PullSamples(ULONG offset, ULONG reqBytes, BOOL initCursors)
 {
-    LPVOID audio1 = NULL, audio2 = NULL;
+    LPVOID audio1 = nullptr, audio2 = nullptr;
     DWORD audioLen1 = 0, audioLen2 = 0;
     HRESULT result;
 
     UCHAR* data;
-    UINT n = (UINT)CSoundLoader::DecodeOGG(mDecoder, reqBytes, (short**)&data);
+    UINT n = static_cast<UINT>(CSoundLoader::DecodeOGG(mDecoder, reqBytes, (short**)&data));
 
     if (n == 0)
     {
         Stop();
         return;
     }
-    
+
     result = mBuffer->Lock(offset, reqBytes, &audio1, &audioLen1, &audio2, &audioLen2, 0);
     if (FAILED(result))
     {
@@ -112,29 +113,32 @@ VOID CMusic::PullSamples(ULONG offset, ULONG reqBytes, BOOL initCursors)
         return;
     }
 
-    if (initCursors) {
+    if (initCursors)
+    {
         if (audio1) memset(audio1, 0, audioLen1);
         if (audio2) memset(audio2, 0, audioLen2);
     }
 
-    if (n < reqBytes/2) {
-        ::memset(data + n, 0, reqBytes/2 - n);
+    if (n < reqBytes / 2)
+    {
+        memset(data + n, 0, reqBytes / 2 - n);
     }
 
-    if (audio2 == NULL) {
-        ::memcpy(audio1, data, audioLen1);
+    if (audio2 == nullptr)
+    {
+        memcpy(audio1, data, audioLen1);
     }
-    else {
-        ::memcpy(audio1, data, audioLen1);
-        ::memcpy(audio2, data+audioLen1, audioLen2);
+    else
+    {
+        memcpy(audio1, data, audioLen1);
+        memcpy(audio2, data + audioLen1, audioLen2);
     }
-    
+
     delete[] data;
 
     result = mBuffer->Unlock(audio1, audioLen1, audio2, audioLen2);
     if (FAILED(result))
     {
         VM->PostError("Failed to unlock music buffer!");
-        return;
     }
 }

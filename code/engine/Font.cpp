@@ -8,7 +8,7 @@
 
 CFont::CFont(LPCSTR name, INT size, INT boldness, BOOL isItalic)
 {
-    mFontHandle = NULL;
+    mFontHandle = nullptr;
 
     D3DXCreateFontA(
         RENDERER->GetDevice(),
@@ -20,7 +20,7 @@ CFont::CFont(LPCSTR name, INT size, INT boldness, BOOL isItalic)
         DEFAULT_CHARSET,
         OUT_DEFAULT_PRECIS,
         ANTIALIASED_QUALITY,
-        DEFAULT_PITCH|FF_DONTCARE,
+        DEFAULT_PITCH | FF_DONTCARE,
         name,
         &mFontHandle
     );
@@ -59,10 +59,10 @@ VOID CFont::RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w, UINT h,
 
 BOOL CFont::AddFontToDatabase(LPCSTR path)
 {
-    return AddFontResourceExA(FILESYSTEM->ResourcePath(path), FR_PRIVATE, 0) > 0;
+    return AddFontResourceExA(FILESYSTEM->ResourcePath(path), FR_PRIVATE, nullptr) > 0;
 }
 
 VOID CFont::CalculateRect(LPCSTR text, LPRECT rect, DWORD flags)
 {
-    mFontHandle->DrawTextA(NULL, text, -1, rect, flags|DT_CALCRECT, 0);
+    mFontHandle->DrawTextA(nullptr, text, -1, rect, flags | DT_CALCRECT, 0);
 }

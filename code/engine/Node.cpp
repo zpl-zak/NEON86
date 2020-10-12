@@ -18,7 +18,7 @@ VOID CNode::AddMesh(CMesh* mg)
 
     if (FAILED(mMeshes.Push(mg)))
     {
-        MessageBoxA(NULL, "Can't push mesh into a scene!", "Out of memory error", MB_OK);
+        MessageBoxA(nullptr, "Can't push mesh into a scene!", "Out of memory error", MB_OK);
         ENGINE->Shutdown();
         return;
     }
@@ -38,7 +38,7 @@ VOID CNode::AddLight(CLight* lit)
 
     if (FAILED(mLights.Push(lit)))
     {
-        MessageBoxA(NULL, "Can't push light into a scene!", "Out of memory error", MB_OK);
+        MessageBoxA(nullptr, "Can't push light into a scene!", "Out of memory error", MB_OK);
         ENGINE->Shutdown();
         return;
     }
@@ -49,7 +49,7 @@ VOID CNode::AddLight(CLight* lit)
 CNode* CNode::FindNode(LPCSTR name)
 {
     if (!name)
-        return NULL;
+        return nullptr;
 
     return mNodes.Find(name);
 }
@@ -58,7 +58,7 @@ VOID CNode::AddNode(CNode* tgt)
 {
     if (FAILED(mNodes.Push(tgt)))
     {
-        MessageBoxA(NULL, "Can't push node into a scene!", "Out of memory error", MB_OK);
+        MessageBoxA(nullptr, "Can't push node into a scene!", "Out of memory error", MB_OK);
         ENGINE->Shutdown();
         return;
     }
@@ -101,7 +101,7 @@ D3DXMATRIX CNode::GetFinalTransform()
     if (!mIsTransformDirty)
         return *mCachedTransform;
 
-    if (GetParent() == NULL)
+    if (GetParent() == nullptr)
         return *mTransform;
 
     *mCachedTransform = *mTransform * GetParent()->GetFinalTransform();
@@ -114,7 +114,7 @@ VOID CNode::InvalidateTransformRecursively()
 {
     InvalidateTransform();
 
-    for (UINT i=0; i<mNodes.GetCount(); ++i)
+    for (UINT i = 0; i < mNodes.GetCount(); ++i)
     {
         mNodes[i]->InvalidateTransformRecursively();
     }

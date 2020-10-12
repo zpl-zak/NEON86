@@ -20,22 +20,22 @@ BOOL CenterWindow(HWND hwndWindow);
 
 int APIENTRY WinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
-                     LPSTR     lpCmdLine,
-                     int       nCmdShow)
+                     LPSTR lpCmdLine,
+                     int nCmdShow)
 {
     HWND hWnd;
     RECT rect;
     rect.left = CW_USEDEFAULT;
     rect.top = CW_USEDEFAULT;
-#ifndef DEV_BORDERLESS
+    #ifndef DEV_BORDERLESS
     rect.right = 1600;
     rect.bottom = 900;
     hWnd = BuildWindow(hInstance, FALSE, "NeonClass", "NEON 86 | PLAYER", rect);
-#else
+    #else
     rect.right = GetSystemMetrics(SM_CXSCREEN);
     rect.bottom = GetSystemMetrics(SM_CYSCREEN);
     hWnd = BuildWindow(hInstance, TRUE, "NeonClass", "NEON 86 | PLAYER", rect);
-#endif
+    #endif
 
     CenterWindow(hWnd);
 
@@ -73,28 +73,28 @@ HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR t
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
     wc.lpszClassName = className;
 
     RegisterClassEx(&wc);
 
-#ifndef DEV_BORDERLESS
+    #ifndef DEV_BORDERLESS
     DWORD style = WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX;
     AdjustWindowRectEx(&resolution, style, FALSE, WS_EX_OVERLAPPEDWINDOW);
-#else
+    #else
     DWORD style = WS_VISIBLE | WS_POPUP;
-#endif
+    #endif
 
     hWnd = CreateWindowEx(NULL,
-        className,
-        titleName,
-        style,
-        resolution.left, resolution.top,
-        resolution.right, resolution.bottom,
-        NULL,
-        NULL,
-        instance,
-        NULL);
+                          className,
+                          titleName,
+                          style,
+                          resolution.left, resolution.top,
+                          resolution.right, resolution.bottom,
+                          NULL,
+                          NULL,
+                          instance,
+                          NULL);
 
     if (!hWnd)
     {
@@ -110,11 +110,11 @@ HWND BuildWindow(HINSTANCE instance, BOOL borderless, LPCSTR className, LPCSTR t
             MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
             (LPSTR)&msg,
             0, NULL);
-        
+
         MessageBoxA(NULL,
-            (LPCSTR)msg,
-            "Window creation failed",
-            MB_ICONERROR);
+                    static_cast<LPCSTR>(msg),
+                    "Window creation failed",
+                    MB_ICONERROR);
 
         LocalFree(msg);
         ExitProcess(1);
@@ -145,8 +145,8 @@ BOOL CenterWindow(HWND hwndWindow)
     int nScreenWidth = GetSystemMetrics(SM_CXSCREEN);
     int nScreenHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    int nX = nScreenWidth / 2 - nWidth/2;
-    int nY = nScreenHeight / 2 - nHeight/2;
+    int nX = nScreenWidth / 2 - nWidth / 2;
+    int nY = nScreenHeight / 2 - nHeight / 2;
 
     if (nX < 0) nX = 0;
     if (nY < 0) nY = 0;

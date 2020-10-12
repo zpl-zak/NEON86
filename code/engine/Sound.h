@@ -5,7 +5,7 @@
 #include "ReferenceManager.h"
 #include "SoundBase.h"
 
-class CSound: public CReferenceCounter, CAllocable<CSound>, public CSoundBase
+class CSound : public CReferenceCounter, CAllocable<CSound>, public CSoundBase
 {
 public:
     CSound(LPSTR wavPath);
@@ -15,11 +15,11 @@ public:
     VOID Pause() override;
     VOID Stop() override;
     VOID SetFrequency(DWORD freq);
-    DWORD GetFrequency();
+    auto GetFrequency() -> DWORD;
     VOID SetLoop(BOOL state);
-    BOOL IsLooping();
+    auto IsLooping() -> BOOL;
 
-    UCHAR* GetData(ULONG* sizeOut);
+    auto GetData(ULONG* sizeOut) -> UCHAR*;
 protected:
     BOOL mIsLooping;
     UCHAR* mData;

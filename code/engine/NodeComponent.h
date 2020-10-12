@@ -10,18 +10,19 @@ public:
     CNodeComponent()
     {
         mName = "(unknown)";
-        mOwner = NULL;
+        mOwner = nullptr;
     }
 
-    virtual ~CNodeComponent() {}
+    virtual ~CNodeComponent()
+    = default;
 
-    virtual LPCSTR GetKind() { return "Unknown"; }
+    virtual auto GetKind() -> LPCSTR { return "Unknown"; }
 
-    inline VOID SetName(CString name) { mName = name; }
-    inline CString GetName() { return mName; }
+    VOID SetName(CString name) { mName = name; }
+    auto GetName() const -> CString { return mName; }
 
-    inline VOID SetOwner(CNode* node) { mOwner = node; }
-    inline CNode* GetOwner() { return mOwner; }
+    VOID SetOwner(CNode* node) { mOwner = node; }
+    auto GetOwner() const -> CNode* { return mOwner; }
 
 private:
     CString mName;

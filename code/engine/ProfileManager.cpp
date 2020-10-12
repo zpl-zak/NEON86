@@ -23,19 +23,19 @@ VOID CProfiler::StartInvocation()
 VOID CProfiler::StopInvocation()
 {
     mNumInvocations++;
-    mTotalTime += (GetTime() - mStartTime);
+    mTotalTime += GetTime() - mStartTime;
     mStartTime = 0.0f;
 }
 
-FLOAT CProfiler::DisplayAndReset(FLOAT divisor, BOOL logStats)
+auto CProfiler::DisplayAndReset(FLOAT divisor, BOOL logStats) -> FLOAT
 {
-    divisor = (divisor == 0.0f) ? (FLOAT)mNumInvocations : divisor;
-    mDeltaTime = (mTotalTime == 0.0f && divisor == 0.0f) ? 0.0f : (1000.0f * mTotalTime) / divisor;
+    divisor = divisor == 0.0f ? static_cast<FLOAT>(mNumInvocations) : divisor;
+    mDeltaTime = mTotalTime == 0.0f && divisor == 0.0f ? 0.0f : 1000.0f * mTotalTime / divisor;
     Reset();
 
     if (logStats)
     {
-        CString stats = CString::Format("%s Time: %f ms", mName.Str(), mDeltaTime);
+        const auto stats = CString::Format("%s Time: %f ms", mName.Str(), mDeltaTime);
         PushLog(stats.Str(), TRUE);
     }
 

@@ -13,7 +13,7 @@ public:
     VOID RenderText(DWORD color, LPCSTR text, UINT x, UINT y, UINT w = 0, UINT h = 0, DWORD flags = 0);
     VOID CalculateRect(LPCSTR text, LPRECT rect, DWORD flags = 0);
 
-    static BOOL AddFontToDatabase(LPCSTR path);
+    static auto AddFontToDatabase(LPCSTR path) -> BOOL;
 private:
     ID3DXFont* mFontHandle;
 };

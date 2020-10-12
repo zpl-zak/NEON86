@@ -2,17 +2,18 @@
 
 #include "system.h"
 
-class ENGINE_API CProfiler {
+class ENGINE_API CProfiler
+{
 public:
     CProfiler(CString name);
 
     VOID Reset();
     VOID StartInvocation();
     VOID StopInvocation();
-    FLOAT DisplayAndReset(FLOAT divisor = 0, BOOL logStats = FALSE);
+    auto DisplayAndReset(FLOAT divisor = 0, BOOL logStats = FALSE) -> FLOAT;
 
-    inline FLOAT GetDelta() { return mDeltaTime; }
-    inline CString GetName() { return mName; }
+    auto GetDelta() const -> FLOAT { return mDeltaTime; }
+    auto GetName() const -> CString { return mName; }
 private:
     CString mName;
     INT mNumInvocations;
@@ -21,15 +22,21 @@ private:
     FLOAT mTotalTime;
 };
 
-class ENGINE_API CProfileScope {
+class ENGINE_API CProfileScope
+{
 public:
-    CProfileScope(CProfiler* profile) {
+    CProfileScope(CProfiler* profile)
+    {
         if (profile)
             profile->StartInvocation();
         mProfiler = profile;
-    };
+    }
 
-    ~CProfileScope() {
+    CProfileScope(CProfileScope&) = delete;
+    CProfileScope(CProfileScope&&) = delete;
+
+    ~CProfileScope()
+    {
         if (mProfiler)
             mProfiler->StopInvocation();
     }

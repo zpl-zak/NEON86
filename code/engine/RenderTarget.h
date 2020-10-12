@@ -6,20 +6,20 @@
 
 #include "RenderData.h"
 
-class CRenderTarget: public CAllocable<CRenderTarget>, public CReferenceCounter
+class CRenderTarget : public CAllocable<CRenderTarget>, public CReferenceCounter
 {
 public:
     CRenderTarget();
-    CRenderTarget(UINT w, UINT h, UCHAR kind=RTKIND_COLOR);
+    CRenderTarget(UINT w, UINT h, UCHAR kind = RTKIND_COLOR);
     ~CRenderTarget() { Release(); }
 
     VOID Release(VOID);
 
-    inline LPDIRECT3DTEXTURE9 GetTextureHandle() { return mTextureHandle; }
-    inline LPDIRECT3DSURFACE9 GetSurfaceHandle() { return mSurfaceHandle; }
+    auto GetTextureHandle() const -> LPDIRECT3DTEXTURE9 { return mTextureHandle; }
+    auto GetSurfaceHandle() const -> LPDIRECT3DSURFACE9 { return mSurfaceHandle; }
 
-    inline LPDIRECT3DSURFACE9 GetDepthStencilSurfaceHandle() { return mDepthStencilSurfaceHandle; }
-    inline UCHAR GetKind() { return mKind; }
+    auto GetDepthStencilSurfaceHandle() const -> LPDIRECT3DSURFACE9 { return mDepthStencilSurfaceHandle; }
+    auto GetKind() const -> UCHAR { return mKind; }
 
     VOID Bind(VOID);
 
@@ -28,6 +28,5 @@ private:
     LPDIRECT3DTEXTURE9 mTextureHandle;
     LPDIRECT3DSURFACE9 mSurfaceHandle, mDepthStencilSurfaceHandle;
 
-    VOID CreateRenderTarget(UINT w, UINT h, UCHAR kind=RTKIND_COLOR);
+    VOID CreateRenderTarget(UINT w, UINT h, UCHAR kind = RTKIND_COLOR);
 };
-

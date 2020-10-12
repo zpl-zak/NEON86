@@ -6,7 +6,7 @@
 #include "RenderData.h"
 #include "ReferenceManager.h"
 
-class ENGINE_API CMaterial: public CReferenceCounter, CAllocable<CMaterial>
+class ENGINE_API CMaterial : public CReferenceCounter, CAllocable<CMaterial>
 {
 public:
     CMaterial(UINT slot, LPSTR texName);
@@ -18,17 +18,17 @@ public:
     VOID DefaultMaterial(VOID);
     VOID Release(VOID);
 
-    VOID CreateTextureForSlot(UINT slot, LPSTR texName=NULL, UINT w=1, UINT h=1);
+    VOID CreateTextureForSlot(UINT slot, LPSTR texName = nullptr, UINT w = 1, UINT h = 1);
     VOID CreateEmbeddedTextureForSlot(UINT slot, LPVOID data, UINT size);
 
-    inline VOID SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
-    inline UINT GetSamplerState(UINT state) const { return mStats[state]; }
-    inline LPDIRECT3DTEXTURE9 GetTextureHandle(UINT slot=TEXTURESLOT_ALBEDO) { return mTextureHandle[slot]; }
+    VOID SetSamplerState(UINT state, UINT value) { mStats[state] = value; }
+    auto GetSamplerState(UINT state) const -> UINT { return mStats[state]; }
+    auto GetTextureHandle(UINT slot = TEXTURESLOT_ALBEDO) -> LPDIRECT3DTEXTURE9 { return mTextureHandle[slot]; }
 
     VOID SetUserTexture(UINT userSlot, LPDIRECT3DTEXTURE9 handle);
     VOID Bind(DWORD stage);
     VOID Unbind(DWORD stage);
-    LPVOID Lock(UINT slot=TEXTURESLOT_ALBEDO);
+    auto Lock(UINT slot = TEXTURESLOT_ALBEDO) -> LPVOID;
     VOID UploadARGB(UINT slot, VOID* data, UINT size);
     VOID Unlock(UINT slot = TEXTURESLOT_ALBEDO);
 
@@ -43,8 +43,8 @@ public:
     VOID SetEnableAlphaTest(BOOL state);
     VOID SetAlphaRef(DWORD refval);
 
-    inline MATERIAL GetMaterialData() const { return mMaterialData; }
-    inline BOOL IsTransparent() const { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }
+    auto GetMaterialData() const -> MATERIAL { return mMaterialData; }
+    auto IsTransparent() const -> BOOL { return mMaterialData.Opacity < 1.0f || mMaterialData.AlphaIsTransparency; }
 
 private:
     LPDIRECT3DTEXTURE9 mTextureHandle[MAX_TEXTURE_SLOTS];
@@ -52,4 +52,3 @@ private:
 
     UINT mStats[MAX_SAMPLER_STATES];
 };
-

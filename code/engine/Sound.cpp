@@ -7,20 +7,23 @@
 
 CSound::CSound(LPSTR wavPath): CAllocable()
 {
-    mBuffer = NULL;
+    mBuffer = nullptr;
     mIsLooping = FALSE;
-    mData = NULL;
+    mData = nullptr;
     mDataSize = 0;
 
     CString path(wavPath);
 
-    if (path.Find(".ogg")) {
+    if (path.Find(".ogg"))
+    {
         CSoundLoader::LoadOGG(wavPath, &mBuffer, &mData, &mDataSize, &mWaveInfo);
     }
-    if (path.Find(".wav")) {
+    if (path.Find(".wav"))
+    {
         CSoundLoader::LoadWAV(wavPath, &mBuffer, &mData, &mDataSize, &mWaveInfo);
     }
-    else {
+    else
+    {
         VM->PostError(CString::Format("Unsupported sound file: %s !", path).Str());
     }
 }
