@@ -76,7 +76,8 @@ void CFaceGroup::Draw(D3DXMATRIX* mat)
 
     if (!RENDERER->UsesMaterialOverride())
     {
-        mData.mat->Bind(0);
+        if (mData.mat)
+            mData.mat->Bind(0);
     }
 
     RENDERER->DrawMesh(mData);
@@ -85,7 +86,8 @@ void CFaceGroup::Draw(D3DXMATRIX* mat)
 
     if (!RENDERER->UsesMaterialOverride())
     {
-        mData.mat->Unbind(0);
+        if (mData.mat)
+            mData.mat->Unbind(0);
     }
 }
 

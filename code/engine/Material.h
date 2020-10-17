@@ -29,6 +29,7 @@ public:
     void Bind(DWORD stage);
     static void Unbind(DWORD stage);
     auto Lock(unsigned int slot = TEXTURESLOT_ALBEDO) -> LPVOID;
+    // ReSharper disable once CppInconsistentNaming
     void UploadARGB(unsigned int slot, void* data, unsigned int size);
     void Unlock(unsigned int slot = TEXTURESLOT_ALBEDO);
 

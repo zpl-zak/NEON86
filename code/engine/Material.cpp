@@ -114,7 +114,7 @@ void CMaterial::Bind(DWORD stage)
 
     /* Exit early if this is a NULL material. */
     /* Exit if we use shaders as well. Shaders use their own sampler properties. */
-    if (this == nullptr || RENDERER->GetActiveEffect())
+    if (RENDERER->GetActiveEffect())
     {
         return;
     }
