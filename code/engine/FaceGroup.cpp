@@ -86,8 +86,7 @@ void CFaceGroup::Draw(D3DXMATRIX* mat)
 
     if (!RENDERER->UsesMaterialOverride())
     {
-        if (mData.mat)
-            mData.mat->Unbind(0);
+        CMaterial::Unbind(0);
     }
 }
 
