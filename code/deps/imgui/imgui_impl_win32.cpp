@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 // dear imgui: Platform Binding for Windows (standard windows API for 32 and 64 bits applications)
 // This needs to be used along with a Renderer (e.g. DirectX11, OpenGL3, Vulkan..)
 
@@ -7,9 +6,6 @@
 //  [X] Platform: Mouse cursor shape and visibility. Disable with 'io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange'.
 //  [X] Platform: Keyboard arrays indexed using VK_* Virtual Key Codes, e.g. ImGui::IsKeyPressed(VK_SPACE).
 //  [X] Platform: Gamepad support. Enabled with 'io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad'.
-
-#include "Engine.h"
-#include "Input.h"
 
 #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
 #include "imgui.h"
@@ -151,7 +147,9 @@ static void ImGui_ImplWin32_UpdateMousePos()
     ImGuiIO& io = ImGui::GetIO();
 
     // Set mouse position
-    POINT pos = INPUT->GetMouseXY();
+    POINT pos = {0};
+    GetCursorPos(&pos);
+    ScreenToClient(g_hWnd, &pos);
     io.MousePos = ImVec2((float)pos.x, (float)pos.y);
 }
 

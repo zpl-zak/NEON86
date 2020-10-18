@@ -5,7 +5,6 @@
 #include <shobjidl.h>
 
 #include "NeonEngine.h"
-#include "imgui.h"
 
 #ifdef ENABLE_BORDERLESS
 #define DEV_BORDERLESS

@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 // dear imgui: Renderer for DirectX9
 // This needs to be used along with a Platform Binding (e.g. Win32)
 
@@ -25,12 +24,6 @@
 
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
-
-#include "VM.h"
-#include "Renderer.h"
-#include "UserInterface.h"
-#include "engine.h"
-#include "ProfileManager.h"
 
 // DirectX
 #include <d3d9.h>

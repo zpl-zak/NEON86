@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 #include "imgui_plot.h"
 #include "imgui.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS

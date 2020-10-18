@@ -1,4 +1,3 @@
-#include "StdAfx.h"
 // dear imgui, v1.78 WIP
 // (widgets code)
 
