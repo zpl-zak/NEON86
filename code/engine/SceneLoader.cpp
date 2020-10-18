@@ -356,7 +356,8 @@ void CSceneLoader::LoadTextureMap(const aiScene* scene, const aiMaterial* mat, C
     D3DSURFACE_DESC a;
     newMaterial->GetTextureHandle(slot)->GetLevelDesc(0, &a);
 
-    auto* buf = static_cast<unsigned int*>(newMaterial->Lock(slot));
+    int pitch;
+    auto* buf = static_cast<unsigned int*>(newMaterial->Lock(pitch,slot));
 
     for (unsigned int i = 0; i < (a.Width * a.Height); i++)
     {

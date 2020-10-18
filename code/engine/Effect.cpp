@@ -212,14 +212,19 @@ auto CEffect::EndPass() const -> HRESULT
     return mEffect->EndPass();
 }
 
-auto CEffect::CommitChanges() const -> HRESULT
+void CEffect::CommitChanges() const
 {
     if (mEffect == nullptr)
     {
-        return -1;
+        return;
     }
 
-    return mEffect->CommitChanges();
+    const auto res = mEffect->CommitChanges();
+
+    if (FAILED(res))
+    {
+        VM->PostError(CString::Format("CEffect::CommitChanges error: %d\n", res));
+    }
 }
 
 void CEffect::SetInteger(LPCSTR name, DWORD value) const
@@ -288,22 +293,22 @@ void CEffect::SetLight(LPCSTR name, CLight* value) const
 
     if (value != nullptr)
     {
-        SetBool(GetUniformName(name, "IsEnabled"), TRUE);
-        SetInteger(GetUniformName(name, "Type"), value->GetLightData().Type);
-        SetVector3(GetUniformName(name, "Position"), value->GetLightData().Position);
-        SetVector3(GetUniformName(name, "Direction"), value->GetLightData().Direction);
-        SetColor(GetUniformName(name, "Diffuse"), value->GetLightData().Diffuse);
-        SetColor(GetUniformName(name, "Ambient"), value->GetLightData().Ambient);
-        SetColor(GetUniformName(name, "Specular"), value->GetLightData().Specular);
-        SetFloat(GetUniformName(name, "Falloff"), value->GetLightData().Falloff);
-        SetFloat(GetUniformName(name, "Range"), value->GetLightData().Range);
-        SetFloat(GetUniformName(name, "ConstantAtten"), value->GetLightData().Attenuation0);
-        SetFloat(GetUniformName(name, "LinearAtten"), value->GetLightData().Attenuation1);
-        SetFloat(GetUniformName(name, "QuadraticAtten"), value->GetLightData().Attenuation2);
+        SetBool(GetUniformName(name, "IsEnabled").Str(), TRUE);
+        SetInteger(GetUniformName(name, "Type").Str(), value->GetLightData().Type);
+        SetVector3(GetUniformName(name, "Position").Str(), value->GetLightData().Position);
+        SetVector3(GetUniformName(name, "Direction").Str(), value->GetLightData().Direction);
+        SetColor(GetUniformName(name, "Diffuse").Str(), value->GetLightData().Diffuse);
+        SetColor(GetUniformName(name, "Ambient").Str(), value->GetLightData().Ambient);
+        SetColor(GetUniformName(name, "Specular").Str(), value->GetLightData().Specular);
+        SetFloat(GetUniformName(name, "Falloff").Str(), value->GetLightData().Falloff);
+        SetFloat(GetUniformName(name, "Range").Str(), value->GetLightData().Range);
+        SetFloat(GetUniformName(name, "ConstantAtten").Str(), value->GetLightData().Attenuation0);
+        SetFloat(GetUniformName(name, "LinearAtten").Str(), value->GetLightData().Attenuation1);
+        SetFloat(GetUniformName(name, "QuadraticAtten").Str(), value->GetLightData().Attenuation2);
     }
     else
     {
-        SetBool(GetUniformName(name, "IsEnabled"), FALSE);
+        SetBool(GetUniformName(name, "IsEnabled").Str(), FALSE);
     }
 }
 
@@ -359,10 +364,7 @@ void CEffect::SetDefaults() const
     RENDERER->SetDefaultRenderStates();
 }
 
-auto CEffect::GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR
+auto CEffect::GetUniformName(LPCSTR base, LPCSTR field) -> CString
 {
-    static char buffer[512] = {0};
-
-    sprintf_s(buffer, 512, "%s.%s", base, field);
-    return static_cast<LPCSTR>(buffer);
+    return CString::Format("%s.%s", base, field);
 }

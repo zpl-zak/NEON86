@@ -62,7 +62,7 @@ public:
     {
         mCapacity = 4;
         mCount = 0;
-        mData = static_cast<T*>(neon_malloc(mCapacity * sizeof(T)));
+        mData = static_cast<T*>(neon_malloc(mCapacity * sizeof(T)));  // NOLINT(bugprone-sizeof-expression)
         mIsOwned = TRUE;
     }
 

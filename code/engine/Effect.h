@@ -19,7 +19,7 @@ public:
     auto FindPass(LPCSTR passName) const -> unsigned int;
     auto BeginPass(unsigned int passID) const -> HRESULT;
     auto EndPass() const -> HRESULT;
-    auto CommitChanges() const -> HRESULT;
+    void CommitChanges() const;
 
     // Uniforms
     void SetInteger(LPCSTR name, DWORD value) const;
@@ -35,5 +35,5 @@ private:
     ID3DXEffect* mEffect;
 
     void SetDefaults() const;
-    static auto GetUniformName(LPCSTR base, LPCSTR field) -> LPCSTR;
+    static auto GetUniformName(LPCSTR base, LPCSTR field) -> CString;
 };

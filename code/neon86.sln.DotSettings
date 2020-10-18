@@ -10,6 +10,9 @@
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/CONTINUOUS_LINE_INDENT/@EntryValue">Double</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/INDENT_PREPROCESSOR_DIRECTIVES/@EntryValue">Normal</s:String>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/KEEP_BLANK_LINES_IN_CODE/@EntryValue">1</s:Int64>
+	<s:String x:Key="/Default/Environment/Hierarchy/Build/SolutionBuilderNext/AlwaysBuildProjects/@EntryValue">2a6718ce-1244-4580-93e0-b03d2e99fa29;19275cb8-c602-4bc9-aacc-73a25a183b5d</s:String>
+	<s:String x:Key="/Default/Environment/Hierarchy/Build/SolutionBuilderNext/NeverBuildProjects/@EntryValue">ee2598b7-2f1e-4d5a-a997-f2065bb1f43d;6bd37c99-baf9-49f4-a895-0054d44050d5;a4609ed2-8000-4096-9cf2-ace6e4d95b6a;803d3fc4-8434-46d6-94f3-3a5535a44817</s:String>
+	<s:Int64 x:Key="/Default/Environment/Hierarchy/Build/SolutionBuilderNext/ParallelProcessesCount2/@EntryValue">16</s:Int64>
 	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=Antivirus/@EntryIndexedValue">DO_NOTHING</s:String>
 	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=AutoRecoverer/@EntryIndexedValue">LIVE_MONITOR</s:String>
 	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=Format/@EntryIndexedValue">LIVE_MONITOR</s:String>
@@ -25,6 +28,8 @@
 	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=VsBulb/@EntryIndexedValue">DO_NOTHING</s:String>
 	<s:String x:Key="/Default/Environment/PerformanceGuide/SwitchBehaviour/=XAML_0020Designer/@EntryIndexedValue">LIVE_MONITOR</s:String>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EFeature_002EServices_002ECpp_002ECodeStyle_002ESettingsUpgrade_002EFunctionReturnStyleSettingsUpgrader/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Housekeeping/Layout/SolBuilderDuoView/ShowBuildProgressInTaskBar/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/Housekeeping/Layout/SolBuilderDuoView/ShowBuildProgressInToolWindow/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Blit/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Profilers/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=refval/@EntryIndexedValue">True</s:Boolean>

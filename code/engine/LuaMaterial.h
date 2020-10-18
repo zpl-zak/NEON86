@@ -86,7 +86,8 @@ static auto material_getdata(lua_State* L) -> int
     D3DSURFACE_DESC a;
     mat->GetTextureHandle(userSlot)->GetLevelDesc(0, &a);
 
-    unsigned int* buf = static_cast<unsigned int*>(mat->Lock(userSlot));
+    int pitch;
+    unsigned int* buf = static_cast<unsigned int*>(mat->Lock(pitch,userSlot));
 
     lua_newtable(L);
 

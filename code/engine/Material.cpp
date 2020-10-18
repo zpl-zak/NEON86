@@ -130,10 +130,19 @@ void CMaterial::Unbind(DWORD stage)
     RENDERER->SetMaterial(stage, nullptr);
 }
 
-auto CMaterial::Lock(unsigned int slot) -> LPVOID
+auto CMaterial::Lock(int& pitch, unsigned int slot) -> LPVOID
 {
     D3DLOCKED_RECT r;
     mTextureHandle[slot]->LockRect(0, &r, nullptr, 0);
+    pitch = r.Pitch;
+    return r.pBits;
+}
+
+auto CMaterial::LockRect(RECT zone, int& pitch, unsigned slot) -> LPVOID
+{
+    D3DLOCKED_RECT r;
+    mTextureHandle[slot]->LockRect(0, &r, &zone, 0);
+    pitch = r.Pitch;
     return r.pBits;
 }
 

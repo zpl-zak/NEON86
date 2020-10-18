@@ -436,8 +436,8 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
 {
     if ((GetActiveEffect() != nullptr) && (mat != nullptr))
     {
-        CEffect* fx = GetActiveEffect();
-        MATERIAL matData = mat->GetMaterialData();
+        const auto* const fx = GetActiveEffect();
+        const auto matData = mat->GetMaterialData();
 
         fx->SetColor("MAT.Diffuse", matData.Diffuse);
         fx->SetColor("MAT.Ambient", matData.Ambient);

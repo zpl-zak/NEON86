@@ -28,7 +28,8 @@ public:
     void SetUserTexture(unsigned int userSlot, LPDIRECT3DTEXTURE9 handle);
     void Bind(DWORD stage);
     static void Unbind(DWORD stage);
-    auto Lock(unsigned int slot = TEXTURESLOT_ALBEDO) -> LPVOID;
+    auto Lock(int& pitch, unsigned int slot = TEXTURESLOT_ALBEDO) -> LPVOID;
+    auto LockRect(RECT zone, int& pitch, unsigned int slot = TEXTURESLOT_ALBEDO) -> LPVOID;
     // ReSharper disable once CppInconsistentNaming
     void UploadARGB(unsigned int slot, void* data, unsigned int size);
     void Unlock(unsigned int slot = TEXTURESLOT_ALBEDO);

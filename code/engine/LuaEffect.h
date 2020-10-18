@@ -66,8 +66,8 @@ static auto effect_commit(lua_State* L) -> int
 {
     auto* fx = *static_cast<CEffect**>(luaL_checkudata(L, 1, L_EFFECT));
 
-    lua_pushinteger(L, fx->CommitChanges());
-    return 1;
+    fx->CommitChanges();
+    return 0;
 }
 
 static auto effect_setbool(lua_State* L) -> int
