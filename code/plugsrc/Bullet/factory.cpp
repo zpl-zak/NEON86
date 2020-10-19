@@ -64,12 +64,11 @@ INT bullet_body_create_static_cols_mesh(lua_State* L) {
     D3DXMATRIX mat = *(D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
     CMesh* m = *(CMesh**)luaL_checkudata(L, 2, L_MESH);
 
-    btTriangleMesh* mesh = new btTriangleMesh(false, false);
-
-    SHORT indexOffset = 0;
+    auto* mesh = new btTriangleIndexVertexArray();
 
     for (UINT i = 0; i < m->GetNumFGroups(); i++)
     {
+        auto* meshData = new btTriangleMesh(false, false);
         CFaceGroup* fg = m->GetFGroupData()[i];
 
         for (UINT i = 0; i < fg->GetNumVertices(); i += 3)
@@ -81,7 +80,7 @@ INT bullet_body_create_static_cols_mesh(lua_State* L) {
             btVector3 p1 = btVector3(v1.x, v1.y, v1.z);
             btVector3 p2 = btVector3(v2.x, v2.y, v2.z);
 
-            mesh->addTriangle(p0, p1, p2);
+            meshData->addTriangle(p0, p1, p2);
         }
 
         for (UINT i = 0; i < fg->GetNumIndices(); i += 3)
@@ -90,16 +89,16 @@ INT bullet_body_create_static_cols_mesh(lua_State* L) {
             SHORT i1 = *(fg->GetIndices() + i + 1);
             SHORT i2 = *(fg->GetIndices() + i + 2);
 
-            mesh->addTriangleIndices(i0, i1, i2);
+            meshData->addTriangleIndices(i0, i1, i2);
         }
 
-        indexOffset = mesh->getNumTriangles() / 3;
+        mesh->addIndexedMesh(meshData->getIndexedMeshArray().at(0), PHY_SHORT);
     }
 
     btTransform tr;
     tr.setIdentity();
     tr.setFromOpenGLMatrix(&mat[0]);
-    btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, true);
+    btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, false);
     bullet_body_create_generic(L, shape, 0.0f, tr);
     return 1;
 }
