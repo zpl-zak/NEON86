@@ -25,11 +25,9 @@ INT bullet_body_create_plane(lua_State* L) {
     return 1;
 }
 
-INT bullet_body_create_static_cols(lua_State* L) {
-    D3DXMATRIX mat = *(D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
-    CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
-
-    btTriangleMesh* mesh = new btTriangleMesh(false, false);
+static void bullet_populate_mesh_from_part(btTriangleIndexVertexArray* mesh, CFaceGroup* fg)
+{
+    auto* meshData = new btTriangleMesh(false, false);
 
     for (UINT i = 0; i < fg->GetNumVertices(); i += 3)
     {
@@ -40,7 +38,7 @@ INT bullet_body_create_static_cols(lua_State* L) {
         btVector3 p1 = btVector3(v1.x, v1.y, v1.z);
         btVector3 p2 = btVector3(v2.x, v2.y, v2.z);
 
-        mesh->addTriangle(p0, p1, p2);
+        meshData->addTriangle(p0, p1, p2);
     }
 
     for (UINT i = 0; i < fg->GetNumIndices(); i += 3)
@@ -49,14 +47,29 @@ INT bullet_body_create_static_cols(lua_State* L) {
         SHORT i1 = *(fg->GetIndices() + i + 1);
         SHORT i2 = *(fg->GetIndices() + i + 2);
 
-        mesh->addTriangleIndices(i0, i1, i2);
+        meshData->addTriangleIndices(i0, i1, i2);
     }
 
+    mesh->addIndexedMesh(meshData->getIndexedMeshArray().at(0), PHY_SHORT);
+}
+
+static void bullet_body_create_static_cols_generic(lua_State* L, btTriangleIndexVertexArray* mesh, const D3DXMATRIX& mat)
+{
     btTransform tr;
     tr.setIdentity();
     tr.setFromOpenGLMatrix(&mat[0]);
     btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, true);
     bullet_body_create_generic(L, shape, 0.0f, tr);
+}
+
+INT bullet_body_create_static_cols(lua_State* L) {
+    D3DXMATRIX mat = *(D3DXMATRIX*)luaL_checkudata(L, 1, L_MATRIX);
+    CFaceGroup* fg = *(CFaceGroup**)luaL_checkudata(L, 2, L_FACEGROUP);
+
+    auto* mesh = new btTriangleIndexVertexArray();
+    bullet_populate_mesh_from_part(mesh, fg);
+
+    bullet_body_create_static_cols_generic(L, mesh, mat);
     return 1;
 }
 
@@ -68,38 +81,11 @@ INT bullet_body_create_static_cols_mesh(lua_State* L) {
 
     for (UINT i = 0; i < m->GetNumFGroups(); i++)
     {
-        auto* meshData = new btTriangleMesh(false, false);
         CFaceGroup* fg = m->GetFGroupData()[i];
-
-        for (UINT i = 0; i < fg->GetNumVertices(); i += 3)
-        {
-            VERTEX v0 = *(fg->GetVertices() + i);
-            VERTEX v1 = *(fg->GetVertices() + i + 1);
-            VERTEX v2 = *(fg->GetVertices() + i + 2);
-            btVector3 p0 = btVector3(v0.x, v0.y, v0.z);
-            btVector3 p1 = btVector3(v1.x, v1.y, v1.z);
-            btVector3 p2 = btVector3(v2.x, v2.y, v2.z);
-
-            meshData->addTriangle(p0, p1, p2);
-        }
-
-        for (UINT i = 0; i < fg->GetNumIndices(); i += 3)
-        {
-            SHORT i0 = *(fg->GetIndices() + i);
-            SHORT i1 = *(fg->GetIndices() + i + 1);
-            SHORT i2 = *(fg->GetIndices() + i + 2);
-
-            meshData->addTriangleIndices(i0, i1, i2);
-        }
-
-        mesh->addIndexedMesh(meshData->getIndexedMeshArray().at(0), PHY_SHORT);
+        bullet_populate_mesh_from_part(mesh, fg);
     }
 
-    btTransform tr;
-    tr.setIdentity();
-    tr.setFromOpenGLMatrix(&mat[0]);
-    btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, false);
-    bullet_body_create_generic(L, shape, 0.0f, tr);
+    bullet_body_create_static_cols_generic(L, mesh, mat);    
     return 1;
 }
 
