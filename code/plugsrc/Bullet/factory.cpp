@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "factory.h"
 
-VOID bullet_body_create_generic(lua_State* L, btCollisionShape* shape, FLOAT mass, const btTransform& tr,
+void bullet_body_create_generic(lua_State* L, btCollisionShape* shape, FLOAT mass, const btTransform& tr,
                                 btVector3 inertia = btVector3(0, 0, 0))
 {
     auto* motion = new btDefaultMotionState(tr);
@@ -15,14 +15,30 @@ VOID bullet_body_create_generic(lua_State* L, btCollisionShape* shape, FLOAT mas
     lua_pushinteger(L, index);
 }
 
+auto bullet_body_create_generic_wrapper(lua_State* L, const D3DXMATRIX& mat, btCollisionShape* shape, float mass=0.0f) -> INT
+{
+    btTransform tr;
+    tr.setIdentity();
+    tr.setFromOpenGLMatrix(&mat[0]);
+    btVector3 localInertia;
+
+    if (mass > 0.0f)
+    {
+        shape->calculateLocalInertia(mass, localInertia);    
+    }
+    
+    bullet_body_create_generic(L, shape, mass, tr, localInertia);
+    return 1;
+}
+
 auto bullet_body_create_plane(lua_State* L) -> INT
 {
-    const auto origin = *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
+    const auto mat = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_VECTOR));
     const auto plane = *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2, L_VECTOR));
 
     btTransform tr;
     tr.setIdentity();
-    tr.setOrigin(btVector3(origin.x, origin.y, origin.z));
+    tr.setOrigin(btVector3(mat._31, mat._32, mat._33));
     btCollisionShape* shape = new btStaticPlaneShape(btVector3(plane.x, plane.y, plane.z), plane.w);
     bullet_body_create_generic(L, shape, 0.0F, tr);
     return 1;
@@ -59,11 +75,8 @@ static void bullet_populate_mesh_from_part(btTriangleIndexVertexArray* mesh, CFa
 static void bullet_body_create_static_cols_generic(lua_State* L, btTriangleIndexVertexArray* mesh,
                                                    const D3DXMATRIX& mat)
 {
-    btTransform tr;
-    tr.setIdentity();
-    tr.setFromOpenGLMatrix(&mat[0]);
     btCollisionShape* shape = new btBvhTriangleMeshShape(mesh, true);
-    bullet_body_create_generic(L, shape, 0.0F, tr);
+    bullet_body_create_generic_wrapper(L, mat, shape, 0.0F);
 }
 
 auto bullet_body_create_static_cols(lua_State* L) -> INT
@@ -101,13 +114,7 @@ auto bullet_body_create_sphere(lua_State* L) -> INT
     const auto radius = static_cast<FLOAT>(luaL_checknumber(L, 2));
     const auto mass = static_cast<FLOAT>(luaL_checknumber(L, 3));
 
-    btTransform tr;
-    tr.setIdentity();
-    tr.setFromOpenGLMatrix(&mat[0]);
-    btCollisionShape* shape = new btSphereShape(radius);
-    btVector3 localInertia;
-    shape->calculateLocalInertia(mass, localInertia);
-    bullet_body_create_generic(L, shape, mass, tr, localInertia);
+    bullet_body_create_generic_wrapper(L, mat, new btSphereShape(radius), mass);
     return 1;
 }
 
@@ -116,14 +123,7 @@ auto bullet_body_create_box(lua_State* L) -> INT
     auto mat = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     const auto halfExtents = *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2, L_VECTOR));
     const auto mass = static_cast<FLOAT>(luaL_checknumber(L, 3));
-
-    btTransform tr;
-    tr.setIdentity();
-    tr.setFromOpenGLMatrix(&mat[0]);
-    btCollisionShape* shape = new btBoxShape(btVector3(halfExtents.x, halfExtents.y, halfExtents.z));
-    btVector3 localInertia;
-    shape->calculateLocalInertia(mass, localInertia);
-    bullet_body_create_generic(L, shape, mass, tr, localInertia);
+    bullet_body_create_generic_wrapper(L, mat, new btBoxShape(btVector3(halfExtents.x, halfExtents.y, halfExtents.z)), mass);
     return 1;
 }
 
@@ -133,13 +133,6 @@ auto bullet_body_create_capsule(lua_State* L) -> INT
     const auto radius = static_cast<FLOAT>(luaL_checknumber(L, 2));
     const auto height = static_cast<FLOAT>(luaL_checknumber(L, 3));
     const auto mass = static_cast<FLOAT>(luaL_checknumber(L, 4));
-
-    btTransform tr;
-    tr.setIdentity();
-    tr.setFromOpenGLMatrix(&mat[0]);
-    btCollisionShape* shape = new btCapsuleShape(radius, height);
-    btVector3 localInertia;
-    shape->calculateLocalInertia(mass, localInertia);
-    bullet_body_create_generic(L, shape, mass, tr, localInertia);
+    bullet_body_create_generic_wrapper(L, mat, new btCapsuleShape(radius, height), mass);
     return 1;
 }
