@@ -125,7 +125,7 @@ class processCustom(Operator):
                     meshName = row[rdr.fieldnames[0]]
                     meshes = [obj for obj in bpy.data.objects if obj.name == meshName]
                     
-                    if length(meshes) == 0:
+                    if len(meshes) == 0:
                         print("meshName:",meshName," not present!")
                         continue
                         
