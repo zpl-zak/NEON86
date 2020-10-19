@@ -3,7 +3,7 @@
 bl_info = {
     "name": "Scene Manager",
     "author": "Dominik Madarasz",
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "blender": (2, 90, 1),
     "location": "3D View > View > NEON86",
     "description": "Scene manager for NEON86 Blender projects.",
@@ -110,11 +110,13 @@ class NEON_OT_MoveItem(Operator):
         return{'FINISHED'}
 
 class NEON_OT_ImportCSV(Operator):
+    """Imports properties for selected objects / entire scene"""
     bl_idname = "object.import_csv"
     bl_label = ""
 
     def execute(self, context):
         files = context.scene.csv_files
+        objects = bpy.context.selected_objects if len(bpy.context.selected_objects) > 0 else bpy.data.objects
 
         for filePath in files:
             print("csvFile:", filePath.name)
@@ -123,7 +125,7 @@ class NEON_OT_ImportCSV(Operator):
                 rdr=csv.DictReader(csvfile,quoting=csv.QUOTE_NONE)
                 for row in rdr:
                     meshName = row[rdr.fieldnames[0]]
-                    meshes = [obj for obj in bpy.data.objects if obj.name == meshName]
+                    meshes = [obj for obj in objects if obj.name == meshName]
                     
                     if len(meshes) == 0:
                         print("meshName:",meshName," not present!")
@@ -169,6 +171,7 @@ class NEON_PT_AddCustomPropertiesPanel(Panel):
         col.operator("object.import_csv", text="Import")
 
 class NEON_OT_ReplaceProps(Operator):
+    """Copies properties of active object to all selected objects"""
     bl_idname = "object.replace_props"
     bl_label = ""
     
