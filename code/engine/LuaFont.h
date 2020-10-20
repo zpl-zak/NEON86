@@ -7,18 +7,18 @@
 
 auto font_new(lua_State* L) -> int
 {
-    const auto fontPath = luaL_checkstring(L, 1);
-    const auto fontSize = static_cast<int>(luaL_checkinteger(L, 2));
+    const auto* const fontFamily = LuaGetInline<LPCSTR>(L);
+    const auto fontSize = LuaGetInline<int>(L);
     auto boldness = 0;
     auto italic = FALSE;
 
-    if (lua_gettop(L) >= 3)
-        boldness = static_cast<int>(luaL_checkinteger(L, 3));
+    if (LuaLength(L) >= 1)
+        boldness = LuaGetInline<int>(L);
 
-    if (lua_gettop(L) >= 4)
-        italic = lua_toboolean(L, 4);
+    if (LuaLength(L) >= 1)
+        italic = LuaGetInline<bool>(L);
 
-    *static_cast<CFont**>(lua_newuserdata(L, sizeof(CFont*))) = new CFont(fontPath, fontSize, boldness, italic);
+    *static_cast<CFont**>(lua_newuserdata(L, sizeof(CFont*))) = new CFont(fontFamily, fontSize, boldness, italic);
 
     luaL_setmetatable(L, L_FONT);
     return 1;
@@ -26,23 +26,23 @@ auto font_new(lua_State* L) -> int
 
 static auto font_drawtext(lua_State* L) -> int
 {
-    auto font = *static_cast<CFont**>(luaL_checkudata(L, 1, L_FONT));
-    const auto color = static_cast<DWORD>(luaL_checkinteger(L, 2));
-    const auto text = static_cast<LPCSTR>(luaL_checkstring(L, 3));
-    const auto x = static_cast<unsigned int>(luaL_checkinteger(L, 4));
-    const auto y = static_cast<unsigned int>(luaL_checkinteger(L, 5));
+    auto* const font = LuaGetInline<CFont*>(L);
+    const auto color = LuaGetInline<DWORD>(L);
+    const auto* const text = LuaGetInline<LPCSTR>(L);
+    const auto x = LuaGetInline<uint32_t>(L);
+    const auto y = LuaGetInline<uint32_t>(L);
 
-    unsigned int w = 0, h = 0;
-    if (lua_gettop(L) >= 6)
+    uint32_t w = 0, h = 0;
+    if (LuaLength(L) >= 2)
     {
-        w = static_cast<unsigned int>(luaL_checkinteger(L, 6));
-        h = static_cast<unsigned int>(luaL_checkinteger(L, 7));
+        w = LuaGetInline<uint32_t>(L);
+        h = LuaGetInline<uint32_t>(L);
     }
 
     DWORD flags = DT_WORDBREAK;
-    if (lua_gettop(L) >= 8)
+    if (LuaLength(L) >= 1)
     {
-        flags = static_cast<DWORD>(luaL_checkinteger(L, 8));
+        flags = LuaGetInline<DWORD>(L);
     }
 
     font->RenderText(color, text, x, y, w, h, flags);
@@ -52,14 +52,14 @@ static auto font_drawtext(lua_State* L) -> int
 
 static auto font_measuretext(lua_State* L) -> int
 {
-    auto font = *static_cast<CFont**>(luaL_checkudata(L, 1, L_FONT));
-    const auto text = static_cast<LPCSTR>(luaL_checkstring(L, 2));
-    const auto flags = static_cast<DWORD>(luaL_checkinteger(L, 3));
+    auto* const font = LuaGetInline<CFont*>(L);
+    const auto* const text = LuaGetInline<LPCSTR>(L);
+    const auto flags = LuaGetInline<DWORD>(L);
 
     RECT rect = {0};
-    if (lua_gettop(L) >= 4)
+    if (LuaLength(L) >= 1)
     {
-        rect.right = static_cast<unsigned int>(luaL_checkinteger(L, 4));
+        rect.right = LuaGetInline<uint32_t>(L);
     }
 
     font->CalculateRect(text, &rect, flags);
@@ -77,7 +77,7 @@ static auto font_measuretext(lua_State* L) -> int
 
 static auto font_delete(lua_State* L) -> int
 {
-    auto font = *static_cast<CFont**>(luaL_checkudata(L, 1, L_FONT));
+    auto* const font = LuaGetInline<CFont*>(L);
 
     font->Release();
     return 0;
