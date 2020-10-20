@@ -1,7 +1,7 @@
 #pragma once
 
-#include <lua/lua.hpp>
 #include <type_traits>
+#include <lua/lua.hpp>
  
 template<typename>
 struct always_false : std::false_type {};
