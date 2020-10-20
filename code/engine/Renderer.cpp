@@ -286,7 +286,7 @@ void CRenderer::DrawMesh(const RENDERDATA& data)
     }
 }
 
-void CRenderer::DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c)
+void CRenderer::DrawPolygon(const VERTEX& a, const VERTEX& b, const VERTEX& c)
 {
     D3DXVECTOR3 v1 = D3DXVECTOR3(a.x, a.y, a.z);
     D3DXVECTOR3 v2 = D3DXVECTOR3(b.x, b.y, b.z);

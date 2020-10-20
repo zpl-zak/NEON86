@@ -70,7 +70,7 @@ struct D3DXVECTOR4;
 
 ENGINE_API extern auto vector4_ctor(lua_State* L) -> D3DXVECTOR4*;
 ENGINE_API extern auto luaH_getcomps(lua_State* L, unsigned int offset = 0) -> D3DXVECTOR4;
-ENGINE_API extern auto luaH_getcolor(lua_State* L, unsigned int offset = 0) -> DWORD;
+ENGINE_API extern auto luaH_getcolor(lua_State* L) -> DWORD;
 ENGINE_API extern auto luaH_getcolorlinear(lua_State* L, unsigned int offset = 0) -> struct _D3DCOLORVALUE;
 
 ENGINE_API extern auto matrix_new(lua_State* L) -> int;

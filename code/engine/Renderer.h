@@ -32,7 +32,7 @@ public:
     void DrawQuad(float x1, float x2, float y1, float y2, DWORD color, bool flipY = FALSE);
     void DrawQuadEx(float x, float y, float z, float w, float h, DWORD color, bool usesDepth, bool flipY = FALSE);
     void DrawQuad3D(float x1, float x2, float y1, float y2, float z1, float z2, DWORD color);
-    void DrawPolygon(VERTEX& a, VERTEX& b, VERTEX& c);
+    void DrawPolygon(const VERTEX& a, const VERTEX& b, const VERTEX& c);
     void DrawBox(D3DXMATRIX mat, D3DXVECTOR4 dims, DWORD color);
     void ClearBuffer(D3DCOLOR color, unsigned int flags = CLEARFLAG_STANDARD);
     void SetMaterial(DWORD stage, CMaterial* mat);

@@ -16,33 +16,8 @@
 #include "Node.h"
 
 #include <lua/lua.hpp>
-#include <sstream>
-#include <vector>
 
 #include "LuaWrapper.h"
-
-inline auto split(const std::string& str, const std::string& delim) -> std::vector<std::string>
-{
-    std::vector<std::string> tokens;
-    size_t prev = 0;
-    size_t pos = 0;
-    do
-    {
-        pos = str.find(delim, prev);
-        if (pos == std::string::npos)
-        {
-            pos = str.length();
-        }
-        auto token = str.substr(prev, pos - prev);
-        if (!token.empty())
-        {
-            tokens.push_back(token);
-        }
-        prev = pos + delim.length();
-    }
-    while (pos < str.length() && prev < str.length());
-    return tokens;
-}
 
 auto luaH_getcomps(lua_State* L, unsigned int offset) -> D3DXVECTOR4
 {
@@ -68,35 +43,33 @@ auto luaH_getcomps(lua_State* L, unsigned int offset) -> D3DXVECTOR4
     return {x, y, z, w};
 }
 
-auto luaH_getcolor(lua_State* L, unsigned int offset) -> DWORD
+auto luaH_getcolor(lua_State* L) -> DWORD
 {
     DWORD color = 0x0;
 
-    if (luaL_testudata(L, 1 + offset, L_VECTOR))
+    if (LuaTestClass(L, L_VECTOR))
     {
-        const auto vec = static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1 + offset, L_VECTOR));
+        const auto vec = LuaGetInline<D3DXVECTOR4>(L);
         BYTE col[4] = {
-            static_cast<BYTE>(vec->w * 0xFF), static_cast<BYTE>(vec->x * 0xFF), static_cast<BYTE>(vec->y * 0xFF),
-            static_cast<BYTE>(vec->z * 0xFF)
+            static_cast<BYTE>(vec.w * 0xFF), static_cast<BYTE>(vec.x * 0xFF), static_cast<BYTE>(vec.y * 0xFF),
+            static_cast<BYTE>(vec.z * 0xFF)
         };
         color = D3DCOLOR_ARGB(col[0], col[1], col[2], col[3]);
     }
-    else if (lua_gettop(L) == 1 + offset)
+    else if (LuaLength(L) >= 1)
     {
-        color = static_cast<DWORD>(luaL_checkinteger(L, 1 + offset));
+        color = LuaGetInline<DWORD>(L);
     }
-    else if (static_cast<unsigned int>(lua_gettop(L)) == 3 + offset)
+    else if (LuaLength(L) >= 3)
     {
         unsigned int r = 0;
         unsigned int g = 0;
         unsigned int b = 0;
 
-        r = static_cast<unsigned int>(luaL_checknumber(L, 1 + offset));
-        g = static_cast<unsigned int>(luaL_checknumber(L, 2 + offset));
-        b = static_cast<unsigned int>(luaL_checknumber(L, 3 + offset));
+        r = LuaGetInline<uint32_t>(L);
+        g = LuaGetInline<uint32_t>(L);
+        b = LuaGetInline<uint32_t>(L);
         color = D3DCOLOR_ARGB(255, r, g, b);
-        lua_remove(L, 2 + offset);
-        lua_remove(L, 2 + offset);
     }
 
     return color;
@@ -321,14 +294,14 @@ void CLuaBindings::BindAudio(lua_State* L)
 /// MATH METHODS
 LUAF(Math, Color)
 {
-    const auto r = static_cast<unsigned int>(luaL_checknumber(L, 1));
-    const auto g = static_cast<unsigned int>(luaL_checknumber(L, 2));
-    const auto b = static_cast<unsigned int>(luaL_checknumber(L, 3));
+    const auto r = LuaGetInline<uint32_t>(L);
+    const auto g = LuaGetInline<uint32_t>(L);
+    const auto b = LuaGetInline<uint32_t>(L);
     unsigned int a = 0xFF;
 
-    if (lua_gettop(L) == 4)
+    if (lua_gettop(L) >= 1)
     {
-        a = static_cast<unsigned int>(luaL_checknumber(L, 4));
+        a = LuaGetInline<uint32_t>(L);
     }
 
     lua_pushnumber(L, D3DCOLOR_ARGB(a, r, g, b));
@@ -337,14 +310,14 @@ LUAF(Math, Color)
 
 LUAF(Math, ColorLinear)
 {
-    const float r = static_cast<float>(luaL_checknumber(L, 1)) / static_cast<float>(0xFF);
-    const float g = static_cast<float>(luaL_checknumber(L, 2)) / static_cast<float>(0xFF);
-    const float b = static_cast<float>(luaL_checknumber(L, 3)) / static_cast<float>(0xFF);
+    const float r = LuaGetInline<float>(L) / static_cast<float>(0xFF);
+    const float g = LuaGetInline<float>(L) / static_cast<float>(0xFF);
+    const float b = LuaGetInline<float>(L) / static_cast<float>(0xFF);
     float a = 0xFF;
 
-    if (lua_gettop(L) == 4)
+    if (lua_gettop(L) >= 1)
     {
-        a = static_cast<float>(luaL_checknumber(L, 4)) / static_cast<float>(0xFF);
+        a = LuaGetInline<float>(L) / static_cast<float>(0xFF);
     }
 
     lua_pushnumber(L, r);
@@ -356,74 +329,33 @@ LUAF(Math, ColorLinear)
 
 LUAF(Math, WorldToScreen)
 {
-    auto* pos3D = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 1, L_VECTOR));
-    D3DXMATRIX view = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
-    D3DXMATRIX proj = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 3, L_MATRIX));
+    auto pos3D = LuaGetInline<D3DXVECTOR3>(L);
+    auto view = LuaGetInline<D3DXMATRIX>(L);
+    auto proj = LuaGetInline<D3DXMATRIX>(L);
     D3DXMATRIX world;
     D3DXMatrixIdentity(&world);
 
-    auto* pos2D = (D3DXVECTOR3*)vector4_ctor(L);
+    auto* pos2D = reinterpret_cast<D3DXVECTOR3*>(vector4_ctor(L));
     D3DVIEWPORT9 viewport;
     RENDERER->GetDevice()->GetViewport(&viewport);
 
-    D3DXVec3Project(pos2D, pos3D, &viewport, &proj, &view, &world);
+    D3DXVec3Project(pos2D, &pos3D, &viewport, &proj, &view, &world);
     return 1;
 }
 
 LUAF(Math, ScreenToWorld)
 {
-    auto* pos2D = static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 1, L_VECTOR));
-    D3DXMATRIX view = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
-    D3DXMATRIX proj = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 3, L_MATRIX));
+    auto pos2D = LuaGetInline<D3DXVECTOR3>(L);
+    auto view = LuaGetInline<D3DXMATRIX>(L);
+    auto proj = LuaGetInline<D3DXMATRIX>(L);
     D3DXMATRIX world;
     D3DXMatrixIdentity(&world);
 
-    auto* pos3D = (D3DXVECTOR3*)vector4_ctor(L);
+    auto* pos3D = reinterpret_cast<D3DXVECTOR3*>(vector4_ctor(L));
     D3DVIEWPORT9 viewport;
     RENDERER->GetDevice()->GetViewport(&viewport);
 
-    D3DXVec3Unproject(pos2D, pos3D, &viewport, &proj, &view, &world);
-    return 1;
-}
-
-LUAF(Math, str2vec)
-{
-    std::string str = std::string(luaL_checkstring(L, 1));
-    float nums[4] = {0.0F};
-    unsigned int i = 0;
-
-    // HACK
-    if (str.find("vec(") != std::string::npos)
-    {
-        str = str.substr(4, str.size() - 5);
-    }
-
-    auto comps = split(str, ",");
-
-    while (i < 4)
-    {
-        if (i >= comps.size())
-        {
-            break;
-        }
-
-        nums[i] = static_cast<float>(atof(comps.at(i).c_str()));
-        i++;
-    }
-
-    vector4_new(L);
-    *static_cast<D3DXVECTOR4*>(lua_touserdata(L, -1)) = D3DXVECTOR4(nums[0], nums[1], nums[2], nums[3]);
-    return 1;
-}
-
-LUAF(Math, vec2str)
-{
-    const D3DXVECTOR4 v = *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 1, L_VECTOR));
-
-    std::stringstream ss;
-    ss << v.x << "," << v.y << "," << v.z;
-
-    lua_pushstring(L, static_cast<LPCSTR>(ss.str().c_str()));
+    D3DXVec3Unproject(&pos2D, pos3D, &viewport, &proj, &view, &world);
     return 1;
 }
 
@@ -438,8 +370,6 @@ void CLuaBindings::BindMath(lua_State* L)
     REGF(Math, WorldToScreen);
     REGF(Math, ScreenToWorld)
     REGF(Math, ColorLinear);
-    REGF(Math, str2vec);
-    REGF(Math, vec2str);
 }
 
 /// RENDERER METHODS
@@ -451,20 +381,20 @@ LUAF(Rend, ClearScene)
 
 LUAF(Rend, CameraPerspective)
 {
-    const auto fov = static_cast<float>(luaL_checknumber(L, 1));
+    const auto fov = LuaGetInline<float>(L);
     float zNear = 0.1f;
     float zFar = 1000.0f;
     bool flipHandedness = FALSE;
 
-    if (lua_gettop(L) >= 3)
+    if (LuaLength(L) >= 1)
     {
-        zNear = static_cast<float>(luaL_checknumber(L, 2));
-        zFar = static_cast<float>(luaL_checknumber(L, 3));
+        zNear = LuaGetInline<float>(L);
+        zFar = LuaGetInline<float>(L);
     }
 
-    if (lua_gettop(L) >= 4)
+    if (LuaLength(L) >= 1)
     {
-        flipHandedness = static_cast<bool>(lua_toboolean(L, 4));
+        flipHandedness = LuaGetInline<bool>(L);
     }
 
     D3DXMATRIX matProjection;
@@ -499,25 +429,25 @@ LUAF(Rend, CameraOrthographic)
     auto h = static_cast<float>(res.bottom);
     bool flipHandedness = FALSE;
 
-    if (lua_gettop(L) >= 2)
+    if (LuaLength(L) >= 2)
     {
-        w = static_cast<float>(luaL_checknumber(L, 1)) * (static_cast<float>(res.right) / static_cast<float>(res.bottom)
+        w = LuaGetInline<float>(L) * (static_cast<float>(res.right) / static_cast<float>(res.bottom)
         );
-        h = static_cast<float>(luaL_checknumber(L, 2));
+        h = LuaGetInline<float>(L);
     }
 
     float zNear = 0.01f;
     float zFar = 100.0f;
 
-    if (lua_gettop(L) >= 4)
+    if (LuaLength(L) >= 2)
     {
-        zNear = static_cast<float>(luaL_checknumber(L, 3));
-        zFar = static_cast<float>(luaL_checknumber(L, 4));
+        zNear = LuaGetInline<float>(L);
+        zFar = LuaGetInline<float>(L);
     }
 
-    if (lua_gettop(L) >= 5)
+    if (LuaLength(L) >= 1)
     {
-        flipHandedness = static_cast<bool>(lua_toboolean(L, 5));
+        flipHandedness = LuaGetInline<bool>(L);
     }
 
     D3DXMATRIX matProjection;
@@ -553,26 +483,26 @@ LUAF(Rend, CameraOrthographicEx)
     auto b = static_cast<float>(res.bottom);
     bool flipHandedness = FALSE;
 
-    if (lua_gettop(L) >= 4)
+    if (LuaLength(L) >= 4)
     {
-        l = static_cast<float>(luaL_checknumber(L, 1));
-        r = static_cast<float>(luaL_checknumber(L, 2));
-        b = static_cast<float>(luaL_checknumber(L, 3));
-        t = static_cast<float>(luaL_checknumber(L, 4));
+        l = LuaGetInline<float>(L);
+        r = LuaGetInline<float>(L);
+        b = LuaGetInline<float>(L);
+        t = LuaGetInline<float>(L);
     }
 
     float zNear = 0.01f;
     float zFar = 100.0f;
 
-    if (lua_gettop(L) >= 5)
+    if (LuaLength(L) >= 2)
     {
-        zNear = static_cast<float>(luaL_checknumber(L, 5));
-        zFar = static_cast<float>(luaL_checknumber(L, 6));
+        zNear = LuaGetInline<float>(L);
+        zFar = LuaGetInline<float>(L);
     }
 
-    if (lua_gettop(L) >= 7)
+    if (LuaLength(L) >= 1)
     {
-        flipHandedness = static_cast<bool>(lua_toboolean(L, 7));
+        flipHandedness = LuaGetInline<bool>(L);
     }
 
     D3DXMATRIX matProjection;
@@ -599,29 +529,29 @@ LUAF(Rend, CameraOrthographicEx)
 
 LUAF(Rend, BindTexture)
 {
-    const auto stage = static_cast<DWORD>(luaL_checknumber(L, 1));
+    const auto stage = LuaGetInline<DWORD>(L);
     CMaterial* tex = nullptr;
 
-    if (luaL_testudata(L, 2, L_RENDERTARGET) != nullptr)
+    if (LuaTestClass(L, L_RENDERTARGET))
     {
-        CRenderTarget* rtt = *static_cast<CRenderTarget**>(lua_touserdata(L, 2));
+        auto* const rtt = LuaGetInline<CRenderTarget*>(L);
         RENDERER->SetTexture(stage, rtt->GetTextureHandle());
     }
-    else if (luaL_testudata(L, 2, L_MATERIAL) != nullptr)
+    else if (LuaTestClass(L, L_MATERIAL))
     {
-        CMaterial* mat = *static_cast<CMaterial**>(lua_touserdata(L, 2));
+        auto* const mat = LuaGetInline<CMaterial*>(L);
         mat->Bind(stage);
-        RENDERER->MarkMaterialOverride(TRUE);
+        RENDERER->MarkMaterialOverride(true);
     }
-    else if (lua_gettop(L) == 2)
+    else if (LuaLength(L) >= 1)
     {
-        auto* const handle = static_cast<LPDIRECT3DTEXTURE9>(lua_touserdata(L, 2));
+        auto* const handle = LuaGetInline<LPDIRECT3DTEXTURE9>(L);
         RENDERER->SetTexture(stage, handle);
     }
     else
     {
         RENDERER->GetDefaultMaterial()->Bind(stage);
-        RENDERER->MarkMaterialOverride(FALSE);
+        RENDERER->MarkMaterialOverride(false);
     }
 
     return 0;
@@ -647,10 +577,10 @@ LUAF(Rend, GetResolution)
 
 LUAF(Rend, GetMatrix)
 {
-    const auto kind = static_cast<DWORD>(luaL_checkinteger(L, 1));
+    const auto kind = LuaGetInline<DWORD>(L);
 
     matrix_new(L);
-    auto* mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
+    auto* mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
     *mat = RENDERER->GetDeviceMatrix(kind);
 
     return 1;
@@ -664,8 +594,8 @@ LUAF(Rend, IsFocused)
 
 LUAF(Rend, RenderState)
 {
-    const auto kind = static_cast<DWORD>(luaL_checkinteger(L, 1));
-    const bool state = static_cast<bool>(lua_toboolean(L, 2));
+    const auto kind = LuaGetInline<DWORD>(L);
+    const bool state = LuaGetInline<bool>(L);
 
     RENDERER->SetRenderState(kind, static_cast<DWORD>(state));
     return 0;
@@ -673,14 +603,14 @@ LUAF(Rend, RenderState)
 
 LUAF(Rend, ToggleDepthTest)
 {
-    const bool state = static_cast<bool>(lua_toboolean(L, 1));
+    const bool state = LuaGetInline<bool>(L);
     RENDERER->SetRenderState(D3DRS_ZENABLE, static_cast<DWORD>(state));
     return 0;
 }
 
 LUAF(Rend, ToggleWireframe)
 {
-    const bool state = static_cast<bool>(lua_toboolean(L, 1));
+    const bool state = LuaGetInline<bool>(L);
 
     RENDERER->SetRenderState(D3DRS_FILLMODE, state ? D3DFILL_WIREFRAME : D3DFILL_SOLID);
     RENDERER->SetRenderState(D3DRS_CULLMODE, state ? D3DCULL_NONE : D3DCULL_CCW);
@@ -691,13 +621,13 @@ LUAF(Rend, ToggleWireframe)
 LUAF(Rend, SetFog)
 {
     const DWORD color = luaH_getcolor(L);
-    const auto mode = static_cast<DWORD>(luaL_checkinteger(L, 2));
-    const auto start = static_cast<float>(luaL_checknumber(L, 3));
+    const auto mode = LuaGetInline<DWORD>(L);
+    const auto start = LuaGetInline<float>(L);
     float end = 0.0F;
 
     if (mode == D3DFOG_LINEAR)
     {
-        end = static_cast<float>(luaL_checknumber(L, 4));
+        end = LuaGetInline<float>(L);
     }
 
     RENDERER->SetFog(color, mode, start, end);
@@ -712,9 +642,9 @@ LUAF(Rend, ClearFog)
 
 LUAF(Rend, SamplerState)
 {
-    const auto stage = static_cast<DWORD>(luaL_checkinteger(L, 1));
-    const auto kind = static_cast<DWORD>(luaL_checkinteger(L, 2));
-    const auto state = static_cast<DWORD>(luaL_checkinteger(L, 3));
+    const auto stage = LuaGetInline<DWORD>(L);
+    const auto kind = LuaGetInline<DWORD>(L);
+    const auto state = LuaGetInline<DWORD>(L);
 
     RENDERER->SetSamplerState(stage, kind, state);
     return 0;
@@ -722,15 +652,14 @@ LUAF(Rend, SamplerState)
 
 LUAF(Rend, EnableLighting)
 {
-    const bool state = static_cast<bool>(lua_toboolean(L, 1));
-
+    const bool state = LuaGetInline<bool>(L);
     RENDERER->EnableLighting(state);
     return 0;
 }
 
 LUAF(Rend, AmbientColor)
 {
-    if (lua_gettop(L) == 0)
+    if (LuaLength(L) == 0)
     {
         D3DCOLOR col = 0x0;
         RENDERER->GetDevice()->GetRenderState(D3DRS_AMBIENT, &col);
@@ -750,9 +679,9 @@ LUAF(Rend, ClearTarget)
 
 LUAF(Rend, DrawBox)
 {
-    const D3DXMATRIX mat = *static_cast<D3DXMATRIX*>(luaL_checkudata(L, 1, L_MATRIX));
-    const D3DXVECTOR4 dims = *static_cast<D3DXVECTOR4*>(luaL_checkudata(L, 2, L_VECTOR));
-    const auto color = static_cast<DWORD>(luaL_checkinteger(L, 3));
+    const auto mat = LuaGetInline<D3DXMATRIX>(L);
+    const auto dims = LuaGetInline<D3DXVECTOR4>(L);
+    const auto color = LuaGetInline<DWORD>(L);
 
     RENDERER->DrawBox(mat, dims, color);
     return 0;
@@ -779,12 +708,12 @@ LUAF(Rend, ReadyAlphaBlend)
 
 LUAF(Rend, DrawQuad)
 {
-    const auto x1 = static_cast<float>(luaL_checknumber(L, 1));
-    const auto x2 = static_cast<float>(luaL_checknumber(L, 2));
-    const auto y1 = static_cast<float>(luaL_checknumber(L, 3));
-    const auto y2 = static_cast<float>(luaL_checknumber(L, 4));
-    const auto color = static_cast<DWORD>(luaL_checkinteger(L, 5));
-    const bool flipY = static_cast<bool>(lua_toboolean(L, 6));
+    const auto x1 = LuaGetInline<float>(L);
+    const auto x2 = LuaGetInline<float>(L);
+    const auto y1 = LuaGetInline<float>(L);
+    const auto y2 = LuaGetInline<float>(L);
+    const auto color = LuaGetInline<DWORD>(L);
+    const bool flipY = LuaGetInline<bool>(L);
 
     RENDERER->DrawQuad(x1, x2, y1, y2, color, flipY);
     return 0;
@@ -792,12 +721,12 @@ LUAF(Rend, DrawQuad)
 
 LUAF(Rend, DrawQuadEx)
 {
-    const D3DXVECTOR3 pos = *static_cast<D3DXVECTOR3*>(luaL_checkudata(L, 1, L_VECTOR));
-    const auto w = static_cast<float>(luaL_checknumber(L, 2));
-    const auto h = static_cast<float>(luaL_checknumber(L, 3));
-    const auto color = static_cast<DWORD>(luaL_checkinteger(L, 4));
-    const bool usesDepth = static_cast<bool>(lua_toboolean(L, 5));
-    const bool flipY = static_cast<bool>(lua_toboolean(L, 6));
+    const auto pos = LuaGetInline<D3DXVECTOR3>(L);
+    const auto w = LuaGetInline<float>(L);
+    const auto h = LuaGetInline<float>(L);
+    const auto color = LuaGetInline<DWORD>(L);
+    const bool usesDepth = LuaGetInline<bool>(L);
+    const bool flipY = LuaGetInline<bool>(L);
 
     RENDERER->DrawQuadEx(pos.x, pos.y, pos.z, w, h, color, usesDepth, flipY);
     return 0;
@@ -805,13 +734,13 @@ LUAF(Rend, DrawQuadEx)
 
 LUAF(Rend, DrawQuad3D)
 {
-    const auto x1 = static_cast<float>(luaL_checknumber(L, 1));
-    const auto x2 = static_cast<float>(luaL_checknumber(L, 2));
-    const auto y1 = static_cast<float>(luaL_checknumber(L, 3));
-    const auto y2 = static_cast<float>(luaL_checknumber(L, 4));
-    const auto z1 = static_cast<float>(luaL_checknumber(L, 5));
-    const auto z2 = static_cast<float>(luaL_checknumber(L, 6));
-    const auto color = static_cast<DWORD>(luaL_checkinteger(L, 7));
+    const auto x1 = LuaGetInline<float>(L);
+    const auto x2 = LuaGetInline<float>(L);
+    const auto y1 = LuaGetInline<float>(L);
+    const auto y2 = LuaGetInline<float>(L);
+    const auto z1 = LuaGetInline<float>(L);
+    const auto z2 = LuaGetInline<float>(L);
+    const auto color = LuaGetInline<DWORD>(L);
 
     RENDERER->DrawQuad3D(x1, x2, y1, y2, z1, z2, color);
     return 0;
@@ -819,9 +748,9 @@ LUAF(Rend, DrawQuad3D)
 
 LUAF(Rend, DrawPolygon)
 {
-    VERTEX a = *static_cast<VERTEX*>(luaL_checkudata(L, 1, L_VERTEX));
-    VERTEX b = *static_cast<VERTEX*>(luaL_checkudata(L, 2, L_VERTEX));
-    VERTEX c = *static_cast<VERTEX*>(luaL_checkudata(L, 3, L_VERTEX));
+    const auto a = LuaGetInline<VERTEX>(L);
+    const auto b = LuaGetInline<VERTEX>(L);
+    const auto c = LuaGetInline<VERTEX>(L);
 
     RENDERER->DrawPolygon(a, b, c);
     return 0;
@@ -829,7 +758,7 @@ LUAF(Rend, DrawPolygon)
 
 LUAF(Rend, CullMode)
 {
-    const auto mode = static_cast<unsigned int>(luaL_checkinteger(L, 1));
+    const auto mode = LuaGetInline<DWORD>(L);
     RENDERER->SetRenderState(D3DRS_CULLMODE, mode);
     return 0;
 }
@@ -839,14 +768,14 @@ LUAF(Rend, FillScreen)
     DWORD color = 0x00FFFFFF;
     bool flipY = FALSE;
 
-    if (lua_gettop(L) >= 1)
+    if (LuaLength(L) >= 1)
     {
-        color = static_cast<DWORD>(lua_tointeger(L, 1));
+        color = LuaGetInline<DWORD>(L);
     }
 
-    if (lua_gettop(L) >= 2)
+    if (LuaLength(L) >= 1)
     {
-        flipY = static_cast<bool>(lua_toboolean(L, 2));
+        flipY = LuaGetInline<bool>(L);
     }
 
     const RECT res = RENDERER->GetResolution();
@@ -856,7 +785,7 @@ LUAF(Rend, FillScreen)
 
 LUAF(Rend, RegisterFontFile)
 {
-    const auto* const path = static_cast<LPCSTR>(luaL_checkstring(L, 1));
+    const auto* const path = LuaGetInline<LPCSTR>(L);
     lua_pushboolean(L, static_cast<int>(CFont::AddFontToDatabase(path)));
     return 1;
 }
@@ -1006,7 +935,7 @@ LUAF(Input, IsCursorVisible)
 
 LUAF(Input, ShowCursor)
 {
-    const bool state = static_cast<bool>(lua_toboolean(L, 1));
+    const bool state = LuaGetInline<bool>(L);
     INPUT->SetCursor(state);
     return 0;
 }
@@ -1034,21 +963,21 @@ LUAF(Input, GetKeyUp)
 
 LUAF(Input, GetMouse)
 {
-    const auto code = static_cast<DWORD>(luaL_checkinteger(L, 1));
+    const auto code = LuaGetInline<DWORD>(L);
     lua_pushboolean(L, INPUT->GetMouse(code));
     return 1;
 }
 
 LUAF(Input, GetMouseDown)
 {
-    const auto code = static_cast<DWORD>(luaL_checkinteger(L, 1));
+    const auto code = LuaGetInline<DWORD>(L);
     lua_pushboolean(L, INPUT->GetMouseDown(code));
     return 1;
 }
 
 LUAF(Input, GetMouseUp)
 {
-    const auto code = static_cast<DWORD>(luaL_checkinteger(L, 1));
+    const auto code = LuaGetInline<DWORD>(L);
     lua_pushboolean(L, INPUT->GetMouseUp(code));
     return 1;
 }
@@ -1091,8 +1020,8 @@ LUAF(Input, GetMouseDelta)
 
 LUAF(Input, SetMouseXY)
 {
-    const auto x = static_cast<short>(luaL_checkinteger(L, 1));
-    const auto y = static_cast<short>(luaL_checkinteger(L, 2));
+    const auto x = LuaGetInline<short>(L);
+    const auto y = LuaGetInline<short>(L);
     INPUT->SetMouseXY(x, y);
 
     return 0;
@@ -1106,8 +1035,8 @@ LUAF(Input, GetCursorMode)
 
 LUAF(Input, SetCursorMode)
 {
-    const auto mode = static_cast<UCHAR>(luaL_checkinteger(L, 1));
-    INPUT->SetCursorMode(mode);
+    const auto mode = LuaGetInline<int>(L);
+    INPUT->SetCursorMode(static_cast<UCHAR>(mode));
     return 0;
 }
 
