@@ -26,8 +26,8 @@ static auto facegroup_clone(lua_State* L) -> int
 static auto facegroup_addvertex(lua_State* L) -> int
 {
     auto* mesh = LuaGetInline<CFaceGroup*>(L);
-    const auto vert = static_cast<VERTEX*>(luaL_checkudata(L, 2, L_VERTEX));
-    mesh->AddVertex(*vert);
+    const auto vert = LuaGetInline<VERTEX>(L);
+    mesh->AddVertex(vert);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -36,7 +36,7 @@ static auto facegroup_addvertex(lua_State* L) -> int
 static auto facegroup_addindex(lua_State* L) -> int
 {
     auto* mesh = LuaGetInline<CFaceGroup*>(L);
-    const auto index = static_cast<short>(luaL_checkinteger(L, 2));
+    const auto index = LuaGetInline<short>(L);
     mesh->AddIndex(index);
 
     lua_pushvalue(L, 1);
@@ -46,9 +46,9 @@ static auto facegroup_addindex(lua_State* L) -> int
 static auto facegroup_addtriangle(lua_State* L) -> int
 {
     auto* mesh = LuaGetInline<CFaceGroup*>(L);
-    const auto i1 = static_cast<short>(luaL_checkinteger(L, 2));
-    const auto i2 = static_cast<short>(luaL_checkinteger(L, 3));
-    const auto i3 = static_cast<short>(luaL_checkinteger(L, 4));
+    const auto i1 = LuaGetInline<short>(L);
+    const auto i2 = LuaGetInline<short>(L);
+    const auto i3 = LuaGetInline<short>(L);
 
     mesh->AddIndex(i1);
     mesh->AddIndex(i2);
@@ -63,9 +63,9 @@ static auto facegroup_setmaterial(lua_State* L) -> int
     auto* mesh = LuaGetInline<CFaceGroup*>(L);
     CMaterial* mat = nullptr;
 
-    if (lua_gettop(L) == 2)
+    if (LuaLength(L) == 1)
     {
-        mat = *static_cast<CMaterial**>(luaL_checkudata(L, 2, L_MATERIAL));
+        mat = LuaGetInline<CMaterial*>(L);
         mat->AddRef();
     }
 
@@ -77,8 +77,8 @@ static auto facegroup_setmaterial(lua_State* L) -> int
 
 static auto facegroup_getmaterial(lua_State* L) -> int
 {
-    const auto fgroup = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
-    const auto mat = fgroup->GetMaterial();
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
+    auto* const mat = mesh->GetMaterial();
 
     if (mat) { LUAP(L, L_MATERIAL, CMaterial, mat); }
     else lua_pushnil(L);
@@ -89,15 +89,15 @@ static auto facegroup_getmaterial(lua_State* L) -> int
 static auto facegroup_draw(lua_State* L) -> int
 {
     auto* mesh = LuaGetInline<CFaceGroup*>(L);
-    auto mat = &D3DXMATRIX();
+    auto mat = D3DXMATRIX();
 
-    if (lua_gettop(L) >= 2)
+    if (lua_gettop(L) >= 1)
     {
-        mat = static_cast<D3DXMATRIX*>(luaL_checkudata(L, 2, L_MATRIX));
+        mat = LuaGetInline<D3DXMATRIX>(L);
     }
-    else mat = nullptr;
+    else D3DXMatrixIdentity(&mat);
 
-    mesh->Draw(mat);
+    mesh->Draw(&mat);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -148,7 +148,7 @@ static auto facegroup_getvertices(lua_State* L) -> int
 
     for (unsigned int i = 0; i < mesh->GetNumVertices(); i++)
     {
-        const auto vert = mesh->GetVertices() + i;
+        auto* const vert = mesh->GetVertices() + i;
         lua_pushinteger(L, i + 1ULL);
         LUAPT(L, L_VERTEX, VERTEX, vert);
         lua_settable(L, -3);
@@ -160,17 +160,17 @@ static auto facegroup_getvertices(lua_State* L) -> int
 static auto facegroup_getbounds(lua_State* L) -> int
 {
     auto* mesh = LuaGetInline<CFaceGroup*>(L);
-    const auto b = mesh->GetBounds();
+    auto* const b = mesh->GetBounds();
 
     lua_newtable(L);
 
     lua_pushinteger(L, 1);
-    const auto minVec = vector4_ctor(L);
+    auto* const minVec = vector4_ctor(L);
     *minVec = b[0];
     lua_settable(L, -3);
 
     lua_pushinteger(L, 2);
-    const auto maxVec = vector4_ctor(L);
+    auto* const maxVec = vector4_ctor(L);
     *maxVec = b[1];
     lua_settable(L, -3);
 
