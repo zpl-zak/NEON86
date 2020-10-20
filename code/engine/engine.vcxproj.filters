@@ -305,6 +305,9 @@
     <ClInclude Include="SoundBase.h">
       <Filter>Header Files\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="LuaWrapper.h">
+      <Filter>Header Files\Lua</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

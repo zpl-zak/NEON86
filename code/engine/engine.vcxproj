@@ -360,6 +360,7 @@
     <ClInclude Include="LuaScene.h" />
     <ClInclude Include="LuaRenderTarget.h" />
     <ClInclude Include="LuaSound.h" />
+    <ClInclude Include="LuaWrapper.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="FileSystem.h" />
     <ClInclude Include="Input.h" />

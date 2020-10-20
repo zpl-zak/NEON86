@@ -8,6 +8,9 @@
 #include "FileSystem.h"
 #include "Sound.h"
 #include "Material.h"
+#include "FaceGroup.h"
+#include "Scene.h"
+#include "Font.h"
 #include "RenderTarget.h"
 #include "Music.h"
 #include "Node.h"
@@ -15,6 +18,8 @@
 #include <lua/lua.hpp>
 #include <sstream>
 #include <vector>
+
+#include "LuaWrapper.h"
 
 inline auto split(const std::string& str, const std::string& delim) -> std::vector<std::string>
 {
@@ -167,16 +172,16 @@ auto luaH_getcolorlinear(lua_State* L, unsigned int offset) -> D3DCOLORVALUE
 /// BASE METHODS
 LUAF(Base, ShowMessage)
 {
-    const auto* const caption = luaL_checkstring(L, 1);
-    const auto* const text = luaL_checkstring(L, 2);
-    MessageBoxA(nullptr, text, caption, MB_OK);
+    const auto* const caption = LuaGetInline<LPCSTR>(L);
+    const auto* const text  = LuaGetInline<LPCSTR>(L);
+    MessageBoxA(nullptr, text , caption, MB_OK);
     return 0;
 }
 
 LUAF(Base, LogString)
 {
-    const auto* const text = luaL_checkstring(L, 1);
-    PushLog(CString::Format("%s\n", text).Str());
+    const auto* const msg = LuaGetInline<LPCSTR>(L);
+    PushLog(CString::Format("%s\n", msg).Str());
     return 0;
 }
 
@@ -204,8 +209,7 @@ LUAF(Base, IsDebugMode)
 
 LUAF(Base, SetFPS)
 {
-    const auto fps = static_cast<float>(luaL_checknumber(L, 1));
-
+    const auto fps = LuaGetInline<float>(L);
     ENGINE->SetFPS(fps);
 
     return 0;
@@ -213,8 +217,7 @@ LUAF(Base, SetFPS)
 
 LUAF(Base, dofile)
 {
-    const auto* const scriptName = luaL_checkstring(L, 1);
-
+    const auto* const scriptName = LuaGetInline<LPCSTR>(L);
     const auto fd = FILESYSTEM->GetResource((LPSTR)scriptName);
 
     if (fd.data == nullptr)
@@ -232,8 +235,7 @@ LUAF(Base, dofile)
 
 LUAF(Base, loadfile)
 {
-    const auto* const scriptName = luaL_checkstring(L, 1);
-
+    const auto* const scriptName = LuaGetInline<LPCSTR>(L);
     const auto fd = FILESYSTEM->GetResource((LPSTR)scriptName);
 
     if (fd.data == nullptr)
@@ -250,7 +252,7 @@ LUAF(Base, loadfile)
 
 LUAF(Base, SaveState)
 {
-    const auto* const data = static_cast<LPCSTR>(luaL_checkstring(L, 1));
+    const auto* const data = LuaGetInline<LPCSTR>(L);
     auto len = strlen(data);
 
     const LPCSTR out = b64_encode((unsigned char*)data, len);

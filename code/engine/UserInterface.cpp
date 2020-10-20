@@ -380,7 +380,7 @@ void CUserInterface::PushLog(LPCSTR msg, bool noHist)
 
     #ifdef _DEBUG
     if (!noHist)
-        sLogWindow.Push(CString::Format("Error: %s\n", msg).Str());
+        sLogWindow.Push(msg);
     #endif
 }
 
