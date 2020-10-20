@@ -35,41 +35,39 @@ inline auto LuaGet(lua_State* L, T& value) -> bool
     else if constexpr (std::is_same_v<T, LPCSTR>)
         value = static_cast<T>(luaL_checkstring(L, 1));
     else if constexpr (std::is_same_v<T, CString>)
-        value = CString(static_cast<T>(luaL_checkstring(L, 1)));
+        value = CString(static_cast<LPCSTR>(luaL_checkstring(L, 1)));
     else if constexpr (std::is_same_v<T, LPDIRECT3DTEXTURE9>)
         value = static_cast<LPDIRECT3DTEXTURE9>(lua_touserdata(L, 1));
 
     // modules
     else if constexpr (std::is_same_v<T, D3DXMATRIX>)
-        LuaGetClass<D3DXMATRIX>(L, L_MATRIX, value);
+        LuaGetClass<T>(L, L_MATRIX, value);
     else if constexpr (std::is_same_v<T, VERTEX>)
-        LuaGetClass<VERTEX>(L, L_VERTEX, value);
-    else if constexpr (std::is_same_v<T, D3DXVECTOR3>)
-        LuaGetClass<D3DXVECTOR3>(L, L_VECTOR, value);
-    else if constexpr (std::is_same_v<T, D3DXVECTOR4>)
-        LuaGetClass<D3DXVECTOR4>(L, L_VECTOR, value);
+        LuaGetClass<T>(L, L_VERTEX, value);
+    else if constexpr (std::is_same_v<T, D3DXVECTOR3> || std::is_same_v<T, D3DXVECTOR4>)
+        LuaGetClass<T>(L, L_VECTOR, value);
     else if constexpr (std::is_same_v<T, CMaterial*>)
-        LuaGetClass<CMaterial*>(L, L_MATERIAL, value);
+        LuaGetClass<T>(L, L_MATERIAL, value);
     else if constexpr (std::is_same_v<T, CFaceGroup*>)
-        LuaGetClass<CFaceGroup*>(L, L_FACEGROUP, value);
+        LuaGetClass<T>(L, L_FACEGROUP, value);
     else if constexpr (std::is_same_v<T, CMesh*>)
-        LuaGetClass<CMesh*>(L, L_MESH, value);
+        LuaGetClass<T>(L, L_MESH, value);
     else if constexpr (std::is_same_v<T, CScene*>)
-        LuaGetClass<CScene*>(L, L_SCENE, value);
+        LuaGetClass<T>(L, L_SCENE, value);
     else if constexpr (std::is_same_v<T, CNode*>)
-        LuaGetClass<CNode*>(L, L_NODE, value);
+        LuaGetClass<T>(L, L_NODE, value);
     else if constexpr (std::is_same_v<T, CEffect*>)
-        LuaGetClass<CEffect*>(L, L_EFFECT, value);
+        LuaGetClass<T>(L, L_EFFECT, value);
     else if constexpr (std::is_same_v<T, CRenderTarget*>)
-        LuaGetClass<CRenderTarget*>(L, L_RENDERTARGET, value);
+        LuaGetClass<T>(L, L_RENDERTARGET, value);
     else if constexpr (std::is_same_v<T, CLight*>)
-        LuaGetClass<CLight*>(L, L_LIGHT, value);
+        LuaGetClass<T>(L, L_LIGHT, value);
     else if constexpr (std::is_same_v<T, CFont*>)
-        LuaGetClass<CFont*>(L, L_FONT, value);
+        LuaGetClass<T>(L, L_FONT, value);
     else if constexpr (std::is_same_v<T, CSound*>)
-        LuaGetClass<CSound*>(L, L_SOUND, value);
+        LuaGetClass<T>(L, L_SOUND, value);
     else if constexpr (std::is_same_v<T, CMusic*>)
-        LuaGetClass<CMusic*>(L, L_MUSIC, value);
+        LuaGetClass<T>(L, L_MUSIC, value);
 
     // unknown type, error out
     else
@@ -92,15 +90,13 @@ inline auto LuaGetInline(lua_State* L) -> T
 
 auto LuaTestClass(lua_State* L, LPCSTR lname) -> bool
 {
+    if (lua_gettop(L) == 0)
+        return false;
+
     return luaL_testudata(L, 1, lname) != nullptr;
 }
 
 auto LuaLength(lua_State* L) -> int
 {
     return lua_gettop(L);
-}
-
-void LuaPop(lua_State* L, int idx)
-{
-    lua_pop(L, idx);
 }

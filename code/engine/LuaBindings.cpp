@@ -56,7 +56,7 @@ auto luaH_getcolor(lua_State* L) -> DWORD
         };
         color = D3DCOLOR_ARGB(col[0], col[1], col[2], col[3]);
     }
-    else if (LuaLength(L) >= 1)
+    else if (LuaLength(L) == 1)
     {
         color = LuaGetInline<DWORD>(L);
     }

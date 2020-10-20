@@ -16,7 +16,7 @@ auto facegroup_new(lua_State* L) -> int
 
 static auto facegroup_clone(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     *static_cast<CFaceGroup**>(lua_newuserdata(L, sizeof(CFaceGroup*))) = mesh->Clone();
 
     luaL_setmetatable(L, L_FACEGROUP);
@@ -25,7 +25,7 @@ static auto facegroup_clone(lua_State* L) -> int
 
 static auto facegroup_addvertex(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     const auto vert = static_cast<VERTEX*>(luaL_checkudata(L, 2, L_VERTEX));
     mesh->AddVertex(*vert);
 
@@ -35,7 +35,7 @@ static auto facegroup_addvertex(lua_State* L) -> int
 
 static auto facegroup_addindex(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     const auto index = static_cast<short>(luaL_checkinteger(L, 2));
     mesh->AddIndex(index);
 
@@ -45,7 +45,7 @@ static auto facegroup_addindex(lua_State* L) -> int
 
 static auto facegroup_addtriangle(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     const auto i1 = static_cast<short>(luaL_checkinteger(L, 2));
     const auto i2 = static_cast<short>(luaL_checkinteger(L, 3));
     const auto i3 = static_cast<short>(luaL_checkinteger(L, 4));
@@ -60,7 +60,7 @@ static auto facegroup_addtriangle(lua_State* L) -> int
 
 static auto facegroup_setmaterial(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     CMaterial* mat = nullptr;
 
     if (lua_gettop(L) == 2)
@@ -88,7 +88,7 @@ static auto facegroup_getmaterial(lua_State* L) -> int
 
 static auto facegroup_draw(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     auto mat = &D3DXMATRIX();
 
     if (lua_gettop(L) >= 2)
@@ -105,7 +105,7 @@ static auto facegroup_draw(lua_State* L) -> int
 
 static auto facegroup_build(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
 
     mesh->Build();
 
@@ -115,7 +115,7 @@ static auto facegroup_build(lua_State* L) -> int
 
 static auto facegroup_clear(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
 
     mesh->Clear();
 
@@ -124,7 +124,7 @@ static auto facegroup_clear(lua_State* L) -> int
 
 static auto facegroup_calcnormals(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
 
     mesh->CalculateNormals();
 
@@ -133,7 +133,7 @@ static auto facegroup_calcnormals(lua_State* L) -> int
 
 static auto facegroup_delete(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
 
     mesh->Release();
 
@@ -142,7 +142,7 @@ static auto facegroup_delete(lua_State* L) -> int
 
 static auto facegroup_getvertices(lua_State* L) -> int
 {
-    const auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* const mesh = LuaGetInline<CFaceGroup*>(L);
 
     lua_newtable(L);
 
@@ -159,7 +159,7 @@ static auto facegroup_getvertices(lua_State* L) -> int
 
 static auto facegroup_getbounds(lua_State* L) -> int
 {
-    auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* mesh = LuaGetInline<CFaceGroup*>(L);
     const auto b = mesh->GetBounds();
 
     lua_newtable(L);
@@ -179,7 +179,7 @@ static auto facegroup_getbounds(lua_State* L) -> int
 
 static auto facegroup_getindices(lua_State* L) -> int
 {
-    const auto mesh = *static_cast<CFaceGroup**>(luaL_checkudata(L, 1, L_FACEGROUP));
+    auto* const mesh = LuaGetInline<CFaceGroup*>(L);
 
     lua_newtable(L);
 
