@@ -6,7 +6,7 @@
 
 class CLight;
 
-class ENGINE_API CEffect : public CAllocable<CEffect>
+class ENGINE_API CEffect : CReferenceCounter, public CAllocable<CEffect>
 {
 public:
     CEffect();

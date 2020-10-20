@@ -123,7 +123,8 @@ void CEffect::LoadEffect(LPCSTR effectPath, bool debugMode)
 
 void CEffect::Release()
 {
-    SAFE_RELEASE(mEffect);
+    if (DelRef())
+        SAFE_RELEASE(mEffect);
 }
 
 auto CEffect::Begin(LPCSTR technique) -> unsigned int
