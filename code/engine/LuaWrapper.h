@@ -90,10 +90,7 @@ auto LuaGetInline(lua_State* L) -> T
 
 inline auto LuaTestClass(lua_State* L, LPCSTR lname) -> bool
 {
-    if (lua_gettop(L) == 0)
-        return false;
-
-    return luaL_testudata(L, 1, lname) != nullptr;
+    return lua_gettop(L) == 0 ? false : luaL_testudata(L, 1, lname) != nullptr;
 }
 
 inline auto LuaLength(lua_State* L) -> int
