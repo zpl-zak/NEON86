@@ -235,7 +235,7 @@ static auto scene_delete(lua_State* L) -> int
 }
 
 
-static void LuaScene_register(lua_State* L)
+static void LuaScene$Register(lua_State* L)
 {
     lua_register(L, L_SCENE, scene_new);
     lua_register(L, "Model", scene_new);

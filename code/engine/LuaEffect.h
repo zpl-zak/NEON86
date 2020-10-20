@@ -195,7 +195,7 @@ static auto effect_delete(lua_State* L) -> int
     return 0;
 }
 
-static void LuaEffect_register(lua_State* L)
+static void LuaEffect$Register(lua_State* L)
 {
     lua_register(L, L_EFFECT, effect_new);
     luaL_newmetatable(L, L_EFFECT);

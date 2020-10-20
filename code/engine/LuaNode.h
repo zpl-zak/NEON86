@@ -346,7 +346,7 @@ static auto node_delete(lua_State* L) -> int
 }
 
 
-static void LuaNode_register(lua_State* L)
+static void LuaNode$Register(lua_State* L)
 {
     lua_register(L, L_NODE, node_new);
     luaL_newmetatable(L, L_NODE);

@@ -158,7 +158,7 @@ static auto sound_delete(lua_State* L) -> int
     return 0;
 }
 
-static void LuaSound_register(lua_State* L)
+static void LuaSound$Register(lua_State* L)
 {
     lua_register(L, L_SOUND, sound_new);
     luaL_newmetatable(L, L_SOUND);

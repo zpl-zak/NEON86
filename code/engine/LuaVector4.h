@@ -284,7 +284,7 @@ LUAS(D3DXVECTOR4, L_VECTOR, vector4_y, y);
 LUAS(D3DXVECTOR4, L_VECTOR, vector4_z, z);
 LUAS(D3DXVECTOR4, L_VECTOR, vector4_w, w);
 
-static void LuaVector_register(lua_State* L)
+static void LuaVector$Register(lua_State* L)
 {
     // compat
     lua_register(L, "Vector3", vector4_new);

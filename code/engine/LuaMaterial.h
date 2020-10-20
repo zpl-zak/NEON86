@@ -239,7 +239,7 @@ static auto material_setshaded(lua_State* L) -> int
     return 0;
 }
 
-static void LuaMaterial_register(lua_State* L)
+static void LuaMaterial$Register(lua_State* L)
 {
     lua_register(L, L_MATERIAL, material_new);
     luaL_newmetatable(L, L_MATERIAL);

@@ -287,8 +287,8 @@ void CLuaBindings::BindBase(lua_State* L)
 
 void CLuaBindings::BindAudio(lua_State* L)
 {
-    LuaSound_register(L);
-    LuaMusic_register(L);
+    LuaSound$Register(L);
+    LuaMusic$Register(L);
 }
 
 /// MATH METHODS
@@ -363,8 +363,8 @@ LUAF(Math, ScreenToWorld)
 
 void CLuaBindings::BindMath(lua_State* L)
 {
-    LuaMatrix_register(L);
-    LuaVector_register(L);
+    LuaMatrix$Register(L);
+    LuaVector$Register(L);
 
     REGF(Math, Color);
     REGF(Math, WorldToScreen);
@@ -822,16 +822,16 @@ void CLuaBindings::BindRenderer(lua_State* L)
 
     REGF(Rend, BindTexture);
 
-    LuaVertex_register(L);
-    LuaMaterial_register(L);
-    LuaLight_register(L);
-    LuaMesh_register(L);
-    LuaFaceGroup_register(L);
-    LuaScene_register(L);
-    LuaNode_register(L);
-    LuaEffect_register(L);
-    LuaRenderTarget_register(L);
-    LuaFont_register(L);
+    LuaVertex$Register(L);
+    LuaMaterial$Register(L);
+    LuaLight$Register(L);
+    LuaMesh$Register(L);
+    LuaFaceGroup$Register(L);
+    LuaScene$Register(L);
+    LuaNode$Register(L);
+    LuaEffect$Register(L);
+    LuaRenderTarget$Register(L);
+    LuaFont$Register(L);
 
     // enums
     {

@@ -49,7 +49,7 @@ static auto rtt_bind(lua_State* L) -> int
     return 0;
 }
 
-static void LuaRenderTarget_register(lua_State* L)
+static void LuaRenderTarget$Register(lua_State* L)
 {
     lua_register(L, L_RENDERTARGET, rtt_new);
     luaL_newmetatable(L, L_RENDERTARGET);

@@ -365,7 +365,7 @@ static auto matrix_inverse(lua_State* L) -> int
     return 1;
 }
 
-static void LuaMatrix_register(lua_State* L)
+static void LuaMatrix$Register(lua_State* L)
 {
     lua_register(L, L_MATRIX, matrix_new);
     luaL_newmetatable(L, L_MATRIX);

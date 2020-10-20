@@ -123,7 +123,7 @@ static auto vertex_get(lua_State* L) -> int
     return 1;
 }
 
-static void LuaVertex_register(lua_State* L)
+static void LuaVertex$Register(lua_State* L)
 {
     lua_register(L, L_VERTEX, vertex_new);
     luaL_newmetatable(L, L_VERTEX);

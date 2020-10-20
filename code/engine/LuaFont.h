@@ -83,7 +83,7 @@ static auto font_delete(lua_State* L) -> int
     return 0;
 }
 
-static void LuaFont_register(lua_State* L)
+static void LuaFont$Register(lua_State* L)
 {
     lua_register(L, L_FONT, font_new);
     luaL_newmetatable(L, L_FONT);
