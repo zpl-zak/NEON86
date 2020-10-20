@@ -20,7 +20,7 @@ auto LuaGetClass(lua_State* L, LPCSTR lname, T& value) -> bool
 }
 
 template<typename T>
-inline auto LuaGet(lua_State* L, T& value) -> bool
+auto LuaGet(lua_State* L, T& value) -> bool
 {
     if (lua_gettop(L) < 1)
         return false;
@@ -81,7 +81,7 @@ inline auto LuaGet(lua_State* L, T& value) -> bool
 }
 
 template<typename T>
-inline auto LuaGetInline(lua_State* L) -> T
+auto LuaGetInline(lua_State* L) -> T
 {
     T value{};
     LuaGet<T>(L, value);
