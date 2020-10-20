@@ -4,7 +4,7 @@
 #include <lua/lua.hpp>
  
 template<typename>
-struct always_false : std::false_type {};
+struct AlwaysFalse : std::false_type {};
 
 template<typename T>
 auto LuaGetClass(lua_State* L, LPCSTR lname, T& value) -> bool
@@ -12,7 +12,7 @@ auto LuaGetClass(lua_State* L, LPCSTR lname, T& value) -> bool
     auto* ptr = static_cast<T*>(luaL_testudata(L, 1, lname));
     luaL_argexpected(L, ptr != nullptr, 1, lname);
 
-    if (!ptr)
+    if (ptr == nullptr)
         return false;
 
     value = *ptr;
@@ -72,7 +72,7 @@ inline auto LuaGet(lua_State* L, T& value) -> bool
     // unknown type, error out
     else
     {
-        static_assert(always_false<T>::value, "Type not implemented!");
+        static_assert(AlwaysFalse<T>::value, "Type not implemented!");
         return false;
     }
  
