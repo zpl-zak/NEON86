@@ -52,12 +52,19 @@ class NeonSettings(PropertyGroup):
         maxlen=1024,
         subtype='FILE_PATH')
         
+    game_dir : StringProperty(
+        name="",
+        description="Path to Directory",
+        default="w:/neon86",
+        maxlen=1024,
+        subtype='DIR_PATH')
+        
     game_data : StringProperty(
         name="",
         description="Path to Directory",
         default="w:/neon86/build/deploy/data",
         maxlen=1024,
-        subtype='FILE_PATH')
+        subtype='DIR_PATH')
             
 
 class NEON_UL_Files(UIList):
@@ -238,8 +245,9 @@ class NEON_PT_GameLauncher(Panel):
         layout = self.layout
         scn = context.scene
         col = layout.column(align=True)
-        col.prop(scn.neon_props, "game_exe", text="Game EXE")
-        col.prop(scn.neon_props, "game_data", text="Game Data")
+        col.prop(scn.neon_props, "game_exe", text="EXE")
+        col.prop(scn.neon_props, "game_dir", text="Workdir")
+        col.prop(scn.neon_props, "game_data", text="Data")
         col = layout.column(align=True)
         col.operator("object.launch_game", text="Launch Game ")
 
@@ -254,7 +262,7 @@ class NEON_OT_LaunchGame(Operator):
         
         DETACHED_PROCESS = 0x00000008
         results = subprocess.Popen([props.game_exe, props.game_data],
-                                   close_fds=True, creationflags=DETACHED_PROCESS)
+                                   close_fds=True, cwd=props.game_dir, creationflags=DETACHED_PROCESS)
         return {'FINISHED'} 
 
 classes = (
