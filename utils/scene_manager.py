@@ -3,7 +3,7 @@
 bl_info = {
     "name": "Scene Manager",
     "author": "Dominik Madarasz",
-    "version": (1, 1, 0),
+    "version": (1, 2, 0),
     "blender": (2, 90, 1),
     "location": "3D View > View > NEON86",
     "description": "Scene manager for NEON86 Blender projects.",
@@ -44,6 +44,21 @@ class NeonSettings(PropertyGroup):
     drop_old_props : BoolProperty(
         name="Drop existing properties",
         default=False)
+        
+    game_exe : StringProperty(
+        name="",
+        description="Path to Directory",
+        default="w:/neon86/build/debug/player.exe",
+        maxlen=1024,
+        subtype='FILE_PATH')
+        
+    game_data : StringProperty(
+        name="",
+        description="Path to Directory",
+        default="w:/neon86/build/deploy/data",
+        maxlen=1024,
+        subtype='FILE_PATH')
+            
 
 class NEON_UL_Files(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
@@ -211,6 +226,37 @@ class NEON_PT_ReplaceProperties(Panel):
         op.drop_old_props = scn.neon_props.drop_old_props
 
 
+class NEON_PT_GameLauncher(Panel):
+    bl_idname = "NEON_PT_GameLauncher"
+    bl_label = "Game Launcher"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "NEON86"
+    bl_context = "objectmode"
+
+    def draw(self, context):
+        layout = self.layout
+        scn = context.scene
+        col = layout.column(align=True)
+        col.prop(scn.neon_props, "game_exe", text="Game EXE")
+        col.prop(scn.neon_props, "game_data", text="Game Data")
+        col = layout.column(align=True)
+        col.operator("object.launch_game", text="Launch Game ")
+
+
+class NEON_OT_LaunchGame(Operator):
+    bl_idname = "object.launch_game"
+    bl_label = ""
+    
+    def execute(self, context):
+        import subprocess
+        props = context.scene.neon_props
+        
+        DETACHED_PROCESS = 0x00000008
+        results = subprocess.Popen([props.game_exe, props.game_data],
+                                   close_fds=True, creationflags=DETACHED_PROCESS)
+        return {'FINISHED'} 
+
 classes = (
     csvFile,
     NEON_OT_NewItem,
@@ -219,7 +265,9 @@ classes = (
     NEON_UL_Files,
     NEON_OT_ImportCSV,
     NEON_OT_ReplaceProps,
+    NEON_OT_LaunchGame,
     NeonSettings,
+    NEON_PT_GameLauncher,
     NEON_PT_AddCustomPropertiesPanel,
     NEON_PT_ReplaceProperties,
 )
