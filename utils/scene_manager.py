@@ -3,7 +3,7 @@
 bl_info = {
     "name": "Scene Manager",
     "author": "Dominik Madarasz",
-    "version": (1, 2, 0),
+    "version": (1, 2, 1),
     "blender": (2, 90, 1),
     "location": "3D View > View > NEON86",
     "description": "Scene manager for NEON86 Blender projects.",
@@ -31,7 +31,7 @@ from bpy.types import (Panel,
                        )
 
 class csvFile(PropertyGroup): 
-    name: StringProperty( name="Name", description="A name for this item", default="Untitled")
+    name: StringProperty( name="Name", description="CSV file", default="untitled.csv")
 
 class NeonSettings(PropertyGroup):    
     path : StringProperty(
@@ -65,7 +65,9 @@ class NeonSettings(PropertyGroup):
         default="w:/neon86/build/deploy/data",
         maxlen=1024,
         subtype='DIR_PATH')
-            
+                
+    csv_files : CollectionProperty(type=csvFile)
+    csv_file_index : IntProperty(name="File index", default = 0)
 
 class NEON_UL_Files(UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
@@ -84,7 +86,8 @@ class NEON_OT_NewItem(Operator):
     filePath : bpy.props.StringProperty()
     
     def execute(self, context):
-        item = context.scene.csv_files.add()
+        props = context.scene.neon_props
+        item = props.csv_files.add()
         item.name = self.filePath
         return{'FINISHED'}
 
@@ -97,11 +100,12 @@ class NEON_OT_DeleteItem(Operator):
         return context.scene.csv_files
     
     def execute(self, context):
-        files = context.scene.csv_files
-        fileIdx = context.scene.csv_file_index
+        props = context.scene.neon_props
+        files = props.csv_files
+        fileIdx = props.csv_file_index
         
         files.remove(fileIdx)
-        context.scene.csv_file_index = min(max(0, fileIdx - 1), len(files) - 1)
+        props.csv_file_index = min(max(0, fileIdx - 1), len(files) - 1)
 
         return{'FINISHED'}
 
@@ -115,19 +119,20 @@ class NEON_OT_MoveItem(Operator):
     def poll(cls, context):
         return context.scene.csv_files
     
-    def move_index(self):
-        index = bpy.context.scene.csv_file_index
-        list_index = len(bpy.context.scene.csv_files) - 1
+    def move_index(self, props):
+        index = props.csv_file_index
+        list_index = len(props.csv_files) - 1
         new_index = index + (-1 if self.dir == 'UP' else 1)
-        bpy.context.scene.csv_file_index = max(0, min(new_index, list_index))
+        props.csv_file_index = max(0, min(new_index, list_index))
     
     def execute(self, context):
-        files = context.scene.csv_files
-        fileIdx = context.scene.csv_file_index
+        props = context.scene.neon_props
+        files = props.csv_files
+        fileIdx = props.csv_file_index
         
         cell = fileIdx + (-1 if self.dir == 'UP' else 1)
         files.move(cell, fileIdx)
-        self.move_index()
+        self.move_index(props)
 
         return{'FINISHED'}
 
@@ -137,7 +142,8 @@ class NEON_OT_ImportCSV(Operator):
     bl_label = ""
 
     def execute(self, context):
-        files = context.scene.csv_files
+        props = context.scene.neon_props
+        files = props.csv_files
         objects = bpy.context.selected_objects if len(bpy.context.selected_objects) > 0 else bpy.data.objects
 
         for filePath in files:
@@ -167,8 +173,8 @@ class NEON_OT_ImportCSV(Operator):
     		
         return {'FINISHED'}
 
-class NEON_PT_AddCustomPropertiesPanel(Panel):
-    bl_idname = "NEON_PT_AddCustomPropertiesPanel"
+class NEON_PT_ImportCSVFiles(Panel):
+    bl_idname = "NEON_PT_ImportCSVFiles"
     bl_label = "CSV Properties Importer"  # scn.neon_props
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -178,12 +184,13 @@ class NEON_PT_AddCustomPropertiesPanel(Panel):
     def draw(self, context):
         layout = self.layout
         scn = context.scene
+        props = context.scene.neon_props
         col = layout.column(align=True)
         col.prop(scn.neon_props, "path", text="")
         
         col = layout.column(align=True)
         row = layout.row()
-        col.template_list("NEON_UL_Files", "Files", scn, "csv_files", scn, "csv_file_index")
+        col.template_list("NEON_UL_Files", "Files", props, "csv_files", props, "csv_file_index")
         row.operator('csv_files.new_item', text='Add').filePath = scn.neon_props.path
         row.operator('csv_files.delete_item', text='Remove')
         row.operator('csv_files.move_item', text='Up').dir = 'UP'
@@ -276,7 +283,7 @@ classes = (
     NEON_OT_LaunchGame,
     NeonSettings,
     NEON_PT_GameLauncher,
-    NEON_PT_AddCustomPropertiesPanel,
+    NEON_PT_ImportCSVFiles,
     NEON_PT_ReplaceProperties,
 )
 
@@ -285,8 +292,6 @@ def register():
     for cls in classes:
         register_class(cls)
     bpy.types.Scene.neon_props = PointerProperty(type=NeonSettings)
-    bpy.types.Scene.csv_files = CollectionProperty(type=csvFile)
-    bpy.types.Scene.csv_file_index = IntProperty(name="File index", default = 0)
 
 def unregister():
     from bpy.utils import unregister_class
