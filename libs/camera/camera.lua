@@ -12,7 +12,7 @@ class "Camera" {
     self.pos = pos
     self.angles = angles
     self.speed = 15.0
-    self.sensitivity = 0.15
+    self.sensitivity = 0.003
     self.vel = Vector3()
     self.heldControls = false
     self:updateMatrix()
@@ -53,11 +53,11 @@ class "Camera" {
     self.movedir = movedir
   end,
 
-  mouseLook = function (self, dt)
+  mouseLook = function (self)
     if GetCursorMode() == CURSORMODE_CENTERED then
       mouseDelta = GetMouseDelta()
-      self.angles[1] = self.angles[1] + (mouseDelta[1] * dt * self.sensitivity)
-      self.angles[2] = self.angles[2] - (mouseDelta[2] * dt * self.sensitivity)
+      self.angles[1] = self.angles[1] + (mouseDelta[1] * self.sensitivity)
+      self.angles[2] = self.angles[2] - (mouseDelta[2] * self.sensitivity)
     end
   end,
 
