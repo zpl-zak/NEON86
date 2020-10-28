@@ -20,7 +20,8 @@ static auto getMatrix(const btTransform& tr) -> D3DXMATRIX
 
 static auto bullet_update(lua_State* L) -> INT
 {
-    world->stepSimulation(1 / 60.F, 1);
+    const auto ms = static_cast<float>(luaL_checknumber(L, 1));
+    world->stepSimulation(ms, 1);
     return 0;
 }
 

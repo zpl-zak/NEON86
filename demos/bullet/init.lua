@@ -11,8 +11,6 @@ local bgColor = Color(60, 60, 69)
 local ambColor = Color(40, 40, 69)
 local showWireframe = false
 
-LogString("hello")
-
 local MODELS = {
   ball = Model("sphere.fbx"),
   map = Model("bowl.fbx")
@@ -116,7 +114,8 @@ end
 
 function _update(dt)
   input()
-  physWorld.update()
+  LogString(""..dt)
+  physWorld.update(dt)
   player:update(dt)
   player:update2(dt)
   phys(ents)
