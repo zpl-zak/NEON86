@@ -17,8 +17,6 @@ save.neon
 *.lib
 *.exp
 
-!code/deps/**.lib
-
 .lite_workspace.lua
 *.code-workspace
 
