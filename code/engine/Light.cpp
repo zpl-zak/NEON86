@@ -16,7 +16,6 @@ void CLight::Release()
     if (DelRef())
     {
         SetDefaults();
-        Enable(FALSE);
         delete this;
     }
 }

@@ -3,8 +3,8 @@ local helpers = require "helpers"
 
 class "FramePose" {
   __init__ = function (self)
-    self.comps = {Vector(), Vector(), Vector(1,1,1), 0}
-    self.uses = {false, false, false, false}
+    self.comps = {Vector(), Vector(), Vector(1,1,1), 0, Matrix()}
+    self.uses = {false, false, false, false, false}
   end,
 
   withPos = function (self, pos)
@@ -30,6 +30,11 @@ class "FramePose" {
     self.uses[4] = true
   end,
 
+  withMat = function (self, mat)
+    self.comps[5] = mat
+    self.uses[5] = true
+  end,
+
   getPos = function (self)
     return self.comps[1]
   end,
@@ -46,11 +51,17 @@ class "FramePose" {
     return self.comps[4]
   end,
 
+  getMat = function (self)
+    return self.comps[5]
+  end,
+
   default = function (i)
     if i == 3 then
       return Vector(1,1,1)
     elseif i == 4 then
       return 0
+    elseif i == 5 then
+      return Matrix()
     else
       return Vector()
     end
@@ -83,6 +94,9 @@ class "Layer" {
         else
           self.pose.comps[i] = FramePose.default(i)
         end
+      elseif i == 5 then
+        -- Handle baked matrices
+        self.pose.comps[i] = goal.pose.comps[i]
       else
         -- TODO Implement other interpolation types
         self.pose.comps[i] = helpers.lerp(base.pose.comps[i], goal.pose.comps[i], (time-base.time) / (goal.time-base.time))

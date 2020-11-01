@@ -3,6 +3,7 @@
 testFont = Font("Times New Roman", 36, 2000, false)
 sphere = Model("sphere.fbx")
 bgColor = Color(20,20,69)
+slowMode = false
 light = Light()
 
 light:setDirection(Vector(-1,-1,1))
@@ -40,7 +41,15 @@ function _update(dt)
     ExitGame()
   end
 
-  animator:update(dt)
+  if GetKeyDown("l") then
+    slowMode = not slowMode
+  end
+
+  local speed = 1.0
+
+  if slowMode then speed = 0.5 end
+
+  animator:update(dt*speed)
 end
 
 function _render()
@@ -56,5 +65,7 @@ end
 function _render2d()
   testFont:drawText(0xFFFFFFFF, [[
   Welcome to the anims demo test!
+
+  Press L to toggle slow mode
   ]], 0, 30, 0, 0, FF_NOCLIP)
 end
