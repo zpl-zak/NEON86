@@ -178,7 +178,7 @@ auto CFaceGroup::Clone() -> CFaceGroup*
 {
     auto* clonedFG = new CFaceGroup();
     clonedFG->SetMaterial(mData.mat);
-    mData.mat->AddRef();
+    if (mData.mat) mData.mat->AddRef();
 
     for (auto v : mVerts)
     {
