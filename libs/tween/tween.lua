@@ -28,11 +28,13 @@ class "FramePose" {
   withProp = function (self, num)
     self.comps[4] = num
     self.uses[4] = true
+    return self
   end,
 
   withMat = function (self, mat)
     self.comps[5] = mat
     self.uses[5] = true
+    return self
   end,
 
   getPos = function (self)
