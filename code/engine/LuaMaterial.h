@@ -45,7 +45,7 @@ static auto material_loadfile(lua_State* L) -> int
 static auto material_getres(lua_State* L) -> int
 {
     auto mat = *static_cast<CMaterial**>(luaL_checkudata(L, 1, L_MATERIAL));
-    const unsigned int userSlot = static_cast<unsigned int>(luaL_checkinteger(L, 3)) - 1;
+    const unsigned int userSlot = static_cast<unsigned int>(luaL_checkinteger(L, 2)) - 1;
     LPDIRECT3DTEXTURE9 h = mat->GetTextureHandle(userSlot);
     D3DSURFACE_DESC a;
 
