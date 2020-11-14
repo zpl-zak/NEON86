@@ -53,7 +53,13 @@ function _render()
     roomScene:draw()
   end)
 
-  Matrix():translate(-0.5,-0.3,0):scale(8):translate(fireSpot):translate(0,-2.2,0):rotate(-getTime()/2,0,0):bind(WORLD)
+  Matrix()
+    :translate(-0.5,-0.3,0)
+    :scale(8):translate(fireSpot)
+    :translate(0,-2.2,0)
+    :rotate(-getTime()/2,0,0)
+    :bind(WORLD)
+
   fire:draw()
   Matrix():bind(WORLD)
 end

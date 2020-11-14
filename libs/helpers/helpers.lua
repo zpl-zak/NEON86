@@ -27,11 +27,11 @@ local function cap3(v, m)
   return v
 end
 
-local function drawEffect(fx, tech, drawfn)
+local function drawEffect(fx, tech, drawfn, ...)
   local numPasses = fx:start(tech)
   for i=1,numPasses do
     fx:beginPass(i)
-    drawfn(fx)
+    drawfn(fx, i, ...)
     fx:endPass()
   end
   fx:finish()
@@ -73,9 +73,9 @@ local function dump(o)
   end
 end
 
-local function withTexture(tex, fn)
+local function withTexture(tex, fn, ...)
   BindTexture(0, tex)
-  fn()
+  fn(...)
   BindTexture(0)
 end
 

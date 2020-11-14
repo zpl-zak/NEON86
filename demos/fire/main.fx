@@ -34,7 +34,7 @@ float4 PS_Main(VS_OUTPUT IN) : COLOR
 
     float3 n = normalize(IN.normal);
     float3 l = IN.worldPos - bonfire.Position;
-    float dl = length(l);
+    float dl = length(l); if (dl == 0.0) dl = 0.00001;
     float diffuse = saturate(dot(n, normalize(-l))) / dl;
 
     OUT = NEON.AmbientColor + MAT.Diffuse * normalize(bonfire.Diffuse) * diffuse;
