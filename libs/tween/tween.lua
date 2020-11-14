@@ -1,6 +1,16 @@
 local class = require "class"
 local helpers = require "helpers"
 
+local interpolate = {
+  none = function (a)
+    return a
+  end,
+
+  linear = function (a, b, t)
+    return helpers.lerp(a, b, t)
+  end,
+}
+
 class "FramePose" {
   __init__ = function (self)
     self.comps = {Vector(), Vector(), Vector(1,1,1), 0, Matrix()}
@@ -100,8 +110,7 @@ class "Layer" {
         -- Handle baked matrices
         self.pose.comps[i] = goal.pose.comps[i]
       else
-        -- TODO Implement other interpolation types
-        self.pose.comps[i] = helpers.lerp(base.pose.comps[i], goal.pose.comps[i], (time-base.time) / (goal.time-base.time))
+        self.pose.comps[i] = interpolate[goal.kind](base.pose.comps[i], goal.pose.comps[i], (time-base.time) / (goal.time-base.time))
       end
     end
 
