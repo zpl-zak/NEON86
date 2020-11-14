@@ -163,7 +163,7 @@ goto :package_prompt
 	echo  6. Space
 	echo  7. Music demo
 	echo  8. RTT demo
-	echo  9. Collisions
+	echo  9. Animated sprites
 	echo  A. Bullet physics
 	echo  B. Shadows
 	echo =======================
@@ -177,7 +177,7 @@ goto :package_prompt
 	if %errorlevel%==6 set "proj=space"
 	if %errorlevel%==7 set "proj=music"
 	if %errorlevel%==8 set "proj=rtt"
-	if %errorlevel%==9 set "proj=collisions"
+	if %errorlevel%==9 set "proj=fire"
 	if %errorlevel%==10 set "proj=bullet"
 	if %errorlevel%==11 set "proj=shadowmap"
 
