@@ -38,7 +38,7 @@ local menu = fsm.create({
   }
 })
 
-function _update(dt)
+function _fixedUpdate(dt)
   if GetKeyDown(KEY_ESCAPE) then
     ExitGame()
   end
@@ -58,8 +58,8 @@ function _update(dt)
   menu.level:update(dt)
 end
 
-function _render()
-  menu.level:render()
+function _render(dt)
+  menu.level:render(dt)
 end
 
 local testFont = Font("Arial", 18, 1, false)

@@ -112,20 +112,22 @@ local function input()
   SetCursorMode(CURSORMODE_CENTERED)
 end
 
-function _update(dt)
+function _fixedUpdate(dt)
   input()
-  LogString(""..dt)
-  physWorld.update(dt)
   player:update(dt)
   player:update2(dt)
-  phys(ents)
+  LogString(""..dt)
 end
 
-function _render()
+function _render(dt)
   ClearScene(bgColor)
   AmbientColor(ambColor)
+  physWorld.update(dt)
+  phys(ents)
+
   EnableLighting(true)
   CameraPerspective(62, 0.1, 100)
+  player:lookUpdate(dt)
   player.mat:bind(VIEW)
   draw(ents)
 

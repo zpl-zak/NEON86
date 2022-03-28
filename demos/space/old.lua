@@ -57,7 +57,7 @@ function _destroy()
 
 end
 
-function _update(dt)
+function _fixedUpdate(dt)
 	spinner = spinner + 1.5*dt
 	time = time + dt
 	rot = euler(spinner, math.sin(spinner), 0)

@@ -14,11 +14,14 @@ fireSpot = roomScene:findTarget("Spot"):row(4)
 
 lightFX = Effect("main.fx")
 
+useShader = true
+
 light:setType(LIGHTKIND_POINT)
 light:setPosition(Vector(0,2,0))
-light:setRange(5)
-light:setAttenuation(0.2,1,0.8)
-light:setDiffuse(Color(120,110,40))
+light:setRange(32767)
+light:setAttenuation(1.0,0.1,0.01)
+light:setDiffuse(Color(120*2,110*2,40*2))
+-- light:setSpecular(Color(255,255,255))
 light:enable(true, 0)
 EnableLighting(true)
 
@@ -33,9 +36,13 @@ fireSFX:setVolume(50)
 fireSFX:loop(true)
 fireSFX:play()
 
-function _update(dt)
+function _fixedUpdate(dt)
   if GetKeyDown(KEY_ESCAPE) then
     ExitGame()
+  end
+
+  if GetKeyDown("p") then
+    useShader = not useShader
   end
 
   fire:update(dt)
@@ -48,10 +55,14 @@ function _render()
   local mat = Matrix():rotate(getTime()/2,0,0) * viewMat
   mat:bind(VIEW)
 
-  helpers.withEffect(lightFX, "Main", function (fx)
-    fx:setLight("bonfire", light)
+  if useShader then
+    helpers.withEffect(lightFX, "Main", function (fx)
+      fx:setLight("bonfire", light)
+      roomScene:draw()
+    end)
+  else
     roomScene:draw()
-  end)
+  end
 
   Matrix()
     :translate(-0.5,-0.3,0)
@@ -62,4 +73,14 @@ function _render()
 
   fire:draw()
   Matrix():bind(WORLD)
+end
+
+local testFont = Font("Arial", 72, 1, false)
+
+function _render2d()
+  local text = "Shader"
+  if not useShader then
+    text = "VertexLit Direct3D"
+  end
+  testFont:drawText(0xFFFFFFFF, text, 15, 30)
 end

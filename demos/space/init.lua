@@ -28,7 +28,7 @@ function _init()
 	camera.speed = 120.0*scale
 end
 
-function _update(dt)
+function _fixedUpdate(dt)
 	if GetKeyDown(KEY_F2) then
 		ShowCursor(not IsCursorVisible())
 		SetCursorMode(1-GetCursorMode())
@@ -49,10 +49,11 @@ function _update(dt)
 	end
 end
 
-function _render()
+function _render(dt)
 	ClearScene(20,20,20)
 	CameraPerspective(62, 0.1, 10000)
 
+  camera:update(dt)
 	camera.mat:bind(VIEW)
 
 	spaceFX:start("Main")

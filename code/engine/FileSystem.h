@@ -33,7 +33,7 @@ public:
     auto ResourcePath(LPCSTR resName = nullptr) const -> LPCSTR;
     auto GetGamePath() const -> LPCSTR { return mGamePath; }
     auto GetCanonicalGamePath() const -> LPCSTR;
-    auto Exists(LPCSTR resName) -> bool;
+    auto Exists(LPCSTR resName) const -> bool;
     static void FreeResource(LPVOID data);
     void Release(void);
 

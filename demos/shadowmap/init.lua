@@ -4,15 +4,16 @@ shadowMapSize = 4096.0
 debugVis = false
 
 cam = require "camera" (Vector(1,2,3)*4, {math.pi, -0.5})
-shadowGen = require "shadow" (shadowMapSize)
+local shadowUtils = require "shadow"
+local shadowDraw = shadowUtils.ShadowDraw(4096)
 require "helpers".global()
 
 res = GetResolution()
 
-debugView = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
-debugViewMini = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
-debugViewUnlit = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
-debugViewDepth = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
+local debugView = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
+local debugViewMini = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
+local debugViewUnlit = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
+local debugViewDepth = RenderTarget(math.floor(res[1]/4), math.floor(res[2]/4))
 
 lightDir = Vector3(-0.33,-1,1)
 scene = Scene("scene.fbx")
@@ -35,7 +36,7 @@ shadowMethod = 0
 noShadows = 0
 paused = false
 
-function _update(dt)
+function _fixedUpdate(dt)
   if GetKeyDown(KEY_ESCAPE) then
       ExitGame()
   end
@@ -61,12 +62,13 @@ function _update(dt)
   end
 
   if GetKeyDown("m") then
-    if shadowMapSize == 256.0 then
-      shadowMapSize = 4096.0
+    if shadowMapSize == 256 then
+      shadowMapSize = 4096
     else
-      shadowMapSize = 256.0
+      shadowMapSize = 256
     end
-    shadowGen = ShadowGen(shadowMapSize)
+    shadowDraw = nil
+    shadowDraw = shadowUtils.ShadowDraw(shadowMapSize)
   end
 
   if GetKeyDown("n") then
@@ -96,7 +98,8 @@ function _render()
   light:setDirection(ldir)
   light:enable(true, 0)
 
-  shadowGen:build(lightView, lightProj, drawScene)
+  shadowDraw:clear()
+  shadowDraw:addShadow(lightView, lightProj, drawScene)
 
   -- 2nd pass, render scene w/ shadows
   ClearTarget()
@@ -107,13 +110,10 @@ function _render()
 
   drawEffect(shader, "Scene", function (fx)
     fx:setLight("sun", light)
-    fx:setTexture("shadowTex", shadowGen.shadowmap)
-    fx:setMatrix("shadowView", lightView)
-    fx:setMatrix("shadowProj", lightProj)
     fx:setVector3("campos", cam.pos)
-    fx:setFloat("shadowMapSize", shadowMapSize)
     fx:setFloat("shadowMethod", shadowMethod)
     fx:setFloat("noShadows", noShadows)
+    shadowDraw:bind(fx)
     fx:commit()
     drawScene()
   end)
@@ -150,14 +150,15 @@ function _render()
     cam.mat:bind(VIEW)
     ClearScene(0xFF00FF00)
 
-    withEffect(shadowGen.shader, "Shadow", function ()
-      drawScene()
-    end)
+    -- withEffect(shadowDraw.generator.shader, "ShadowGather", function ()
+    --   drawScene()
+    -- end)
 
     EnableLighting(true)
     ClearTarget()
+    Matrix():bind(VIEW)
 
-    withTexture(shadowGen.shadowmap, function ()
+    withTexture(shadowDraw.generator.shadowmap, function ()
       DrawQuad(res[1]-512, res[1], 0, 512, 0xFFFFFFFF)
     end)
     withTexture(debugView, function ()

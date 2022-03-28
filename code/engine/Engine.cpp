@@ -23,7 +23,7 @@ CEngine::CEngine()
     mDebugUI = nullptr;
     mAudioSystem = nullptr;
 
-    SetFPS(60.0F);
+    SetFPS(60);
     mUnprocessedTime = 0.0F;
     mLastTime = 0.0F;
 }
@@ -101,7 +101,6 @@ auto CEngine::Init(HWND window, RECT resolution) -> bool
 
 void CEngine::Think()
 {
-    auto render = FALSE;
     const auto startTime = GetTime();
     const auto deltaTime = startTime - mLastTime;
     mLastTime = startTime;
@@ -126,20 +125,12 @@ void CEngine::Think()
             return;
         }
 
-        Update(mUpdateDuration);
-        render = TRUE;
+        FixedUpdate(mUpdateDuration);
         mUnprocessedTime -= mUpdateDuration;
     }
 
-    if (render != 0)
-    {
-        Render();
-    }
-    else
-    {
-        CProfileScope scope(DefaultProfiling.mWindowProfiler);
-        Sleep(1);
-    }
+    Update(deltaTime);
+    Render(deltaTime);
 }
 
 void CEngine::CDefaultProfiling::UpdateProfilers(float dt)
@@ -193,11 +184,13 @@ void CEngine::CDefaultProfiling::IncrementFrame()
 void CEngine::CDefaultProfiling::SetupDefaultProfilers()
 {
     mUpdateProfiler = new CProfiler("Update");
+    mFixedUpdateProfiler = new CProfiler("FixedUpdate");
     mRenderProfiler = new CProfiler("Render");
     mRender2DProfiler = new CProfiler("RenderUI");
     mWindowProfiler = new CProfiler("Window");
 
     mProfilers.Push(mUpdateProfiler);
+    mProfilers.Push(mFixedUpdateProfiler);
     mProfilers.Push(mRenderProfiler);
     mProfilers.Push(mRender2DProfiler);
     mProfilers.Push(mWindowProfiler);
@@ -326,17 +319,25 @@ void CEngine::Update(float deltaTime) const
         mVirtualMachine->Update(deltaTime);
         mAudioSystem->Update();
     }
+}
+
+void CEngine::FixedUpdate(float deltaTime) const
+{
+    {
+        CProfileScope scope(DefaultProfiling.mFixedUpdateProfiler);
+        mVirtualMachine->FixedUpdate(deltaTime);
+    }
 
     mInput->Update();
 }
 
-void CEngine::Render() const
+void CEngine::Render(float renderTime) const
 {
     mRenderer->BeginRender();
 
     {
         CProfileScope scope(DefaultProfiling.mRenderProfiler);
-        mVirtualMachine->Render();
+        mVirtualMachine->Render(renderTime);
 
         if (mDebugUI->IsInError())
         {

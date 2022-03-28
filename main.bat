@@ -4,11 +4,11 @@ cd %~dp0
 REM detect paths
 set msbuild_cmd=msbuild.exe
 where /q msbuild.exe
-if not %errorlevel%==0 set msbuild_cmd="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
+if not %errorlevel%==0 set msbuild_cmd="C:\Program Files\Microsoft Visual Studio\2022\Preview\MSBuild\Current\Bin\MSBuild.exe"
 
 set devenv_cmd=devenv.exe
 where /q devenv.exe
-if not %errorlevel%==0 set devenv_cmd="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"
+if not %errorlevel%==0 set devenv_cmd="C:\Program Files\Microsoft Visual Studio\2022\Preview\Common7\IDE\devenv.exe"
 
 set "proj=basic"
 

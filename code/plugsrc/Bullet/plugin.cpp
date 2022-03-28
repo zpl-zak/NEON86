@@ -251,9 +251,6 @@ static auto bullet_world_ray_test(lua_State* L) -> INT
     }
     lua_pushnil(L);
     return 1;
-
-    lua_pushnil(L);
-    return 1;
 }
 
 static const luaL_Reg bullet[] = {

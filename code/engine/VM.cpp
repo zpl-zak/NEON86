@@ -192,7 +192,46 @@ void CVirtualMachine::Update(float dt)
     PassTime(dt);
 }
 
-void CVirtualMachine::Render()
+void CVirtualMachine::FixedUpdate(float dt)
+{
+    if (mScheduledTermination != 0u)
+    {
+        const auto term = mScheduledTermination;
+        Destroy();
+        Release();
+
+        mScheduledTermination = FALSE;
+
+        if (term == 2)
+        {
+            /* Restart was requested */
+            Play();
+        }
+
+        return;
+    }
+
+    if ((mLuaVM == nullptr) || mPlayKind != PLAYKIND_PLAYING)
+    {
+        return;
+    }
+
+    lua_getglobal(mLuaVM, "_fixedUpdate");
+
+    if (!lua_isfunction(mLuaVM, -1))
+    {
+        return;
+    }
+
+    lua_pushnumber(mLuaVM, dt);
+
+    const auto r = lua_pcall(mLuaVM, 1, 0, 0);
+    CheckVMErrors(r);
+
+    PassTime(dt);
+}
+
+void CVirtualMachine::Render(float renderTime)
 {
     if ((mLuaVM == nullptr) || mPlayKind != PLAYKIND_PLAYING)
     {
@@ -206,7 +245,9 @@ void CVirtualMachine::Render()
         return;
     }
 
-    const auto r = lua_pcall(mLuaVM, 0, 0, 0);
+    lua_pushnumber(mLuaVM, renderTime);
+
+    const auto r = lua_pcall(mLuaVM, 1, 0, 0);
     CheckVMErrors(r);
 }
 
@@ -314,11 +355,7 @@ static auto neon_luapanic(lua_State* L) -> int
 void CVirtualMachine::InitVM()
 {
     mLuaVM = luaL_newstate();
-    if (mLuaVM == nullptr)
-    {
-        lua_atpanic(mLuaVM, &neon_luapanic);
-    }
-
+    lua_atpanic(mLuaVM, &neon_luapanic);
     _lua_openlibs(mLuaVM);
 
     /// Bindings
@@ -333,10 +370,7 @@ void CVirtualMachine::InitVM()
     CheckVMErrors(result, TRUE);
 
     result = lua_pcall(mLuaVM, 0, 0, 0);
-    if (CheckVMErrors(result))
-    {
-        return;
-    }
+    CheckVMErrors(result);
 }
 
 void CVirtualMachine::DestroyVM()

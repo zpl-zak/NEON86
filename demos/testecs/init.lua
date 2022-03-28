@@ -44,7 +44,7 @@ local spin = ecs.sys({"spatial", "spinner"}, function (e, dt)
   e.spinner.val = e.spinner.val + dt
 end)
 
-function _update(dt)
+function _fixedUpdate(dt)
   spin(world, dt)
 end
 

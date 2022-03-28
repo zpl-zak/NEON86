@@ -23,15 +23,18 @@ public:
     void SetAttenuation(float constant, float linear, float quadratic);
     void SetFalloff(float falloff);
     void SetRange(float range);
+    void SetForceRange(bool state);
     void SetInnerAngle(float theta);
     void SetOuterAngle(float phi);
 
     auto GetLightData() const -> D3DLIGHT9 { return mLightData; }
     auto GetSlot() const -> unsigned int { return mSlot; }
+    auto GetForceRange() const -> bool { return mForceRange; } // @todo introduce LIGHT structure
 
 private:
     unsigned int mSlot;
     D3DLIGHT9 mLightData;
+    bool mForceRange;
 
     void SetDefaults();
 };

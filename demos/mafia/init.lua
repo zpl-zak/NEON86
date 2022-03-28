@@ -55,7 +55,7 @@ function _init()
   SetCursorMode(CURSORMODE_CENTERED)
 end
 
-function _update(dt)
+function _fixedUpdate(dt)
   if GetKeyDown(KEY_ESCAPE) then
       ExitGame()
   end

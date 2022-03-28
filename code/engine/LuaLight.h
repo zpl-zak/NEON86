@@ -94,6 +94,15 @@ static auto light_setrange(lua_State* L) -> int
     return 0;
 }
 
+static auto light_setforcerange(lua_State *L) -> int
+{
+    auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
+    const auto val = static_cast<float>(lua_toboolean(L, 2));
+    lit->SetForceRange(val);
+
+    return 0;
+}
+
 static auto light_setfalloff(lua_State* L) -> int
 {
     auto lit = *static_cast<CLight**>(luaL_checkudata(L, 1, L_LIGHT));
@@ -193,6 +202,7 @@ static void LuaLight$Register(lua_State* L)
     REGC("setDirection", light_setdirection);
     REGC("setPosition", light_setposition);
     REGC("setRange", light_setrange);
+    REGC("forceRange", light_setforcerange);
     REGC("setFalloff", light_setfalloff);
     REGC("setAttenuation", light_setatten);
     REGC("setInnerAngle", light_setinnerangle);

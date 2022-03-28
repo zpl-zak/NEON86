@@ -55,7 +55,7 @@ sun:enable(true, 0)
 RegisterFontFile("slkscr.ttf")
 hintFont = Font("Silkscreen", 36, 0, false)
 
-function _update(dt)
+function _fixedUpdate(dt)
   if GetKeyDown(KEY_ESCAPE) then
       ExitGame()
   end

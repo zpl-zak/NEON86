@@ -57,6 +57,7 @@ public:
             mRenderProfiler = nullptr;
             mRender2DProfiler = nullptr;
             mWindowProfiler = nullptr;
+            mFixedUpdateProfiler = nullptr;
         }
 
         void UpdateProfilers(float dt);
@@ -81,6 +82,7 @@ public:
 
         /// Internal profilers
         CProfiler* mUpdateProfiler;
+        CProfiler* mFixedUpdateProfiler;
         CProfiler* mRenderProfiler;
         CProfiler* mRender2DProfiler;
         CProfiler* mWindowProfiler;
@@ -95,7 +97,8 @@ protected:
     CAudioSystem* mAudioSystem;
 
     void Update(float deltaTime) const;
-    void Render() const;
+    void FixedUpdate(float deltaTime) const;
+    void Render(float renderTime) const;
 
     static CEngine* sInstance;
     bool mIsInitialised;

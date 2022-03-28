@@ -37,7 +37,8 @@ class "Level" {
     end
   end,
 
-  render = function (self)
+  render = function (self, dt)
+    self.camera.controller:lookUpdate(dt)
     ClearScene(self.scenery.backdropColor)
     AmbientColor(self.scenery.ambientColor)
     EnableLighting(self.scenery.lightsEnabled)

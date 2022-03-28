@@ -75,12 +75,25 @@ CEffect::CEffect()
 
 void CEffect::LoadEffect(LPCSTR effectPath, bool debugMode)
 {
-    FDATA f = FILESYSTEM->GetResource(effectPath);
+    CString shaderText;
 
-    if (f.data == nullptr)
+    if (strlen(effectPath) > 0)
     {
-        VM->PostError(CString::Format("No effect found: %s", effectPath));
-        return;
+        FDATA f = FILESYSTEM->GetResource(effectPath);
+
+        if (f.data == nullptr)
+        {
+            VM->PostError(CString::Format("No effect found: %s", effectPath));
+            return;
+        }
+
+        shaderText = CString(static_cast<LPCSTR>(f.data));
+
+        FILESYSTEM->FreeResource(f.data);
+    }
+    else
+    {
+        shaderText = CString(_shader_common);
     }
 
     DWORD shaderFlags = D3DXFX_NOT_CLONEABLE | D3DXSHADER_NO_PRESHADER;
@@ -95,8 +108,8 @@ void CEffect::LoadEffect(LPCSTR effectPath, bool debugMode)
     LPD3DXBUFFER errors = nullptr;
     HRESULT hr = D3DXCreateEffect(
         RENDERER->GetDevice(),
-        static_cast<LPCSTR>(f.data),
-        static_cast<unsigned int>(f.size),
+        static_cast<LPCSTR>(shaderText.Str()),
+        static_cast<unsigned int>(shaderText.Length()),
         nullptr,
         reinterpret_cast<LPD3DXINCLUDE>(&inclHandler),
         shaderFlags,
@@ -303,6 +316,7 @@ void CEffect::SetLight(LPCSTR name, CLight* value) const
         SetColor(GetUniformName(name, "Specular").Str(), value->GetLightData().Specular);
         SetFloat(GetUniformName(name, "Falloff").Str(), value->GetLightData().Falloff);
         SetFloat(GetUniformName(name, "Range").Str(), value->GetLightData().Range);
+        SetBool(GetUniformName(name, "ForceRange").Str(), value->GetForceRange());
         SetFloat(GetUniformName(name, "ConstantAtten").Str(), value->GetLightData().Attenuation0);
         SetFloat(GetUniformName(name, "LinearAtten").Str(), value->GetLightData().Attenuation1);
         SetFloat(GetUniformName(name, "QuadraticAtten").Str(), value->GetLightData().Attenuation2);

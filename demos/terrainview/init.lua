@@ -40,7 +40,7 @@ function _init()
 	light:setDiffuse(Vector3(0.91, 0.58, 0.13):color())
 end
 
-function _update(dt)
+function _fixedUpdate(dt)
 	if GetKeyDown(KEY_ESCAPE) then
 		ExitGame()
 	end

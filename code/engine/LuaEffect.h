@@ -216,6 +216,7 @@ static void LuaEffect$Register(lua_State* L)
     REGC("setBool", effect_setbool);
     REGC("setFloat", effect_setfloat);
     REGC("setInt", effect_setinteger);
+    REGC("setInteger", effect_setinteger);
     REGC("setMatrix", effect_setmatrix);
     REGC("setVector3", effect_setvector3);
     REGC("setVector4", effect_setvector4);

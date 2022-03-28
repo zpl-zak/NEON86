@@ -90,6 +90,11 @@ void CLight::SetRange(float range)
     mLightData.Range = range;
 }
 
+void CLight::SetForceRange(bool state)
+{
+    mForceRange = state;
+}
+
 void CLight::SetInnerAngle(float theta)
 {
     mLightData.Theta = theta;
@@ -111,6 +116,7 @@ void CLight::SetDefaults()
     mLightData.Direction = D3DXVECTOR3(-1.0F, -0.3F, -1.0F);
     mLightData.Specular = D3DXCOLOR(0.0F, 0.0F, 0.0F, 1.0F);
 
+    mForceRange = FALSE;
     mLightData.Range = 0;
     mLightData.Falloff = 0;
     mLightData.Attenuation0 = 1;

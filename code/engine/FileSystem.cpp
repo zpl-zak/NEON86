@@ -204,7 +204,7 @@ auto CFileSystem::GetCanonicalGamePath() const -> LPCSTR
     return path;
 }
 
-auto CFileSystem::Exists(LPCSTR resName) -> bool
+auto CFileSystem::Exists(LPCSTR resName) const -> bool
 {
     auto* const res = OpenResource(resName);
 

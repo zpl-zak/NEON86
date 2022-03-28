@@ -29,7 +29,8 @@ public:
     void Init(void);
     void Destroy(void);
     void Update(float dt);
-    void Render(void);
+    void FixedUpdate(float dt);
+    void Render(float renderTime);
     void Render2D(void);
     void CharInput(DWORD key);
     void Resize(RECT res);

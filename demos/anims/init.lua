@@ -36,7 +36,7 @@ end)
 local animator = seq.Tween()
 animator:play(spinAnim)
 
-function _update(dt)
+function _fixedUpdate(dt)
   if GetKeyDown(KEY_ESCAPE) then
     ExitGame()
   end
