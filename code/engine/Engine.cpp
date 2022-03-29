@@ -291,11 +291,6 @@ auto CEngine::ProcessEvents(HWND hWnd, unsigned int message, WPARAM wParam, LPAR
 
     case WM_KEYDOWN:
         {
-            if (INPUT->GetKey(static_cast<DWORD>(wParam)))
-            {
-                break;
-            }
-
             INPUT->SetKey(static_cast<DWORD>(wParam), TRUE);
             INPUT->SetKeyDown(static_cast<DWORD>(wParam), TRUE);
         }
