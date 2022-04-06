@@ -126,6 +126,7 @@ function ClearFog() end
 function SamplerState(stage,kind,state) end
 function EnableLighting(state) end
 function ToggleDepthTest(state) end
+function ToggleDepthWrite(state) end
 function AmbientColor(color) end
 function ClearTarget() end
 function DrawBox(mat,dims,color) end

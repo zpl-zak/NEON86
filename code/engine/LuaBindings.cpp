@@ -608,6 +608,13 @@ LUAF(Rend, ToggleDepthTest)
     return 0;
 }
 
+LUAF(Rend, ToggleDepthWrite)
+{
+    const bool state = LuaGetInline<bool>(L);
+    RENDERER->SetRenderState(D3DRS_ZWRITEENABLE, static_cast<DWORD>(state));
+    return 0;
+}
+
 LUAF(Rend, ToggleWireframe)
 {
     const bool state = LuaGetInline<bool>(L);
@@ -808,6 +815,7 @@ void CLuaBindings::BindRenderer(lua_State* L)
     REGF(Rend, SamplerState);
     REGF(Rend, ToggleWireframe);
     REGF(Rend, ToggleDepthTest);
+    REGF(Rend, ToggleDepthWrite);
     REGF(Rend, EnableLighting);
     REGF(Rend, CullMode);
     REGF(Rend, AmbientColor);
