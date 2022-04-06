@@ -9,6 +9,9 @@ shader = Effect("fx/main.fx")
 
 require "helpers".global()
 
+local Pipe = require "pipe"
+local drawPipe = Pipe()
+
 -- Create a sunlight
 sun = Light()
 sun:setType(LIGHTKIND_DIRECTIONAL)
@@ -75,6 +78,10 @@ function _fixedUpdate(dt)
   camera.grounded = false
 end
 
+function _update(dt)
+  camera:lookUpdate(dt)
+end
+
 function _render()
   ClearScene(bgColor:color())
   AmbientColor(bgColor:color())
@@ -92,7 +99,8 @@ function _render()
       fx:setLight("lights["..(i-1).."]", l)
     end
     fx:commit()
-    mapModel:draw()
+    drawPipe:push(mapModel)
+    drawPipe:draw()
   end)
 end
 
