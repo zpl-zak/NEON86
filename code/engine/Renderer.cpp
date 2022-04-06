@@ -490,6 +490,14 @@ void CRenderer::SetMaterial(DWORD stage, CMaterial* mat)
             mDevice->SetMaterial(&mDefaultMaterial->GetMaterialData());
         }
 
+        mDevice->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
+
+        if (mat) {
+            if (matData->Specular.a > 0 || matData->Specular.r > 0 || matData->Specular.g > 0 || matData->Specular.b > 0) {
+                mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+            }
+        }
+
         if ((mat != nullptr) && mat->IsTransparent())
         {
             mDevice->SetTextureStageState(stage, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
@@ -614,7 +622,7 @@ void CRenderer::SetDefaultRenderStates() const
     mDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
 
     mDevice->SetRenderState(D3DRS_LIGHTING, static_cast<DWORD>(IsLightingEnabled()));
-    mDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+    mDevice->SetRenderState(D3DRS_SPECULARENABLE, FALSE);
     mDevice->SetRenderState(D3DRS_COLORWRITEENABLE,
                             D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE |
                             D3DCOLORWRITEENABLE_ALPHA);
