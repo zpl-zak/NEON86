@@ -42,18 +42,18 @@ function _fixedUpdate(dt)
 		paused = not paused
 	end
 
-	camera:update(dt)
-
 	if paused == false then
 		time = time + dt
 	end
 end
 
+function _update(dt)
+  camera:update(dt)
+end
+
 function _render(dt)
 	ClearScene(20,20,20)
 	CameraPerspective(62, 0.1, 10000)
-
-  camera:update(dt)
 	camera.mat:bind(VIEW)
 
 	spaceFX:start("Main")

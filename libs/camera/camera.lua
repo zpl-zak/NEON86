@@ -1,4 +1,5 @@
 local class = require "class"
+local helpers = require "helpers"
 
 class "Camera" {
   __init__ = function (self, pos, angles)
@@ -10,9 +11,11 @@ class "Camera" {
     end
 
     self.pos = pos
-    self.angles = angles
+    self:fixAngle(angles)
     self.speed = 15.0
+    self.accel = 6.0
     self.sensitivity = 0.05
+    self.smoothing = 20
     self.vel = Vector3()
     self.heldControls = false
     self:updateMatrix()
@@ -36,19 +39,19 @@ class "Camera" {
     local movedir = Vector3()
 
     if GetKey("w") then
-      movedir = movedir + Vector3(self.dirs.fwd * dt * self.speed)
+      movedir = movedir + Vector3(self.dirs.fwd * self.speed)
     end
 
     if GetKey("s") then
-      movedir = movedir + Vector3(self.dirs.fwd * dt * self.speed):neg()
+      movedir = movedir + Vector3(self.dirs.fwd * self.speed):neg()
     end
 
     if GetKey("a") then
-      movedir = movedir + Vector3(self.dirs.rhs * dt * self.speed):neg()
+      movedir = movedir + Vector3(self.dirs.rhs * self.speed):neg()
     end
 
     if GetKey("d") then
-      movedir = movedir + Vector3(self.dirs.rhs * dt * self.speed)
+      movedir = movedir + Vector3(self.dirs.rhs * self.speed)
     end
 
     if GetKey(KEY_SHIFT) then
@@ -61,14 +64,22 @@ class "Camera" {
   mouseLook = function (self, dt)
     if GetCursorMode() == CURSORMODE_CENTERED then
       mouseDelta = GetMouseDelta()
-      self.angles[1] = self.angles[1] + (mouseDelta[1] * self.sensitivity * dt)
-      self.angles[2] = self.angles[2] - (mouseDelta[2] * self.sensitivity * dt)
+      self.newAngles[1] = self.newAngles[1] + (mouseDelta[1] * self.sensitivity * dt)
+      self.newAngles[2] = self.newAngles[2] - (mouseDelta[2] * self.sensitivity * dt)
+    end
+
+    if self.smoothing > 0.0 then
+      self.angles[1] = helpers.lerp(self.angles[1], self.newAngles[1], self.smoothing*dt)
+      self.angles[2] = helpers.lerp(self.angles[2], self.newAngles[2], self.smoothing*dt)
+    else
+      self.angles[1] = self.newAngles[1]
+      self.angles[2] = self.newAngles[2]
     end
   end,
 
-  movement = function (self)
-    self.vel = self.vel + (self.movedir - self.vel)*0.10
-    self.pos = self.pos + self.vel
+  movement = function (self, dt)
+    self.vel = helpers.lerp(self.vel, self.movedir, self.accel * dt)
+    self.pos = self.pos + self.vel*dt
   end,
 
   -- Helpers
@@ -86,6 +97,12 @@ class "Camera" {
       rhs = self.mat:col(1)
     }
   end,
+
+  fixAngle = function (self, angles)
+    self.newAngles = {table.unpack(angles)}
+    self.angles = {table.unpack(angles)}
+    self:updateMatrix()
+  end
 }
 
 return Camera

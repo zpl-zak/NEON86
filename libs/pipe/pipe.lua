@@ -14,7 +14,8 @@ Class "Pipe" {
       elseif mesh.__name == "Mesh" then
         self:push(mesh:getParts(), mat)
       elseif mesh.__name == "Node" then
-        self:push(mesh:getMeshes(), mat or mesh:getFinalTransform())
+        mat = mat or Matrix()
+        self:push(mesh:getMeshes(), mesh:getFinalTransform() * mat)
       elseif mesh.__name == "Scene" then
         self:push(mesh:getFlattenNodes(), mat)
       else

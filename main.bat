@@ -1,7 +1,10 @@
 @echo off
 
-cd %~dp0
+set cwd=%~dp0
 REM detect paths
+call setup_cl_generic.bat amd64
+cd /d %cwd%
+
 set msbuild_cmd=msbuild.exe
 where /q msbuild.exe
 if not %errorlevel%==0 set msbuild_cmd="C:\Program Files\Microsoft Visual Studio\2022\Preview\MSBuild\Current\Bin\MSBuild.exe"

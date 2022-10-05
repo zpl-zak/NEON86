@@ -19,7 +19,7 @@ function _init()
   testModel:getRootNode():setTransform(Matrix():scale(2,1,1))
   sphere = Model("sphere.fbx")
   camera = Camera(Vector3(-2,0,-8))
-  camera.angles = {0.48500002529471, 0}
+  camera:fixAngle({0.48500002529471, 0})
 
   skybox = Model("skybox.fbx")
   skybox:getMeshes()[1]:getMaterial(1):setShaded(false)
@@ -49,7 +49,9 @@ function _fixedUpdate(dt)
   if GetKeyDown("m") then
       changeRot = 1 - changeRot
   end
+end
 
+function _update(dt)
   camera:update(dt)
   time = time + dt
 end

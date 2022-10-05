@@ -4,7 +4,8 @@
 #include <dsound.h>
 
 #define STB_VORBIS_NO_PUSHDATA_API
-#include "stb_vorbis.h"
+#define STB_VORBIS_HEADER_ONLY
+#include "stb_vorbis.c"
 
 #include "NeonEngine.h"
 
@@ -461,6 +462,7 @@ void CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
 
     int error;
     stb_vorbis* decoder = stb_vorbis_open_filename(fs->ResourcePath(path), &error, nullptr);
+    stb_vorbis_info decoder_info = stb_vorbis_get_info(decoder);
 
     if (!decoder)
     {
@@ -468,13 +470,13 @@ void CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
         return;
     }
 
-    if (decoder->channels != 2)
+    if (decoder_info.channels != 2)
     {
         vm->PostError(CString::Format("Sound file: %s is invalid (needs 2 audio channels)!", path).Str());
         return;
     }
 
-    if (decoder->sample_rate != 44100)
+    if (decoder_info.sample_rate != 44100)
     {
         vm->PostError(CString::Format("Sound file: %s is invalid (needs to be 44.1KHz)!", path).Str());
         return;
@@ -488,7 +490,7 @@ void CSoundLoader::OpenOGG(stb_vorbis** outDecoder, LPSTR path, IDirectSoundBuff
     waveFormat.nAvgBytesPerSec = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
     waveFormat.cbSize = 0;
     *static_cast<WAVEFORMATEX*>(waveInfo) = waveFormat;
-    *dataSize = static_cast<DWORD>(decoder->stream_len);
+    *dataSize = static_cast<DWORD>(4096);
 
     bufferDesc.dwSize = sizeof(DSBUFFERDESC);
     bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPAN | DSBCAPS_CTRLPOSITIONNOTIFY;

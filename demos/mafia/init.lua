@@ -17,6 +17,7 @@ sun = Light()
 sun:setType(LIGHTKIND_DIRECTIONAL)
 sun:setDirection(Vector(-1,-1,1))
 sun:setDiffuse(Color(32, 46, 90))
+sun:setAttenuation(1,1,0)
 sun:enable(true, 0)
 
 -- Register local font and create font drawer
@@ -26,16 +27,11 @@ testFont = Font("Silkscreen", 16, 700, false)
 -- Initialize camera
 local Camera = require "camera"
 camera = Camera(Vector3( -39.431,3.21591,1.2078))
-camera.angles = { 0.60000003129245, 0.097500005085019}
+camera:fixAngle({0.60000003129245, 0.097500005085019})
 camera.grounded = false
 
 function _init()
   mapModel = Model("map.fbx", true, false)
-
-  camera.updateMovement = function(self, dt)
-    self.vel = self.movedir
-    self.pos = self.pos + self.vel
-  end
 
   idx = 1
   for a, lv in pairs(mapModel:getRootNode():findNode("lights"):getTargets()) do
@@ -44,15 +40,12 @@ function _init()
     l:setPosition(lv:row(4))
     l:setDiffuse(206, 79, 47)
     l:setSpecular(0.12,0.12,0.12,1)
-    l:setRange(50)
-    l:setAttenuation(0,0.06,0)
+    l:setRange(25)
+    l:setAttenuation(0,0,2)
     l:enable(true, idx)
     table.insert(lights, l)
     idx = idx
   end
-
-  EnableLighting(true)
-  SetFog(bgColor, FOGKIND_EXP, 0.008)
 
   ShowCursor(false)
   SetCursorMode(CURSORMODE_CENTERED)
@@ -73,33 +66,32 @@ function _fixedUpdate(dt)
       LogString("camangle: " .. camera.angles[1] .. ", " .. camera.angles[2] .. "\n")
   end
 
-  camera:update(dt)
   time = getTime()
   camera.grounded = false
 end
 
 function _update(dt)
-  camera:lookUpdate(dt)
+  camera:update(dt)
 end
 
 function _render()
   ClearScene(bgColor:color())
   AmbientColor(bgColor:color())
 
-  sun:enable(true, 0)
-  for i, l in pairs(lights) do
-    l:enable(true, i)
-  end
-
   camera.mat:bind(VIEW)
   CameraPerspective(62, 0.1, 9000)
+  drawPipe:push(mapModel)
+
   withEffect(shader, "Lit", function (fx)
     fx:setLight("sun", sun)
+    for i=1, 32 do
+      fx:setBool("lights["..(i-1).."].IsEnabled", false)
+    end
     for i, l in pairs(lights) do
       fx:setLight("lights["..(i-1).."]", l)
     end
+    fx:setInt("numLights", #lights)
     fx:commit()
-    drawPipe:push(mapModel)
     drawPipe:draw()
   end)
 end
@@ -113,5 +105,5 @@ Map made by Cukier for Mafia: The City of Lost Heaven.
 
   ]], 15, 30, 1200, 800)
 
-testFont:drawText(Color(255,64,0), "Move with WASD", 15, 600)
+  testFont:drawText(Color(255,64,0), "Move with WASD", 15, 600)
 end

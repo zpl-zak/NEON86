@@ -14,12 +14,14 @@ struct VS_OUTPUT {
     float3 worldPos : TEXCOORD2;
     float2 texCoord : TEXCOORD;
     float3 normal : NORMAL;
+    float4 color : COLOR;
 };
 
 TLIGHT sun;
 
-#define NUM_LIGHTS 8
+#define NUM_LIGHTS 16
 TLIGHT lights[NUM_LIGHTS];
+int numLights;
 
 VS_OUTPUT VS_LitPass(VS_INPUT IN)
 {
@@ -29,34 +31,33 @@ VS_OUTPUT VS_LitPass(VS_INPUT IN)
     OUT.worldPos = mul(IN.position, NEON.World);
     OUT.normal = mul(IN.normal, NEON.World);
     OUT.texCoord = IN.texCoord;
+    OUT.color = NEON.AmbientColor;
+    float3 n = normalize(OUT.normal);
+
+    // sun pass
+    {
+        float3 l = normalize(-sun.Direction);
+        float d = saturate(dot(n,l));
+        OUT.color += sun.Diffuse * MAT.Diffuse * d;
+    }
+
+    // points pass
+    for (int i = 0; i < numLights; i++)
+    {
+        TLIGHT lit = lights[i];
+        float3 l = lit.Position - OUT.worldPos;
+        float d = saturate(dot(n,normalize(l)));
+        float dist = length(l);
+        float atten = CalcLightAttenQuadratic(dist, lit);
+        OUT.color += lit.Diffuse * MAT.Diffuse * d * atten;
+    }
 
     return OUT;
 }
 
 float4 PS_LitPass(VS_OUTPUT IN) : COLOR
 {
-    float4 OUT = float4(0,0,0,1);
-    float3 n = normalize(IN.normal);
-
-    OUT = NEON.AmbientColor;
-
-    // sun pass
-    {
-        float3 l = normalize(-sun.Direction);
-        float d = saturate(dot(n,l));
-        OUT += sun.Diffuse * MAT.Diffuse * d;
-    }
-
-    // points pass
-    for (int i = 0; i < NUM_LIGHTS; i++)
-    {
-        TLIGHT lit = lights[i];
-        float3 l = lit.Position - IN.worldPos;
-        float d = saturate(dot(n,normalize(l)));
-        float dist = length(l);
-        float atten = 1.0f / (1.0 + 0.005 * dist + 0.0075 * (dist*dist));
-        OUT += lit.Diffuse * MAT.Diffuse * d * atten * 2;
-    }
+    float4 OUT = IN.color;
 
     if (hasDiffuseTex)
         OUT *= tex2D(colorMap, IN.texCoord);

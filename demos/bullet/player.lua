@@ -7,7 +7,6 @@ Class "Player" (Camera) {
   __init__ = function (self, world, pos, angles)
     Camera:__init__(pos, angles)
     self.grounded = false
-    self.speed = 500
     self.world = world
     self.body = self.world.createCapsule(Matrix():translate(pos), 1, 2, 1.5)
     self.shift = false
@@ -15,6 +14,7 @@ Class "Player" (Camera) {
     self.world.setDamping(self.body, 0.9, 1)
     self.world.setFriction(self.body, 0.9)
     self.world.setAngularFactor(self.body, Vector(0,1,0))
+    self.speed = 10
 
     local hit, dpos = self.world.rayTest(pos, Vector(0,-1,0)*10)
 
