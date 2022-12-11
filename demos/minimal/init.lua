@@ -7,6 +7,12 @@ local rootNode
 local lights = {}
 local enemies = {}
 
+-- parses a string like vec(0.5, 0.5, 0.5) into a Vector3
+local function str2vec(str)
+  local x, y, z = str:match("vec%(([^,]+),([^,]+),([^,]+)%)")
+  return Vector3(tonumber(x), tonumber(y), tonumber(z))
+end
+
 function _init()
   scene = Scene("scene.fbx")
   rootNode = scene:getRootNode()
@@ -25,17 +31,17 @@ function _init()
     end
   end
 
-  addLight(LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.8, -1.0), Vector3(0.6,0.6,0.2,1))
+  addLight(LIGHTKIND_DIRECTIONAL, Vector(), Vector3(-1.0, -0.8, -1.0), Vector3(0.6, 0.6, 0.2, 1))
 
   local lightsNode = rootNode:findNode("Lights")
 
   for _, l in pairs(lightsNode:getNodes()) do
-    local c = VectorRGBA(240,240,240)
+    local c = VectorRGBA(240, 240, 240)
 
     local p = l:getMeta("color")
 
     if p ~= nil then
-        c = str2vec(p) / 0xFF
+      c = str2vec(p) / 0xFF
     end
 
     addLight(LIGHTKIND_POINT, l:getFinalTransform():row(4), Vector(), c)
@@ -62,23 +68,23 @@ end
 
 function _render()
   Matrix()
-    :rotate(time/4, 0, 0)
-    :rotate(0, math.rad(-35), 0)
-    :translate(0,-2,20)
-    :bind(VIEW)
+      :rotate(time / 4, 0, 0)
+      :rotate(0, math.rad(-35), 0)
+      :translate(0, -2, 20)
+      :bind(VIEW)
 
   for i, l in ipairs(lights) do
-    l:enable(true, i-1)
+    l:enable(true, i - 1)
   end
 
-  ClearScene(20,20,69)
-  AmbientColor(16,16,16)
+  ClearScene(20, 20, 69)
+  AmbientColor(16, 16, 16)
   CameraPerspective(62, 2, 80)
 
   world:draw()
   scene:getRootNode():findNode("Enemies posing"):draw(Matrix())
 
-  globe:draw(Matrix():rotate(-time/4 + math.rad(45), 0, 0))
+  globe:draw(Matrix():rotate(-time / 4 + math.rad(45), 0, 0))
 end
 
 function addLight(kind, pos, dir, diffuse)
@@ -86,12 +92,12 @@ function addLight(kind, pos, dir, diffuse)
   l:setType(kind)
   l:setPosition(pos)
   l:setDirection(dir)
-  l:setSpecular(0.12,0.12,0.12,1)
+  l:setSpecular(0.12, 0.12, 0.12, 1)
   l:setDiffuse(diffuse)
 
   if kind == LIGHTKIND_POINT then
     l:setRange(50)
-    l:setAttenuation(0,0.2,0)
+    l:setAttenuation(0, 0.2, 0)
   end
 
   table.insert(lights, l)

@@ -12,6 +12,7 @@ sampler2D colorMap = sampler_state
 struct VS_OUTPUT {
     float4 position : POSITION;
     float3 worldPos : TEXCOORD2;
+    float3 viewDir : TEXCOORD3;
     float2 texCoord : TEXCOORD;
     float3 normal : NORMAL;
     float4 color : COLOR;
@@ -23,6 +24,8 @@ TLIGHT sun;
 TLIGHT lights[NUM_LIGHTS];
 int numLights;
 
+float3 campos;
+
 VS_OUTPUT VS_LitPass(VS_INPUT IN)
 {
     VS_OUTPUT OUT;
@@ -30,6 +33,7 @@ VS_OUTPUT VS_LitPass(VS_INPUT IN)
     OUT.position = mul(float4(IN.position, 1.0f), NEON.MVP);
     OUT.worldPos = mul(IN.position, NEON.World);
     OUT.normal = mul(IN.normal, NEON.World);
+    OUT.viewDir = (campos - mul(float4(IN.position, 1.0f), NEON.World));
     OUT.texCoord = IN.texCoord;
     OUT.color = NEON.AmbientColor;
     float3 n = normalize(OUT.normal);
@@ -58,6 +62,19 @@ VS_OUTPUT VS_LitPass(VS_INPUT IN)
 float4 PS_LitPass(VS_OUTPUT IN) : COLOR
 {
     float4 OUT = IN.color;
+
+    float3 n = normalize(IN.normal);
+    float3 l = normalize(-sun.Direction);
+    float3 v = normalize(IN.viewDir);
+    float3 h = normalize(l+v);
+
+    /* lighting calcs */
+    float diffuse = saturate(dot(n,l));
+    float specular = saturate(dot(n,h));
+    float powerFactor = 0.80;
+    float power = diffuse == 0.0f ? 0.0f : pow(specular, MAT.Power * powerFactor);
+
+    OUT += (sun.Specular * specular * power);
 
     if (hasDiffuseTex)
         OUT *= tex2D(colorMap, IN.texCoord);

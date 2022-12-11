@@ -11,6 +11,7 @@
 #include "FileSystem.h"
 
 #include <assimp/Importer.hpp>
+#include <assimp/Exporter.hpp>
 #include <assimp/scene.h>
 #include <assimp/matrix4x4.h>
 #include <assimp/postprocess.h>

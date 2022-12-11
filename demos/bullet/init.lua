@@ -19,7 +19,7 @@ local MODELS = {
 -- components
 local function drawable(modelName)
   return ecs.cmp("drawable", {
-    model = function () return MODELS[modelName] end
+    model = function() return MODELS[modelName] end
   })
 end
 
@@ -61,7 +61,7 @@ local function loadScene()
 end
 
 -- systems
-local draw = ecs.sys({"drawable"}, function (e)
+local draw = ecs.sys({ "drawable" }, function(e)
   local mat = Matrix()
 
   if e.spatial then
@@ -71,7 +71,7 @@ local draw = ecs.sys({"drawable"}, function (e)
   e.drawable.model():draw(mat)
 end)
 
-local phys = ecs.sys({"spatial", "prop"}, function (e)
+local phys = ecs.sys({ "spatial", "prop" }, function(e)
   e.spatial.mat = physWorld.getWorldTransform(e.prop.body)
 end)
 
@@ -82,12 +82,12 @@ function _init()
   player = Player(physWorld, MODELS.map:getRootNode():findNode("Camera"):getFinalTransform():row(4))
 
   light = Light()
-  light:setDirection(Vector(-0.5,-0.5,1))
+  light:setDirection(Vector(-0.5, -0.5, 1))
   light:enable(true, 0)
 
   debugMat = Material()
-  debugMat:setDiffuse(0,255,0)
-  debugMat:setEmission(0,255,0)
+  debugMat:setDiffuse(0, 255, 0)
+  debugMat:setEmission(0, 255, 0)
 end
 
 local function input()
@@ -96,12 +96,12 @@ local function input()
   end
 
   if GetMouseDown(MOUSE_LEFT_BUTTON) then
-    local handle = ball(player.pos + player.dirs.fwd*2).prop.body
-    physWorld.addImpulse(handle, player.dirs.fwd*20)
+    local handle = ball(player.pos + player.dirs.fwd * 2).prop.body
+    physWorld.addImpulse(handle, player.dirs.fwd * 20)
   end
 
   if GetKey(KEY_SPACE) then
-    ball(Vector(math.random()*0.1,25,math.random()*0.1))
+    ball(Vector(math.random() * 0.1, 25, math.random() * 0.1))
   end
 
   if GetKeyDown("g") then
@@ -115,8 +115,7 @@ end
 function _fixedUpdate(dt)
   input()
   player:update(dt)
-  player:update2(dt)
-  LogString(""..dt)
+  LogString("" .. dt)
 end
 
 function _render(dt)
@@ -125,6 +124,7 @@ function _render(dt)
   physWorld.update(dt)
   phys(ents)
 
+  SetFog(VectorRGBA(80, 80, 69), FOGKIND_EXP, 0.062)
   EnableLighting(true)
   CameraPerspective(62, 0.1, 100)
   player:lookUpdate(dt)
@@ -132,7 +132,7 @@ function _render(dt)
   draw(ents)
 
   if showWireframe then
-    helpers.withTexture(debugMat, function ()
+    helpers.withTexture(debugMat, function()
       ToggleWireframe(true)
       draw(ents)
       ToggleWireframe(false)
